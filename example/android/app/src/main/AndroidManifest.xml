@@ -8,11 +8,12 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_branch_sdk_example"
+        android:label="Flutter Branch Example"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
+        <!-- Branch SDK - Change [singleTop] to [singleTask] -->
+            android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
@@ -28,6 +29,39 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Branch SDK - URI Scheme -->
+            <intent-filter>
+                <data android:scheme="flutterbranchio" android:host="open"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <!-- Branch SDK - App Links -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="flutterbranchio-alternate.app.link" />
+                <data android:scheme="https" android:host="flutterbranchio.app.link" />
+                <data android:scheme="https" android:host="flutterbranchio-alternate.test-app.link" />
+                <data android:scheme="https" android:host="flutterbranchio.test-app.link" />
+            </intent-filter>
         </activity>
+        <!-- Branch SDK - init -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_lgPF1ToQP6d7Ogy6BwpnWpceswdol7Fx" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="key_test_mpTB8GfMSYj4Ijt6yulwqikfyujee0FP" />
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
+        <!-- Branch install referrer tracking (optional) -->
+        <receiver
+            android:name="io.branch.referral.InstallListener"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
