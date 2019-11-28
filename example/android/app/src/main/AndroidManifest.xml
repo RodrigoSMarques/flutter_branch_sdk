@@ -12,7 +12,6 @@
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
-        <!-- Branch SDK - Change [singleTop] to [singleTask] -->
             android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -29,14 +28,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Branch SDK - URI Scheme -->
+            <!-- Branch URI Scheme -->
             <intent-filter>
                 <data android:scheme="flutterbranchio" android:host="open"/>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-            <!-- Branch SDK - App Links -->
+            <!-- Branch App Links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -47,10 +46,11 @@
                 <data android:scheme="https" android:host="flutterbranchio.test-app.link" />
             </intent-filter>
         </activity>
-        <!-- Branch SDK - init -->
+        <!-- Branch init -->
         <meta-data
             android:name="io.branch.sdk.BranchKey"
             android:value="key_live_lgPF1ToQP6d7Ogy6BwpnWpceswdol7Fx" />
+        <!-- For your test app, if you have one; Again, use your actual test Branch key -->
         <meta-data
             android:name="io.branch.sdk.BranchKey.test"
             android:value="key_test_mpTB8GfMSYj4Ijt6yulwqikfyujee0FP" />
