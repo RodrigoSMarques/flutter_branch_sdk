@@ -175,6 +175,9 @@ FlutterBranchSdk.disableTracking(true);
 ```
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
+# Example app
+The sample app is complete and demonstrates the use of all functions.
+
 # Branch Universal Object best practices
 
 Here are a set of best practices to ensure that your analytics are correct, and your content is ranking on Spotlight effectively.
@@ -192,6 +195,9 @@ Practices to avoid:
 3. Don't wait to initialize the object until you conveniently need a link.
 4. Don't create many objects at once and register views in a for loop.
 
+# Branch Documentation
+* Android - https://github.com/BranchMetrics/android-branch-deep-linking-attribution
+* iOS - https://github.com/BranchMetrics/ios-branch-deep-linking-attribution
 
 # Version
 * 0.0.1 - Initial version
