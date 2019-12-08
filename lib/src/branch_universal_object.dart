@@ -22,7 +22,7 @@ class BranchUniversalObject {
   /* Content index mode */
   bool publiclyIndex = true;
   /* Any keyword associated with the content. Used for indexing */
-  List<dynamic> _keywords = List();
+  List<dynamic> keywords = List();
   /* Expiry date for the content and any associated links. Represented as epoch milli second */
   int expirationDateInMilliSec = 0;
   /* Index mode for  local content indexing */
@@ -37,28 +37,29 @@ class BranchUniversalObject {
       this.contentDescription,
       this.imageUrl,
       this.contentMetadata,
+        this.keywords,
       this.publiclyIndex,
       this.expirationDateInMilliSec,
       this.locallyIndex});
 
   ///Adds any keywords associated with the content referred
   void addKeyWords(List<dynamic> keywords) {
-    this._keywords.addAll(keywords);
+    this.keywords.addAll(keywords);
   }
 
   ///Add a keyword associated with the content referred
   void addKeyWord(String keyword) {
-    this._keywords.add(keyword);
+    this.keywords.add(keyword);
   }
 
   ///Remove a keyword associated with the content referred
   void removeKeyWord(String keyword) {
-    this._keywords.remove(keyword);
+    this.keywords.remove(keyword);
   }
 
   ///Get the keywords associated with this BranchUniversalObject
   List<dynamic> getKeywords() {
-    return this._keywords;
+    return this.keywords;
   }
 
   Map<String, dynamic> toMap() {
@@ -72,7 +73,7 @@ class BranchUniversalObject {
       ret["contentDescription"] = this.contentDescription;
     if (this.imageUrl != null && this.imageUrl.isNotEmpty)
       ret["imageUrl"] = this.imageUrl;
-    if (this._keywords.isNotEmpty) ret["keywords"] = this._keywords;
+    if (this.keywords.isNotEmpty) ret["keywords"] = this.keywords;
     if (this._creationDateTimeStamp != null)
       ret["creationDate"] = this._creationDateTimeStamp;
     if (this.expirationDateInMilliSec != null)

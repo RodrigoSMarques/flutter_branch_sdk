@@ -1,8 +1,8 @@
 name: flutter_branch_sdk
 description: Flutter Plugin for Brach Metrics SDK - https:&#x2F;&#x2F;branch.io
 version: 0.0.1
-author:
-homepage:
+author: Rodrigo S. Marques <rodrigosmarques@gmail.com>
+homepage: https://github.com/RodrigoSMarques/flutter_branch_sdk
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

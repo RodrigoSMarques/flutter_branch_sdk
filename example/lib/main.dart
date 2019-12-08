@@ -33,20 +33,20 @@ class _MyAppState extends State<MyApp> {
 
   void listenDynamicLinks() async {
     streamSubscription = FlutterBranchSdk.initSession().listen((data) {
-      print("listenDynamicLinks - DeepLink Data: $data");
+      print('listenDynamicLinks - DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
-      if (data.containsKey("+clicked_branch_link") &&
-          data["+clicked_branch_link"] == true) {
+      if (data.containsKey('+clicked_branch_link') &&
+          data['+clicked_branch_link'] == true) {
         print(
             '------------------------------------Link clicked----------------------------------------------');
-        print('Custom string: ${data["custom_string"]}');
-        print('Custom number: ${data["custom_number"]}');
-        print('Custom bool: ${data["custom_bool"]}');
-        print('Custom list number: ${data["custom_list_number"]}');
+        print('Custom string: ${data['custom_string']}');
+        print('Custom number: ${data['custom_number']}');
+        print('Custom bool: ${data['custom_bool']}');
+        print('Custom list number: ${data['custom_list_number']}');
         print(
             '------------------------------------------------------------------------------------------------');
         showSnackBar(
-            message: 'Link clicked: Custom string - ${data["custom_string"]}',
+            message: 'Link clicked: Custom string - ${data['custom_string']}',
             duration: 10);
       }
     }, onError: (error) {
@@ -55,20 +55,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   void initDeepLinkData() {
-    FlutterBranchSdk.disableTracking(false);
-
     metadata = BranchContentMetaData()
-        .addCustomMetadata("custom_string", "abc")
-        .addCustomMetadata("custom_number", 12345)
-        .addCustomMetadata("custom_bool", true)
-        .addCustomMetadata("custom_list_number", [
+        .addCustomMetadata('custom_string', 'abc')
+        .addCustomMetadata('custom_number', 12345)
+        .addCustomMetadata('custom_bool', true)
+        .addCustomMetadata('custom_list_number', [
       1,
       2,
       3,
       4,
       5
-    ]).addCustomMetadata("custom_list_string", ["a", "b", "c"]);
-    /* --opcional data
+    ]).addCustomMetadata('custom_list_string', ['a', 'b', 'c']);
+    /* --optional Custom Metadata
     metadata.contentSchema = BranchContentSchema.COMMERCE_PRODUCT;
     metadata.price = 50.99;
     metadata.currencyType = BranchCurrencyType.BRL;
@@ -86,44 +84,48 @@ class _MyAppState extends State<MyApp> {
     metadata.setAddress(
         street: 'street',
         city: 'city',
-        region: 'region',
-        country: 'coutry',
-        postalCode: 'postalcode');
+        region: 'ES',
+        country: 'Brazil',
+        postalCode: '99999-987');
     metadata.setLocation(31.4521685, -114.7352207);
     */
 
     buo = BranchUniversalObject(
-        canonicalIdentifier: 'flutter/branch', title: 'Flutter Branch Plugin');
-    buo.imageUrl =
-        'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg';
-    buo.contentDescription = 'Flutter Branch Description';
-    buo.addKeyWords(['Plugin', 'Branch']);
-    buo.addKeyWord('Flutter');
-    buo.contentMetadata = metadata;
-    buo.publiclyIndex = true;
-    buo.locallyIndex = true;
+      canonicalIdentifier: 'flutter/branch',
+      title: 'Flutter Branch Plugin',
+      imageUrl: 'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
+      contentDescription: 'Flutter Branch Description',
+      contentMetadata: BranchContentMetaData()..addCustomMetadata('custom_string', 'abc')
+          ..addCustomMetadata('custom_number', 12345)
+          ..addCustomMetadata('custom_bool', true)
+          ..addCustomMetadata('custom_list_number', [1,2,3,4,5 ])
+          ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
+      keywords: ['Plugin', 'Branch', 'Flutter'],
+      publiclyIndex: true,
+      locallyIndex: true,
+    );
 
     lp = BranchLinkProperties(
         channel: 'facebook',
         feature: 'sharing',
-        //alias: 'flutterplugin',
-        matchDuration: 10,
-        stage: 'new share');
-
-    lp.addControlParam("url", "http://www.google.com");
-    lp.addControlParam("url2", "http://flutter.dev");
+        //alias: 'flutterplugin' //define link url,
+        stage: 'new share',
+      tags: ['one', 'two', 'three']
+    );
+    lp.addControlParam('url', 'http://www.google.com');
+    lp.addControlParam('url2', 'http://flutter.dev');
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.PURCHASE);
-    /* --Opcional Data
+    /* --optional Event data
     eventStandart.transactionID = '12344555';
     eventStandart.currency = BranchCurrencyType.BRL;
     eventStandart.revenue = 1.5;
     eventStandart.shipping = 10.2;
     eventStandart.tax = 12.3;
-    eventStandart.coupon = "test_coupon";
-    eventStandart.affiliation = "test_affiliation";
-    eventStandart.eventDescription = "Event_description";
-    eventStandart.searchQuery = "item 123";
+    eventStandart.coupon = 'test_coupon';
+    eventStandart.affiliation = 'test_affiliation';
+    eventStandart.eventDescription = 'Event_description';
+    eventStandart.searchQuery = 'item 123';
     eventStandart.adType = BranchEventAdType.BANNER;
     eventStandart.addCustomData(
         'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
@@ -246,7 +248,7 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Get First Parameters'),
                     onPressed: () async {
-                      var params =
+                      Map<dynamic, dynamic> params =
                           await FlutterBranchSdk.getFirstReferringParams();
                       controllerData.sink.add(params.toString());
                     },
@@ -259,7 +261,7 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Get Last Parameters'),
                     onPressed: () async {
-                      var params =
+                      Map<dynamic, dynamic> params =
                           await FlutterBranchSdk.getLatestReferringParams();
                       controllerData.sink.add(params.toString());
                     },
@@ -277,12 +279,12 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('List on Search'),
                     onPressed: () async {
-                      bool sucess =
+                      bool success =
                           await FlutterBranchSdk.listOnSearch(buo: buo);
-                      print(sucess);
-                      sucess = await FlutterBranchSdk.listOnSearch(
+                      print(success);
+                      success = await FlutterBranchSdk.listOnSearch(
                           buo: buo, linkProperties: lp);
-                      print(sucess);
+                      print(success);
                     },
                   ),
                 ),
@@ -293,12 +295,12 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Remove from Search'),
                     onPressed: () async {
-                      bool sucess =
+                      bool success =
                           await FlutterBranchSdk.removeFromSearch(buo: buo);
-                      print('Remove sucess: $sucess');
-                      sucess = await FlutterBranchSdk.removeFromSearch(
+                      print('Remove sucess: $success');
+                      success = await FlutterBranchSdk.removeFromSearch(
                           buo: buo, linkProperties: lp);
-                      print('Remove sucess: $sucess');
+                      print('Remove sucess: $success');
                     },
                   ),
                 ),
@@ -310,14 +312,14 @@ class _MyAppState extends State<MyApp> {
             ),
             StreamBuilder<String>(
               stream: controllerUrl.stream,
-              initialData: "",
+              initialData: '',
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data.isNotEmpty) {
                   return Column(
                     children: <Widget>[
                       Center(
                           child: Text(
-                        "Link build",
+                        'Link build',
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.bold),
                       )),
@@ -339,7 +341,7 @@ class _MyAppState extends State<MyApp> {
             Divider(),
             Center(
               child: Text(
-                "Deep Link data",
+                'Deep Link data',
                 style:
                     TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
               ),
@@ -347,7 +349,7 @@ class _MyAppState extends State<MyApp> {
             Divider(),
             StreamBuilder<String>(
               stream: controllerData.stream,
-              initialData: "",
+              initialData: '',
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data.isNotEmpty) {
                   return Column(
@@ -368,10 +370,10 @@ class _MyAppState extends State<MyApp> {
     BranchResponse response =
         await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
     if (response.success) {
-      controllerUrl.sink.add("${response.result}");
+      controllerUrl.sink.add('${response.result}');
     } else {
       controllerUrl.sink
-          .add("Error : ${response.errorCode} - ${response.errorDescription}");
+          .add('Error : ${response.errorCode} - ${response.errorDescription}');
     }
   }
 

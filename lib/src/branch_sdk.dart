@@ -17,13 +17,13 @@ class FlutterBranchSdk {
     }
 
     Map<String, dynamic> _params = {};
-    _params["userId"] = userId;
-    _messageChannel.invokeMethod("setIdentity", _params);
+    _params['userId'] = userId;
+    _messageChannel.invokeMethod('setIdentity', _params);
   }
 
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
-    _messageChannel.invokeMethod("logout");
+    _messageChannel.invokeMethod('logout');
   }
 
   ///Returns the last parameters associated with the link that referred the user
@@ -44,7 +44,7 @@ class FlutterBranchSdk {
     }
 
     Map<String, dynamic> _params = {};
-    _params["disable"] = value;
+    _params['disable'] = value;
     _messageChannel.invokeMethod('setTrackingDisabled', _params);
   }
 
@@ -82,14 +82,14 @@ class FlutterBranchSdk {
     _params['lp'] = linkProperties.toMap();
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod("getShortUrl", _params);
+        await _messageChannel.invokeMethod('getShortUrl', _params);
 
-    if (response["success"]) {
-      return BranchResponse.success(result: response["url"]);
+    if (response['success']) {
+      return BranchResponse.success(result: response['url']);
     } else {
       return BranchResponse.error(
-          errorCode: response["errorCode"],
-          errorDescription: response["errorDescription"]);
+          errorCode: response['errorCode'],
+          errorDescription: response['errorDescription']);
     }
   }
 
@@ -121,14 +121,14 @@ class FlutterBranchSdk {
     _params['sharingTitle'] = androidSharingTitle;
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod("showShareSheet", _params);
+        await _messageChannel.invokeMethod('showShareSheet', _params);
 
-    if (response["success"]) {
-      return BranchResponse.success(result: response["url"]);
+    if (response['success']) {
+      return BranchResponse.success(result: response['url']);
     } else {
       return BranchResponse.error(
-          errorCode: response["errorCode"],
-          errorDescription: response["errorDescription"]);
+          errorCode: response['errorCode'],
+          errorDescription: response['errorDescription']);
     }
   }
 
@@ -148,7 +148,7 @@ class FlutterBranchSdk {
     if (branchEvent != null && branchEvent.toMap().isNotEmpty) {
       _params['event'] = branchEvent.toMap();
     }
-    _messageChannel.invokeMethod("trackContent", _params);
+    _messageChannel.invokeMethod('trackContent', _params);
   }
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
@@ -161,7 +161,7 @@ class FlutterBranchSdk {
 
     _params['buo'] = buo.toMap();
 
-    _messageChannel.invokeMethod("registerView", _params);
+    _messageChannel.invokeMethod('registerView', _params);
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
@@ -179,7 +179,7 @@ class FlutterBranchSdk {
       _params['lp'] = linkProperties.toMap();
     }
 
-    return await _messageChannel.invokeMethod("listOnSearch", _params);
+    return await _messageChannel.invokeMethod('listOnSearch', _params);
   }
 
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
@@ -197,6 +197,6 @@ class FlutterBranchSdk {
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
       _params['lp'] = linkProperties.toMap();
     }
-    return await _messageChannel.invokeMethod("removeFromSearch", _params);
+    return await _messageChannel.invokeMethod('removeFromSearch', _params);
   }
 }
