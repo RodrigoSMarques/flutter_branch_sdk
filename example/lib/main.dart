@@ -104,6 +104,7 @@ class _MyAppState extends State<MyApp> {
       publiclyIndex: true,
       locallyIndex: true,
     );
+    FlutterBranchSdk.registerView(buo: buo);
 
     lp = BranchLinkProperties(
         channel: 'facebook',

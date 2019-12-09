@@ -153,6 +153,12 @@ Privately indexed Branch Universal Object can be removed
     bool success = await FlutterBranchSdk.removeFromSearch(buo: buo);
     print('Remove sucess: $success');
 ```
+### Register Event VIEW_ITEM
+Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
+```dart
+FlutterBranchSdk.registerView(buo: buo);
+```
+
 ### Tracking User Actions and Events
 Use the `BranchEvent` interface to track special user actions or application specific events beyond app installs, opens, and sharing. You can track events such as when a user adds an item to an on-line shopping cart, or searches for a keyword, among others.
 The `BranchEvent` interface provides an interface to add contents represented by `BranchUniversalObject` in order to associate app contents with events.
