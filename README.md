@@ -11,14 +11,13 @@ Implemented functions in plugin:
 * Test Branch Integration
 * Track users
 * Enable / Disable User Tracking
-* Get Parameters  (First and Last)
+* Get First and Last Parameters
 * Generate Deep Link for Branch Universal Object (BUO)
 * Show Share Sheet for Branch Universal Object (BUO)
-* List BUO on Search / Remove BUO from Search (for Android in Google Search / for iOS in Spotlight )
+* List BUO on Search / Remove BUO from Search
 * Register view
-* Track content 
-* Monitor Deep Link click using Stream
-
+* Track User Actions and Events
+* Init Branch Session and Deep Link
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -55,6 +54,7 @@ Test your Branch Integration by calling:
 FlutterBranchSdk.validateSDKIntegration();
 ```
 Check logs to make sure all the SDK Integration tests pass.
+Make sure to comment out or remove validateSDKIntegration in your production build.
 ### Initialize Branch and read deep link
 ```dart
     StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
@@ -98,7 +98,6 @@ The Branch Universal Object encapsulates the thing you want to share.
 ### Create link reference
 * Generates the analytical properties for the deep link
 * Used for Create deep link and Share deep link
-
 ```dart
     BranchLinkProperties lp = BranchLinkProperties(
         channel: 'facebook',
@@ -122,7 +121,6 @@ Generates a deep link within your app
 ```
 ### Show Share Sheet deep link
 Will generate a Branch deep link and tag it with the channel the user selects.
-
 Note: _For Android additional customization is possible_
 ```dart
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
@@ -155,6 +153,38 @@ Privately indexed Branch Universal Object can be removed
     bool success = await FlutterBranchSdk.removeFromSearch(buo: buo);
     print('Remove sucess: $success');
 ```
+### Tracking User Actions and Events
+Use the `BranchEvent` interface to track special user actions or application specific events beyond app installs, opens, and sharing. You can track events such as when a user adds an item to an on-line shopping cart, or searches for a keyword, among others.
+The `BranchEvent` interface provides an interface to add contents represented by `BranchUniversalObject` in order to associate app contents with events.
+Analytics about your app's BranchEvents can be found on the Branch dashboard, and BranchEvents also provide tight integration with many third party analytics providers.
+```dart
+BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
+FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventStandart);
+```
+You can use your own custom event names too:
+```dart
+BranchEvent eventCustom = BranchEvent.customEvent('Custom_event');
+FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventCustom);
+```
+Extra event specific data can be tracked with the event as well:
+```dart
+    eventStandart.transactionID = '12344555';
+    eventStandart.currency = BranchCurrencyType.BRL;
+    eventStandart.revenue = 1.5;
+    eventStandart.shipping = 10.2;
+    eventStandart.tax = 12.3;
+    eventStandart.coupon = 'test_coupon';
+    eventStandart.affiliation = 'test_affiliation';
+    eventStandart.eventDescription = 'Event_description';
+    eventStandart.searchQuery = 'item 123';
+    eventStandart.adType = BranchEventAdType.BANNER;
+    eventStandart.addCustomData(
+        'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
+    eventStandart.addCustomData(
+        'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
+    FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventStandart);
+```
+
 ### Track users
 Sets the identity of a user (email, ID, UUID, etc) for events, deep links, and referrals
 ```dart
@@ -196,12 +226,9 @@ Practices to avoid:
 4. Don't create many objects at once and register views in a for loop.
 
 # Branch Documentation
+Read the iOS or Android documentation for all Branch object parameters
 * Android - https://github.com/BranchMetrics/android-branch-deep-linking-attribution
 * iOS - https://github.com/BranchMetrics/ios-branch-deep-linking-attribution
-
-# Version
-* 0.0.1 - Initial version
-
 # Author
 This project was authored by Rodrigo S. Marques. You can contact me at rodrigosmarques@gmail.com
  

@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
     lp.addControlParam('url', 'http://www.google.com');
     lp.addControlParam('url2', 'http://flutter.dev');
 
-    eventStandart = BranchEvent.standardEvent(BranchStandardEvent.PURCHASE);
+    eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
     /* --optional Event data
     eventStandart.transactionID = '12344555';
     eventStandart.currency = BranchCurrencyType.BRL;
