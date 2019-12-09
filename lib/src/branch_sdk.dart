@@ -1,12 +1,12 @@
 part of flutter_branch_sdk;
 
 class FlutterBranchSdk {
-  static const MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
-  static const EVENT_CHANNEL = 'flutter_branch_sdk/event';
+  static const _MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
+  static const _EVENT_CHANNEL = 'flutter_branch_sdk/event';
 
   static const MethodChannel _messageChannel =
-      const MethodChannel(MESSAGE_CHANNEL);
-  static const EventChannel _eventChannel = const EventChannel(EVENT_CHANNEL);
+      const MethodChannel(_MESSAGE_CHANNEL);
+  static const EventChannel _eventChannel = const EventChannel(_EVENT_CHANNEL);
 
   static Stream<Map> initSessionStream;
 
