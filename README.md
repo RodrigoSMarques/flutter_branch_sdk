@@ -214,6 +214,8 @@ You can choose to call this throughout the lifecycle of the app. Once called, ne
 # Example app
 The sample app is complete and demonstrates the use of all functions.
 
+![Example app](https://user-images.githubusercontent.com/17687286/70444842-49d0b100-1a79-11ea-8225-da76afceeb90.png)
+
 # Branch Universal Object best practices
 
 Here are a set of best practices to ensure that your analytics are correct, and your content is ranking on Spotlight effectively.
