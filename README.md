@@ -214,7 +214,7 @@ You can choose to call this throughout the lifecycle of the app. Once called, ne
 # Example app
 The sample app is complete and demonstrates the use of all functions.
 
-![Example app](https://user-images.githubusercontent.com/17687286/70444842-49d0b100-1a79-11ea-8225-da76afceeb90.png)
+![Example app](https://user-images.githubusercontent.com/17687286/70445281-0b87c180-1a7a-11ea-8611-7217d46c75a7.png)
 
 # Branch Universal Object best practices
 
