@@ -211,8 +211,8 @@ FlutterBranchSdk.disableTracking(true);
 ```
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
-# Example app
-The sample app is complete and demonstrates the use of all functions.
+# Getting Started
+See the `example` directory for a complete sample app using Branch SDK.
 
 ![Example app](https://user-images.githubusercontent.com/17687286/70445281-0b87c180-1a7a-11ea-8611-7217d46c75a7.png)
 
