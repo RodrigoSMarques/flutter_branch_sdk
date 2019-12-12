@@ -8,7 +8,7 @@ class FlutterBranchSdk {
       const MethodChannel(_MESSAGE_CHANNEL);
   static const EventChannel _eventChannel = const EventChannel(_EVENT_CHANNEL);
 
-  static Stream<Map> initSessionStream;
+  static Stream<Map> _initSessionStream;
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
@@ -51,11 +51,11 @@ class FlutterBranchSdk {
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
   static Stream<Map<dynamic, dynamic>> initSession() {
-    if (initSessionStream == null)
-      initSessionStream =
+    if (_initSessionStream == null)
+      _initSessionStream =
           _eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
 
-    return initSessionStream;
+    return _initSessionStream;
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and

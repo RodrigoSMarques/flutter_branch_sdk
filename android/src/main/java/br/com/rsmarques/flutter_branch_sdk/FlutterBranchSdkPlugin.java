@@ -82,23 +82,7 @@ public class FlutterBranchSdkPlugin implements MethodCallHandler, EventChannel.S
       @Override
       public void onActivityStarted(Activity activity) {
         Log.d(DEBUG_NAME, "Activity Started");
-        Branch.getInstance().initSession(new Branch.BranchReferralInitListener() {
-          @Override
-          public void onInitFinished(JSONObject params, BranchError error) {
-            if (error == null) {
-              if (eventSink == null) {
-                return;
-              }
-              try {
-                eventSink.success(paramsToMap(params));
-              } catch (JSONException e) {
-                e.printStackTrace();
-              }
-            } else {
-              Log.d(DEBUG_NAME, "Branch onInitFinished - error: " + error.toString());
-            }
-          }
-        }, registrar.activity().getIntent().getData(), registrar.activity());
+        Branch.getInstance().initSession(branchReferralInitListener, registrar.activity().getIntent().getData(), registrar.activity());
       }
 
       @Override
@@ -140,10 +124,31 @@ public class FlutterBranchSdkPlugin implements MethodCallHandler, EventChannel.S
   public boolean onNewIntent(Intent intent) {
     Log.d(DEBUG_NAME, " onNewIntent");
     if (registrar.activity() != null) {
+      intent.putExtra("branch_force_new_session",true);
       registrar.activity().setIntent(intent);
+      Branch.getInstance().reInitSession(registrar.activity(), branchReferralInitListener);
     }
     return true;
   }
+
+  private Branch.BranchReferralInitListener branchReferralInitListener = new
+          Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject params, BranchError error) {
+              if (error == null) {
+                if (eventSink == null) {
+                  return;
+                }
+                try {
+                  eventSink.success(paramsToMap(params));
+                } catch (JSONException e) {
+                  e.printStackTrace();
+                }
+              } else {
+                Log.d(DEBUG_NAME, "Branch onInitFinished - error: " + error.toString());
+              }
+            }
+          };
 
   @Override
   public void onListen(Object o, EventChannel.EventSink eventSink) {
