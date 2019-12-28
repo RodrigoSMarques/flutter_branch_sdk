@@ -1,14 +1,18 @@
-package br.com.rsmarques.flutter_branch_sdk.src;
+package br.com.rsmarques.flutter_branch_sdk;
 
+import android.content.Context;
 import android.util.Log;
-import br.com.rsmarques.flutter_branch_sdk.BuildConfig;
+
 import io.branch.referral.Branch;
+import io.flutter.BuildConfig;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry;
 
-public class FlutterBranchSdkInit{
+public class FlutterBranchSdkInit {
     private static final String DEBUG_NAME = "FlutterBranchSDK";
 
-    public static void init(PluginRegistry.Registrar registrar) {
+    public static void init(Context context) {
         Log.i(DEBUG_NAME, " FlutterBranchSdkInit");
 
         if (BuildConfig.DEBUG) {
@@ -17,6 +21,6 @@ public class FlutterBranchSdkInit{
         }
 
         // Branch object initialization
-        Branch.getAutoInstance(registrar.activity().getApplicationContext());
+        Branch.getAutoInstance(context);
     }
 }

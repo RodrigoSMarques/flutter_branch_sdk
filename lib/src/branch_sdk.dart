@@ -10,6 +10,18 @@ class FlutterBranchSdk {
 
   static Stream<Map> _initSessionStream;
 
+  static FlutterBranchSdk _singleton;
+
+  /// Constructs a singleton instance of [FlutterBranchSdk].
+  factory FlutterBranchSdk() {
+    if (_singleton == null) {
+      _singleton = FlutterBranchSdk._();
+    }
+    return _singleton;
+  }
+
+  FlutterBranchSdk._();
+
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
     if (userId == null) {
