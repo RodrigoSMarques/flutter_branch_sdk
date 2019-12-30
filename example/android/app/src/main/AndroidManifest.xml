@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Flutter Branch Example"
+        android:label="Flutter Branch SDK Example"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -22,7 +22,7 @@
             </intent-filter>
             <!-- Branch URI Scheme -->
             <intent-filter>
-                <data android:scheme="flutterbranchio" android:host="open"/>
+                <data android:scheme="flutterbranchsdk" android:host="open"/>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -32,10 +32,10 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="flutterbranchio-alternate.app.link" />
-                <data android:scheme="https" android:host="flutterbranchio.app.link" />
-                <data android:scheme="https" android:host="flutterbranchio-alternate.test-app.link" />
-                <data android:scheme="https" android:host="flutterbranchio.test-app.link" />
+                <data android:scheme="https" android:host="flutterbranchsdk-alternate.app.link" />
+                <data android:scheme="https" android:host="flutterbranchsdk.app.link" />
+                <data android:scheme="https" android:host="flutterbranchsdk-alternate.test-app.link" />
+                <data android:scheme="https" android:host="flutterbranchsdk.test-app.link" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
@@ -46,11 +46,11 @@
         <!-- Branch init -->
         <meta-data
             android:name="io.branch.sdk.BranchKey"
-            android:value="key_live_lgPF1ToQP6d7Ogy6BwpnWpceswdol7Fx" />
+            android:value="key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx" />
         <!-- For your test app, if you have one; Again, use your actual test Branch key -->
         <meta-data
             android:name="io.branch.sdk.BranchKey.test"
-            android:value="key_test_mpTB8GfMSYj4Ijt6yulwqikfyujee0FP" />
+            android:value="key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH" />
         <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
         <!-- Branch install referrer tracking (optional) -->
         <receiver

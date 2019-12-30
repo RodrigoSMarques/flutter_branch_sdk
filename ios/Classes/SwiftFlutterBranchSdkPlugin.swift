@@ -29,7 +29,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         #endif
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
-            print("Branch params: \(String(describing: params as? [String: Any]))")
+            print("Branch_params: \(String(describing: params as? [String: Any]))")
             
             guard let _ = self.eventSink else {
                 return

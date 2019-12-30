@@ -4,8 +4,8 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:flutterbranchio.app.link</string>
-		<string>applinks:flutterbranchio-alternate.app.link</string>
+		<string>applinks:flutterbranchsdk.app.link</string>
+		<string>applinks:flutterbranchsdk-alternate.app.link</string>
 	</array>
 </dict>
 </plist>
