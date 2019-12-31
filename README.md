@@ -5,6 +5,8 @@ This is a Flutter plugin that implemented Branch.io SDK (https://branch.io).
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
 Supports both Android and iOS.
+* Android - Branch SDK Version 4.X.X 
+* iOS - Branch SDK Version >= 0.31.3
 
 Implemented functions in plugin:
 

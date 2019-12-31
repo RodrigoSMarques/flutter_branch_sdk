@@ -115,8 +115,7 @@ class _MyAppState extends State<MyApp> {
         //alias: 'flutterplugin' //define link url,
         stage: 'new share',
         tags: ['one', 'two', 'three']);
-    lp.addControlParam('url', 'http://www.google.com');
-    lp.addControlParam('url2', 'http://flutter.dev');
+    lp.addControlParam('\$uri_redirect_mode', '1');
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
     /* --optional Event data
