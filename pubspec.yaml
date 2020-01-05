@@ -1,12 +1,7 @@
 name: flutter_branch_sdk
 description: Flutter Plugin for Brach Metrics SDK - https:&#x2F;&#x2F;branch.io
 version: 0.0.1
-author: Rodrigo S. Marques <rodrigosmarques@gmail.com>
 homepage: https://github.com/RodrigoSMarques/flutter_branch_sdk
-
-environment:
-  sdk: ">=2.1.0 <3.0.0"
-  flutter: ">=1.12.13+hotfix.4 <2.0.0"
 
 dependencies:
   flutter:
@@ -18,6 +13,14 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: br.com.rsmarques.flutter_branch_sdk
-    pluginClass: FlutterBranchSdkPlugin
+    platforms:
+      android:
+        package: br.com.rsmarques.flutter_branch_sdk
+        pluginClass: FlutterBranchSdkPlugin
+      ios:
+        pluginClass: FlutterBranchSdkPlugin
 
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+  # Flutter versions prior to 1.10 did not support the flutter.plugin.platforms map.
+  flutter: ">=1.10.0 <2.0.0"
