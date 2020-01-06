@@ -41,7 +41,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 if let err = (error as NSError?) {
                     print("Branch InitSession error:" + err.localizedDescription)
                 } else {
-                    print("Branch InitSession error)
+                    print("Branch InitSession error")
                 }
             }
         }
