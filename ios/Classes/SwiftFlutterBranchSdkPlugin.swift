@@ -10,6 +10,7 @@ let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
+    var initialData : [String: Any]? = nil
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = SwiftFlutterBranchSdkPlugin()
@@ -23,26 +24,25 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
-        
         #if DEBUG
         Branch.getInstance().setDebug()
         #endif
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
-            print("Branch_params: \(String(describing: params as? [String: Any]))")
-            
-            guard let _ = self.eventSink else {
-                return
-            }
-            
-            if params != nil {
+            if let _ = params {
+                print("Branch_params: \(String(describing: params as? [String: Any]))")
+                guard let _ = self.eventSink else {
+                    self.initialData = params as? [String: Any]
+                    return
+                }
                 self.eventSink!(params as? [String: Any])
-                return
-            } else {
-                self.eventSink!(FlutterError(code: ERROR_CODE,
-                                             message: "InitSession error",
-                                             details: nil))
-                return
+            }
+            else {
+                if let err = (error as NSError?) {
+                    print("Branch InitSession error:" + err.localizedDescription)
+                } else {
+                    print("Branch InitSession error)
+                }
             }
         }
         return true
@@ -65,11 +65,16 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     public func onListen(withArguments arguments: Any?,
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
+        if initialData != nil {
+            self.eventSink!(initialData)
+            initialData = nil
+        }
         return nil
     }
     
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         eventSink = nil
+        initialData = nil
         return nil
     }
     
@@ -124,7 +129,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
         
-        var response : NSMutableDictionary! = [:]
+        let response : NSMutableDictionary! = [:]
         buo?.getShortUrl(with: lp!) { (url, error) in
             if (error == nil) {
                 NSLog("getShortUrl: %@", url!)
@@ -150,7 +155,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
         let controller = UIApplication.shared.keyWindow!.rootViewController as! FlutterViewController
         
-        var response : NSMutableDictionary! = [:]
+        let response : NSMutableDictionary! = [:]
         buo?.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
             print(activityType ?? "")
             if completed {

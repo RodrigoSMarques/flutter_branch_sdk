@@ -63,6 +63,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private EventSink eventSink = null;
+    private Map<String, Object> initialData = null;
 
     /**
      * Plugin registration.
@@ -130,47 +131,41 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
+        if (initialData != null) {
+            eventSink.success(initialData);
+            initialData = null;
+        }
     }
 
     @Override
     public void onCancel(Object o) {
         this.eventSink = null;
+        initialData = null;
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
-        Log.d(DEBUG_NAME, "Activity Created");
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-        Log.d(DEBUG_NAME, "Activity Started");
         Branch.getInstance().initSession(branchReferralInitListener, activity.getIntent().getData(), activity);
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {
-        Log.d(DEBUG_NAME, "Activity Resumed");
-    }
+    public void onActivityResumed(Activity activity) {}
 
     @Override
-    public void onActivityPaused(Activity activity) {
-        Log.d(DEBUG_NAME, "Activity Paused");
-    }
+    public void onActivityPaused(Activity activity) {}
 
     @Override
-    public void onActivityStopped(Activity activity) {
-        Log.d(DEBUG_NAME, "Activity Stopped");
-    }
+    public void onActivityStopped(Activity activity) {}
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        Log.d(DEBUG_NAME, "Activity SaveInstance");
-    }
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {}
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        Log.d(DEBUG_NAME, "Activity Destroy");
         if (this.activity == activity) {
             activity.getApplication().unregisterActivityLifecycleCallbacks(this);
         }
@@ -178,7 +173,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public boolean onNewIntent(Intent intent) {
-        Log.d(DEBUG_NAME, " onNewIntent");
         if (this.activity != null) {
             intent.putExtra("branch_force_new_session", true);
             activity.setIntent(intent);
@@ -186,6 +180,32 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         return true;
     }
+    //----------------------------------------------------------------------------------------------
+
+    private Branch.BranchReferralInitListener branchReferralInitListener = new
+            Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject params, BranchError error) {
+                    if (error == null) {
+                        Log.d(DEBUG_NAME, "branchReferralInitListener" + params.toString());
+                        if (eventSink == null) {
+                            try {
+                                initialData = paramsToMap(params);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            return;
+                        }
+                        try {
+                            eventSink.success(paramsToMap(params));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.d(DEBUG_NAME, "branchReferralInitListener - error: " + error.toString());
+                    }
+                }
+            };
 
     //----------------------------------------------------------------------------------------------
 
@@ -233,27 +253,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-    //----------------------------------------------------------------------------------------------
-
-    private Branch.BranchReferralInitListener branchReferralInitListener = new
-            Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject params, BranchError error) {
-                    if (error == null) {
-                        Log.d(DEBUG_NAME, "branchReferralInitListener" + params.toString());
-                        if (eventSink == null) {
-                            return;
-                        }
-                        try {
-                            eventSink.success(paramsToMap(params));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.d(DEBUG_NAME, "branchReferralInitListener - error: " + error.toString());
-                    }
-                }
-            };
     //----------------------------------------------------------------------------------------------
 
     private void validateSDKIntegration() {
