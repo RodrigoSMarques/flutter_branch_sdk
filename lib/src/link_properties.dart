@@ -16,7 +16,12 @@ class BranchLinkProperties {
   String campaign = '';
 
   BranchLinkProperties(
-      {this.channel, this.feature, this.alias, this.matchDuration, this.stage, this.tags});
+      {this.channel,
+      this.feature,
+      this.alias,
+      this.matchDuration,
+      this.stage,
+      this.tags});
 
   void addTags(String tag) {
     tags.add(tag);
