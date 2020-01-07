@@ -63,7 +63,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private EventSink eventSink = null;
-    private Map<String, Object> initialData = null;
+    private Map<String, Object> initialParams = null;
 
     /**
      * Plugin registration.
@@ -71,12 +71,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     public static void registerWith(Registrar registrar) {
         FlutterBranchSdkPlugin plugin = new FlutterBranchSdkPlugin();
-        plugin.setupChannels(registrar.messenger(), registrar.context());
+        plugin.setupChannels(registrar.messenger(), registrar.activity().getApplicationContext(), registrar.activity());
     }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext());
+        setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext(), null);
     }
 
     @Override
@@ -84,9 +84,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         teardownChannels();
     }
 
-    private void setupChannels(BinaryMessenger messenger, Context context) {
+    private void setupChannels(BinaryMessenger messenger, Context context, Activity activity) {
         this.context = context;
-        this.activity = null;
+        if (activity != null) {
+            this.activity = activity;
+        } else {
+            this.activity = null;
+        }
 
         methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
         eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
@@ -131,16 +135,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
-        if (initialData != null) {
-            eventSink.success(initialData);
-            initialData = null;
+        if (initialParams != null) {
+            eventSink.success(initialParams);
+            initialParams = null;
         }
     }
 
     @Override
     public void onCancel(Object o) {
         this.eventSink = null;
-        initialData = null;
+        initialParams = null;
     }
 
     @Override
@@ -190,7 +194,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                         Log.d(DEBUG_NAME, "branchReferralInitListener" + params.toString());
                         if (eventSink == null) {
                             try {
-                                initialData = paramsToMap(params);
+                                initialParams = paramsToMap(params);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -256,7 +260,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     //----------------------------------------------------------------------------------------------
 
     private void validateSDKIntegration() {
-        IntegrationValidator.validate(activity);
+        IntegrationValidator.validate(activity.getApplicationContext());
     }
 
     private void getShortUrl(MethodCall call, final Result result) {

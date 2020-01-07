@@ -10,7 +10,7 @@ let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
-    var initialData : [String: Any]? = nil
+    var initialParams : [String: Any]? = nil
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = SwiftFlutterBranchSdkPlugin()
@@ -32,7 +32,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             if let _ = params {
                 print("Branch_params: \(String(describing: params as? [String: Any]))")
                 guard let _ = self.eventSink else {
-                    self.initialData = params as? [String: Any]
+                    self.initialParams = params as? [String: Any]
                     return
                 }
                 self.eventSink!(params as? [String: Any])
@@ -65,16 +65,16 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     public func onListen(withArguments arguments: Any?,
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
-        if initialData != nil {
-            self.eventSink!(initialData)
-            initialData = nil
+        if initialParams != nil {
+            self.eventSink!(initialParams)
+            initialParams = nil
         }
         return nil
     }
     
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         eventSink = nil
-        initialData = nil
+        initialParams = nil
         return nil
     }
     
