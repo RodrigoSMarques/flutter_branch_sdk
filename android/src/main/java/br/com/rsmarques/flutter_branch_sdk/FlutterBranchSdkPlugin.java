@@ -70,13 +70,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      */
 
     public static void registerWith(Registrar registrar) {
+        if (registrar.activity() == null) {
+            // If a background flutter view tries to register the plugin, there will be no activity from the registrar,
+            // we stop the registering process immediately because the ImagePicker requires an activity.
+            return;
+        }
         FlutterBranchSdkPlugin plugin = new FlutterBranchSdkPlugin();
-        plugin.setupChannels(registrar.messenger(), registrar.activity().getApplicationContext(), registrar.activity());
+        plugin.setupChannels(registrar.messenger(), registrar.activity().getApplicationContext());
+        plugin.setActivity(registrar.activity());
     }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext(), null);
+        setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext());
     }
 
     @Override
@@ -84,13 +90,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         teardownChannels();
     }
 
-    private void setupChannels(BinaryMessenger messenger, Context context, Activity activity) {
+    private void setupChannels(BinaryMessenger messenger, Context context) {
         this.context = context;
-        if (activity != null) {
-            this.activity = activity;
-        } else {
-            this.activity = null;
-        }
 
         methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
         eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
@@ -101,6 +102,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         FlutterBranchSdkInit.init(this.context);
     }
 
+    private void setActivity(Activity activity) {
+        this.activity = activity;
+        activity.getApplication().registerActivityLifecycleCallbacks(this);
+    }
+
     private void teardownChannels() {
         this.activityPluginBinding = null;
         this.activity = null;
@@ -109,17 +115,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
-        this.activity = binding.getActivity();
+        //this.activity = binding.getActivity();
+        setActivity(binding.getActivity());
         this.activityPluginBinding = binding;
-
-        activity.getApplication().registerActivityLifecycleCallbacks(this);
         binding.addOnNewIntentListener(this);
     }
 
     @Override
     public void onDetachedFromActivity() {
         activityPluginBinding.removeOnNewIntentListener(this);
-        this.activity = null;
+        setActivity(null);
     }
 
     @Override
@@ -260,7 +265,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     //----------------------------------------------------------------------------------------------
 
     private void validateSDKIntegration() {
-        IntegrationValidator.validate(activity.getApplicationContext());
+        IntegrationValidator.validate(context);
     }
 
     private void getShortUrl(MethodCall call, final Result result) {
