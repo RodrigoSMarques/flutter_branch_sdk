@@ -11,7 +11,11 @@ let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR"
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
+    var initialError : NSError? = nil
     
+    //---------------------------------------------------------------------------------------------
+    // Plugin registry
+    // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = SwiftFlutterBranchSdkPlugin()
         
@@ -29,20 +33,23 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         #endif
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
-            if let _ = params {
-                print("Branch_params: \(String(describing: params as? [String: Any]))")
+            if error == nil {
+                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
                 guard let _ = self.eventSink else {
                     self.initialParams = params as? [String: Any]
                     return
                 }
                 self.eventSink!(params as? [String: Any])
-            }
-            else {
-                if let err = (error as NSError?) {
-                    print("Branch InitSession error:" + err.localizedDescription)
-                } else {
-                    print("Branch InitSession error")
+            } else {
+                let err = (error! as NSError)
+                print("Branch InitSession error: \(err.localizedDescription)")
+                guard let _ = self.eventSink else {
+                    self.initialError = err
+                    return
                 }
+                self.eventSink!(FlutterError(code: String(err.code),
+                                             message: err.localizedDescription,
+                                             details: nil))
             }
         }
         return true
@@ -62,12 +69,22 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         Branch.getInstance().handlePushNotification(userInfo)
     }
     
+    //---------------------------------------------------------------------------------------------
+    // FlutterStreamHandler Interface Methods
+    // --------------------------------------------------------------------------------------------
     public func onListen(withArguments arguments: Any?,
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
-        if initialParams != nil {
+        if (initialParams != nil) {
             self.eventSink!(initialParams)
             initialParams = nil
+            initialError = nil
+        } else if (initialError != nil) {
+            self.eventSink!(FlutterError(code: String(initialError!.code),
+                                         message: initialError!.localizedDescription,
+                                         details: nil))
+            initialParams = nil
+            initialError = nil
         }
         return nil
     }
@@ -75,11 +92,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         eventSink = nil
         initialParams = nil
+        initialError = nil
         return nil
     }
     
-    /*--------------------------------------------------------------------------------------------------------------------------------------*/
-    
+    //---------------------------------------------------------------------------------------------
+    // FlutterMethodChannel Interface Methods
+    // --------------------------------------------------------------------------------------------
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch (call.method) {
         case "getShortUrl":
@@ -122,6 +141,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             result(FlutterMethodNotImplemented)
         }
     }
+    
+    //---------------------------------------------------------------------------------------------
+    // Branch SDK Call Methods
+    // --------------------------------------------------------------------------------------------
     private func getShortUrl(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]

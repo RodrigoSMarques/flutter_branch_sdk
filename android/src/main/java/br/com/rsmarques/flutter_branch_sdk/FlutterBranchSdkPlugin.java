@@ -158,6 +158,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onCancel(Object o) {
         this.eventSink = null;
+        initialError = null;
         initialParams = null;
     }
 

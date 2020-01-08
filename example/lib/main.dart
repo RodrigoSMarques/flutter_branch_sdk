@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   var scaffoldKey = new GlobalKey<ScaffoldState>();
   StreamSubscription<Map> streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
+  StreamController<String> controllerInitSession = StreamController<String>();
   StreamController<String> controllerUrl = StreamController<String>();
 
   @override
@@ -34,7 +35,6 @@ class _MyAppState extends State<MyApp> {
 
   void listenDynamicLinks() async {
     streamSubscription = FlutterBranchSdk.initSession().listen((data) {
-      print('initSession');
       print('listenDynamicLinks - DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
       if (data.containsKey('+clicked_branch_link') &&
@@ -54,6 +54,8 @@ class _MyAppState extends State<MyApp> {
     }, onError: (error) {
       PlatformException platformException = error as PlatformException;
       print(
+          'InitSession error: ${platformException.code} - ${platformException.message}');
+      controllerInitSession.add(
           'InitSession error: ${platformException.code} - ${platformException.message}');
     });
   }
@@ -162,6 +164,29 @@ class _MyAppState extends State<MyApp> {
         body: ListView(
           padding: EdgeInsets.all(10),
           children: <Widget>[
+            StreamBuilder<String>(
+              stream: controllerInitSession.stream,
+              initialData: '',
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                  return Column(
+                    children: <Widget>[
+                      Center(
+                          child: Text(
+                        snapshot.data,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red),
+                      ))
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
             RaisedButton(
               child: Text('Validate SDK Integration'),
               onPressed: () {
@@ -406,6 +431,7 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
     controllerData.close();
     controllerUrl.close();
+    controllerInitSession.close();
     streamSubscription.cancel();
   }
 }
