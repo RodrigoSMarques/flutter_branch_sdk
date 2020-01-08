@@ -8,6 +8,9 @@
 import Foundation
 import Branch
 
+//---------------------------------------------------------------------------------------------
+// Object Conversion Functions
+// --------------------------------------------------------------------------------------------
 func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
     guard let canonicalIdentifier = dict["canonicalIdentifier"] as? String? else {
         return nil
@@ -207,6 +210,10 @@ func convertToAdType(adType: String) -> BranchEventAdType {
         return BranchEventAdType.none
     }
 }
+//---------------------------------------------------------------------------------------------
+// Extension
+// --------------------------------------------------------------------------------------------
+
 extension Date {
     var millisecondsSince1970:Int64 {
         return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
