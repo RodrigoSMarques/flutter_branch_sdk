@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 void main() => runApp(MyApp());
@@ -51,7 +52,9 @@ class _MyAppState extends State<MyApp> {
             duration: 10);
       }
     }, onError: (error) {
-      print(error);
+      PlatformException platformException = error as PlatformException;
+      print(
+          'InitSession error: ${platformException.code} - ${platformException.message}');
     });
   }
 

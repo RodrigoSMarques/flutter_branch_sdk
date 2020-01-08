@@ -13,9 +13,8 @@ public class FlutterBranchSdkInit {
     private static final String DEBUG_NAME = "FlutterBranchSDK";
 
     public static void init(Context context) {
-        Log.i(DEBUG_NAME, " FlutterBranchSdkInit");
         if (BuildConfig.DEBUG) {
-            Log.i(DEBUG_NAME, " DebugMode");
+            Log.i(DEBUG_NAME, "Branch SDK in DebugMode");
             Branch.enableDebugMode();
         }
         // Branch object initialization

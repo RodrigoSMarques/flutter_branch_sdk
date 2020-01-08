@@ -47,9 +47,6 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.NewIntentListener;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-/**
- * FlutterBranchSdkPlugin
- */
 public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler, StreamHandler, NewIntentListener, ActivityAware,
         Application.ActivityLifecycleCallbacks {
     private static final String DEBUG_NAME = "FlutterBranchSDK";
@@ -64,20 +61,22 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private EventSink eventSink = null;
     private Map<String, Object> initialParams = null;
+    private BranchError initialError = null;
 
-    /**
-     * Plugin registration.
-     */
+    /**---------------------------------------------------------------------------------------------
+     Plugin registry
+     --------------------------------------------------------------------------------------------**/
 
     public static void registerWith(Registrar registrar) {
         if (registrar.activity() == null) {
-            // If a background flutter view tries to register the plugin, there will be no activity from the registrar,
-            // we stop the registering process immediately because the ImagePicker requires an activity.
+            // When a background flutter view tries to register the plugin, the registrar has no activity.
+            // We stop the registration process as this plugin is foreground only.
             return;
         }
         FlutterBranchSdkPlugin plugin = new FlutterBranchSdkPlugin();
         plugin.setupChannels(registrar.messenger(), registrar.activity().getApplicationContext());
         plugin.setActivity(registrar.activity());
+        registrar.addNewIntentListener(plugin);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         methodChannel.setMethodCallHandler(this);
         eventChannel.setStreamHandler(this);
 
-        FlutterBranchSdkInit.init(this.context);
+        FlutterBranchSdkInit.init(context);
     }
 
     private void setActivity(Activity activity) {
@@ -113,18 +112,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         this.context = null;
     }
 
+    /**---------------------------------------------------------------------------------------------
+     ActivityAware Interface Methods
+     --------------------------------------------------------------------------------------------**/
     @Override
-    public void onAttachedToActivity(ActivityPluginBinding binding) {
-        //this.activity = binding.getActivity();
-        setActivity(binding.getActivity());
-        this.activityPluginBinding = binding;
-        binding.addOnNewIntentListener(this);
+    public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        this.activityPluginBinding = activityPluginBinding;
+        setActivity(activityPluginBinding.getActivity());
+        activityPluginBinding.addOnNewIntentListener(this);
     }
 
     @Override
     public void onDetachedFromActivity() {
         activityPluginBinding.removeOnNewIntentListener(this);
-        setActivity(null);
+        this.activity = null;
     }
 
     @Override
@@ -133,16 +134,24 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     @Override
-    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
-        onAttachedToActivity(binding);
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+        onAttachedToActivity(activityPluginBinding);
     }
 
+    /**---------------------------------------------------------------------------------------------
+     StreamHandler Interface Methods
+     --------------------------------------------------------------------------------------------**/
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         if (initialParams != null) {
             eventSink.success(initialParams);
             initialParams = null;
+            initialError = null;
+        } else if (initialError != null) {
+            eventSink.error(String.valueOf(initialError.getErrorCode()), initialError.getMessage(),null);
+            initialParams = null;
+            initialError = null;
         }
     }
 
@@ -152,6 +161,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         initialParams = null;
     }
 
+    /**---------------------------------------------------------------------------------------------
+     ActivityLifecycleCallbacks Interface Methods
+     --------------------------------------------------------------------------------------------**/
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
     }
@@ -180,6 +192,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
+    /**---------------------------------------------------------------------------------------------
+     NewIntentListener Interface Methods
+     --------------------------------------------------------------------------------------------**/
     @Override
     public boolean onNewIntent(Intent intent) {
         if (this.activity != null) {
@@ -189,35 +204,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         return true;
     }
-    //----------------------------------------------------------------------------------------------
 
-    private Branch.BranchReferralInitListener branchReferralInitListener = new
-            Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject params, BranchError error) {
-                    if (error == null) {
-                        Log.d(DEBUG_NAME, "branchReferralInitListener" + params.toString());
-                        if (eventSink == null) {
-                            try {
-                                initialParams = paramsToMap(params);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            return;
-                        }
-                        try {
-                            eventSink.success(paramsToMap(params));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.d(DEBUG_NAME, "branchReferralInitListener - error: " + error.toString());
-                    }
-                }
-            };
-
-    //----------------------------------------------------------------------------------------------
-
+    /**---------------------------------------------------------------------------------------------
+     MethodCallHandler Interface Methods
+     --------------------------------------------------------------------------------------------**/
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
@@ -262,7 +252,36 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-    //----------------------------------------------------------------------------------------------
+    /**---------------------------------------------------------------------------------------------
+     Branch SDK Call Methods
+     --------------------------------------------------------------------------------------------**/
+    private Branch.BranchReferralInitListener branchReferralInitListener = new
+            Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject params, BranchError error) {
+                    if (error == null) {
+                        Log.d(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
+                        try {
+                            initialParams = paramsToMap(params);
+                        } catch (JSONException e) {
+                            Log.d(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
+                            return;
+                        }
+                        if (eventSink != null) {
+                            eventSink.success(initialParams);
+                            initialParams = null;
+                        }
+                    } else {
+                        Log.d(DEBUG_NAME, "BranchReferralInitListener - error: " + error.toString());
+                        if (eventSink != null) {
+                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(),null);
+                            initialError = null;
+                        } else {
+                            initialError = error;
+                        }
+                    }
+                }
+            };
 
     private void validateSDKIntegration() {
         IntegrationValidator.validate(context);
@@ -443,6 +462,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         Branch.getInstance().disableTracking(value);
     }
 
+    /**---------------------------------------------------------------------------------------------
+     Object Conversion Functions
+     --------------------------------------------------------------------------------------------**/
     private BranchUniversalObject convertToBUO(HashMap<String, Object> argsMap) {
 
         BranchUniversalObject buo = new BranchUniversalObject();
