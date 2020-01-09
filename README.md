@@ -66,7 +66,9 @@ Make sure to comment out or remove validateSDKIntegration in your production bui
          print('Custom string: ${data["custom_string"]}');
       }
     }, onError: (error) {
-      print(error);
+      PlatformException platformException = error as PlatformException;
+      print(
+          'InitSession error: ${platformException.code} - ${platformException.message}');
     });
 ```
 ### Retrieve Install (Install Only) Parameters
