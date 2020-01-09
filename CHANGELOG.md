@@ -1,3 +1,5 @@
+## 0.1.3
+* Updated Android dependencies: From play-services-appindexing to firebase-appindexing
 ## 0.1.2
 * Compatibility with apps built on earlier versions of Flutter 1.12
 * Improved error handling in initSession
