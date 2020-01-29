@@ -82,14 +82,15 @@ class BranchUniversalObject {
       ret["contentDescription"] = this.contentDescription;
     if (this.imageUrl != null && this.imageUrl.isNotEmpty)
       ret["imageUrl"] = this.imageUrl;
-    if (this.keywords.isNotEmpty) ret["keywords"] = this.keywords;
+    if (this.keywords != null && this.keywords.isNotEmpty)
+      ret["keywords"] = this.keywords;
     if (this._creationDateTimeStamp != null)
       ret["creationDate"] = this._creationDateTimeStamp;
     if (this.expirationDateInMilliSec != null)
       ret["expirationDate"] = this.expirationDateInMilliSec;
     ret["locallyIndex"] = this.locallyIndex;
     ret["publiclyIndex"] = this.publiclyIndex;
-    if (this.contentMetadata.toMap().isNotEmpty)
+    if (this.contentMetadata != null && this.contentMetadata.toMap().isNotEmpty)
       ret["contentMetadata"] = this.contentMetadata.toMap();
     if (ret.isEmpty) {
       throw ArgumentError('Branch Universal Object is required');

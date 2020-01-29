@@ -1,6 +1,6 @@
 # flutter_branch_sdk
 
-This is a Flutter plugin that implemented Branch.io SDK (https://branch.io).
+This is a Flutter plugin that implemented Branch SDK (https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 

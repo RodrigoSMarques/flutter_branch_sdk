@@ -162,6 +162,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Branch.io Plugin Example App'),
         ),
         body: ListView(
+          physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(10),
           children: <Widget>[
             StreamBuilder<String>(
