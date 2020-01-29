@@ -1,3 +1,6 @@
+## 0.1.4
+* Bugfix BranchUniversalObject with keywords empty
+* Documentation update
 ## 0.1.3
 * Updated Android dependencies: From play-services-appindexing to firebase-appindexing
 ## 0.1.2
