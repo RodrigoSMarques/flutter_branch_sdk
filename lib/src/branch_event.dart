@@ -66,6 +66,7 @@ class BranchEvent {
   }
 
   void addCustomData(String key, dynamic value) {
+    if ((key == null) || (value == null)) return;
     this._customData[key] = value;
   }
 
