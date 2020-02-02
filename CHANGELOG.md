@@ -1,3 +1,5 @@
+## 0.1.5
+* Bugfix Branch SDK initialization
 ## 0.1.4
 * Bugfix BranchUniversalObject with keywords empty
 * Documentation update

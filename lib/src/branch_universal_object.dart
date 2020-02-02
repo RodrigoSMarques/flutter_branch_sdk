@@ -53,11 +53,13 @@ class BranchUniversalObject {
 
   ///Adds any keywords associated with the content referred
   void addKeyWords(List<dynamic> keywords) {
+    if (keywords == null) return;
     this.keywords.addAll(keywords);
   }
 
   ///Add a keyword associated with the content referred
   void addKeyWord(String keyword) {
+    if (keyword == null) return;
     this.keywords.add(keyword);
   }
 

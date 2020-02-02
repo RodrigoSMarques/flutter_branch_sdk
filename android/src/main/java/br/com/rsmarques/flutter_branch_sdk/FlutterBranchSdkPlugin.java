@@ -171,7 +171,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityStarted(Activity activity) {
-        Branch.getInstance().initSession(branchReferralInitListener, activity.getIntent().getData(), activity);
+        Branch.getInstance().initSession(branchReferralInitListener, activity.getIntent() != null ?
+                activity.getIntent().getData() : null, activity);
     }
 
     @Override
