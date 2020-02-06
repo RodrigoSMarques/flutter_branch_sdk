@@ -211,4 +211,24 @@ class FlutterBranchSdk {
     }
     return await _messageChannel.invokeMethod('removeFromSearch', _params);
   }
+
+  static Future<int> loadRewards({String bucket}) async {
+    Map<String, dynamic> _params = {};
+    if (bucket != null) _params['bucket'] = bucket;
+
+    return await _messageChannel.invokeMethod('loadRewards', _params);
+  }
+
+  static Future<bool> redeemRewards(
+      {@required int count, String bucket}) async {
+    if (count == null) {
+      throw ArgumentError('Count credits is required');
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['count'] = count;
+    if (bucket != null) _params['bucket'] = bucket;
+
+    return await _messageChannel.invokeMethod('redeemRewards', _params);
+  }
 }

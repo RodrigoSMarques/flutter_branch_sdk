@@ -337,6 +337,40 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Viewing Credits'),
+                    onPressed: () async {
+                      int credits = 0;
+                      credits = await FlutterBranchSdk.loadRewards();
+                      //credits =
+                      //    await FlutterBranchSdk.loadRewards(bucket: "bucket");
+                      print('Crédits');
+                      showSnackBar(message: 'Credits: $credits');
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: RaisedButton(
+                    child: Text('Redeeming Credits'),
+                    onPressed: () async {
+                      bool success = false;
+                      success = await FlutterBranchSdk.redeemRewards(count: 5);
+                      //success = await FlutterBranchSdk.redeemRewards(
+                      //    count: 1, bucket: "bucket");
+                      print('Redeeming Credits: $success');
+                      showSnackBar(message: 'Redeeming Credits: $success');
+                    },
+                  ),
+                ),
+              ],
+            ),
             RaisedButton(
               child: Text('Generate Link'),
               onPressed: generateLink,

@@ -137,6 +137,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "validateSDKIntegration":
             validateSDKIntegration()
             break
+        case "loadRewards":
+            loadRewards(call: call, result: result)
+            break
+        case "redeemRewards":
+            redeemRewards(call: call, result: result)
+            break
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -282,5 +288,61 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let value = args["disable"] as! Bool
         Branch.setTrackingDisabled(value)
+    }
+    
+    private func loadRewards(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args = call.arguments as! [String: Any?]
+        
+        //Branch.getInstance().getCreditHistory { (creditHistory, error) in
+        //    if error == nil {
+        //        print(creditHistory)
+        //    }
+        //}
+        
+        Branch.getInstance().loadRewards { (changed, error) in
+            if (error == nil) {
+                var credits = 0
+                if let bucket = args["bucket"] as? String {
+                    credits = Branch.getInstance().getCreditsForBucket(bucket)
+                } else {
+                    credits = Branch.getInstance().getCredits()
+                }
+                result(credits)
+            } else {
+                print(error)
+                let err = (error as! NSError)
+                result(FlutterError(code: String(err.code),
+                message: err.localizedDescription,
+                details: nil))
+            }
+        }
+    }
+    
+    private func redeemRewards(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args = call.arguments as! [String: Any?]
+        let count = args["count"] as! Int
+        if let bucket = args["bucket"] as? String {
+            Branch.getInstance().redeemRewards(count, forBucket: bucket, callback: {(success, error) in
+                if success {
+                    print("Redeemed 5 credits for myBucket!")
+                    result(NSNumber(value: true))
+                }
+                else {
+                    print("Failed to redeem credits: \(error)")
+                    result(NSNumber(value: false))
+                }
+            })
+        } else {
+            Branch.getInstance().redeemRewards(count, callback: {(success, error) in
+                if success {
+                    print("Redeemed 5 credits!")
+                    result(NSNumber(value: true))
+                }
+                else {
+                    print("Failed to redeem credits: \(error)")
+                    result(NSNumber(value: false))
+                }
+            })
+        }
     }
 }

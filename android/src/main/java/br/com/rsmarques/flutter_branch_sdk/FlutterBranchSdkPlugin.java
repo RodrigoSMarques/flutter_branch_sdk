@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -249,6 +250,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "validateSDKIntegration":
                 validateSDKIntegration();
                 break;
+            case "loadRewards":
+                loadRewards(call, result);
+                break;
+            case "redeemRewards":
+                redeemRewards(call, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -462,6 +469,80 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         boolean value = call.argument("disable");
         Branch.getInstance().disableTracking(value);
+    }
+
+    private void loadRewards(final MethodCall call, final Result result) {
+        final String bucket;
+        if (call.hasArgument("bucket")) {
+            bucket = call.argument("bucket");
+        } else {
+            bucket = "";
+        }
+/*
+        Branch.getInstance(context).getCreditHistory(new Branch.BranchListResponseListener() {
+            @Override
+            public void onReceivingResponse(JSONArray list, BranchError error) {
+                if (error == null) {
+                    Log.d(DEBUG_NAME, list.toString());
+                } else {
+                    Log.i("MyApp", error.getMessage());
+                }
+
+            }
+        });
+*/
+        Branch.getInstance(context).loadRewards(new Branch.BranchReferralStateChangedListener() {
+            @Override
+            public void onStateChanged(boolean changed, @Nullable BranchError error) {
+                int credits;
+                if (error == null) {
+                    if (bucket.isEmpty()) {
+                        credits = Branch.getInstance(context).getCredits();
+                    } else {
+                        credits = Branch.getInstance(context).getCreditsForBucket(bucket);
+                    }
+                    result.success(credits);
+                } else {
+                    result.error(DEBUG_NAME, error.getMessage(), null);
+                }
+            }
+        });
+    }
+
+    private void redeemRewards(final MethodCall call, final Result result) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String bucket;
+        if (call.hasArgument("bucket")) {
+            bucket = call.argument("bucket");
+        } else {
+            bucket = "";
+        }
+
+        final int count = call.argument("count");
+
+        if (bucket.isEmpty()) {
+            Branch.getInstance(context).redeemRewards(count, new Branch.BranchReferralStateChangedListener() {
+                @Override
+                public void onStateChanged(boolean changed, @Nullable BranchError error) {
+                    result.success(error == null);
+                    if (error != null)  {
+                        Log.d(DEBUG_NAME, error.getMessage());
+                    }
+                }
+            });
+        } else {
+            Branch.getInstance(context).redeemRewards(bucket, count, new Branch.BranchReferralStateChangedListener() {
+                @Override
+                public void onStateChanged(boolean changed, @Nullable BranchError error) {
+                    result.success(error == null);
+                    if (error != null)  {
+                        Log.d(DEBUG_NAME, error.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     /**---------------------------------------------------------------------------------------------
