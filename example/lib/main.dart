@@ -29,7 +29,10 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
+    FlutterBranchSdk.setIdentity('branch_user_test');
+
     listenDynamicLinks();
+
     initDeepLinkData();
   }
 
@@ -147,6 +150,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void showSnackBar({@required String message, int duration = 3}) {
+    scaffoldKey.currentState.removeCurrentSnackBar();
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(message),
       duration: Duration(seconds: duration),
@@ -162,7 +166,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Branch.io Plugin Example App'),
         ),
         body: ListView(
-          physics: const NeverScrollableScrollPhysics(),
+          //physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(10),
           children: <Widget>[
             StreamBuilder<String>(
@@ -228,7 +232,7 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Identify user'),
                     onPressed: () {
-                      FlutterBranchSdk.setIdentity('user1234567890');
+                      FlutterBranchSdk.setIdentity('branch_user_test');
                     },
                   ),
                 ),
@@ -344,12 +348,26 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Viewing Credits'),
                     onPressed: () async {
+                      bool isUserIdentified =
+                          await FlutterBranchSdk.isUserIdentified();
+
+                      if (!isUserIdentified) {
+                        showSnackBar(message: 'User not identified');
+                        return;
+                      }
+
                       int credits = 0;
-                      credits = await FlutterBranchSdk.loadRewards();
-                      //credits =
+                      BranchResponse response =
+                          await FlutterBranchSdk.loadRewards();
                       //    await FlutterBranchSdk.loadRewards(bucket: "bucket");
-                      print('Crédits');
-                      showSnackBar(message: 'Credits: $credits');
+                      if (response.success) {
+                        credits = response.result;
+                        print('Crédits');
+                        showSnackBar(message: 'Credits: $credits');
+                      } else {
+                        showSnackBar(
+                            message: 'Credits error: ${response.errorMessage}');
+                      }
                     },
                   ),
                 ),
@@ -360,16 +378,69 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Redeeming Credits'),
                     onPressed: () async {
+                      bool isUserIdentified =
+                          await FlutterBranchSdk.isUserIdentified();
+
+                      print('isUserIdentified: $isUserIdentified');
+
+                      if (!isUserIdentified) {
+                        showSnackBar(message: 'User not identified');
+                        return;
+                      }
                       bool success = false;
-                      success = await FlutterBranchSdk.redeemRewards(count: 5);
-                      //success = await FlutterBranchSdk.redeemRewards(
-                      //    count: 1, bucket: "bucket");
-                      print('Redeeming Credits: $success');
-                      showSnackBar(message: 'Redeeming Credits: $success');
+                      BranchResponse response =
+                          await FlutterBranchSdk.redeemRewards(count: 5);
+                      //BranchResponse response = FlutterBranchSdk.redeemRewards(count: 1, bucket: "bucket");
+                      if (response.success) {
+                        success = response.result;
+                        print('Redeeming Credits: $success');
+                        showSnackBar(message: 'Redeeming Credits: $success');
+                      } else {
+                        print(
+                            'Redeeming Credits error: ${response.errorMessage}');
+                        showSnackBar(
+                            message:
+                                'Redeeming Credits error: ${response.errorMessage}');
+                      }
+                      //success = await
                     },
                   ),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            RaisedButton(
+                child: Text('Get Credits Hystory'),
+                onPressed: () async {
+                  bool isUserIdentified =
+                      await FlutterBranchSdk.isUserIdentified();
+
+                  print('isUserIdentified: $isUserIdentified');
+
+                  if (!isUserIdentified) {
+                    showSnackBar(message: 'User not identified');
+                    return;
+                  }
+
+                  BranchResponse response =
+                      await FlutterBranchSdk.getCreditHistory();
+                  if (response.success) {
+                    print('Credits Hystory: ${response.result}');
+                    showSnackBar(
+                        message:
+                            'Check log for view Credit History. Records: ${(response.result as List).length}');
+                  } else {
+                    print(
+                        'Get Credits Hystory error: ${response.errorMessage}');
+                    showSnackBar(
+                        message:
+                            'Get Credits Hystory error: ${response.errorMessage}');
+                  }
+                }),
+            SizedBox(
+              height: 10,
             ),
             RaisedButton(
               child: Text('Generate Link'),
@@ -438,7 +509,7 @@ class _MyAppState extends State<MyApp> {
       controllerUrl.sink.add('${response.result}');
     } else {
       controllerUrl.sink
-          .add('Error : ${response.errorCode} - ${response.errorDescription}');
+          .add('Error : ${response.errorCode} - ${response.errorMessage}');
     }
   }
 
@@ -455,7 +526,7 @@ class _MyAppState extends State<MyApp> {
     } else {
       showSnackBar(
           message:
-              'showShareSheet Error: ${response.errorCode} - ${response.errorDescription}',
+              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
   }

@@ -52,13 +52,5 @@
             android:name="io.branch.sdk.BranchKey.test"
             android:value="key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH" />
         <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
-        <!-- Branch install referrer tracking (optional) -->
-        <receiver
-            android:name="io.branch.referral.InstallListener"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

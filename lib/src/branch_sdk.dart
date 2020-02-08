@@ -101,7 +101,7 @@ class FlutterBranchSdk {
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],
-          errorDescription: response['errorDescription']);
+          errorMessage: response['errorMessage']);
     }
   }
 
@@ -140,7 +140,7 @@ class FlutterBranchSdk {
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],
-          errorDescription: response['errorDescription']);
+          errorMessage: response['errorMessage']);
     }
   }
 
@@ -212,14 +212,23 @@ class FlutterBranchSdk {
     return await _messageChannel.invokeMethod('removeFromSearch', _params);
   }
 
-  static Future<int> loadRewards({String bucket}) async {
+  static Future<BranchResponse> loadRewards({String bucket}) async {
     Map<String, dynamic> _params = {};
     if (bucket != null) _params['bucket'] = bucket;
 
-    return await _messageChannel.invokeMethod('loadRewards', _params);
+    Map<dynamic, dynamic> response =
+        await _messageChannel.invokeMethod('loadRewards', _params);
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['credits']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
   }
 
-  static Future<bool> redeemRewards(
+  static Future<BranchResponse> redeemRewards(
       {@required int count, String bucket}) async {
     if (count == null) {
       throw ArgumentError('Count credits is required');
@@ -229,6 +238,37 @@ class FlutterBranchSdk {
     _params['count'] = count;
     if (bucket != null) _params['bucket'] = bucket;
 
-    return await _messageChannel.invokeMethod('redeemRewards', _params);
+    Map<dynamic, dynamic> response =
+        await _messageChannel.invokeMethod('redeemRewards', _params);
+
+    if (response['success']) {
+      return BranchResponse.success(result: true);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  static Future<BranchResponse> getCreditHistory({String bucket}) async {
+    Map<String, dynamic> _params = {};
+    if (bucket != null) _params['bucket'] = bucket;
+
+    Map<dynamic, dynamic> response =
+        await _messageChannel.invokeMethod('getCreditHistory', _params);
+
+    print('GetCreditHistory ${response.toString()}');
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['data']['history']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  static Future<bool> isUserIdentified() async {
+    return await _messageChannel.invokeMethod('isUserIdentified');
   }
 }
