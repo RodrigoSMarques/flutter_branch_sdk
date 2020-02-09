@@ -304,9 +304,6 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 5,
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -408,9 +405,6 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
             RaisedButton(
                 child: Text('Get Credits Hystory'),
                 onPressed: () async {
@@ -439,9 +433,6 @@ class _MyAppState extends State<MyApp> {
                             'Get Credits Hystory error: ${response.errorMessage}');
                   }
                 }),
-            SizedBox(
-              height: 10,
-            ),
             RaisedButton(
               child: Text('Generate Link'),
               onPressed: generateLink,
