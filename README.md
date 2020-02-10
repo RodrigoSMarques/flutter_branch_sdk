@@ -207,7 +207,6 @@ FlutterBranchSdk.logout();
 ```dart
 //check if user is identify
  bool isUserIdentified = await FlutterBranchSdk.isUserIdentified();
-
 ```
 
 
@@ -229,6 +228,8 @@ Read more here: https://docs.branch.io/viral/referrals/#search
 #### Get Reward Balance
 Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make call to retrieve the balance. Here is the syntax:
 
+***optional parameter***: bucket - value containing the name of the referral bucket to attempt to redeem credits from
+
 ```dart
 BranchResponse response =
     await FlutterBranchSdk.loadRewards();
@@ -239,8 +240,12 @@ if (response.success) {
     print('Credits error: ${response.errorMessage}');
 }
 ```
+
+
 #### Redeem All or Some of the Reward Balance (Store State)
 Redeeming credits allows users to cash in the credits they've earned. Upon successful redemption, the user's balance will be updated reflecting the deduction.
+
+***optional parameter***: bucket - value containing the name of the referral bucket to attempt to redeem credits from
 
 ```dart
 BranchResponse response =
@@ -254,11 +259,13 @@ if (response.success) {
 #### Get Credit History
 This call will retrieve the entire history of credits and redemptions from the individual user. To use this call, implement like so:
 
+***optional parameter***: bucket - value containing the name of the referral bucket to attempt to redeem credits from
+
 ```dart
 BranchResponse response =
     await FlutterBranchSdk.getCreditHistory();
 if (response.success) {
-    print('getCreditHistory with success');
+    print('getCreditHistory with success. Records: ${(response.result as List).length}');
 } else {
     print('getCreditHistory with error: ${response.errorMessage}');
 }

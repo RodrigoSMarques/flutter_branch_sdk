@@ -553,12 +553,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 public void onReceivingResponse(JSONArray list, BranchError error) {
                     if (error == null)  {
                         response.put("success", Boolean.valueOf(true));
-                        Log.d(DEBUG_NAME, list.toString());
-
                         JSONObject jo = new JSONObject();
                         try {
                             jo.put("history", list);
-                            Log.d(DEBUG_NAME, "JSON Credits" + jo.toString());
                             response.put("data", paramsToMap(jo));
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -577,7 +574,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 public void onReceivingResponse(JSONArray list, BranchError error) {
                     if (error == null)  {
                         response.put("success", Boolean.valueOf(true));
-                        Log.d(DEBUG_NAME, list.toString());
+                        JSONObject jo = new JSONObject();
+                        try {
+                            jo.put("history", list);
+                            response.put("data", paramsToMap(jo));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     } else {
                         response.put("success", Boolean.valueOf(false));
                         response.put("errorCode", String.valueOf(error.getErrorCode()));
