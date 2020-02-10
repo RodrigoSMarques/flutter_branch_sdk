@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -249,6 +250,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "validateSDKIntegration":
                 validateSDKIntegration();
                 break;
+            case "loadRewards":
+                loadRewards(call, result);
+                break;
+            case "redeemRewards":
+                redeemRewards(call, result);
+                break;
+            case "getCreditHistory":
+                getCreditHistory(call, result);
+                break;
+            case "isUserIdentified":
+                isUserIdentified(result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -312,7 +325,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 } else {
                     response.put("success", false);
                     response.put("errorCode", String.valueOf(error.getErrorCode()));
-                    response.put("errorDescription", error.getMessage());
+                    response.put("errorMessage", error.getMessage());
                 }
                 result.success(response);
             }
@@ -358,7 +371,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                         } else {
                             response.put("success", Boolean.valueOf(false));
                             response.put("errorCode", String.valueOf(error.getErrorCode()));
-                            response.put("errorDescription", error.getMessage());
+                            response.put("errorMessage", error.getMessage());
                         }
                         result.success(response);
                     }
@@ -463,6 +476,127 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         boolean value = call.argument("disable");
         Branch.getInstance().disableTracking(value);
     }
+
+    private void loadRewards(final MethodCall call, final Result result) {
+
+        final Map<String, Object> response = new HashMap<>();
+        Branch.getInstance(context).loadRewards(new Branch.BranchReferralStateChangedListener() {
+            @Override
+            public void onStateChanged(boolean changed, @Nullable BranchError error) {
+                int credits;
+                if (error == null) {
+                    if (!call.hasArgument("bucket")) {
+                        credits = Branch.getInstance(context).getCredits();
+                    } else {
+                        credits = Branch.getInstance(context).getCreditsForBucket(call.argument("bucket").toString());
+                    }
+                    response.put("success", Boolean.valueOf(true));
+                    response.put("credits", credits);
+                } else {
+                    response.put("success", Boolean.valueOf(false));
+                    response.put("errorCode", String.valueOf(error.getErrorCode()));
+                    response.put("errorMessage", error.getMessage());
+                }
+                result.success(response);
+            }
+        });
+    }
+
+    private void redeemRewards(final MethodCall call, final Result result) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+
+        final int count = call.argument("count");
+        final Map<String, Object> response = new HashMap<>();
+
+        if (!call.hasArgument("bucket")) {
+            Branch.getInstance(context).redeemRewards(count, new Branch.BranchReferralStateChangedListener() {
+                @Override
+                public void onStateChanged(boolean changed, @Nullable BranchError error) {
+                    if (error == null)  {
+                        response.put("success", Boolean.valueOf(true));
+                    } else {
+                        response.put("success", Boolean.valueOf(false));
+                        response.put("errorCode", String.valueOf(error.getErrorCode()));
+                        response.put("errorMessage", error.getMessage());
+                    }
+                    result.success(response);
+                }
+            });
+        } else {
+            Branch.getInstance(context).redeemRewards(call.argument("bucket").toString(), count, new Branch.BranchReferralStateChangedListener() {
+                @Override
+                public void onStateChanged(boolean changed, @Nullable BranchError error) {
+                    if (error == null)  {
+                        response.put("success", Boolean.valueOf(true));
+                    } else {
+                        response.put("success", Boolean.valueOf(false));
+                        response.put("errorCode", String.valueOf(error.getErrorCode()));
+                        response.put("errorMessage", error.getMessage());
+                    }
+                    result.success(response);
+                }
+            });
+        }
+    }
+
+    private void getCreditHistory(final MethodCall call, final Result result) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final Map<String, Object> response = new HashMap<>();
+
+        if (!call.hasArgument("bucket")) {
+            Branch.getInstance(context).getCreditHistory(new Branch.BranchListResponseListener() {
+                @Override
+                public void onReceivingResponse(JSONArray list, BranchError error) {
+                    if (error == null)  {
+                        response.put("success", Boolean.valueOf(true));
+                        JSONObject jo = new JSONObject();
+                        try {
+                            jo.put("history", list);
+                            response.put("data", paramsToMap(jo));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        response.put("success", Boolean.valueOf(false));
+                        response.put("errorCode", String.valueOf(error.getErrorCode()));
+                        response.put("errorMessage", error.getMessage());
+                    }
+                    result.success(response);
+                }
+            });
+        } else {
+            Branch.getInstance(context).getCreditHistory(call.argument("bucket").toString(), new Branch.BranchListResponseListener() {
+                @Override
+                public void onReceivingResponse(JSONArray list, BranchError error) {
+                    if (error == null)  {
+                        response.put("success", Boolean.valueOf(true));
+                        JSONObject jo = new JSONObject();
+                        try {
+                            jo.put("history", list);
+                            response.put("data", paramsToMap(jo));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        response.put("success", Boolean.valueOf(false));
+                        response.put("errorCode", String.valueOf(error.getErrorCode()));
+                        response.put("errorMessage", error.getMessage());
+                    }
+                    result.success(response);
+                }
+            });
+        }
+    }
+
+    private void isUserIdentified(Result result) {
+        result.success(Branch.getInstance(context).isUserIdentified());
+    }
+
 
     /**---------------------------------------------------------------------------------------------
      Object Conversion Functions

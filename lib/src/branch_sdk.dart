@@ -101,7 +101,7 @@ class FlutterBranchSdk {
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],
-          errorDescription: response['errorDescription']);
+          errorMessage: response['errorMessage']);
     }
   }
 
@@ -140,10 +140,11 @@ class FlutterBranchSdk {
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],
-          errorDescription: response['errorDescription']);
+          errorMessage: response['errorMessage']);
     }
   }
 
+  ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContent(
       {@required BranchUniversalObject buo, BranchEvent branchEvent}) {
     if (buo == null) {
@@ -210,5 +211,73 @@ class FlutterBranchSdk {
       _params['lp'] = linkProperties.toMap();
     }
     return await _messageChannel.invokeMethod('removeFromSearch', _params);
+  }
+
+  ///Retrieves rewards for the current user/session
+  static Future<BranchResponse> loadRewards({String bucket}) async {
+    Map<String, dynamic> _params = {};
+    if (bucket != null) _params['bucket'] = bucket;
+
+    Map<dynamic, dynamic> response =
+        await _messageChannel.invokeMethod('loadRewards', _params);
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['credits']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  ///Redeems the specified number of credits. if there are sufficient credits within it.
+  ///If the number to redeem exceeds the number available in the bucket, all of the
+  ///available credits will be redeemed instead.
+  static Future<BranchResponse> redeemRewards(
+      {@required int count, String bucket}) async {
+    if (count == null) {
+      throw ArgumentError('Count credits is required');
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['count'] = count;
+    if (bucket != null) _params['bucket'] = bucket;
+
+    Map<dynamic, dynamic> response =
+        await _messageChannel.invokeMethod('redeemRewards', _params);
+
+    if (response['success']) {
+      return BranchResponse.success(result: true);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  ///Gets the credit history
+  static Future<BranchResponse> getCreditHistory({String bucket}) async {
+    Map<String, dynamic> _params = {};
+    if (bucket != null) _params['bucket'] = bucket;
+
+    Map<dynamic, dynamic> response =
+        await _messageChannel.invokeMethod('getCreditHistory', _params);
+
+    print('GetCreditHistory ${response.toString()}');
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['data']['history']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
+  ///If you call setIdentity, this device will have that identity associated with this user until logout is called.
+  ///This includes persisting through uninstalls, as we track device id.
+  static Future<bool> isUserIdentified() async {
+    return await _messageChannel.invokeMethod('isUserIdentified');
   }
 }

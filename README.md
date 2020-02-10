@@ -20,6 +20,7 @@ Implemented functions in plugin:
 * Register view
 * Track User Actions and Events
 * Init Branch Session and Deep Link
+* Referral rewards
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -120,7 +121,7 @@ Generates a deep link within your app
     if (response.success) {
       print('Link generated: ${response.result}');
     } else {
-        print('Error : ${response.errorCode} - ${response.errorDescription}');
+        print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
 ```
 ### Show Share Sheet deep link
@@ -137,7 +138,7 @@ Note: _For Android additional customization is possible_
     if (response.success) {
       print('showShareSheet Sucess');
     } else {
-      print('Error : ${response.errorCode} - ${response.errorDescription}');
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
 ```
 ### List content on Search
@@ -205,6 +206,12 @@ FlutterBranchSdk.setIdentity('user1234567890');
 //logout
 FlutterBranchSdk.logout();
 ```
+```dart
+//check if user is identify
+ bool isUserIdentified = await FlutterBranchSdk.isUserIdentified();
+```
+
+
 ### Enable or Disable User Tracking
 If you need to comply with a user's request to not be tracked for GDPR purposes, or otherwise determine that a user should not be tracked, utilize this field to prevent Branch from sending network requests. This setting can also be enabled across all users for a particular link, or across your Branch links.
 ```dart
@@ -215,10 +222,107 @@ FlutterBranchSdk.disableTracking(true);
 ```
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
+### Referral System Rewarding Functionality
+Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make an asynchronous call to retrieve the balance. 
+Read more here: https://docs.branch.io/viral/referrals/#search
+
+
+#### Get Reward Balance
+Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make call to retrieve the balance. Here is the syntax:
+
+***optional parameter***: bucket - value containing the name of the referral bucket to attempt to redeem credits from
+
+```dart
+BranchResponse response =
+    await FlutterBranchSdk.loadRewards();
+if (response.success) {
+    credits = response.result;
+    print('Crédits');
+} else {
+    print('Credits error: ${response.errorMessage}');
+}
+```
+
+
+#### Redeem All or Some of the Reward Balance (Store State)
+Redeeming credits allows users to cash in the credits they've earned. Upon successful redemption, the user's balance will be updated reflecting the deduction.
+
+***optional parameter***: bucket - value containing the name of the referral bucket to attempt to redeem credits from
+
+```dart
+BranchResponse response =
+    await FlutterBranchSdk.redeemRewards(count: 5);
+if (response.success) {
+    print('Redeeming Credits with success');
+} else {
+    print('Redeeming Credits with error: ${response.errorMessage}');
+}
+```
+#### Get Credit History
+This call will retrieve the entire history of credits and redemptions from the individual user. To use this call, implement like so:
+
+***optional parameter***: bucket - value containing the name of the referral bucket to attempt to redeem credits from
+
+```dart
+BranchResponse response =
+    await FlutterBranchSdk.getCreditHistory();
+if (response.success) {
+    print('getCreditHistory with success. Records: ${(response.result as List).length}');
+} else {
+    print('getCreditHistory with error: ${response.errorMessage}');
+}
+```
+The response will return an list of map:
+```json
+[
+    {
+        "transaction": {
+                           "date": "2014-10-14T01:54:40.425Z",
+                           "id": "50388077461373184",
+                           "bucket": "default",
+                           "type": 0,
+                           "amount": 5
+                       },
+        "event" : {
+            "name": "event name",
+            "metadata": { your event metadata if present }
+        },
+        "referrer": "12345678",
+        "referree": null
+    },
+    {
+        "transaction": {
+                           "date": "2014-10-14T01:55:09.474Z",
+                           "id": "50388199301710081",
+                           "bucket": "default",
+                           "type": 2,
+                           "amount": -3
+                       },
+        "event" : {
+            "name": "event name",
+            "metadata": { your event metadata if present }
+        },
+        "referrer": null,
+        "referree": "12345678"
+    }
+]
+```
+**referrer** : The id of the referring user for this credit transaction. Returns null if no referrer is involved. Note this id is the user id in a developer's own system that's previously passed to Branch's identify user API call.
+
+**referree** : The id of the user who was referred for this credit transaction. Returns null if no referree is involved. Note this id is the user id in a developer's own system that's previously passed to Branch's identify user API call.
+
+**type** : This is the type of credit transaction.
+
+* 0 - A reward that was added automatically by the user completing an action or promo.
+* 1 - A reward that was added manually.
+* 2 - A redemption of credits that occurred through our API or SDKs.
+* 3 - This is a very unique case where we will subtract credits automatically when we detect fraud.
+
+
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app](https://user-images.githubusercontent.com/17687286/70445281-0b87c180-1a7a-11ea-8611-7217d46c75a7.png)
+![Example app](https://user-images.githubusercontent.com/17687286/74096674-725c4200-4ae0-11ea-8ef6-94bc02e1913b.png)
 
 # Branch Universal Object best practices
 
