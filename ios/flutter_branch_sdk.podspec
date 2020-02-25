@@ -15,6 +15,7 @@ Flutter Plugin for Brach Metrics SDK - https:&#x2F;&#x2F;branch.io
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
+  s.dependency 'FBSDKCoreKit', '~> 5.5'
   s.dependency 'Branch', '~> 0.31.3'
   s.platform = :ios, '8.0'
 
