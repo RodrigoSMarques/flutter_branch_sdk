@@ -56,13 +56,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        Branch.getInstance().application(app, open: url, options: options)
-        return true
+        let branchHandled = Branch.getInstance().application(app, open: url, options: options)
+        return branchHandled
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        Branch.getInstance().continue(userActivity)
-        return true
+        let handledByBranch = Branch.getInstance().continue(userActivity)
+        return handledByBranch
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
