@@ -32,6 +32,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         Branch.getInstance().setDebug()
         #endif
         
+        // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
+        Branch.getInstance().delayInitToCheckForSearchAds()
+        
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
@@ -56,13 +59,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        Branch.getInstance().application(app, open: url, options: options)
-        return true
+        let branchHandled = Branch.getInstance().application(app, open: url, options: options)
+        return branchHandled
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        Branch.getInstance().continue(userActivity)
-        return true
+        let handledByBranch = Branch.getInstance().continue(userActivity)
+        return handledByBranch
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
@@ -309,7 +312,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 response["success"] = NSNumber(value: true)
                 response["credits"] = credits
             } else {
-                print(error)
                 let err = (error as! NSError)
                 response["success"] = NSNumber(value: false)
                 response["errorCode"] = String(err.code)

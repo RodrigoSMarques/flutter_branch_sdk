@@ -25,18 +25,19 @@ Implemented functions in plugin:
 ## Getting Started
 ### Configure Branch Dashboard
 * Register Your App
-* Complete the Basic integration in https://dashboard.branch.io/login
+* Complete the Basic integration in [Branch Dashboard](https://dashboard.branch.io/login)
 
-For details see: https://docs.branch.io/apps/ios/#configure-branch and https://docs.branch.io/apps/android/#configure-branch, only session **Configure Branch**
+For details see:
+[https://help.branch.io/using-branch/docs/default-link-behavior]()
 
 ## Configure Platform Project
 ### Android Integration
 
-Follow the steps on the page https://docs.branch.io/apps/android/#configure-app, session _**Configure app**_:
+Follow the steps on the page [https://help.branch.io/developers-hub/docs/android-basic-integration#section-configure-app](), session _**Configure app**_:
 * Add Branch to your AndroidManifest.xml
 
 ### iOS Integration
-Follow the steps on the page https://docs.branch.io/apps/ios/#configure-bundle-identifier, from session _**Configure bundle identifier**_:
+Follow the steps on the page [https://docs.branch.io/apps/ios/#configure-bundle-identifier](), from session _**Configure bundle identifier**_:
 * Configure bundle identifier
 * Configure associated domains
 * Configure entitlements
@@ -343,8 +344,8 @@ Practices to avoid:
 
 # Branch Documentation
 Read the iOS or Android documentation for all Branch object parameters
-* Android - https://github.com/BranchMetrics/android-branch-deep-linking-attribution
-* iOS - https://github.com/BranchMetrics/ios-branch-deep-linking-attribution
+* Android - [https://help.branch.io/developers-hub/docs/android-advanced-features]()
+* iOS - [https://help.branch.io/developers-hub/docs/ios-advanced-features]()
 # Author
 This project was authored by Rodrigo S. Marques. You can contact me at rodrigosmarques@gmail.com
  

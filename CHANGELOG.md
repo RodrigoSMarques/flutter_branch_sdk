@@ -1,3 +1,7 @@
+## 0.3.0
+* Fix handled by Branch links
+* Improve attribution for Apple Search Ads
+* Documentation Update
 ## 0.2.0
 * Add Referral System Rewarding Functionality
 ## 0.1.5
