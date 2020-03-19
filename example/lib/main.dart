@@ -112,8 +112,8 @@ class _MyAppState extends State<MyApp> {
         ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
         ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
       keywords: ['Plugin', 'Branch', 'Flutter'],
-      publiclyIndex: true,
-      locallyIndex: true,
+      publiclyIndex: false,
+      locallyIndex: false,
     );
     FlutterBranchSdk.registerView(buo: buo);
 
@@ -385,8 +385,7 @@ class _MyAppState extends State<MyApp> {
                       }
                       bool success = false;
                       BranchResponse response =
-                          await FlutterBranchSdk.redeemRewards(
-                              count: 5);
+                          await FlutterBranchSdk.redeemRewards(count: 5);
                       if (response.success) {
                         success = response.result;
                         print('Redeeming Credits: $success');

@@ -8,34 +8,34 @@ part of flutter_branch_sdk;
 
 class BranchUniversalObject {
   /* Canonical identifier for the content referred. */
-  String canonicalIdentifier = '';
+  String canonicalIdentifier;
 
   /* Canonical url for the content referred. This would be the corresponding website URL */
-  String canonicalUrl = '';
+  String canonicalUrl;
 
   /* Title for the content referred by BranchUniversalObject */
-  String title = '';
+  String title;
 
   /* Description for the content referred */
-  String contentDescription = '';
+  String contentDescription;
 
   /* An image url associated with the content referred */
-  String imageUrl = '';
+  String imageUrl;
 
   /* Meta data provided for the content. {@link ContentMetadata} object holds the metadata for this content */
-  BranchContentMetaData contentMetadata = BranchContentMetaData();
+  BranchContentMetaData contentMetadata;
 
   /* Content index mode */
-  bool publiclyIndex = true;
+  bool publiclyIndex;
 
   /* Any keyword associated with the content. Used for indexing */
-  List<dynamic> keywords = List();
+  List<dynamic> keywords;
 
   /* Expiry date for the content and any associated links. Represented as epoch milli second */
   int expirationDateInMilliSec = 0;
 
   /* Index mode for  local content indexing */
-  bool locallyIndex = true;
+  bool locallyIndex;
   int _creationDateTimeStamp = DateTime.now().millisecondsSinceEpoch;
 
   ///Create a BranchUniversalObject with the given content.
@@ -47,8 +47,8 @@ class BranchUniversalObject {
       this.imageUrl,
       this.contentMetadata,
       this.keywords,
-      this.publiclyIndex,
-      this.locallyIndex,
+      this.publiclyIndex = true,
+      this.locallyIndex = true,
       this.expirationDateInMilliSec});
 
   ///Adds any keywords associated with the content referred
