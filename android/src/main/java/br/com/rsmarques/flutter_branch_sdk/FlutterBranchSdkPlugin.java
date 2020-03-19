@@ -620,14 +620,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (argsMap.containsKey("expirationDate"))
             buo.setContentExpiration((Date) argsMap.get("expirationDate"));
         if (argsMap.containsKey("locallyIndex")) {
-            boolean value = (boolean) argsMap.get("locallyIndex");
+            boolean value = false;
+            if (argsMap.get("locallyIndex") != null){
+                value = (boolean) argsMap.get("locallyIndex");
+            }
             if (value) {
                 buo.setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC);
             } else
                 buo.setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PRIVATE);
         }
         if (argsMap.containsKey("publiclyIndex")) {
-            boolean value = (boolean) argsMap.get("publiclyIndex");
+            boolean value = false;
+            if (argsMap.get("publiclyIndex") != null){
+                value = (boolean) argsMap.get("publiclyIndex");
+            }
             if (value) {
                 buo.setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC);
             } else
