@@ -47,29 +47,33 @@ class BranchUniversalObject {
       this.imageUrl,
       this.contentMetadata,
       this.keywords,
-      this.publiclyIndex = true,
-      this.locallyIndex = true,
+      this.publiclyIndex,
+      this.locallyIndex,
       this.expirationDateInMilliSec});
 
   ///Adds any keywords associated with the content referred
   void addKeyWords(List<dynamic> keywords) {
     if (keywords == null) return;
+    if (this.keywords == null) this.keywords = [];
     this.keywords.addAll(keywords);
   }
 
   ///Add a keyword associated with the content referred
   void addKeyWord(String keyword) {
     if (keyword == null) return;
+    if (this.keywords == null) this.keywords = [];
     this.keywords.add(keyword);
   }
 
   ///Remove a keyword associated with the content referred
   void removeKeyWord(String keyword) {
+    if (this.keywords == null) return;
     this.keywords.remove(keyword);
   }
 
   ///Get the keywords associated with this BranchUniversalObject
   List<dynamic> getKeywords() {
+    if (this.keywords == null) return [];
     return this.keywords;
   }
 
@@ -90,8 +94,8 @@ class BranchUniversalObject {
       ret["creationDate"] = this._creationDateTimeStamp;
     if (this.expirationDateInMilliSec != null)
       ret["expirationDate"] = this.expirationDateInMilliSec;
-    ret["locallyIndex"] = this.locallyIndex;
-    ret["publiclyIndex"] = this.publiclyIndex;
+    if (this.locallyIndex != null) ret["locallyIndex"] = this.locallyIndex;
+    if (this.publiclyIndex != null) ret["publiclyIndex"] = this.publiclyIndex;
     if (this.contentMetadata != null && this.contentMetadata.toMap().isNotEmpty)
       ret["contentMetadata"] = this.contentMetadata.toMap();
     if (ret.isEmpty) {

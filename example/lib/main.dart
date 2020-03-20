@@ -112,8 +112,8 @@ class _MyAppState extends State<MyApp> {
         ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
         ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
       keywords: ['Plugin', 'Branch', 'Flutter'],
-      publiclyIndex: false,
-      locallyIndex: false,
+      publiclyIndex: true,
+      locallyIndex: true,
     );
     FlutterBranchSdk.registerView(buo: buo);
 
