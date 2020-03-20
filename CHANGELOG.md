@@ -1,3 +1,5 @@
+## 0.3.1
+* Fix error when index mode in BranchUniversalObject is not populated
 ## 0.3.0
 * Fix handled by Branch links
 * Improve attribution for Apple Search Ads
