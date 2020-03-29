@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:4.+'
+    implementation 'io.branch.sdk.android:library:5.+'
     implementation 'com.google.firebase:firebase-appindexing:19.0.0'
     implementation 'com.google.android.gms:play-services-ads:16+'
     implementation 'com.android.support:customtabs:28.0.0'

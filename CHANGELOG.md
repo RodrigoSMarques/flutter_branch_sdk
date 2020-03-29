@@ -1,3 +1,6 @@
+## 0.4.0
+* Updated minimum Android Branch SDK version to 5.x.x
+* Updated minimum iOS Branch SDK version to 0.32.0
 ## 0.3.1
 * Fix error when index mode in BranchUniversalObject is not populated
 ## 0.3.0
