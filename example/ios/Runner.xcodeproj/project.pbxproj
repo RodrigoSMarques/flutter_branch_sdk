@@ -248,7 +248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" thin\n";
 		};
 		8E96BCAB8DDECFEFCEBC5B91 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -392,6 +392,29 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AdSupport\"",
+					"-framework",
+					"\"Branch\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Flutter\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"WebKit\"",
+					"-framework",
+					"\"flutter_branch_sdk\"",
+					"-framework",
+					"\"iAd\"",
+					"-framework",
+					"\"Flutter\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "br.com.rsmarques.flutter-branch-sdk-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -529,6 +552,29 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AdSupport\"",
+					"-framework",
+					"\"Branch\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Flutter\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"WebKit\"",
+					"-framework",
+					"\"flutter_branch_sdk\"",
+					"-framework",
+					"\"iAd\"",
+					"-framework",
+					"\"Flutter\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "br.com.rsmarques.flutter-branch-sdk-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -558,6 +604,29 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AdSupport\"",
+					"-framework",
+					"\"Branch\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Flutter\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"WebKit\"",
+					"-framework",
+					"\"flutter_branch_sdk\"",
+					"-framework",
+					"\"iAd\"",
+					"-framework",
+					"\"Flutter\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "br.com.rsmarques.flutter-branch-sdk-example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
