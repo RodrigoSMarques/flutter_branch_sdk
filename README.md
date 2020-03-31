@@ -5,8 +5,8 @@ This is a Flutter plugin that implemented Branch SDK (https://branch.io).
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
 Supports both Android and iOS.
-* Android - Branch SDK Version 4.X.X 
-* iOS - Branch SDK Version >= 0.31.3
+* Android - Branch SDK Version >= 5.X.X
+* iOS - Branch SDK Version >= 0.32.0
 
 Implemented functions in plugin:
 
@@ -44,8 +44,12 @@ Follow the steps on the page [https://docs.branch.io/apps/ios/#configure-bundle-
 * Configure Info.plist
 * Confirm app prefix
 
-Note:  In **Info.plist"**  not add *_branch_key_* `live` and `test` at the same time. 
+Note 1: Branch SDK 0.32.0 requires at least **iOS 9.0**. Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
+
+Note 2:  In **Info.plist"**  not add *_branch_key_* `live` and `test` at the same time.
 Use only `branch_key` and update as needed.
+
+
 
 ## Installation
 To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
