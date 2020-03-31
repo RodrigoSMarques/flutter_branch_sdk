@@ -417,7 +417,7 @@ class _MyAppState extends State<MyApp> {
                   }
 
                   BranchResponse response =
-                      await FlutterBranchSdk.getCreditHistory(bucket: "teste");
+                      await FlutterBranchSdk.getCreditHistory();
                   if (response.success) {
                     print('Credits Hystory: ${response.result}');
                     showSnackBar(
