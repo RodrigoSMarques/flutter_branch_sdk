@@ -44,9 +44,10 @@ Follow the steps on the page [https://docs.branch.io/apps/ios/#configure-bundle-
 * Configure Info.plist
 * Confirm app prefix
 
-Note 1: Branch SDK 0.32.0 requires at least **iOS 9.0**. Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
+Note 1: Branch SDK 0.32.0 requires at least **iOS 9.0**. <br/>
+        Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
 
-Note 2:  In **Info.plist"**  not add *_branch_key_* `live` and `test` at the same time.
+Note 2:  In **Info.plist"**  not add *_branch_key_* `live` and `test` at the same time.<br />
 Use only `branch_key` and update as needed.
 
 
