@@ -11,7 +11,7 @@ enum BranchCondition {
   EXCELLENT
 }
 
-enum BranchCurrencyType { USD, EUR, BRL, CAD }
+enum BranchCurrencyType { USD, EUR, BRL, CAD, AUD }
 
 String getCurrencyTypeString(BranchCurrencyType currencyType) {
   //if (currencyType == null) return "USD";

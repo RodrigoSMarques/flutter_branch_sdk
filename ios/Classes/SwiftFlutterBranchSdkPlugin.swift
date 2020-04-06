@@ -122,6 +122,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "trackContent":
             trackContent(call: call)
             break
+         case "trackContentWithoutBuo":
+            trackContentWithoutBuo(call: call)
+            break
         case "setIdentity":
             setIdentity(call: call)
             break
@@ -218,6 +221,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let event: BranchEvent? = convertToEvent(dict : eventDict)
         event!.contentItems = [ buo! ]
+        event!.logEvent()
+    }
+    
+     private func trackContentWithoutBuo(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let eventDict = args["event"] as! [String: Any?]
+        let event: BranchEvent? = convertToEvent(dict : eventDict)
         event!.logEvent()
     }
     
