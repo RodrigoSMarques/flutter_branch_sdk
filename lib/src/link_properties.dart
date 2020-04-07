@@ -6,14 +6,14 @@ part of flutter_branch_sdk;
 */
 
 class BranchLinkProperties {
-  List<String> tags = List<String>();
-  String feature = 'Share';
-  String alias = '';
-  String stage = '';
-  int matchDuration = 0;
+  List<String> tags;
+  String feature;
+  String alias;
+  String stage;
+  int matchDuration;
   Map<String, dynamic> _controlParams = {};
-  String channel = '';
-  String campaign = '';
+  String channel;
+  String campaign;
 
   BranchLinkProperties(
       {this.channel,
@@ -24,10 +24,12 @@ class BranchLinkProperties {
       this.tags});
 
   void addTags(String tag) {
+    if (this.tags == null) tags = List<String>();
     tags.add(tag);
   }
 
   List<String> getTags() {
+    if (this.tags == null) return List<String>();
     return this.tags;
   }
 

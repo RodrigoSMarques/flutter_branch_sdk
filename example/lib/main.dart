@@ -385,8 +385,7 @@ class _MyAppState extends State<MyApp> {
                       }
                       bool success = false;
                       BranchResponse response =
-                          await FlutterBranchSdk.redeemRewards(
-                              count: 5);
+                          await FlutterBranchSdk.redeemRewards(count: 5);
                       if (response.success) {
                         success = response.result;
                         print('Redeeming Credits: $success');
@@ -418,7 +417,7 @@ class _MyAppState extends State<MyApp> {
                   }
 
                   BranchResponse response =
-                      await FlutterBranchSdk.getCreditHistory(bucket: "teste");
+                      await FlutterBranchSdk.getCreditHistory();
                   if (response.success) {
                     print('Credits Hystory: ${response.result}');
                     showSnackBar(
