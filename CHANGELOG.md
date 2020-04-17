@@ -1,4 +1,4 @@
-## 0.4.1
+## 0.5.0
 * Added new method trackContentWithoutBuo
 * Added new currency values for BranchContentMetaData
 * Added the campaign parameter in the BranchLinkProperties constructor
