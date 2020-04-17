@@ -21,7 +21,8 @@ class BranchLinkProperties {
       this.alias,
       this.matchDuration,
       this.stage,
-      this.tags});
+      this.tags,
+      this.campaign});
 
   void addTags(String tag) {
     if (this.tags == null) tags = List<String>();
