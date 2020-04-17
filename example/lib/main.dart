@@ -122,6 +122,7 @@ class _MyAppState extends State<MyApp> {
         feature: 'sharing',
         //alias: 'flutterplugin' //define link url,
         stage: 'new share',
+        campaign: 'xxxxx',
         tags: ['one', 'two', 'three']);
     lp.addControlParam('\$uri_redirect_mode', '1');
 
@@ -271,6 +272,11 @@ class _MyAppState extends State<MyApp> {
                           buo: buo, branchEvent: eventStandart);
                       FlutterBranchSdk.trackContent(
                           buo: buo, branchEvent: eventCustom);
+
+                      FlutterBranchSdk.trackContentWithoutBuo(
+                          branchEvent: eventStandart);
+                      FlutterBranchSdk.trackContentWithoutBuo(
+                          branchEvent: eventCustom);
                     },
                   ),
                 ),

@@ -202,6 +202,17 @@ Extra event specific data can be tracked with the event as well:
     FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventStandart);
 ```
 
+You can register logs in BranchEvent without Branch Universal Object (BUO) for tracking and analytics:
+```dart
+BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
+FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandart);
+```
+You can use your own custom event names too:
+```dart
+BranchEvent eventCustom = BranchEvent.customEvent('Custom_event');
+FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom);
+```
+
 ### Track users
 Sets the identity of a user (email, ID, UUID, etc) for events, deep links, and referrals
 ```dart
