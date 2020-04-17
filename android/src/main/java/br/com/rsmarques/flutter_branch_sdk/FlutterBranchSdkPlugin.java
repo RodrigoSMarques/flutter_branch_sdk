@@ -227,6 +227,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "trackContent":
                 trackContent(call);
                 break;
+            case "trackContentWithoutBuo":
+                trackContentWithoutBuo(call);
+                break;
             case "setIdentity":
                 setIdentity(call);
                 break;
@@ -430,6 +433,15 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
         BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
         event.addContentItems(buo).logEvent(context);
+    }
+
+    private void trackContentWithoutBuo(MethodCall call) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
+        event.logEvent(context);
     }
 
     private void setIdentity(MethodCall call) {

@@ -164,6 +164,20 @@ class FlutterBranchSdk {
     _messageChannel.invokeMethod('trackContent', _params);
   }
 
+  ///Logs this BranchEvent to Branch for tracking and analytics
+  static void trackContentWithoutBuo({BranchEvent branchEvent}) {
+    if (branchEvent == null) {
+      throw ArgumentError('eventType is required');
+    }
+
+    Map<String, dynamic> _params = {};
+
+    if (branchEvent != null && branchEvent.toMap().isNotEmpty) {
+      _params['event'] = branchEvent.toMap();
+    }
+    _messageChannel.invokeMethod('trackContentWithoutBuo', _params);
+  }
+
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
   static void registerView({@required BranchUniversalObject buo}) {
     if (buo == null) {

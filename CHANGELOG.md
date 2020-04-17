@@ -1,8 +1,11 @@
+## 0.4.1
+* Added new method trackContentWithoutBuo
+* Added new currency values for BranchContentMetaData
+* Added the campaign parameter in the BranchLinkProperties constructor
 ## 0.4.0
 * Updated minimum Android Branch SDK version to 5.x.x
 * Updated minimum iOS Branch SDK version to 0.32.0.<br/>
   **Note**: Branch SDK 0.32.0 requires at least **iOS 9.0**. Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
-
 ## 0.3.1
 * Fix error when index mode in BranchUniversalObject is not populated
 ## 0.3.0
