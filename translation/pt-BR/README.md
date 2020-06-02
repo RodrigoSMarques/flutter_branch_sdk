@@ -1,70 +1,71 @@
+Language: [English](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/README.md) | [Português](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/translation/pt-BR/README.md)
+
 # flutter_branch_sdk
 
-This is a Flutter plugin that implemented Branch SDK (https://branch.io).
+Flutter plugin que implementa Branch SDK  (https://branch.io).
 
-Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
+Branch.io ajuda os aplicativos móveis a crescer com deep links que aumentam os sistemas de referência, compartilhando links e convites com atribuição e análise completa.
 
-Supports both Android and iOS.
-* Android - Branch SDK Version >= 5.0.1 [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
-* iOS - Branch SDK Version >= 0.33.0 [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+Suporta Android e iOS.
+* Android - Branch SDK Version >= 5.0.1 [Histório da versão Android](https://help.branch.io/developers-hub/docs/android-version-history)
+* iOS - Branch SDK Version >= 0.33.0 [Histórico da versão iOS](https://help.branch.io/developers-hub/docs/ios-version-history)
 
-Implemented functions in plugin:
+Funções implementadas neste plugin:
 
-* Test Branch Integration
-* Track users
-* Enable / Disable User Tracking
-* Get First and Last Parameters
-* Generate Deep Link for Branch Universal Object (BUO)
-* Show Share Sheet for Branch Universal Object (BUO)
-* List BUO on Search / Remove BUO from Search
-* Register view
-* Track User Actions and Events
-* Init Branch Session and Deep Link
-* Referral rewards
+* Teste da Integração Branch
+* Rastreamento de usuário
+* Habilitar / Desativar rastreamento de usuários
+* Obter o primeiro e o último parâmetros
+* Gerar Deep Link para Branch Universal Object (BUO)
+* Exibir página de compartilhamento para Branch Universal Object (BUO)
+* Listar / Remover BUO na pesquisa do Android e iOS
+* Registrar visualizações
+* Rastrear ações e eventos do usuário
+* Recompensas por indicação
 
-## Getting Started
-### Configure Branch Dashboard
-* Register Your App
-* Complete the Basic integration in [Branch Dashboard](https://dashboard.branch.io/login)
+## Começando
+### Configurar o Painel da Branch
+* Registrar seu aplicativo
+* Completar a integração básica no [Branch Dashboard](https://dashboard.branch.io/login)
 
-For details see:
-* [iOS - only section: **Configure Branch**](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-branch)
-* [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-branch-dashboard)
+Para detalhes visutar:
+* [iOS - somente a seção: **Configure Branch**](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-branch)
+* [Android - somente a seção: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-branch-dashboard)
 
-## Configure Platform Project
-### Android Integration
+## Configurar os projetos em cada Plataforam
+### Integração Android
 
-Follow the steps on the page [https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app), session _**Configure app**_:
+Siga as etapas na página [https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app), session _**Configure app**_:
 * Add Branch to your `AndroidManifest.xml`
 
-### iOS Integration
-Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier), from session ```Configure bundle identifier```:
+### Integração iOS
+Siga as etapas na página [https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier), from session ```Configure bundle identifier```:
 * Configure bundle identifier
 * Configure associated domains
 * Configure entitlements
 * Configure Info.plist
 * Confirm app prefix
 
-Note 1: Branch SDK 0.32.0 requires at least `iOS 9.0`. <br/>
-        Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
+Nota 1: Branch SDK 0.32.0 requer `iOS 9.0`. <br/>
+        Atualize a versão mínima no projeto, na seção **"Deployment Info" -> "Target"**.
 
-Note 2:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
-Use only `branch_key` and update as needed.
+Nota 2:  No `Info.plist` não adicionar `branch_key` `live` e `test` ao mesmo tempo.<br />
+Use somente `branch_key` e atualize se necessário.
 
 
-## Installation
-To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
+## Instalação
+Para usar este plugin, adicione `flutter_branch_sdk` na seção [dependency do seu arquivo pubspec.yaml](https://flutter.io/platform-plugins/).
 
-## How to use
+## Como usuar
 
-### Test Branch Integration
-Test your Branch Integration by calling:
+### Testar a integração Branch
+Teste se a configuração do Branch foi realizada no código nativo chamando:
 ```dart
 FlutterBranchSdk.validateSDKIntegration();
 ```
-Check logs to make sure all the SDK Integration tests pass.
+Verifique os logs para garantir que todos os testes de integração do SDK foram aprovados.
 
-Example of log:
+Exemplo da log:
 ```java
 ------------------- Initiating Branch integration verification --------------------------- ... 
 1. Verifying Branch instance creation ... 
@@ -98,9 +99,9 @@ https://<yourapp>.app.link/NdJ6nFzRbK
 click on:
 https://<yourapp>.app.link/NdJ6nFzRbK?bnc_validate=true
 ```
-Make sure to comment out or remove validateSDKIntegration in your production build.
+Certifique-se de comentar ou remover `validateSDKIntegration` na versão de release para produção.
 
-### Initialize Branch and read deep link
+### Inicializar Branch ler o deep link
 ```dart
     StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
       if (data.containsKey("+clicked_branch_link") &&
@@ -114,8 +115,9 @@ Make sure to comment out or remove validateSDKIntegration in your production bui
           'InitSession error: ${platformException.code} - ${platformException.message}');
     });
 ```
-### Retrieve Install (Install Only) Parameters
+### Recuperar parâmetros de instalação (somente instalação)
 These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
+Esses parâmetros da sessão estarão disponíveis a qualquer momento posteriormente com este comando. Se nenhum parâmetro estiver disponível, o Branch retornará um dicionário vazio. Isso é atualizado a cada nova sessão (na instalação do aplicativo e o aplicativo é aberto).
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
 ```
@@ -187,7 +189,7 @@ Note: _For Android additional customization is possible_
 * For Android list BUO links in Google Search with App Indexing
 * For iOs list BUO links in Spotlight
 
-Enable automatic sitemap generation on the Organic Search page of the [Branch Dashboard](https://dashboard.branch.io/search). 
+Enable automatic sitemap generation on the Organic Search page of the [Branch Dashboard](https://dashboard.branch.io/search).
 Check the Automatic sitemap generation checkbox.
 
 ```dart
@@ -276,7 +278,7 @@ FlutterBranchSdk.disableTracking(true);
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
 ### Referral System Rewarding Functionality
-Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make an asynchronous call to retrieve the balance. 
+Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make an asynchronous call to retrieve the balance.
 Read more here: https://docs.branch.io/viral/referrals/#search
 
 
@@ -401,4 +403,4 @@ Read the iOS or Android documentation for all Branch object parameters
 
 # Author
 This project was authored by Rodrigo S. Marques. You can contact me at rodrigosmarques@gmail.com
- 
+
