@@ -1,3 +1,7 @@
+## 1.0.0
+* Documentation Update
+* Remove Android dependencies fallback.
+* Require Flutter SDK 1.12.13+hotfix.5 or greater.
 ## 0.5.0
 * Added new method trackContentWithoutBuo
 * Added new currency values for BranchContentMetaData
