@@ -200,7 +200,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             activity.setIntent(intent);
             Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).reInit();
         }
-        return true;
+        return false;
     }
 
     /**---------------------------------------------------------------------------------------------
