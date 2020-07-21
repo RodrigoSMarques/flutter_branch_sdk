@@ -192,7 +192,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let shareText = args["messageText"] as! String
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
-        let controller = UIApplication.shared.keyWindow!.rootViewController as! FlutterViewController
+        let controller = UIApplication.shared.keyWindow!.rootViewController
         
         let response : NSMutableDictionary! = [:]
         buo?.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
