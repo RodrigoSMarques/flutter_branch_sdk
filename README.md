@@ -5,8 +5,8 @@ This is a Flutter plugin that implemented Branch SDK (https://branch.io).
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
 Supports both Android and iOS.
-* Android - Branch SDK Version >= 5.0.1 [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
-* iOS - Branch SDK Version >= 0.33.0 [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+* Android - Branch SDK Version >= 5.0.3 [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
+* iOS - Branch SDK Version >= 0.35.0 [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
 
 Implemented functions in plugin:
 
@@ -275,10 +275,20 @@ FlutterBranchSdk.disableTracking(true);
 ```
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
+### Apple Search Ads
+Branch can help track your Apple Search Ad campaigns by fetching the search ad attribution from Apple at app install.
+
+Add KEY ```branch_check_apple_ads``` in INFO.PLIST to enable checking for Apple Search Ads before Branch initialization.
+
+In `ios/Runner/Info.plist`, you should have something like:
+```xml
+ 	<key>branch_check_apple_ads</key>
+	<true/>
+```
+
 ### Referral System Rewarding Functionality
 Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make an asynchronous call to retrieve the balance. 
 Read more here: https://docs.branch.io/viral/referrals/#search
-
 
 #### Get Reward Balance
 Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make call to retrieve the balance. Here is the syntax:
