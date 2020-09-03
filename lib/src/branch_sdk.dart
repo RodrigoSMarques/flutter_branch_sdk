@@ -5,7 +5,7 @@ class FlutterBranchSdk {
   static const _EVENT_CHANNEL = 'flutter_branch_sdk/event';
 
   static const MethodChannel _messageChannel =
-      const MethodChannel(_MESSAGE_CHANNEL);
+  const MethodChannel(_MESSAGE_CHANNEL);
   static const EventChannel _eventChannel = const EventChannel(_EVENT_CHANNEL);
 
   static Stream<Map> _initSessionStream;
@@ -31,6 +31,23 @@ class FlutterBranchSdk {
     Map<String, dynamic> _params = {};
     _params['userId'] = userId;
     _messageChannel.invokeMethod('setIdentity', _params);
+  }
+
+  ///Add key value pairs to all requests
+  static void setRequestMetadata(String key, String value) {
+    if (key == null) {
+      throw ArgumentError('key is required');
+    }
+
+    if (value == null) {
+      throw ArgumentError('value is required');
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['key'] = key;
+    _params['value'] = value;
+
+    _messageChannel.invokeMethod('setRequestMetadata', _params);
   }
 
   ///This method should be called if you know that a different person is about to use the app
@@ -79,7 +96,7 @@ class FlutterBranchSdk {
   ///Creates a short url for the BUO
   static Future<BranchResponse> getShortUrl(
       {@required BranchUniversalObject buo,
-      @required BranchLinkProperties linkProperties}) async {
+        @required BranchLinkProperties linkProperties}) async {
     if (buo == null) {
       throw ArgumentError('Branch Universal Object is required');
     }
@@ -94,7 +111,7 @@ class FlutterBranchSdk {
     _params['lp'] = linkProperties.toMap();
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('getShortUrl', _params);
+    await _messageChannel.invokeMethod('getShortUrl', _params);
 
     if (response['success']) {
       return BranchResponse.success(result: response['url']);
@@ -108,10 +125,10 @@ class FlutterBranchSdk {
   ///Showing a Share Sheet
   static Future<BranchResponse> showShareSheet(
       {@required BranchUniversalObject buo,
-      @required BranchLinkProperties linkProperties,
-      @required String messageText,
-      String androidMessageTitle = '',
-      String androidSharingTitle = ''}) async {
+        @required BranchLinkProperties linkProperties,
+        @required String messageText,
+        String androidMessageTitle = '',
+        String androidSharingTitle = ''}) async {
     if (buo == null) {
       throw ArgumentError('Branch Universal Object is required');
     }
@@ -133,7 +150,7 @@ class FlutterBranchSdk {
     _params['sharingTitle'] = androidSharingTitle;
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('showShareSheet', _params);
+    await _messageChannel.invokeMethod('showShareSheet', _params);
 
     if (response['success']) {
       return BranchResponse.success(result: response['url']);
@@ -158,7 +175,9 @@ class FlutterBranchSdk {
     Map<String, dynamic> _params = {};
 
     _params['buo'] = buo.toMap();
-    if (branchEvent != null && branchEvent.toMap().isNotEmpty) {
+    if (branchEvent != null && branchEvent
+        .toMap()
+        .isNotEmpty) {
       _params['event'] = branchEvent.toMap();
     }
     _messageChannel.invokeMethod('trackContent', _params);
@@ -172,7 +191,9 @@ class FlutterBranchSdk {
 
     Map<String, dynamic> _params = {};
 
-    if (branchEvent != null && branchEvent.toMap().isNotEmpty) {
+    if (branchEvent != null && branchEvent
+        .toMap()
+        .isNotEmpty) {
       _params['event'] = branchEvent.toMap();
     }
     _messageChannel.invokeMethod('trackContentWithoutBuo', _params);
@@ -193,16 +214,17 @@ class FlutterBranchSdk {
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
   ///For iOS:     List items on Spotlight
-  static Future<bool> listOnSearch(
-      {@required BranchUniversalObject buo,
-      BranchLinkProperties linkProperties}) async {
+  static Future<bool> listOnSearch({@required BranchUniversalObject buo,
+    BranchLinkProperties linkProperties}) async {
     if (buo == null) {
       throw ArgumentError('Branch Universal Object is required');
     }
 
     Map<String, dynamic> _params = {};
     _params['buo'] = buo.toMap();
-    if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
+    if (linkProperties != null && linkProperties
+        .toMap()
+        .isNotEmpty) {
       _params['lp'] = linkProperties.toMap();
     }
 
@@ -212,16 +234,17 @@ class FlutterBranchSdk {
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
   ///             This will remove the content from Google(Firebase) and other supported Indexing services
   ///For iOS:     Remove Branch Universal Object from Spotlight if privately indexed
-  static Future<bool> removeFromSearch(
-      {@required BranchUniversalObject buo,
-      BranchLinkProperties linkProperties}) async {
+  static Future<bool> removeFromSearch({@required BranchUniversalObject buo,
+    BranchLinkProperties linkProperties}) async {
     if (buo == null) {
       throw ArgumentError('Branch Universal Object is required');
     }
 
     Map<String, dynamic> _params = {};
     _params['buo'] = buo.toMap();
-    if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
+    if (linkProperties != null && linkProperties
+        .toMap()
+        .isNotEmpty) {
       _params['lp'] = linkProperties.toMap();
     }
     return await _messageChannel.invokeMethod('removeFromSearch', _params);
@@ -233,7 +256,7 @@ class FlutterBranchSdk {
     if (bucket != null) _params['bucket'] = bucket;
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('loadRewards', _params);
+    await _messageChannel.invokeMethod('loadRewards', _params);
 
     if (response['success']) {
       return BranchResponse.success(result: response['credits']);
@@ -258,7 +281,7 @@ class FlutterBranchSdk {
     if (bucket != null) _params['bucket'] = bucket;
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('redeemRewards', _params);
+    await _messageChannel.invokeMethod('redeemRewards', _params);
 
     if (response['success']) {
       return BranchResponse.success(result: true);
@@ -275,7 +298,7 @@ class FlutterBranchSdk {
     if (bucket != null) _params['bucket'] = bucket;
 
     Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('getCreditHistory', _params);
+    await _messageChannel.invokeMethod('getCreditHistory', _params);
 
     print('GetCreditHistory ${response.toString()}');
 

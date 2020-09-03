@@ -6,17 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
@@ -29,14 +20,20 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
-import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.plugin.common.EventChannel.EventSink;
+import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.NewIntentListener;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler, StreamHandler, NewIntentListener, ActivityAware,
         Application.ActivityLifecycleCallbacks {
@@ -56,9 +53,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     private FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
 
-    /**---------------------------------------------------------------------------------------------
-     Plugin registry
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * Plugin registry
+     * --------------------------------------------------------------------------------------------
+     **/
 
     public static void registerWith(Registrar registrar) {
         if (registrar.activity() == null) {
@@ -105,9 +104,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         this.context = null;
     }
 
-    /**---------------------------------------------------------------------------------------------
-     ActivityAware Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * ActivityAware Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
         this.activityPluginBinding = activityPluginBinding;
@@ -131,9 +132,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         onAttachedToActivity(activityPluginBinding);
     }
 
-    /**---------------------------------------------------------------------------------------------
-     StreamHandler Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * StreamHandler Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
@@ -142,7 +145,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             initialParams = null;
             initialError = null;
         } else if (initialError != null) {
-            eventSink.error(String.valueOf(initialError.getErrorCode()), initialError.getMessage(),null);
+            eventSink.error(String.valueOf(initialError.getErrorCode()), initialError.getMessage(), null);
             initialParams = null;
             initialError = null;
         }
@@ -155,9 +158,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         initialParams = null;
     }
 
-    /**---------------------------------------------------------------------------------------------
-     ActivityLifecycleCallbacks Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * ActivityLifecycleCallbacks Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
     }
@@ -168,16 +173,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {}
+    public void onActivityResumed(Activity activity) {
+    }
 
     @Override
-    public void onActivityPaused(Activity activity) {}
+    public void onActivityPaused(Activity activity) {
+    }
 
     @Override
-    public void onActivityStopped(Activity activity) {}
+    public void onActivityStopped(Activity activity) {
+    }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {}
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+    }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -186,9 +195,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-    /**---------------------------------------------------------------------------------------------
-     NewIntentListener Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * NewIntentListener Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public boolean onNewIntent(Intent intent) {
         if (this.activity != null) {
@@ -198,9 +209,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         return true;
     }
 
-    /**---------------------------------------------------------------------------------------------
-     MethodCallHandler Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * MethodCallHandler Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
@@ -227,6 +240,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             case "setIdentity":
                 setIdentity(call);
+                break;
+            case "setRequestMetadata":
+                setRequestMetadata(call);
                 break;
             case "logout":
                 logout();
@@ -260,9 +276,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-    /**---------------------------------------------------------------------------------------------
-     Branch SDK Call Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * Branch SDK Call Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     private Branch.BranchReferralInitListener branchReferralInitListener = new
             Branch.BranchReferralInitListener() {
                 @Override
@@ -282,7 +300,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     } else {
                         Log.d(DEBUG_NAME, "BranchReferralInitListener - error: " + error.toString());
                         if (eventSink != null) {
-                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(),null);
+                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
                             initialError = null;
                         } else {
                             initialError = error;
@@ -447,6 +465,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         Branch.getInstance(context).setIdentity(userId);
     }
 
+    private void setRequestMetadata(MethodCall call) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        String key = call.argument("key");
+        String value = call.argument("value");
+
+        Branch.getInstance(context).setRequestMetadata(key, value);
+    }
+
     private void logout() {
         Branch.getInstance(context).logout();
     }
@@ -516,7 +544,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance(context).redeemRewards(count, new Branch.BranchReferralStateChangedListener() {
                 @Override
                 public void onStateChanged(boolean changed, @Nullable BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.valueOf(true));
                     } else {
                         response.put("success", Boolean.valueOf(false));
@@ -530,7 +558,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance(context).redeemRewards(call.argument("bucket").toString(), count, new Branch.BranchReferralStateChangedListener() {
                 @Override
                 public void onStateChanged(boolean changed, @Nullable BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.valueOf(true));
                     } else {
                         response.put("success", Boolean.valueOf(false));
@@ -553,7 +581,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance(context).getCreditHistory(new Branch.BranchListResponseListener() {
                 @Override
                 public void onReceivingResponse(JSONArray list, BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.valueOf(true));
                         JSONObject jo = new JSONObject();
                         try {
@@ -574,7 +602,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance(context).getCreditHistory(call.argument("bucket").toString(), new Branch.BranchListResponseListener() {
                 @Override
                 public void onReceivingResponse(JSONArray list, BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.valueOf(true));
                         JSONObject jo = new JSONObject();
                         try {
