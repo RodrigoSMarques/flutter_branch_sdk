@@ -33,6 +33,23 @@ class FlutterBranchSdk {
     _messageChannel.invokeMethod('setIdentity', _params);
   }
 
+  ///Add key value pairs to all requests
+  static void setRequestMetadata(String key, String value) {
+    if (key == null) {
+      throw ArgumentError('key is required');
+    }
+
+    if (value == null) {
+      throw ArgumentError('value is required');
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['key'] = key;
+    _params['value'] = value;
+
+    _messageChannel.invokeMethod('setRequestMetadata', _params);
+  }
+
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
     _messageChannel.invokeMethod('logout');
