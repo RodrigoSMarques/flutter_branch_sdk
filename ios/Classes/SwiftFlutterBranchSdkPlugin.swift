@@ -136,7 +136,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             setIdentity(call: call)
             break
 		case "setRequestMetadata":
-			setRequestMetadata(call);
+			setRequestMetadata(call: call);
 			break;
         case "logout":
             logout()
