@@ -228,6 +228,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "setIdentity":
                 setIdentity(call);
                 break;
+            case "setRequestMetadata":
+                setRequestMetadata(call);
+                break;
             case "logout":
                 logout();
                 break;
@@ -445,6 +448,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         String userId = call.argument("userId");
         Branch.getInstance(context).setIdentity(userId);
+    }
+
+    private void setRequestMetadata(MethodCall call) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        String key = call.argument("key");
+        String value = call.argument("value");
+
+        Branch.getInstance(context).setRequestMetadata(key, value);
     }
 
     private void logout() {

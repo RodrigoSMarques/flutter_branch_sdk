@@ -306,6 +306,16 @@ if (response.success) {
 }
 ```
 
+#### Set Request Meta data
+Add key value pairs to all requests
+
+```dart
+BranchResponse response =
+    await FlutterBranchSdk.setRequestMetadata(
+      requestMetadataKey,
+      requestMetadataValue,
+    );
+```
 
 #### Redeem All or Some of the Reward Balance (Store State)
 Redeeming credits allows users to cash in the credits they've earned. Upon successful redemption, the user's balance will be updated reflecting the deduction.
