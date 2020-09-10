@@ -164,8 +164,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityStarted(Activity activity) {
-        //Branch.getInstance().initSession(branchReferralInitListener, activity.getIntent() != null ?
-         //       activity.getIntent().getData() : null, activity);
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
     }
 
@@ -194,11 +192,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public boolean onNewIntent(Intent intent) {
         if (this.activity != null) {
-            //intent.putExtra("branch_force_new_session", true);
-            //activity.setIntent(intent);
-            //Branch.getInstance().reInitSession(activity, branchReferralInitListener);
-            activity.setIntent(intent);
-            Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).reInit();
+            this.activity.setIntent(intent);
+            Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
         }
         return false;
     }
@@ -297,7 +292,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             };
 
     private void validateSDKIntegration() {
-        IntegrationValidator.validate(context);
+        IntegrationValidator.validate(activity);
     }
 
     private void getShortUrl(MethodCall call, final Result result) {

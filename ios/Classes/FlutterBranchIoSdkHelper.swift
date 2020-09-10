@@ -223,3 +223,12 @@ extension Date {
         self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
     }
 }
+
+extension Bundle {
+    static func infoPlistValue(forKey key: String) -> Any? {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: key) else {
+           return nil
+        }
+        return value
+    }
+}

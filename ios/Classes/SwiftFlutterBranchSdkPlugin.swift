@@ -29,11 +29,18 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         #if DEBUG
-        Branch.getInstance().setDebug()
+        Branch.getInstance().enableLogging()
         #endif
         
-        // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
-        Branch.getInstance().delayInitToCheckForSearchAds()
+        let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
+        
+        print("Branch Check Apple ADS active: \(String(describing:enableAppleADS))");
+        
+        if enableAppleADS {
+            // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
+            print("Branch Apple ADS - delayInitToCheckForSearchAds");
+            Branch.getInstance().delayInitToCheckForSearchAds()
+        }
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
@@ -322,7 +329,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 response["success"] = NSNumber(value: true)
                 response["credits"] = credits
             } else {
-                let err = (error as! NSError)
+                let err = (error! as NSError)
                 response["success"] = NSNumber(value: false)
                 response["errorCode"] = String(err.code)
                 response["errorMessage"] = err.localizedDescription
@@ -342,8 +349,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["success"] = NSNumber(value: true)
                 }
                 else {
-                    print("Failed to redeem credits: \(error)")
-                    let err = (error as! NSError)
+                    print("Failed to redeem credits: \(String(describing: error))")
+                    let err = (error! as NSError)
                     response["success"] = NSNumber(value: false)
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
@@ -356,8 +363,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["success"] = NSNumber(value: true)
                 }
                 else {
-                    print("Failed to redeem credits: \(error)")
-                    let err = (error as! NSError)
+                    print("Failed to redeem credits: \(String(describing: error))")
+                    let err = (error! as NSError)
                     response["success"] = NSNumber(value: false)
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
@@ -379,8 +386,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["success"] = NSNumber(value: true)
                     response["data"] = data
                 } else {
-                    print("Failed to redeem credits: \(error)")
-                    let err = (error as! NSError)
+                    print("Failed to redeem credits: \(String(describing: error))")
+                    let err = (error! as NSError)
                     response["success"] = NSNumber(value: false)
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
@@ -394,8 +401,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["success"] = NSNumber(value: true)
                     response["data"] = data
                 } else {
-                    print("Failed to redeem credits: \(error)")
-                    let err = (error as! NSError)
+                    print("Failed to redeem credits: \(String(describing: error))")
+                    let err = (error! as NSError)
                     response["success"] = NSNumber(value: false)
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
