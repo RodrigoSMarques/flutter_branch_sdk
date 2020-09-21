@@ -163,6 +163,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             getCreditHistory(call: call, result: result)
         case "isUserIdentified":
             isUserIdentified(result: result)
+        case "setSKAdNetworkMaxTime" :
+            setSKAdNetworkMaxTime(call: call)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -420,6 +422,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 result(response)
             }
         }
+    }
+    
+    private func setSKAdNetworkMaxTime(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
+        Branch.getInstance().setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
     }
 
     private func isUserIdentified(result: @escaping FlutterResult) {

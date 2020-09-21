@@ -305,6 +305,22 @@ class FlutterBranchSdk {
     }
   }
 
+  ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
+  ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
+  static void setIOSSKAdNetworkMaxTime(int hours) {
+    if (hours == null) {
+      throw ArgumentError('Parameters hours is required');
+    }
+
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['maxTimeInterval'] = hours;
+    _messageChannel.invokeMethod('setSKAdNetworkMaxTime', _params);
+  }
+
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
   ///If you call setIdentity, this device will have that identity associated with this user until logout is called.
   ///This includes persisting through uninstalls, as we track device id.
