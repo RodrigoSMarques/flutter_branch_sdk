@@ -1,3 +1,7 @@
+## 1.2.0
+* Android: BugFix on ```onNewIntent```
+* iOS:     new method: ```setRequestMetadata```
+           new method: ```setIOSSKAdNetworkMaxTime```
 ## 1.1.0
 Updated Native ```Android``` and ```iOS``` SDKs
 * Android Native SDK Update 5.0.3 - [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)

@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBranchSdk.setIdentity('branch_user_test');
+    //FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
 
     listenDynamicLinks();
 

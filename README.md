@@ -264,7 +264,6 @@ FlutterBranchSdk.logout();
  bool isUserIdentified = await FlutterBranchSdk.isUserIdentified();
 ```
 
-
 ### Enable or Disable User Tracking
 If you need to comply with a user's request to not be tracked for GDPR purposes, or otherwise determine that a user should not be tracked, utilize this field to prevent Branch from sending network requests. This setting can also be enabled across all users for a particular link, or across your Branch links.
 ```dart
@@ -274,6 +273,20 @@ FlutterBranchSdk.disableTracking(false);
 FlutterBranchSdk.disableTracking(true);
 ```
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
+
+### Set Request Meta data
+Add key value pairs to all requests
+
+```dart
+FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
+```
+
+
+### Set time window (in Hours) for SKAdNetwork callouts (iOS only)
+By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
+```dart
+FlutterBranchSdk.setIOSSKAdNetworkMaxTime(24);
+```
 
 ### Apple Search Ads
 Branch can help track your Apple Search Ad campaigns by fetching the search ad attribution from Apple at app install.
@@ -305,7 +318,6 @@ if (response.success) {
     print('Credits error: ${response.errorMessage}');
 }
 ```
-
 
 #### Redeem All or Some of the Reward Balance (Store State)
 Redeeming credits allows users to cash in the credits they've earned. Upon successful redemption, the user's balance will be updated reflecting the deduction.
