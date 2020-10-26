@@ -52,6 +52,8 @@
 	<false/>
 	<key>branch_app_domain</key>
 	<string>flutterbranchsdk.app.link</string>
+	<key>branch_check_apple_ads</key>
+	<false/>
 	<key>branch_key</key>
 	<string>key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx</string>
 </dict>

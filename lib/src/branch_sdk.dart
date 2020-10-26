@@ -33,6 +33,23 @@ class FlutterBranchSdk {
     _messageChannel.invokeMethod('setIdentity', _params);
   }
 
+  ///Add key value pairs to all requests
+  static void setRequestMetadata(String key, String value) {
+    if (key == null) {
+      throw ArgumentError('key is required');
+    }
+
+    if (value == null) {
+      throw ArgumentError('value is required');
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['key'] = key;
+    _params['value'] = value;
+
+    _messageChannel.invokeMethod('setRequestMetadata', _params);
+  }
+
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
     _messageChannel.invokeMethod('logout');
@@ -286,6 +303,22 @@ class FlutterBranchSdk {
           errorCode: response['errorCode'],
           errorMessage: response['errorMessage']);
     }
+  }
+
+  ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
+  ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
+  static void setIOSSKAdNetworkMaxTime(int hours) {
+    if (hours == null) {
+      throw ArgumentError('Parameters hours is required');
+    }
+
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    Map<String, dynamic> _params = {};
+    _params['maxTimeInterval'] = hours;
+    _messageChannel.invokeMethod('setSKAdNetworkMaxTime', _params);
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.

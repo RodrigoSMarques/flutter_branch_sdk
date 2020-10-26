@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBranchSdk.setIdentity('branch_user_test');
+    //FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
 
     listenDynamicLinks();
 
@@ -528,7 +529,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     controllerData.close();
     controllerUrl.close();
