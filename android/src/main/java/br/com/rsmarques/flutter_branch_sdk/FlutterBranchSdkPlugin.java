@@ -97,6 +97,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private void setActivity(Activity activity) {
         this.activity = activity;
         activity.getApplication().registerActivityLifecycleCallbacks(this);
+
+        if (this.activity != null) {
+            Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+        }
     }
 
     private void teardownChannels() {
