@@ -1,3 +1,22 @@
+# 1.3.0
+* iOS Native SDK Update 0.36.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+
+## 1.2.0
+* Android: BugFix on ```onNewIntent```
+* iOS:     new method: ```setRequestMetadata```
+           new method: ```setIOSSKAdNetworkMaxTime```
+## 1.1.0
+Updated Native ```Android``` and ```iOS``` SDKs
+* Android Native SDK Update 5.0.3 - [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
+* iOS Native SDK Update 0.35.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+
+ __BREAKING CHANGES__
+Add KEY ```branch_check_apple_ads``` in INFO.PLIST  to enable checking for Apple Search Ads before Branch initialization
+
+## 1.0.0
+* Documentation Update
+* Remove Android dependencies fallback.
+* Require Flutter SDK 1.12.13+hotfix.5 or greater.
 ## 0.5.0
 * Added new method trackContentWithoutBuo
 * Added new currency values for BranchContentMetaData

@@ -16,6 +16,6 @@ class BranchResponse<T> {
 
   @override
   String toString() {
-    return ('sucess: $success, errorCode: $errorCode, errorMessage: $errorMessage}');
+    return ('success: $success, errorCode: $errorCode, errorMessage: $errorMessage}');
   }
 }

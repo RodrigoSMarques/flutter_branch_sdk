@@ -164,8 +164,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityStarted(Activity activity) {
-        //Branch.getInstance().initSession(branchReferralInitListener, activity.getIntent() != null ?
-         //       activity.getIntent().getData() : null, activity);
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
     }
 
@@ -194,13 +192,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public boolean onNewIntent(Intent intent) {
         if (this.activity != null) {
-            //intent.putExtra("branch_force_new_session", true);
-            //activity.setIntent(intent);
-            //Branch.getInstance().reInitSession(activity, branchReferralInitListener);
-            activity.setIntent(intent);
-            Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).reInit();
+            this.activity.setIntent(intent);
+            Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
         }
-        return true;
+        return false;
     }
 
     /**---------------------------------------------------------------------------------------------
@@ -232,6 +227,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             case "setIdentity":
                 setIdentity(call);
+                break;
+            case "setRequestMetadata":
+                setRequestMetadata(call);
                 break;
             case "logout":
                 logout();
@@ -297,7 +295,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             };
 
     private void validateSDKIntegration() {
-        IntegrationValidator.validate(context);
+        IntegrationValidator.validate(activity);
     }
 
     private void getShortUrl(MethodCall call, final Result result) {
@@ -450,6 +448,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         String userId = call.argument("userId");
         Branch.getInstance(context).setIdentity(userId);
+    }
+
+    private void setRequestMetadata(MethodCall call) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        String key = call.argument("key");
+        String value = call.argument("value");
+
+        Branch.getInstance(context).setRequestMetadata(key, value);
     }
 
     private void logout() {

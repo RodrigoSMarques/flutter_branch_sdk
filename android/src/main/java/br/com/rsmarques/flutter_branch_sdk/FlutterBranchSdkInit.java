@@ -15,7 +15,7 @@ public class FlutterBranchSdkInit {
     public static void init(Context context) {
         if (BuildConfig.DEBUG) {
             Log.i(DEBUG_NAME, "Branch SDK in DebugMode");
-            Branch.enableDebugMode();
+            Branch.enableLogging();
         }
         // Branch object initialization
         Branch.getAutoInstance(context);
