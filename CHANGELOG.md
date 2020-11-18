@@ -1,3 +1,6 @@
+# 1.3.0
+* iOS Native SDK Update 0.36.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+
 ## 1.2.0
 * Android: BugFix on ```onNewIntent```
 * iOS:     new method: ```setRequestMetadata```
