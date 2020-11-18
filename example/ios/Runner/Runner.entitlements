@@ -6,6 +6,8 @@
 	<array>
 		<string>applinks:flutterbranchsdk.app.link</string>
 		<string>applinks:flutterbranchsdk-alternate.app.link</string>
+        <string>applinks:flutterbranchsdk.test-app.link</string>
+        <string>applinks:flutterbranchsdk-alternate.test-app.link</string>
 	</array>
 </dict>
 </plist>
