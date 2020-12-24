@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp> {
       4,
       5
     ]).addCustomMetadata('custom_list_string', ['a', 'b', 'c']);
-    /* --optional Custom Metadata
+    //--optional Custom Metadata
     metadata.contentSchema = BranchContentSchema.COMMERCE_PRODUCT;
     metadata.price = 50.99;
     metadata.currencyType = BranchCurrencyType.BRL;
@@ -98,7 +98,6 @@ class _MyAppState extends State<MyApp> {
         country: 'Brazil',
         postalCode: '99999-987');
     metadata.setLocation(31.4521685, -114.7352207);
-    */
 
     buo = BranchUniversalObject(
       canonicalIdentifier: 'flutter/branch',
@@ -128,7 +127,7 @@ class _MyAppState extends State<MyApp> {
     lp.addControlParam('\$uri_redirect_mode', '1');
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
-    /* --optional Event data
+    //--optional Event data
     eventStandart.transactionID = '12344555';
     eventStandart.currency = BranchCurrencyType.BRL;
     eventStandart.revenue = 1.5;
@@ -143,7 +142,7 @@ class _MyAppState extends State<MyApp> {
         'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
     eventStandart.addCustomData(
         'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
-  */
+
     eventCustom = BranchEvent.customEvent('Custom_event');
     eventCustom.addCustomData(
         'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
@@ -153,6 +152,7 @@ class _MyAppState extends State<MyApp> {
 
   void showSnackBar({@required String message, int duration = 3}) {
     scaffoldKey.currentState.removeCurrentSnackBar();
+    //ScaffoldMessenger.removeCurrentSnackBar
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(message),
       duration: Duration(seconds: duration),
@@ -484,9 +484,7 @@ class _MyAppState extends State<MyApp> {
               initialData: '',
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data.isNotEmpty) {
-                  return Column(
-                    children: <Widget>[Center(child: Text(snapshot.data))],
-                  );
+                  return Center(child: Text(snapshot.data));
                 } else {
                   return Container();
                 }

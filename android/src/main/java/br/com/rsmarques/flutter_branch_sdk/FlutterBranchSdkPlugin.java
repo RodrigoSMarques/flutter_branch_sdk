@@ -61,6 +61,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
 
     public static void registerWith(Registrar registrar) {
+        Log.d(DEBUG_NAME, "registerWith call");
         if (registrar.activity() == null) {
             // When a background flutter view tries to register the plugin, the registrar has no activity.
             // We stop the registration process as this plugin is foreground only.
@@ -74,15 +75,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+        Log.d(DEBUG_NAME, "onAttachedToEngine call");
         setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext());
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        Log.d(DEBUG_NAME, "onDetachedFromEngine call");
         teardownChannels();
     }
 
     private void setupChannels(BinaryMessenger messenger, Context context) {
+        Log.d(DEBUG_NAME, "setupChannels call");
         this.context = context;
 
         methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
@@ -95,11 +99,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setActivity(Activity activity) {
+        Log.d(DEBUG_NAME, "setActivity call");
         this.activity = activity;
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
 
     private void teardownChannels() {
+        Log.d(DEBUG_NAME, "teardownChannels call");
         this.activityPluginBinding = null;
         this.activity = null;
         this.context = null;
@@ -110,6 +116,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        Log.d(DEBUG_NAME, "onAttachedToActivity call");
         this.activityPluginBinding = activityPluginBinding;
         setActivity(activityPluginBinding.getActivity());
         activityPluginBinding.addOnNewIntentListener(this);
@@ -117,17 +124,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onDetachedFromActivity() {
+        Log.d(DEBUG_NAME, "onDetachedFromActivity call");
         activityPluginBinding.removeOnNewIntentListener(this);
         this.activity = null;
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
+        Log.d(DEBUG_NAME, "onDetachedFromActivityForConfigChanges call");
         onDetachedFromActivity();
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+        Log.d(DEBUG_NAME, "onReattachedToActivityForConfigChanges call");
         onAttachedToActivity(activityPluginBinding);
     }
 
@@ -136,6 +146,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
+        Log.d(DEBUG_NAME, "onListen call");
         this.eventSink = eventSink;
         if (initialParams != null) {
             eventSink.success(initialParams);
@@ -150,6 +161,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onCancel(Object o) {
+        Log.d(DEBUG_NAME, "onCancel call");
         this.eventSink = null;
         initialError = null;
         initialParams = null;
@@ -164,6 +176,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityStarted(Activity activity) {
+        Log.d(DEBUG_NAME, "onActivityStarted call");
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
     }
 
@@ -181,6 +194,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+        Log.d(DEBUG_NAME, "onActivityDestroyed call");
         if (this.activity == activity) {
             activity.getApplication().unregisterActivityLifecycleCallbacks(this);
         }
@@ -191,6 +205,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
     @Override
     public boolean onNewIntent(Intent intent) {
+        Log.d(DEBUG_NAME, "onNewIntent call");
         if (this.activity != null) {
             this.activity.setIntent(intent);
             Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
@@ -385,6 +400,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void registerView(MethodCall call) {
+        Log.d(DEBUG_NAME, "registerView call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -394,6 +410,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void listOnSearch(MethodCall call, Result result) {
+        Log.d(DEBUG_NAME, "listOnSearch call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -409,6 +426,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void removeFromSearch(MethodCall call, Result result) {
+        Log.d(DEBUG_NAME, "removeFromSearch call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -424,6 +442,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void trackContent(MethodCall call) {
+        Log.d(DEBUG_NAME, "trackContent call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -434,6 +453,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void trackContentWithoutBuo(MethodCall call) {
+        Log.d(DEBUG_NAME, "trackContentWithoutBuo call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -443,6 +463,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setIdentity(MethodCall call) {
+        Log.d(DEBUG_NAME, "setIdentity call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -451,6 +472,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setRequestMetadata(MethodCall call) {
+        Log.d(DEBUG_NAME, "setRequestMetadata call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -461,10 +483,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void logout() {
+        Log.d(DEBUG_NAME, "logout call");
         Branch.getInstance(context).logout();
     }
 
     private void getLatestReferringParams(Result result) {
+        Log.d(DEBUG_NAME, "getLatestReferringParams call");
         JSONObject sessionParams = Branch.getInstance(context).getLatestReferringParams();
         try {
             result.success(branchSdkHelper.paramsToMap(sessionParams));
@@ -475,6 +499,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void getFirstReferringParams(Result result) {
+        Log.d(DEBUG_NAME, "getFirstReferringParams call");
         JSONObject sessionParams = Branch.getInstance(context).getFirstReferringParams();
         try {
             result.success(branchSdkHelper.paramsToMap(sessionParams));
@@ -485,6 +510,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setTrackingDisabled(MethodCall call) {
+        Log.d(DEBUG_NAME, "setTrackingDisabled call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -493,7 +519,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void loadRewards(final MethodCall call, final Result result) {
-
+        Log.d(DEBUG_NAME, "loadRewards call");
         final Map<String, Object> response = new HashMap<>();
         Branch.getInstance(context).loadRewards(new Branch.BranchReferralStateChangedListener() {
             @Override
@@ -518,6 +544,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void redeemRewards(final MethodCall call, final Result result) {
+        Log.d(DEBUG_NAME, "redeemRewards call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -557,6 +584,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void getCreditHistory(final MethodCall call, final Result result) {
+        Log.d(DEBUG_NAME, "getCreditHistory call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -609,6 +637,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void isUserIdentified(Result result) {
+        Log.d(DEBUG_NAME, "isUserIdentified call");
         result.success(Branch.getInstance(context).isUserIdentified());
     }
 }
