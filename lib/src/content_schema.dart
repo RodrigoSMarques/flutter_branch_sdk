@@ -28,17 +28,17 @@ enum BranchContentSchema {
 }
 
 BranchContentSchema getValueContentSchema(String name) {
-  BranchContentSchema schema;
+  BranchContentSchema? schema;
   for (BranchContentSchema contentSchema in BranchContentSchema.values) {
     if (contentSchema.toString() == name) {
       schema = contentSchema;
       break;
     }
   }
-  return schema;
+  return schema!;
 }
 
-String getContentSchemaString(BranchContentSchema contentSchema) {
-  if (contentSchema == null) return "OTHER";
+String? getContentSchemaString(BranchContentSchema? contentSchema) {
+  if (contentSchema == null) return null;
   return contentSchema.toString().split('.').last;
 }

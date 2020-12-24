@@ -38,4 +38,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-appindexing:19.0.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:16+'
     implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'
 }

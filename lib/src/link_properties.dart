@@ -6,31 +6,29 @@ part of flutter_branch_sdk;
 */
 
 class BranchLinkProperties {
-  List<String> tags;
-  String feature;
-  String alias;
-  String stage;
-  int matchDuration;
+  List<String> tags = const [];
+  final String feature;
+  final String alias;
+  final String stage;
+  final int matchDuration;
   Map<String, dynamic> _controlParams = {};
-  String channel;
-  String campaign;
+  final String channel;
+  final String campaign;
 
   BranchLinkProperties(
-      {this.channel,
-      this.feature,
-      this.alias,
-      this.matchDuration,
-      this.stage,
-      this.tags,
-      this.campaign});
+      {this.channel = '',
+      this.feature = '',
+      this.alias = '',
+      this.matchDuration = 0,
+      this.stage = '',
+      this.tags = const [],
+      this.campaign = ''});
 
   void addTags(String tag) {
-    if (this.tags == null) tags = List<String>();
     tags.add(tag);
   }
 
   List<String> getTags() {
-    if (this.tags == null) return List<String>();
     return this.tags;
   }
 
@@ -46,23 +44,21 @@ class BranchLinkProperties {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> ret = <String, dynamic>{};
 
-    if (tags != null && tags.length > 0) ret['tags'] = tags;
+    if (tags.length > 0) ret['tags'] = tags;
 
-    if (feature != null && feature.isNotEmpty) ret['feature'] = feature;
+    if (feature.isNotEmpty) ret['feature'] = feature;
 
-    if (alias != null && alias.isNotEmpty) ret['alias'] = alias;
+    if (alias.isNotEmpty) ret['alias'] = alias;
 
-    if (stage != null && stage.isNotEmpty) ret['stage'] = stage;
+    if (stage.isNotEmpty) ret['stage'] = stage;
 
-    if (matchDuration != null && matchDuration > 0)
-      ret['matchDuration'] = matchDuration;
+    if (matchDuration > 0) ret['matchDuration'] = matchDuration;
 
-    if (_controlParams != null && _controlParams.isNotEmpty)
-      ret['controlParams'] = _controlParams;
+    if (_controlParams.isNotEmpty) ret['controlParams'] = _controlParams;
 
-    if (channel != null && channel.isNotEmpty) ret['channel'] = channel;
+    if (channel.isNotEmpty) ret['channel'] = channel;
 
-    if (campaign != null && campaign.isNotEmpty) ret['campaign'] = campaign;
+    if (campaign.isNotEmpty) ret['campaign'] = campaign;
 
     if (ret.isEmpty) {
       throw ArgumentError('Link Properties is required');
