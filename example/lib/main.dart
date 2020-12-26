@@ -13,14 +13,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  BranchContentMetaData metadata;
-  BranchUniversalObject buo;
-  BranchLinkProperties lp;
-  BranchEvent eventStandart;
-  BranchEvent eventCustom;
+  BranchContentMetaData metadata = BranchContentMetaData();
+  BranchUniversalObject? buo;
+  BranchLinkProperties lp = BranchLinkProperties();
+  BranchEvent? eventStandart;
+  BranchEvent? eventCustom;
 
   var scaffoldKey = new GlobalKey<ScaffoldState>();
-  StreamSubscription<Map> streamSubscription;
+  StreamSubscription<Map>? streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
   StreamController<String> controllerUrl = StreamController<String>();
@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
         print(
             '------------------------------------------------------------------------------------------------');
         showSnackBar(
+            context: context,
             message: 'Link clicked: Custom string - ${data['custom_string']}',
             duration: 10);
       }
@@ -115,7 +116,7 @@ class _MyAppState extends State<MyApp> {
       publiclyIndex: true,
       locallyIndex: true,
     );
-    FlutterBranchSdk.registerView(buo: buo);
+    FlutterBranchSdk.registerView(buo: buo!);
 
     lp = BranchLinkProperties(
         channel: 'facebook',
@@ -128,35 +129,42 @@ class _MyAppState extends State<MyApp> {
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
     //--optional Event data
-    eventStandart.transactionID = '12344555';
-    eventStandart.currency = BranchCurrencyType.BRL;
-    eventStandart.revenue = 1.5;
-    eventStandart.shipping = 10.2;
-    eventStandart.tax = 12.3;
-    eventStandart.coupon = 'test_coupon';
-    eventStandart.affiliation = 'test_affiliation';
-    eventStandart.eventDescription = 'Event_description';
-    eventStandart.searchQuery = 'item 123';
-    eventStandart.adType = BranchEventAdType.BANNER;
-    eventStandart.addCustomData(
+    eventStandart!.transactionID = '12344555';
+    eventStandart!.currency = BranchCurrencyType.BRL;
+    eventStandart!.revenue = 1.5;
+    eventStandart!.shipping = 10.2;
+    eventStandart!.tax = 12.3;
+    eventStandart!.coupon = 'test_coupon';
+    eventStandart!.affiliation = 'test_affiliation';
+    eventStandart!.eventDescription = 'Event_description';
+    eventStandart!.searchQuery = 'item 123';
+    eventStandart!.adType = BranchEventAdType.BANNER;
+    eventStandart!.addCustomData(
         'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
-    eventStandart.addCustomData(
+    eventStandart!.addCustomData(
         'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
 
     eventCustom = BranchEvent.customEvent('Custom_event');
-    eventCustom.addCustomData(
+    eventCustom!.addCustomData(
         'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
-    eventCustom.addCustomData(
+    eventCustom!.addCustomData(
         'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
   }
 
-  void showSnackBar({@required String message, int duration = 3}) {
-    scaffoldKey.currentState.removeCurrentSnackBar();
-    //ScaffoldMessenger.removeCurrentSnackBar
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: duration),
-    ));
+  void showSnackBar(
+      {required BuildContext context,
+      required String message,
+      int duration = 3}) {
+    final ScaffoldMessengerState scaffoldMessenger =
+        ScaffoldMessenger.of(context);
+
+    scaffoldMessenger.removeCurrentSnackBar();
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: duration),
+      ),
+    );
   }
 
   @override
@@ -175,12 +183,12 @@ class _MyAppState extends State<MyApp> {
               stream: controllerInitSession.stream,
               initialData: '',
               builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   return Column(
                     children: <Widget>[
                       Center(
                           child: Text(
-                        snapshot.data,
+                        snapshot.data!,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 16,
@@ -199,7 +207,9 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 FlutterBranchSdk.validateSDKIntegration();
                 if (Platform.isAndroid) {
-                  showSnackBar(message: 'Check messages in run log or logcat');
+                  showSnackBar(
+                      context: context,
+                      message: 'Check messages in run log or logcat');
                 }
               },
             ),
@@ -258,7 +268,7 @@ class _MyAppState extends State<MyApp> {
                   child: RaisedButton(
                     child: Text('Register view'),
                     onPressed: () {
-                      FlutterBranchSdk.registerView(buo: buo);
+                      FlutterBranchSdk.registerView(buo: buo!);
                     },
                   ),
                 ),
@@ -270,14 +280,14 @@ class _MyAppState extends State<MyApp> {
                     child: Text('Track content'),
                     onPressed: () {
                       FlutterBranchSdk.trackContent(
-                          buo: buo, branchEvent: eventStandart);
+                          buo: buo!, branchEvent: eventStandart!);
                       FlutterBranchSdk.trackContent(
-                          buo: buo, branchEvent: eventCustom);
+                          buo: buo!, branchEvent: eventCustom!);
 
                       FlutterBranchSdk.trackContentWithoutBuo(
-                          branchEvent: eventStandart);
+                          branchEvent: eventStandart!);
                       FlutterBranchSdk.trackContentWithoutBuo(
-                          branchEvent: eventCustom);
+                          branchEvent: eventCustom!);
                     },
                   ),
                 ),
@@ -319,10 +329,10 @@ class _MyAppState extends State<MyApp> {
                     child: Text('List on Search'),
                     onPressed: () async {
                       bool success =
-                          await FlutterBranchSdk.listOnSearch(buo: buo);
+                          await FlutterBranchSdk.listOnSearch(buo: buo!);
                       print(success);
                       success = await FlutterBranchSdk.listOnSearch(
-                          buo: buo, linkProperties: lp);
+                          buo: buo!, linkProperties: lp);
                       print(success);
                     },
                   ),
@@ -335,10 +345,10 @@ class _MyAppState extends State<MyApp> {
                     child: Text('Remove from Search'),
                     onPressed: () async {
                       bool success =
-                          await FlutterBranchSdk.removeFromSearch(buo: buo);
+                          await FlutterBranchSdk.removeFromSearch(buo: buo!);
                       print('Remove sucess: $success');
                       success = await FlutterBranchSdk.removeFromSearch(
-                          buo: buo, linkProperties: lp);
+                          buo: buo!, linkProperties: lp);
                       print('Remove sucess: $success');
                     },
                   ),
@@ -356,7 +366,8 @@ class _MyAppState extends State<MyApp> {
                           await FlutterBranchSdk.isUserIdentified();
 
                       if (!isUserIdentified) {
-                        showSnackBar(message: 'User not identified');
+                        showSnackBar(
+                            context: context, message: 'User not identified');
                         return;
                       }
 
@@ -366,9 +377,11 @@ class _MyAppState extends State<MyApp> {
                       if (response.success) {
                         credits = response.result;
                         print('Crédits');
-                        showSnackBar(message: 'Credits: $credits');
+                        showSnackBar(
+                            context: context, message: 'Credits: $credits');
                       } else {
                         showSnackBar(
+                            context: context,
                             message: 'Credits error: ${response.errorMessage}');
                       }
                     },
@@ -387,7 +400,8 @@ class _MyAppState extends State<MyApp> {
                       print('isUserIdentified: $isUserIdentified');
 
                       if (!isUserIdentified) {
-                        showSnackBar(message: 'User not identified');
+                        showSnackBar(
+                            context: context, message: 'User not identified');
                         return;
                       }
                       bool success = false;
@@ -396,11 +410,14 @@ class _MyAppState extends State<MyApp> {
                       if (response.success) {
                         success = response.result;
                         print('Redeeming Credits: $success');
-                        showSnackBar(message: 'Redeeming Credits: $success');
+                        showSnackBar(
+                            context: context,
+                            message: 'Redeeming Credits: $success');
                       } else {
                         print(
                             'Redeeming Credits error: ${response.errorMessage}');
                         showSnackBar(
+                            context: context,
                             message:
                                 'Redeeming Credits error: ${response.errorMessage}');
                       }
@@ -419,7 +436,8 @@ class _MyAppState extends State<MyApp> {
                   print('isUserIdentified: $isUserIdentified');
 
                   if (!isUserIdentified) {
-                    showSnackBar(message: 'User not identified');
+                    showSnackBar(
+                        context: context, message: 'User not identified');
                     return;
                   }
 
@@ -428,12 +446,14 @@ class _MyAppState extends State<MyApp> {
                   if (response.success) {
                     print('Credits Hystory: ${response.result}');
                     showSnackBar(
+                        context: context,
                         message:
                             'Check log for view Credit History. Records: ${(response.result as List).length}');
                   } else {
                     print(
                         'Get Credits Hystory error: ${response.errorMessage}');
                     showSnackBar(
+                        context: context,
                         message:
                             'Get Credits Hystory error: ${response.errorMessage}');
                   }
@@ -446,7 +466,7 @@ class _MyAppState extends State<MyApp> {
               stream: controllerUrl.stream,
               initialData: '',
               builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   return Column(
                     children: <Widget>[
                       Center(
@@ -455,7 +475,7 @@ class _MyAppState extends State<MyApp> {
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.bold),
                       )),
-                      Center(child: Text(snapshot.data))
+                      Center(child: Text(snapshot.data!))
                     ],
                   );
                 } else {
@@ -483,8 +503,8 @@ class _MyAppState extends State<MyApp> {
               stream: controllerData.stream,
               initialData: '',
               builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data.isNotEmpty) {
-                  return Center(child: Text(snapshot.data));
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return Center(child: Text(snapshot.data!));
                 } else {
                   return Container();
                 }
@@ -498,7 +518,7 @@ class _MyAppState extends State<MyApp> {
 
   void generateLink() async {
     BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+        await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp);
     if (response.success) {
       controllerUrl.sink.add('${response.result}');
     } else {
@@ -509,16 +529,18 @@ class _MyAppState extends State<MyApp> {
 
   void shareLink() async {
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
-        buo: buo,
+        buo: buo!,
         linkProperties: lp,
         messageText: 'My Share text',
         androidMessageTitle: 'My Message Title',
         androidSharingTitle: 'My Share with');
 
     if (response.success) {
-      showSnackBar(message: 'showShareSheet Sucess', duration: 5);
+      showSnackBar(
+          context: context, message: 'showShareSheet Sucess', duration: 5);
     } else {
       showSnackBar(
+          context: context,
           message:
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
@@ -531,6 +553,6 @@ class _MyAppState extends State<MyApp> {
     controllerData.close();
     controllerUrl.close();
     controllerInitSession.close();
-    streamSubscription.cancel();
+    streamSubscription?.cancel();
   }
 }
