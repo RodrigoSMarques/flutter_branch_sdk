@@ -1,3 +1,5 @@
+# 1.4.0-nullsafety.0
+* Initial support for null safety
 # 1.3.0
 * iOS Native SDK Update 0.36.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
 
