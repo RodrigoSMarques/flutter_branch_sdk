@@ -152,7 +152,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onCancel(Object o) {
-        this.eventSink = null;
+        this.eventSink = new MainThreadEventSink(null);;
         initialError = null;
         initialParams = null;
     }
@@ -161,8 +161,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      ActivityLifecycleCallbacks Interface Methods
      --------------------------------------------------------------------------------------------**/
     @Override
-    public void onActivityCreated(Activity activity, Bundle bundle) {
-    }
+    public void onActivityCreated(Activity activity, Bundle bundle) {}
 
     @Override
     public void onActivityStarted(Activity activity) {
