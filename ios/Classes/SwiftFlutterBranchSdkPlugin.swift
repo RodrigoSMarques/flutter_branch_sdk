@@ -161,10 +161,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             break
         case "getCreditHistory":
             getCreditHistory(call: call, result: result)
+            break
         case "isUserIdentified":
             isUserIdentified(result: result)
+            break
         case "setSKAdNetworkMaxTime" :
             setSKAdNetworkMaxTime(call: call)
+            break
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -193,7 +196,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorMessage"] = err.localizedDescription
                 }
             }
-            result(response)
+            DispatchQueue.main.async {
+                result(response)
+            }
         }
     }
 
@@ -218,7 +223,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorMessage"] = err.localizedDescription
                 }
             }
-            result(response)
+            DispatchQueue.main.async {
+                result(response)
+            }
         }
     }
 
@@ -247,7 +254,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-
         buo!.registerView()
     }
 
@@ -255,24 +261,32 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-
+        var response = NSNumber(value: true)
         if let lpDict = args["lp"] as? [String: Any?] {
             let lp : BranchLinkProperties! = convertToLp(dict: lpDict)
             buo!.listOnSpotlight(with: lp) { (url, error) in
                 if (error == nil) {
                     print("Successfully indexed on spotlight")
-                    result(NSNumber(value: true))
+                    response = NSNumber(value: true)
                 } else {
-                    result(NSNumber(value: false))
+                    print("Failed indexed on spotlight")
+                    response = NSNumber(value: false)
+                }
+                DispatchQueue.main.async {
+                    result(response)
                 }
             }
         } else {
             buo!.listOnSpotlight() { (url, error) in
                 if (error == nil) {
                     print("Successfully indexed on spotlight")
-                    result(NSNumber(value: true))
+                    response = NSNumber(value: true)
                 } else {
-                    result(NSNumber(value: false))
+                    print("Failed indexed on spotlight")
+                    response = NSNumber(value: false)
+                }
+                DispatchQueue.main.async {
+                    result(response)
                 }
             }
         }
@@ -282,13 +296,16 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-
+        var response = NSNumber(value: true)
         buo!.removeFromSpotlight { (error) in
             if (error == nil) {
                 print("BUO successfully removed from spotlight")
-                result(NSNumber(value: true))
+                response = NSNumber(value: true)
             } else {
-                result(NSNumber(value: false))
+                response = NSNumber(value: false)
+            }
+            DispatchQueue.main.async {
+                result(response)
             }
         }
     }
@@ -312,12 +329,16 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
 
     private func getLatestReferringParams(result: @escaping FlutterResult) {
         let latestParams = Branch.getInstance().getLatestReferringParams()
-        result(latestParams)
+        DispatchQueue.main.async {
+            result(latestParams)
+        }
     }
 
     private func getFirstReferringParams(result: @escaping FlutterResult) {
         let firstParams = Branch.getInstance().getFirstReferringParams()
-        result(firstParams)
+        DispatchQueue.main.async {
+            result(firstParams)
+        }
     }
 
     private func setTrackingDisabled(call: FlutterMethodCall) {
@@ -346,7 +367,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 response["errorCode"] = String(err.code)
                 response["errorMessage"] = err.localizedDescription
             }
-            result(response)
+            DispatchQueue.main.async {
+                result(response)
+            }
         }
     }
 
@@ -367,7 +390,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 }
-                result(response)
+                DispatchQueue.main.async {
+                    result(response)
+                }
             })
         } else {
             Branch.getInstance().redeemRewards(count, callback: {(success, error) in
@@ -381,7 +406,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 }
-                result(response)
+                DispatchQueue.main.async {
+                    result(response)
+                }
             })
         }
     }
@@ -404,7 +431,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 }
-                result(response)
+                DispatchQueue.main.async {
+                    result(response)
+                }
             })
         } else {
             Branch.getInstance().getCreditHistory { (creditHistory, error) in
@@ -419,7 +448,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 }
-                result(response)
+                DispatchQueue.main.async {
+                    result(response)
+                }
             }
         }
     }
@@ -431,6 +462,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
 
     private func isUserIdentified(result: @escaping FlutterResult) {
-        result(Branch.getInstance().isUserIdentified())
+        DispatchQueue.main.async {
+            result(Branch.getInstance().isUserIdentified())
+        }
     }
 }
