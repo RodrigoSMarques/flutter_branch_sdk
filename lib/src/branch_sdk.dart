@@ -8,26 +8,22 @@ class FlutterBranchSdk {
       const MethodChannel(_MESSAGE_CHANNEL);
   static const EventChannel _eventChannel = const EventChannel(_EVENT_CHANNEL);
 
-  static Stream<Map> _initSessionStream;
+  static Stream<Map>? _initSessionStream;
 
-  static FlutterBranchSdk _singleton;
+  static FlutterBranchSdk? _singleton;
 
   /// Constructs a singleton instance of [FlutterBranchSdk].
   factory FlutterBranchSdk() {
     if (_singleton == null) {
       _singleton = FlutterBranchSdk._();
     }
-    return _singleton;
+    return _singleton!;
   }
 
   FlutterBranchSdk._();
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
-    if (userId == null) {
-      throw ArgumentError('userId is required');
-    }
-
     Map<String, dynamic> _params = {};
     _params['userId'] = userId;
     _messageChannel.invokeMethod('setIdentity', _params);
@@ -35,14 +31,6 @@ class FlutterBranchSdk {
 
   ///Add key value pairs to all requests
   static void setRequestMetadata(String key, String value) {
-    if (key == null) {
-      throw ArgumentError('key is required');
-    }
-
-    if (value == null) {
-      throw ArgumentError('value is required');
-    }
-
     Map<String, dynamic> _params = {};
     _params['key'] = key;
     _params['value'] = value;
@@ -68,10 +56,6 @@ class FlutterBranchSdk {
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
   static void disableTracking(bool value) async {
-    if (value == null) {
-      throw ArgumentError('value is required');
-    }
-
     Map<String, dynamic> _params = {};
     _params['disable'] = value;
     _messageChannel.invokeMethod('setTrackingDisabled', _params);
@@ -84,7 +68,7 @@ class FlutterBranchSdk {
       _initSessionStream =
           _eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
 
-    return _initSessionStream;
+    return _initSessionStream!;
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and
@@ -95,16 +79,8 @@ class FlutterBranchSdk {
 
   ///Creates a short url for the BUO
   static Future<BranchResponse> getShortUrl(
-      {@required BranchUniversalObject buo,
-      @required BranchLinkProperties linkProperties}) async {
-    if (buo == null) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-
-    if (linkProperties == null) {
-      throw ArgumentError('linkProperties is required');
-    }
-
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties}) async {
     Map<String, dynamic> _params = {};
 
     _params['buo'] = buo.toMap();
@@ -124,23 +100,11 @@ class FlutterBranchSdk {
 
   ///Showing a Share Sheet
   static Future<BranchResponse> showShareSheet(
-      {@required BranchUniversalObject buo,
-      @required BranchLinkProperties linkProperties,
-      @required String messageText,
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
-    if (buo == null) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-
-    if (linkProperties == null) {
-      throw ArgumentError('linkProperties is required');
-    }
-
-    if (messageText == null) {
-      throw ArgumentError('shareText is required');
-    }
-
     Map<String, dynamic> _params = {};
 
     _params['buo'] = buo.toMap();
@@ -163,44 +127,30 @@ class FlutterBranchSdk {
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContent(
-      {@required BranchUniversalObject buo, BranchEvent branchEvent}) {
-    if (buo == null) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-
-    if (branchEvent == null) {
-      throw ArgumentError('eventType is required');
-    }
-
+      {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
     Map<String, dynamic> _params = {};
 
     _params['buo'] = buo.toMap();
-    if (branchEvent != null && branchEvent.toMap().isNotEmpty) {
+    if (branchEvent.toMap().isNotEmpty) {
       _params['event'] = branchEvent.toMap();
     }
     _messageChannel.invokeMethod('trackContent', _params);
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
-  static void trackContentWithoutBuo({BranchEvent branchEvent}) {
-    if (branchEvent == null) {
-      throw ArgumentError('eventType is required');
-    }
-
+  static void trackContentWithoutBuo({required BranchEvent branchEvent}) {
     Map<String, dynamic> _params = {};
 
-    if (branchEvent != null && branchEvent.toMap().isNotEmpty) {
-      _params['event'] = branchEvent.toMap();
+    if (branchEvent.toMap().isEmpty) {
+      throw ArgumentError('branchEvent is required');
     }
+    _params['event'] = branchEvent.toMap();
+
     _messageChannel.invokeMethod('trackContentWithoutBuo', _params);
   }
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
-  static void registerView({@required BranchUniversalObject buo}) {
-    if (buo == null) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-
+  static void registerView({required BranchUniversalObject buo}) {
     Map<String, dynamic> _params = {};
 
     _params['buo'] = buo.toMap();
@@ -211,13 +161,10 @@ class FlutterBranchSdk {
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
   ///For iOS:     List items on Spotlight
   static Future<bool> listOnSearch(
-      {@required BranchUniversalObject buo,
-      BranchLinkProperties linkProperties}) async {
-    if (buo == null) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-
+      {required BranchUniversalObject buo,
+      BranchLinkProperties? linkProperties}) async {
     Map<String, dynamic> _params = {};
+
     _params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
       _params['lp'] = linkProperties.toMap();
@@ -230,12 +177,8 @@ class FlutterBranchSdk {
   ///             This will remove the content from Google(Firebase) and other supported Indexing services
   ///For iOS:     Remove Branch Universal Object from Spotlight if privately indexed
   static Future<bool> removeFromSearch(
-      {@required BranchUniversalObject buo,
-      BranchLinkProperties linkProperties}) async {
-    if (buo == null) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-
+      {required BranchUniversalObject buo,
+      BranchLinkProperties? linkProperties}) async {
     Map<String, dynamic> _params = {};
     _params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
@@ -245,7 +188,7 @@ class FlutterBranchSdk {
   }
 
   ///Retrieves rewards for the current user/session
-  static Future<BranchResponse> loadRewards({String bucket}) async {
+  static Future<BranchResponse> loadRewards({String? bucket}) async {
     Map<String, dynamic> _params = {};
     if (bucket != null) _params['bucket'] = bucket;
 
@@ -265,11 +208,7 @@ class FlutterBranchSdk {
   ///If the number to redeem exceeds the number available in the bucket, all of the
   ///available credits will be redeemed instead.
   static Future<BranchResponse> redeemRewards(
-      {@required int count, String bucket}) async {
-    if (count == null) {
-      throw ArgumentError('Count credits is required');
-    }
-
+      {required int count, String? bucket}) async {
     Map<String, dynamic> _params = {};
     _params['count'] = count;
     if (bucket != null) _params['bucket'] = bucket;
@@ -287,7 +226,7 @@ class FlutterBranchSdk {
   }
 
   ///Gets the credit history
-  static Future<BranchResponse> getCreditHistory({String bucket}) async {
+  static Future<BranchResponse> getCreditHistory({String? bucket}) async {
     Map<String, dynamic> _params = {};
     if (bucket != null) _params['bucket'] = bucket;
 
@@ -308,10 +247,6 @@ class FlutterBranchSdk {
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
   ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
   static void setIOSSKAdNetworkMaxTime(int hours) {
-    if (hours == null) {
-      throw ArgumentError('Parameters hours is required');
-    }
-
     if (!Platform.isIOS) {
       return;
     }

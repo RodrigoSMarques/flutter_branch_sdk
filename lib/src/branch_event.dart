@@ -39,34 +39,30 @@ String getBranchEventAdTypeString(BranchEventAdType branchEventAdType) {
 }
 
 class BranchEvent {
-  BranchStandardEvent _branchStandardEvent;
-  String _eventName;
-  bool _isStandardEvent;
-  String transactionID;
-  BranchCurrencyType currency;
-  double revenue;
-  double shipping;
-  double tax;
-  String coupon;
-  String affiliation;
-  String eventDescription;
-  String searchQuery;
-  BranchEventAdType adType;
-  Map<String, String> _customData;
+  String _eventName = '';
+  bool _isStandardEvent = true;
+  String transactionID = '';
+  BranchCurrencyType? currency;
+  double revenue = -1;
+  double shipping = -1;
+  double tax = -1;
+  String coupon = '';
+  String affiliation = '';
+  String eventDescription = '';
+  String searchQuery = '';
+  BranchEventAdType? adType;
+  Map<String, String> _customData = {};
 
-  BranchEvent.standardEvent(this._branchStandardEvent) {
-    this._eventName = getBranchStandardEventString(this._branchStandardEvent);
+  BranchEvent.standardEvent(BranchStandardEvent branchStandardEvent) {
+    this._eventName = getBranchStandardEventString(branchStandardEvent);
     this._isStandardEvent = true;
-    this._customData = {};
   }
 
   BranchEvent.customEvent(this._eventName) {
     this._isStandardEvent = false;
-    this._customData = {};
   }
 
   void addCustomData(String key, dynamic value) {
-    if ((key == null) || (value == null)) return;
     this._customData[key] = value;
   }
 
@@ -79,25 +75,21 @@ class BranchEvent {
 
     ret["eventName"] = this._eventName;
     ret["isStandardEvent"] = this._isStandardEvent;
-    if (this.transactionID != null && this.transactionID.isNotEmpty)
+    if (this.transactionID.isNotEmpty)
       ret["transactionID"] = this.transactionID;
     if (this.currency != null)
-      ret["currency"] = getCurrencyTypeString(this.currency);
-    if (this.revenue != null) ret["revenue"] = this.revenue;
-    if (this.shipping != null) ret["shipping"] = this.shipping;
-    if (this.tax != null) ret["tax"] = this.tax;
-    if (this.coupon != null && this.coupon.isNotEmpty)
-      ret["coupon"] = this.coupon;
-    if (this.affiliation != null && this.affiliation.isNotEmpty)
-      ret["affiliation"] = this.affiliation;
-    if (this.eventDescription != null && this.eventDescription.isNotEmpty)
+      ret["currency"] = getCurrencyTypeString(this.currency!);
+    if (this.revenue != -1) ret["revenue"] = this.revenue;
+    if (this.shipping != -1) ret["shipping"] = this.shipping;
+    if (this.tax != -1) ret["tax"] = this.tax;
+    if (this.coupon.isNotEmpty) ret["coupon"] = this.coupon;
+    if (this.affiliation.isNotEmpty) ret["affiliation"] = this.affiliation;
+    if (this.eventDescription.isNotEmpty)
       ret["eventDescription"] = this.eventDescription;
-    if (this.searchQuery != null && this.searchQuery.isNotEmpty)
-      ret["searchQuery"] = this.searchQuery;
+    if (this.searchQuery.isNotEmpty) ret["searchQuery"] = this.searchQuery;
     if (this.adType != null)
-      ret["adType"] = getBranchEventAdTypeString(this.adType);
-    if (this._customData != null && this._customData.isNotEmpty)
-      ret["customData"] = _customData;
+      ret["adType"] = getBranchEventAdTypeString(this.adType!);
+    if (this._customData.isNotEmpty) ret["customData"] = _customData;
     return ret;
   }
 }
