@@ -1,3 +1,6 @@
+# 1.3.1
+* Android: fixed assertion failures due to reply messages that were sent on the wrong thread.
+
 # 1.3.0
 * iOS Native SDK Update 0.36.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
 
