@@ -5,8 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -149,7 +147,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         LogUtils.debug(DEBUG_NAME, "onListen call");
-        this.eventSink = new MainThreadEventSink(eventSink);
+        this.eventSink = eventSink;
         if (initialParams != null) {
             eventSink.success(initialParams);
             initialParams = null;
@@ -164,7 +162,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onCancel(Object o) {
         LogUtils.debug(DEBUG_NAME, "onCancel call");
-        this.eventSink = new MainThreadEventSink(null);;
+        this.eventSink = null;
         initialError = null;
         initialParams = null;
     }
@@ -173,7 +171,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      ActivityLifecycleCallbacks Interface Methods
      --------------------------------------------------------------------------------------------**/
     @Override
-    public void onActivityCreated(Activity activity, Bundle bundle) {}
+    public void onActivityCreated(Activity activity, Bundle bundle) {
+    }
 
     @Override
     public void onActivityStarted(Activity activity) {
@@ -218,8 +217,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      MethodCallHandler Interface Methods
      --------------------------------------------------------------------------------------------**/
     @Override
-    public void onMethodCall(@NonNull MethodCall call, @NonNull Result rawResult) {
-        Result result = new MethodResultWrapper(rawResult);
+    public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "getShortUrl":
                 getShortUrl(call, result);
@@ -642,91 +640,4 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "isUserIdentified call");
         result.success(Branch.getInstance(context).isUserIdentified());
     }
-
-    // MethodChannel.Result wrapper that responds on the platform thread.
-    private static class MethodResultWrapper implements Result {
-        private Result methodResult;
-        private Handler handler;
-
-        MethodResultWrapper(Result result) {
-            methodResult = result;
-            handler = new Handler(Looper.getMainLooper());
-        }
-
-        @Override
-        public void success(final Object result) {
-            handler.post(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            methodResult.success(result);
-                        }
-                    });
-        }
-
-        @Override
-        public void error(
-                final String errorCode, final String errorMessage, final Object errorDetails) {
-            handler.post(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            methodResult.error(errorCode, errorMessage, errorDetails);
-                        }
-                    });
-        }
-
-        @Override
-        public void notImplemented() {
-            handler.post(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            methodResult.notImplemented();
-                        }
-                    });
-        }
-    }
-
-    private static class MainThreadEventSink implements EventChannel.EventSink {
-        private EventChannel.EventSink eventSink;
-        private Handler handler;
-
-        MainThreadEventSink(EventChannel.EventSink eventSink) {
-            this.eventSink = eventSink;
-            handler = new Handler(Looper.getMainLooper());
-        }
-
-        @Override
-        public void success(final Object o) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    eventSink.success(o);
-                }
-            });
-        }
-
-        @Override
-        public void error(final String s, final String s1, final Object o) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    eventSink.error(s, s1, o);
-                }
-            });
-        }
-
-        @Override
-        public void endOfStream() {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    eventSink.endOfStream();
-                }
-            });
-        }
-    }
 }
-
-
