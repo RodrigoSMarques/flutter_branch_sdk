@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_branch_sdk'
-  s.version          = '1.3.1'
+  s.version          = '1.3.2'
   s.summary          = 'Flutter Plugin for Brach Metrics SDK - https:&#x2F;&#x2F;branch.io'
   s.description      = <<-DESC
 Flutter Plugin for Brach Metrics SDK - https:&#x2F;&#x2F;branch.io
