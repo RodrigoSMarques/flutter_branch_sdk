@@ -6,6 +6,7 @@ homepage: https://github.com/RodrigoSMarques/flutter_branch_sdk
 dependencies:
   flutter:
     sdk: flutter
+  js: ^0.6.2
 
 dev_dependencies:
   flutter_test:

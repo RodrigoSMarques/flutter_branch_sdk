@@ -2,15 +2,15 @@ part of flutter_branch_sdk;
 
 class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   /// Constructs a singleton instance of [FlutterBranchSdk].
-  // static FlutterBranchSdkAbstract _singleton;
-  // factory FlutterBranchSdk() {
-  //   if (_singleton == null) {
-  //     _singleton = FlutterBranchSdk._();
-  //   }
-  //   return _singleton;
-  // }
+  static FlutterBranchSdkWeb _singleton;
+  factory FlutterBranchSdkWeb() {
+    if (_singleton == null) {
+      _singleton = FlutterBranchSdkWeb._();
+    }
+    return _singleton;
+  }
 
-  // FlutterBranchSdk._();
+  FlutterBranchSdkWeb._();
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
@@ -45,7 +45,7 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
-  static Stream<Map<dynamic, dynamic>> initSession() {
+  static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
     throw UnsupportedError('Not implemented');
   }
 

@@ -69,9 +69,13 @@ class FlutterBranchSdk implements FlutterBranchSdkAbstract {
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
-  static Stream<Map<dynamic, dynamic>> initSession() {
+  static Stream<Map<dynamic, dynamic>> initSession({String branchKey}) {
     if (kIsWeb) {
-      return FlutterBranchSdkWeb.initSession();
+      if (branchKey == null) {
+        throw UnsupportedError(
+            "Branch web SDK implementation requires branchKey to be set in initialization");
+      }
+      return FlutterBranchSdkWeb.initSession(branchKey);
     } else {
       return FlutterBranchSdkNative.initSession();
     }
