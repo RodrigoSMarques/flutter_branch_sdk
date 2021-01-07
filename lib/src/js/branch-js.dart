@@ -1,11 +1,11 @@
 @JS()
-library branch.js;
+library branchjs;
 
 import 'package:flutter/foundation.dart';
 import 'package:js/js.dart';
 
 @JS('branch')
-class Branch {
+class BranchJS {
   /// addListener(event, listener)
   /// Parameters
   ///
@@ -40,7 +40,8 @@ class Branch {
   /// didCloseJourney: Journey's close animation has completed and it is no longer visible to the user.
   /// didCallJourneyClose: Emitted when developer calls branch.closeJourney() to dismiss Journey.
   @JS('addListener')
-  external static void addListener({String event, @required Function listener});
+  external static void addListener(
+      {String event, @required Function(String event, Object data) listener});
 
   // Some internal method not documented
   // @JS('applyCode')
@@ -413,7 +414,7 @@ class Branch {
   external static void init(
       {@required String branchKey,
       Map<String, dynamic> options,
-      Function callback});
+      Function(String err, Object data) callback});
 
   /// link(data, callback)
   /// Parameters
@@ -516,7 +517,7 @@ class Branch {
   ///      "Error message"
   /// );
   @JS('logout')
-  external static void logout({Function callback});
+  external static void logout({Function(String err) callback});
 
   /// redeem(amount, bucket, callback)
   /// Parameters
@@ -713,7 +714,8 @@ class Branch {
   /// );
   @JS('setIdentity')
   external static void setIdentity(
-      {@required String identity, Function callback});
+      {@required String identity,
+      Function(String error, Object data) callback});
 
   /// track(event, metadata, callback)
   /// Parameters

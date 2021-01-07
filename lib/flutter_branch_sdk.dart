@@ -2,9 +2,12 @@ library flutter_branch_sdk;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:js';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+
+import 'src/js/branch-js.dart';
 
 part 'src/branch_event.dart';
 part 'src/branch_response.dart';

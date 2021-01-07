@@ -1,5 +1,26 @@
 part of flutter_branch_sdk;
 
+/// A workaround to deep-converting an object from JS to a Dart Object.
+Object _jsToDart(jsObject) {
+  if (jsObject is JsArray || jsObject is Iterable) {
+    return jsObject.map(_jsToDart).toList();
+  }
+  if (jsObject is JsObject) {
+    return Map.fromIterable(
+      _getObjectKeys(jsObject),
+      value: (key) => _jsToDart(jsObject[key]),
+    );
+  }
+  return jsObject;
+}
+
+List<String> _getObjectKeys(JsObject object) => context['Object']
+    .callMethod('getOwnPropertyNames', [object])
+    .toList()
+    .cast<String>();
+
+Map<String, String> _metaData = {};
+
 class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   /// Constructs a singleton instance of [FlutterBranchSdk].
   static FlutterBranchSdkWeb _singleton;
@@ -10,21 +31,44 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
     return _singleton;
   }
 
+  // ignore: close_sinks
+  static final StreamController<Map<String, dynamic>> _eventChannel =
+      StreamController<Map<String, dynamic>>();
+
   FlutterBranchSdkWeb._();
+
+  static bool _userIdentified = false;
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
-    throw UnsupportedError('Not implemented');
+    if (userId == null) {
+      throw ArgumentError('userId is required');
+    }
+
+    BranchJS.setIdentity(
+        identity: userId,
+        callback: (error, data) {
+          if (error == null) {
+            _userIdentified = true;
+          }
+        });
+    // throw UnsupportedError('Not implemented');
   }
 
   ///Add key value pairs to all requests
   static void setRequestMetadata(String key, String value) {
-    throw UnsupportedError('Not implemented');
+    _metaData[key] = value;
+
+    // throw UnsupportedError('Not implemented');
   }
 
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
-    throw UnsupportedError('Not implemented');
+    BranchJS.logout(callback: (error) {
+      if (error == null) {
+        _userIdentified = false;
+      }
+    });
   }
 
   ///Returns the last parameters associated with the link that referred the user
@@ -40,20 +84,32 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
   static void disableTracking(bool value) async {
-    throw UnsupportedError('Not implemented');
+    BranchJS.disableTracking(disableTracking: value);
   }
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
   static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
-    throw UnsupportedError('Not implemented');
+    BranchJS.init(
+        branchKey: branchKey,
+        callback: (err, data) {
+          if (err == null) {
+            _eventChannel.sink.add(_jsToDart(data));
+          }
+        });
+
+    // BranchJS.addListener(listener: (String event, Object data) {
+
+    // });
+
+    return _eventChannel.stream;
+    // throw UnsupportedError('Not implemented');
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and
   ///handle deep links correctly when you first integrate Branch into your app.
   static void validateSDKIntegration() {
     throw UnsupportedError('Not implemented');
-    ;
   }
 
   ///Creates a short url for the BUO
@@ -134,7 +190,9 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
   ///If you call setIdentity, this device will have that identity associated with this user until logout is called.
   ///This includes persisting through uninstalls, as we track device id.
+  // NOTE: This is not really accurate for persistent checks...
   static Future<bool> isUserIdentified() async {
-    throw UnsupportedError('Not implemented');
+    return Future.value(_userIdentified);
+    // throw UnsupportedError('Not implemented');
   }
 }
