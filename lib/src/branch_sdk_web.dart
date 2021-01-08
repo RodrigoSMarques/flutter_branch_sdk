@@ -1,7 +1,8 @@
 part of flutter_branch_sdk;
 
 /// A workaround to deep-converting an object from JS to a Dart Object.
-dynamic _jsonToDartObject(data) => json.decode(stringify(data));
+dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
+dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 
 Map<String, String> _metaData = {};
 
@@ -74,7 +75,7 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
     BranchJS.init(branchKey, null, allowInterop((err, data) {
       if (err == null) {
-        _eventChannel.sink.add(_jsonToDartObject(data));
+        _eventChannel.sink.add(_jsObjectToDartObject(data));
       } else {
         _eventChannel.addError(Exception(err));
       }
@@ -98,7 +99,47 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   static Future<BranchResponse> getShortUrl(
       {@required BranchUniversalObject buo,
       @required BranchLinkProperties linkProperties}) async {
-    throw UnsupportedError('Not implemented');
+    Completer<BranchResponse> responseCompleter = Completer();
+
+    Map<String, dynamic> contentMetadata = {
+      if (buo.contentMetadata != null) ...buo.contentMetadata.toMap()
+    };
+
+    if (contentMetadata.containsKey('customMetadata')) {
+      var customMetadata = contentMetadata['customMetadata'];
+      contentMetadata.remove('customMetadata');
+      contentMetadata.addAll(customMetadata);
+    }
+
+    Map<String, dynamic> linkData = {
+      if (buo.canonicalIdentifier != null || buo.canonicalUrl != null)
+        "\$canonical_identifier": buo.canonicalIdentifier ?? buo.canonicalUrl,
+      if (buo.publiclyIndex != null) "\$publicly_indexable": buo.publiclyIndex,
+      if (buo.locallyIndex != null) "\$locally_indexable": buo.locallyIndex,
+      if (buo.title != null) "\$og_title": buo.title,
+      if (buo.contentDescription != null)
+        "\$og_description": buo.contentDescription,
+      if (buo.imageUrl != null) "\$og_image_url": buo.imageUrl,
+      if (contentMetadata.keys.length > 0) ...contentMetadata
+    };
+
+    Map<String, dynamic> data = {...linkProperties.toMap(), 'data': linkData};
+
+    print('link $data');
+
+    BranchJS.link(_dartObjectToJsObject(data), allowInterop((err, url) {
+      if (err == null) {
+        print('result url: $url');
+        responseCompleter.complete(BranchResponse<String>.success(result: url));
+      } else {
+        responseCompleter.completeError(BranchResponse<String>.error(
+            errorCode: err is String ? err : err.code,
+            errorMessage: err.message));
+      }
+    }));
+
+    return responseCompleter.future;
+    // throw UnsupportedError('Not implemented');
   }
 
   ///Showing a Share Sheet
@@ -124,7 +165,7 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
   static void registerView({@required BranchUniversalObject buo}) {
-    throw UnsupportedError('Not implemented');
+    throw UnsupportedError('Register view not supported by Branch JS sdk');
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search

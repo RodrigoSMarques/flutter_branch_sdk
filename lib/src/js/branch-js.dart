@@ -7,7 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:js/js.dart';
 
 @JS('JSON.stringify')
-external String stringify(Object obj);
+external String jsonStringify(Object obj);
+@JS('JSON.parse')
+external dynamic jsonParse(String str);
 
 @JS('branch')
 class BranchJS {
@@ -274,8 +276,8 @@ class BranchJS {
   ///     "Error message"
   /// );
   @JS('deepview')
-  external static void deepview(JsObject data,
-      [JsObject options, Function callback]);
+  external static void deepview(Object data,
+      [Object options, Function callback]);
 
   /// deepviewCta()
   /// Perform the branch deepview CTA (call to action) on mobile after branch.deepview() call is
@@ -412,7 +414,7 @@ class BranchJS {
   /// Note: Branch.init must be called prior to calling any other Branch functions.
   @JS('init')
   external static void init(String branchKey,
-      [JsObject options, Function callback]);
+      [Object options, Function callback]);
 
   /// link(data, callback)
   /// Parameters
@@ -494,7 +496,7 @@ class BranchJS {
   ///     'https://bnc.lt/l/3HZMytU-BW' // Branch deep linking URL
   /// );
   @JS('link')
-  external static void link(JsObject data, Function callback);
+  external static void link(Object data, Function callback);
 
   /// logout(callback)
   /// Parameters
@@ -642,8 +644,8 @@ class BranchJS {
   ///
   /// callback("Error message");
   @JS('sendSMS')
-  external static void sendSMS(String phone, JsObject linkData,
-      [JsObject options, Function callback]);
+  external static void sendSMS(String phone, Object linkData,
+      [Object options, Function callback]);
 
   /// setBranchViewData(data)
   /// Parameters
@@ -671,7 +673,7 @@ class BranchJS {
   ///   }
   /// });
   @JS('setBranchViewData')
-  external static void setBranchViewData(JsObject data);
+  external static void setBranchViewData(Object data);
 
   /// setIdentity(identity, callback)
   /// Parameters
@@ -733,7 +735,7 @@ class BranchJS {
   /// callback("Error message");
   @JS('track')
   external static void track(String event,
-      [JsObject metadata, Function callback]);
+      [Object metadata, Function callback]);
 
   // No documentation in reference
   // @JS('validateCode')
@@ -789,8 +791,8 @@ class BranchJS {
   ///     }
   /// });
   @JS('trackCommerceEvent')
-  external static void trackCommerceEvent(String name, JsObject commerceData,
-      [JsObject metadata, Function callback]);
+  external static void trackCommerceEvent(String name, Object commerceData,
+      [Object metadata, Function callback]);
 
   /// logEvent(event, event_data_and_custom_data, content_items, customer_event_alias, callback)
   /// Parameters
@@ -840,7 +842,7 @@ class BranchJS {
   /// - Custom Events do not contain content items and event data
   @JS('logEvent')
   external static void logEvent(String event,
-      [JsObject eventDataAndCustomData,
+      [Object eventDataAndCustomData,
       JsArray contentItems,
       String customerEventAlias,
       Function callback]);
