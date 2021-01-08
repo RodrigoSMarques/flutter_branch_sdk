@@ -1,6 +1,8 @@
 @JS()
 library branchjs;
 
+import 'dart:js';
+
 import 'package:flutter/foundation.dart';
 import 'package:js/js.dart';
 
@@ -41,7 +43,7 @@ class BranchJS {
   /// didCallJourneyClose: Emitted when developer calls branch.closeJourney() to dismiss Journey.
   @JS('addListener')
   external static void addListener(
-      {String event, @required Function(String event, Object data) listener});
+      [String event, Function(String event, JsObject data) listener]);
 
   // Some internal method not documented
   // @JS('applyCode')
@@ -82,8 +84,7 @@ class BranchJS {
   ///     data:{"walkScore":65, "transitScore":50}
   /// }, function(err) { console.log(err); });
   @JS('autoAppIndex')
-  external static void autoAppIndex(
-      {Map<String, dynamic> data, Function callback});
+  external static void autoAppIndex([data, Function(String err) callback]);
 
   // No documentation in full reference
   // @JS('banner')
@@ -106,7 +107,7 @@ class BranchJS {
   ///
   /// branch.closeJourney(function(err) { console.log(err); });
   @JS('closeJourney')
-  external static void closeJourney({Function callback});
+  external static void closeJourney([Function(String err) callback]);
 
   /// creditHistory(options, callback)
   /// Parameters
@@ -172,7 +173,7 @@ class BranchJS {
   /// );
   @JS('creditHistory')
   external static void creditHistory(
-      {Map<String, dynamic> options, @required Function callback});
+      [options, Function(String err, JsObject data) callback]);
 
   /// credits(callback)
   /// Parameters
@@ -198,7 +199,7 @@ class BranchJS {
   ///     }
   /// );
   @JS('credits')
-  external static void credits({@required Function callback});
+  external static void credits(Function(String err, JsObject data) callback);
 
   /// data(callback)
   /// Parameters
@@ -213,7 +214,7 @@ class BranchJS {
   /// If the Branch session has already been initialized, the callback will return
   /// immediately, otherwise, it will return once Branch has been initialized.
   @JS('data')
-  external static void data({Function callback});
+  external static void data([Function callback]);
 
   /// deepview(data, options, callback)
   /// Parameters
@@ -272,10 +273,8 @@ class BranchJS {
   ///     "Error message"
   /// );
   @JS('deepview')
-  external static void deepview(
-      {@required Map<String, dynamic> data,
-      Map<String, dynamic> options,
-      Function callback});
+  external static void deepview(JsObject data,
+      [JsObject options, Function(String err) callback]);
 
   /// deepviewCta()
   /// Perform the branch deepview CTA (call to action) on mobile after branch.deepview() call is
@@ -330,7 +329,7 @@ class BranchJS {
   /// Warning: For a referral program, you should not use unique awards for custom events and redeem
   /// pre-identify call. This can allow users to cheat the system.
   @JS('deepviewCta')
-  external static void deepviewCta({Function errorCallback});
+  external static void deepviewCta([Function(String err) errorCallback]);
 
   /// first(callback)
   /// Parameters
@@ -345,7 +344,7 @@ class BranchJS {
   /// If the Branch session has already been initialized, the callback will return
   /// immediately, otherwise, it will return once Branch has been initialized.
   @JS('first')
-  external static void first({Function callback});
+  external static void first([Function(JsObject data) callback]);
 
   // No documentation on reference
   // @JS('getCode')
@@ -411,10 +410,8 @@ class BranchJS {
   /// );
   /// Note: Branch.init must be called prior to calling any other Branch functions.
   @JS('init')
-  external static void init(
-      {@required String branchKey,
-      Map<String, dynamic> options,
-      Function(String err, Object data) callback});
+  external static void init(String branchKey,
+      [JsObject options, Function(String err, JsObject data) callback]);
 
   /// link(data, callback)
   /// Parameters
@@ -497,7 +494,7 @@ class BranchJS {
   /// );
   @JS('link')
   external static void link(
-      {@required Map<String, dynamic> data, @required Function callback});
+      JsObject data, Function(String err, String url) callback);
 
   /// logout(callback)
   /// Parameters
@@ -517,7 +514,7 @@ class BranchJS {
   ///      "Error message"
   /// );
   @JS('logout')
-  external static void logout({Function(String err) callback});
+  external static void logout([Function(String err) callback]);
 
   /// redeem(amount, bucket, callback)
   /// Parameters
@@ -552,8 +549,8 @@ class BranchJS {
   ///
   /// callback("Error message");
   @JS('redeem')
-  external static void redeem(
-      {@required int amount, @required String bucket, Function callback});
+  external static void redeem(int amount, String bucket,
+      [Function(String err) callback]);
 
   // No documentation on reference
   // @JS('referrals')
@@ -570,7 +567,8 @@ class BranchJS {
   /// passed a referrence to the same function that was passed to branch.addListener(), not
   /// just an identical clone of the function.
   @JS('removeListener')
-  external static void removeListener({@required Function listener});
+  external static void removeListener(
+      Function(String err, JsObject data) listener);
 
   /// sendSMS(phone, linkData, options, callback)
   /// Parameters
@@ -646,11 +644,8 @@ class BranchJS {
   ///
   /// callback("Error message");
   @JS('sendSMS')
-  external static void sendSMS(
-      {@required String phone,
-      @required Map<String, dynamic> linkData,
-      Map<String, dynamic> options,
-      Function callback});
+  external static void sendSMS(String phone, JsObject linkData,
+      [JsObject options, Function(String err) callback]);
 
   /// setBranchViewData(data)
   /// Parameters
@@ -678,7 +673,7 @@ class BranchJS {
   ///   }
   /// });
   @JS('setBranchViewData')
-  external static void setBranchViewData({@required Map<String, dynamic> data});
+  external static void setBranchViewData(JsObject data);
 
   /// setIdentity(identity, callback)
   /// Parameters
@@ -713,9 +708,8 @@ class BranchJS {
   ///      }
   /// );
   @JS('setIdentity')
-  external static void setIdentity(
-      {@required String identity,
-      Function(String error, Object data) callback});
+  external static void setIdentity(String identity,
+      [Function(String error, JsObject data) callback]);
 
   /// track(event, metadata, callback)
   /// Parameters
@@ -741,10 +735,8 @@ class BranchJS {
   ///
   /// callback("Error message");
   @JS('track')
-  external static void track(
-      {@required String event,
-      Map<String, dynamic> metadata,
-      Function callback});
+  external static void track(String event,
+      [JsObject metadata, Function callback]);
 
   // No documentation in reference
   // @JS('validateCode')
@@ -800,11 +792,8 @@ class BranchJS {
   ///     }
   /// });
   @JS('trackCommerceEvent')
-  external static void trackCommerceEvent(
-      {@required String name,
-      @required Map<String, dynamic> commerceData,
-      Map<String, dynamic> metadata,
-      Function callback});
+  external static void trackCommerceEvent(String name, JsObject commerceData,
+      [JsObject metadata, Function(String err) callback]);
 
   /// logEvent(event, event_data_and_custom_data, content_items, customer_event_alias, callback)
   /// Parameters
@@ -853,12 +842,11 @@ class BranchJS {
   /// - When firing Standard Events, send custom and event data as part of the same object
   /// - Custom Events do not contain content items and event data
   @JS('logEvent')
-  external static void logEvent(
-      {@required String event,
-      Map<String, dynamic> eventDataAndCustomData,
-      List<dynamic> contentItems,
+  external static void logEvent(String event,
+      [JsObject eventDataAndCustomData,
+      JsArray contentItems,
       String customerEventAlias,
-      Function callback});
+      Function(String err) callback]);
 
   /// disableTracking(disableTracking)
   /// Parameters
@@ -880,5 +868,5 @@ class BranchJS {
   /// information associated to them. You can change this behavior at any time, by calling the aforementioned function.
   /// The do-not-track mode state is persistent: it is saved for the user across browser sessions for the web site.
   @JS('disableTracking')
-  external static void disableTracking({bool disableTracking});
+  external static void disableTracking([bool disableTracking]);
 }

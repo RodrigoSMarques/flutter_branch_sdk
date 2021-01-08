@@ -45,13 +45,11 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
       throw ArgumentError('userId is required');
     }
 
-    BranchJS.setIdentity(
-        identity: userId,
-        callback: (error, data) {
-          if (error == null) {
-            _userIdentified = true;
-          }
-        });
+    BranchJS.setIdentity(userId, (error, data) {
+      if (error == null) {
+        _userIdentified = true;
+      }
+    });
     // throw UnsupportedError('Not implemented');
   }
 
@@ -64,7 +62,7 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
 
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
-    BranchJS.logout(callback: (error) {
+    BranchJS.logout((error) {
       if (error == null) {
         _userIdentified = false;
       }
@@ -84,19 +82,17 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
   static void disableTracking(bool value) async {
-    BranchJS.disableTracking(disableTracking: value);
+    BranchJS.disableTracking(value);
   }
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
   static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
-    BranchJS.init(
-        branchKey: branchKey,
-        callback: (err, data) {
-          if (err == null) {
-            _eventChannel.sink.add(_jsToDart(data));
-          }
-        });
+    BranchJS.init(branchKey, null, (err, data) {
+      if (err == null) {
+        _eventChannel.sink.add(_jsToDart(data));
+      }
+    });
 
     // BranchJS.addListener(listener: (String event, Object data) {
 
