@@ -1,23 +1,7 @@
 part of flutter_branch_sdk;
 
 /// A workaround to deep-converting an object from JS to a Dart Object.
-Object _jsToDart(jsObject) {
-  if (jsObject is JsArray || jsObject is Iterable) {
-    return jsObject.map(_jsToDart).toList();
-  }
-  if (jsObject is JsObject) {
-    return Map.fromIterable(
-      _getObjectKeys(jsObject),
-      value: (key) => _jsToDart(jsObject[key]),
-    );
-  }
-  return jsObject;
-}
-
-List<String> _getObjectKeys(JsObject object) => context['Object']
-    .callMethod('getOwnPropertyNames', [object])
-    .toList()
-    .cast<String>();
+dynamic _jsonToDartObject(data) => json.decode(stringify(data));
 
 Map<String, String> _metaData = {};
 
@@ -90,7 +74,9 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
     BranchJS.init(branchKey, null, allowInterop((err, data) {
       if (err == null) {
-        _eventChannel.sink.add(_jsToDart(data));
+        _eventChannel.sink.add(_jsonToDartObject(data));
+      } else {
+        _eventChannel.addError(Exception(err));
       }
     }));
 

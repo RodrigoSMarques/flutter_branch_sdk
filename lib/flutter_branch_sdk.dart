@@ -1,6 +1,7 @@
 library flutter_branch_sdk;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:js';
 

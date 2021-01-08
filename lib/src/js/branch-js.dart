@@ -6,6 +6,9 @@ import 'dart:js';
 import 'package:flutter/foundation.dart';
 import 'package:js/js.dart';
 
+@JS('JSON.stringify')
+external String stringify(Object obj);
+
 @JS('branch')
 class BranchJS {
   /// addListener(event, listener)
@@ -42,8 +45,7 @@ class BranchJS {
   /// didCloseJourney: Journey's close animation has completed and it is no longer visible to the user.
   /// didCallJourneyClose: Emitted when developer calls branch.closeJourney() to dismiss Journey.
   @JS('addListener')
-  external static void addListener(
-      [String event, Function(String event, JsObject data) listener]);
+  external static void addListener([String event, Function listener]);
 
   // Some internal method not documented
   // @JS('applyCode')
@@ -84,7 +86,7 @@ class BranchJS {
   ///     data:{"walkScore":65, "transitScore":50}
   /// }, function(err) { console.log(err); });
   @JS('autoAppIndex')
-  external static void autoAppIndex([data, Function(String err) callback]);
+  external static void autoAppIndex([data, Function callback]);
 
   // No documentation in full reference
   // @JS('banner')
@@ -107,7 +109,7 @@ class BranchJS {
   ///
   /// branch.closeJourney(function(err) { console.log(err); });
   @JS('closeJourney')
-  external static void closeJourney([Function(String err) callback]);
+  external static void closeJourney([Function callback]);
 
   /// creditHistory(options, callback)
   /// Parameters
@@ -172,8 +174,7 @@ class BranchJS {
   /// ]
   /// );
   @JS('creditHistory')
-  external static void creditHistory(
-      [options, Function(String err, JsObject data) callback]);
+  external static void creditHistory([options, Function callback]);
 
   /// credits(callback)
   /// Parameters
@@ -199,7 +200,7 @@ class BranchJS {
   ///     }
   /// );
   @JS('credits')
-  external static void credits(Function(String err, JsObject data) callback);
+  external static void credits(Function callback);
 
   /// data(callback)
   /// Parameters
@@ -274,7 +275,7 @@ class BranchJS {
   /// );
   @JS('deepview')
   external static void deepview(JsObject data,
-      [JsObject options, Function(String err) callback]);
+      [JsObject options, Function callback]);
 
   /// deepviewCta()
   /// Perform the branch deepview CTA (call to action) on mobile after branch.deepview() call is
@@ -329,7 +330,7 @@ class BranchJS {
   /// Warning: For a referral program, you should not use unique awards for custom events and redeem
   /// pre-identify call. This can allow users to cheat the system.
   @JS('deepviewCta')
-  external static void deepviewCta([Function(String err) errorCallback]);
+  external static void deepviewCta([Function errorCallback]);
 
   /// first(callback)
   /// Parameters
@@ -344,7 +345,7 @@ class BranchJS {
   /// If the Branch session has already been initialized, the callback will return
   /// immediately, otherwise, it will return once Branch has been initialized.
   @JS('first')
-  external static void first([Function(JsObject data) callback]);
+  external static void first([Function callback]);
 
   // No documentation on reference
   // @JS('getCode')
@@ -411,7 +412,7 @@ class BranchJS {
   /// Note: Branch.init must be called prior to calling any other Branch functions.
   @JS('init')
   external static void init(String branchKey,
-      [JsObject options, Function(String err, JsObject data) callback]);
+      [JsObject options, Function callback]);
 
   /// link(data, callback)
   /// Parameters
@@ -493,8 +494,7 @@ class BranchJS {
   ///     'https://bnc.lt/l/3HZMytU-BW' // Branch deep linking URL
   /// );
   @JS('link')
-  external static void link(
-      JsObject data, Function(String err, String url) callback);
+  external static void link(JsObject data, Function callback);
 
   /// logout(callback)
   /// Parameters
@@ -514,7 +514,7 @@ class BranchJS {
   ///      "Error message"
   /// );
   @JS('logout')
-  external static void logout([Function(String err) callback]);
+  external static void logout([Function callback]);
 
   /// redeem(amount, bucket, callback)
   /// Parameters
@@ -549,8 +549,7 @@ class BranchJS {
   ///
   /// callback("Error message");
   @JS('redeem')
-  external static void redeem(int amount, String bucket,
-      [Function(String err) callback]);
+  external static void redeem(int amount, String bucket, [Function callback]);
 
   // No documentation on reference
   // @JS('referrals')
@@ -567,8 +566,7 @@ class BranchJS {
   /// passed a referrence to the same function that was passed to branch.addListener(), not
   /// just an identical clone of the function.
   @JS('removeListener')
-  external static void removeListener(
-      Function(String err, JsObject data) listener);
+  external static void removeListener(Function listener);
 
   /// sendSMS(phone, linkData, options, callback)
   /// Parameters
@@ -645,7 +643,7 @@ class BranchJS {
   /// callback("Error message");
   @JS('sendSMS')
   external static void sendSMS(String phone, JsObject linkData,
-      [JsObject options, Function(String err) callback]);
+      [JsObject options, Function callback]);
 
   /// setBranchViewData(data)
   /// Parameters
@@ -708,8 +706,7 @@ class BranchJS {
   ///      }
   /// );
   @JS('setIdentity')
-  external static void setIdentity(String identity,
-      [Function(String error, JsObject data) callback]);
+  external static void setIdentity(String identity, [Function callback]);
 
   /// track(event, metadata, callback)
   /// Parameters
@@ -793,7 +790,7 @@ class BranchJS {
   /// });
   @JS('trackCommerceEvent')
   external static void trackCommerceEvent(String name, JsObject commerceData,
-      [JsObject metadata, Function(String err) callback]);
+      [JsObject metadata, Function callback]);
 
   /// logEvent(event, event_data_and_custom_data, content_items, customer_event_alias, callback)
   /// Parameters
@@ -846,7 +843,7 @@ class BranchJS {
       [JsObject eventDataAndCustomData,
       JsArray contentItems,
       String customerEventAlias,
-      Function(String err) callback]);
+      Function callback]);
 
   /// disableTracking(disableTracking)
   /// Parameters
