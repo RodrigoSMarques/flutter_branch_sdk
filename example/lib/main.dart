@@ -116,7 +116,11 @@ class _MyAppState extends State<MyApp> {
       publiclyIndex: true,
       locallyIndex: true,
     );
-    FlutterBranchSdk.registerView(buo: buo);
+    try {
+      FlutterBranchSdk.registerView(buo: buo);
+    } catch (e) {
+      print(e);
+    }
 
     lp = BranchLinkProperties(
         channel: 'facebook',
@@ -198,7 +202,11 @@ class _MyAppState extends State<MyApp> {
               RaisedButton(
                 child: Text('Validate SDK Integration'),
                 onPressed: () {
-                  FlutterBranchSdk.validateSDKIntegration();
+                  try {
+                    FlutterBranchSdk.validateSDKIntegration();
+                  } catch (e) {
+                    print(e);
+                  }
                   if (Platform.isAndroid) {
                     showSnackBar(
                         message: 'Check messages in run log or logcat');
@@ -260,7 +268,11 @@ class _MyAppState extends State<MyApp> {
                     child: RaisedButton(
                       child: Text('Register view'),
                       onPressed: () {
-                        FlutterBranchSdk.registerView(buo: buo);
+                        try {
+                          FlutterBranchSdk.registerView(buo: buo);
+                        } catch (e) {
+                          print(e);
+                        }
                       },
                     ),
                   ),
@@ -271,15 +283,19 @@ class _MyAppState extends State<MyApp> {
                     child: RaisedButton(
                       child: Text('Track content'),
                       onPressed: () {
-                        FlutterBranchSdk.trackContent(
-                            buo: buo, branchEvent: eventStandart);
-                        FlutterBranchSdk.trackContent(
-                            buo: buo, branchEvent: eventCustom);
+                        try {
+                          FlutterBranchSdk.trackContent(
+                              buo: buo, branchEvent: eventStandart);
+                          FlutterBranchSdk.trackContent(
+                              buo: buo, branchEvent: eventCustom);
 
-                        FlutterBranchSdk.trackContentWithoutBuo(
-                            branchEvent: eventStandart);
-                        FlutterBranchSdk.trackContentWithoutBuo(
-                            branchEvent: eventCustom);
+                          FlutterBranchSdk.trackContentWithoutBuo(
+                              branchEvent: eventStandart);
+                          FlutterBranchSdk.trackContentWithoutBuo(
+                              branchEvent: eventCustom);
+                        } catch (e) {
+                          print(e);
+                        }
                       },
                     ),
                   ),

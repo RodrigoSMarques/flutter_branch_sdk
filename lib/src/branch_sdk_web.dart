@@ -45,11 +45,11 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
       throw ArgumentError('userId is required');
     }
 
-    BranchJS.setIdentity(userId, (error, data) {
+    BranchJS.setIdentity(userId, allowInterop((error, data) {
       if (error == null) {
         _userIdentified = true;
       }
-    });
+    }));
     // throw UnsupportedError('Not implemented');
   }
 
@@ -62,11 +62,11 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
 
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
-    BranchJS.logout((error) {
+    BranchJS.logout(allowInterop((error) {
       if (error == null) {
         _userIdentified = false;
       }
-    });
+    }));
   }
 
   ///Returns the last parameters associated with the link that referred the user
@@ -88,11 +88,11 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
   static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
-    BranchJS.init(branchKey, null, (err, data) {
+    BranchJS.init(branchKey, null, allowInterop((err, data) {
       if (err == null) {
         _eventChannel.sink.add(_jsToDart(data));
       }
-    });
+    }));
 
     // BranchJS.addListener(listener: (String event, Object data) {
 
@@ -147,7 +147,6 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
       {@required BranchUniversalObject buo,
       BranchLinkProperties linkProperties}) async {
     throw UnsupportedError('Not implemented');
-    ;
   }
 
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
