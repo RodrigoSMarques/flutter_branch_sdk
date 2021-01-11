@@ -125,8 +125,6 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
 
     Map<String, dynamic> data = {...linkProperties.toMap(), 'data': linkData};
 
-    print('link $data');
-
     BranchJS.link(_dartObjectToJsObject(data), allowInterop((err, url) {
       if (err == null) {
         print('result url: $url');
@@ -155,12 +153,20 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContent(
       {@required BranchUniversalObject buo, BranchEvent branchEvent}) {
-    throw UnsupportedError('Not implemented');
+    Map<String, dynamic> contentMetadata = {
+      if (buo.contentMetadata != null) ...buo.contentMetadata.toMap()
+    };
+
+    BranchJS.logEvent(branchEvent._eventName,
+        _dartObjectToJsObject({...branchEvent.toMap(), ...contentMetadata}));
+    // throw UnsupportedError('Not implemented')
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContentWithoutBuo({BranchEvent branchEvent}) {
-    throw UnsupportedError('Not implemented');
+    BranchJS.logEvent(
+        branchEvent._eventName, _dartObjectToJsObject(branchEvent.toMap()));
+    // throw UnsupportedError('Not implemented');
   }
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.

@@ -840,6 +840,80 @@ class BranchJS {
   /// - logEvent() sends user_data automatically
   /// - When firing Standard Events, send custom and event data as part of the same object
   /// - Custom Events do not contain content items and event data
+  ///
+  /// ### Example -- How to log a Commerce Event
+  /// var event_and_custom_data = {
+  ///    "transaction_id": "tras_Id_1232343434",
+  ///    "currency": "USD",
+  ///    "revenue": 180.2,
+  ///    "shipping": 10.5,
+  ///    "tax": 13.5,
+  ///    "coupon": "promo-1234",
+  ///    "affiliation": "high_fi",
+  ///    "description": "Preferred purchase",
+  ///    "purchase_loc": "Palo Alto",
+  ///    "store_pickup": "unavailable"
+  /// };
+  /// var content_items = [
+  /// {
+  ///    "$content_schema": "COMMERCE_PRODUCT",
+  ///    "$og_title": "Nike Shoe",
+  ///    "$og_description": "Start loving your steps",
+  ///    "$og_image_url": "http:///example.com/img1.jpg",
+  ///    "$canonical_identifier": "nike/1234",
+  ///    "$publicly_indexable": false,
+  ///    "$price": 101.2,
+  ///    "$locally_indexable": true,
+  ///    "$quantity": 1,
+  ///    "$sku": "1101123445",
+  ///    "$product_name": "Runner",
+  ///    "$product_brand": "Nike",
+  ///    "$product_category": "Sporting Goods",
+  ///    "$product_variant": "XL",
+  ///    "$rating_average": 4.2,
+  ///    "$rating_count": 5,
+  ///    "$rating_max": 2.2,
+  ///    "$creation_timestamp": 1499892854966,
+  ///    "$exp_date": 1499892854966,
+  ///    "$keywords": [ "sneakers", "shoes" ],
+  ///    "$address_street": "230 South LaSalle Street",
+  ///    "$address_city": "Chicago",
+  ///    "$address_region": "IL",
+  ///    "$address_country": "US",
+  ///    "$address_postal_code": "60604",
+  ///    "$latitude": 12.07,
+  ///    "$longitude": -97.5,
+  ///    "$image_captions": [ "my_img_caption1", "my_img_caption_2" ],
+  ///    "$condition": "NEW",
+  ///    "$custom_fields": {"foo1":"bar1","foo2":"bar2"}
+  /// },
+  /// {
+  ///    "$og_title": "Nike Woolen Sox",
+  ///    "$canonical_identifier": "nike/5324",
+  ///    "$og_description": "Fine combed woolen sox for those who love your foot",
+  ///    "$publicly_indexable": false,
+  ///    "$price": 80.2,
+  ///    "$locally_indexable": true,
+  ///    "$quantity": 5,
+  ///    "$sku": "110112467",
+  ///    "$product_name": "Woolen Sox",
+  ///    "$product_brand": "Nike",
+  ///    "$product_category": "Apparel & Accessories",
+  ///    "$product_variant": "Xl",
+  ///    "$rating_average": 3.3,
+  ///    "$rating_count": 5,
+  ///    "$rating_max": 2.8,
+  ///    "$creation_timestamp": 1499892854966
+  /// }];
+  /// var customer_event_alias = "event alias";
+  /// branch.logEvent(
+  ///    "PURCHASE",
+  ///    event_and_custom_data,
+  ///    content_items,
+  ///    customer_event_alias,
+  ///    function(err) { console.log(err); }
+  /// );
+
   @JS('logEvent')
   external static void logEvent(String event,
       [Object eventDataAndCustomData,
