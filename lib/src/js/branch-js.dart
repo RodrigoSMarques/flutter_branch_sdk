@@ -2,6 +2,7 @@
 library branchjs;
 
 import 'dart:js';
+import 'dart:js_util';
 
 import 'package:flutter/foundation.dart';
 import 'package:js/js.dart';
@@ -10,6 +11,12 @@ import 'package:js/js.dart';
 external String jsonStringify(Object obj);
 @JS('JSON.parse')
 external dynamic jsonParse(String str);
+
+@JS('navigator.share')
+external dynamic navigatorShare(Object data);
+
+@JS('prompt')
+external dynamic browserPrompt(String message, [String data]);
 
 @JS('branch')
 class BranchJS {
