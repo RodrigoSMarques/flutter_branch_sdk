@@ -86,17 +86,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
         if (initialParams != nil) {
-            DispatchQueue.main.async {
-                self.eventSink!(self.initialParams)
-            }
+            self.eventSink!(self.initialParams)
             initialParams = nil
             initialError = nil
         } else if (initialError != nil) {
-            DispatchQueue.main.async {
-                self.eventSink!(FlutterError(code: String(self.initialError!.code),
-                                             message: self.initialError!.localizedDescription,
-                                             details: nil))
-            }
+            self.eventSink!(FlutterError(code: String(self.initialError!.code),
+                                         message: self.initialError!.localizedDescription,
+                                         details: nil))
+            
             initialParams = nil
             initialError = nil
         }

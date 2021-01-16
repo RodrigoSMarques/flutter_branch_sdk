@@ -1,3 +1,9 @@
+# 1.3.3
+* Fix crash when setting expirationDateInMilliSec on Android
+
+# 1.3.2
+* iOS: fixed assertion failures due to reply messages that were sent on the wrong thread.
+
 # 1.3.1
 * Android: fixed assertion failures due to reply messages that were sent on the wrong thread.
 
