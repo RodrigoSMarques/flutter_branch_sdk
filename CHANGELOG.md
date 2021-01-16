@@ -1,5 +1,7 @@
 # 2.0.0-nullsafety.1
 * Android: fixed assertion failures due to reply messages that were sent on the wrong thread.
+* iOS: fixed assertion failures due to reply messages that were sent on the wrong thread.
+* Fix crash when setting expirationDateInMilliSec on Android
 
 # 2.0.0-nullsafety.0
 * Initial support for null safety

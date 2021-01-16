@@ -12,36 +12,36 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
-
+    
     //---------------------------------------------------------------------------------------------
     // Plugin registry
     // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = SwiftFlutterBranchSdkPlugin()
-
+        
         methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel!.setStreamHandler(instance)
-
+        
         registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
     }
-
+    
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         #if DEBUG
         Branch.getInstance().enableLogging()
         #endif
-
+        
         let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
-
+        
         print("Branch Check Apple ADS active: \(String(describing:enableAppleADS))");
-
+        
         if enableAppleADS {
             // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
             print("Branch Apple ADS - delayInitToCheckForSearchAds");
             Branch.getInstance().delayInitToCheckForSearchAds()
         }
-
+        
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
@@ -64,21 +64,21 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         }
         return true
     }
-
+    
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         let branchHandled = Branch.getInstance().application(app, open: url, options: options)
         return branchHandled
     }
-
+    
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
         let handledByBranch = Branch.getInstance().continue(userActivity)
         return handledByBranch
     }
-
+    
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
         Branch.getInstance().handlePushNotification(userInfo)
     }
-
+    
     //---------------------------------------------------------------------------------------------
     // FlutterStreamHandler Interface Methods
     // --------------------------------------------------------------------------------------------
@@ -86,30 +86,26 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
         if (initialParams != nil) {
-            DispatchQueue.main.async {
-                self.eventSink!(self.initialParams)
-            }
+            self.eventSink!(self.initialParams)
             initialParams = nil
             initialError = nil
         } else if (initialError != nil) {
-            DispatchQueue.main.async {
-                self.eventSink!(FlutterError(code: String(self.initialError!.code),
-                                             message: self.initialError!.localizedDescription,
-                                             details: nil))
-            }
+            self.eventSink!(FlutterError(code: String(self.initialError!.code),
+                                         message: self.initialError!.localizedDescription,
+                                         details: nil))
             initialParams = nil
             initialError = nil
         }
         return nil
     }
-
+    
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         eventSink = nil
         initialParams = nil
         initialError = nil
         return nil
     }
-
+    
     //---------------------------------------------------------------------------------------------
     // FlutterMethodChannel Interface Methods
     // --------------------------------------------------------------------------------------------
@@ -176,7 +172,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             result(FlutterMethodNotImplemented)
         }
     }
-
+    
     //---------------------------------------------------------------------------------------------
     // Branch SDK Call Methods
     // --------------------------------------------------------------------------------------------
@@ -186,7 +182,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let lpDict = args["lp"] as! [String: Any?]
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
-
+        
         let response : NSMutableDictionary! = [:]
         buo?.getShortUrl(with: lp!) { (url, error) in
             if (error == nil) {
@@ -214,7 +210,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
         let controller = UIApplication.shared.keyWindow!.rootViewController as! FlutterViewController
-
+        
         let response : NSMutableDictionary! = [:]
         buo?.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
             print(activityType ?? "")
@@ -236,7 +232,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func validateSDKIntegration() {
         Branch.getInstance().validateSDKIntegration()
     }
-
+    
     private func trackContent(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
@@ -246,22 +242,21 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         event!.contentItems = [ buo! ]
         event!.logEvent()
     }
-
+    
     private func trackContentWithoutBuo(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let eventDict = args["event"] as! [String: Any?]
         let event: BranchEvent? = convertToEvent(dict : eventDict)
         event!.logEvent()
     }
-
+    
     private func registerView(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-
         buo!.registerView()
     }
-
+    
     private func listOnSearch(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
@@ -296,7 +291,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
-
+    
     private func removeFromSearch(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
@@ -314,7 +309,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
-
+    
     private func setIdentity(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let userId = args["userId"] as! String
@@ -331,7 +326,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func logout() {
         Branch.getInstance().logout()
     }
-
+    
     private func getLatestReferringParams(result: @escaping FlutterResult) {
         let latestParams = Branch.getInstance().getLatestReferringParams()
         DispatchQueue.main.async {
@@ -351,7 +346,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let value = args["disable"] as! Bool
         Branch.setTrackingDisabled(value)
     }
-
+    
     private func loadRewards(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let response : NSMutableDictionary! = [:]
@@ -382,7 +377,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let count = args["count"] as! Int
         let response : NSMutableDictionary! = [:]
-
+        
         if let bucket = args["bucket"] as? String {
             Branch.getInstance().redeemRewards(count, forBucket: bucket, callback: {(success, error) in
                 if success {
@@ -417,12 +412,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             })
         }
     }
-
+    
     private func getCreditHistory(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let response : NSMutableDictionary! = [:]
         let data : NSMutableDictionary! = [:]
-
+        
         if let bucket = args["bucket"] as? String {
             Branch.getInstance().getCreditHistory(forBucket: bucket, andCallback: { (creditHistory, error) in
                 if error == nil {
@@ -465,7 +460,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
         Branch.getInstance().setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
     }
-
+    
     private func isUserIdentified(result: @escaping FlutterResult) {
         DispatchQueue.main.async {
             result(Branch.getInstance().isUserIdentified())

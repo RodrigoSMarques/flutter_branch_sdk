@@ -117,8 +117,9 @@ class _MyAppState extends State<MyApp> {
       keywords: ['Plugin', 'Branch', 'Flutter'],
       publiclyIndex: true,
       locallyIndex: true,
-    );
-    FlutterBranchSdk.registerView(buo: buo!);
+      expirationDateInMilliSec:
+          DateTime.now().add(Duration(days: 365)).millisecondsSinceEpoch);
+   FlutterBranchSdk.registerView(buo: buo!);
 
     lp = BranchLinkProperties(
         channel: 'facebook',
