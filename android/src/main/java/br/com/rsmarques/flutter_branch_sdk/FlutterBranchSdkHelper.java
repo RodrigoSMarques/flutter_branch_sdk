@@ -4,7 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,7 +44,8 @@ public class FlutterBranchSdkHelper {
         if (argsMap.containsKey("keywords"))
             buo.addKeyWords((ArrayList<String>) argsMap.get("keywords"));
         if (argsMap.containsKey("expirationDate"))
-            buo.setContentExpiration((Date) argsMap.get("expirationDate"));
+            buo.setContentExpiration(new Date((long) argsMap.get("expirationDate")));
+
         if (argsMap.containsKey("locallyIndex")) {
             boolean value = (boolean) argsMap.get("locallyIndex");
             if (value) {

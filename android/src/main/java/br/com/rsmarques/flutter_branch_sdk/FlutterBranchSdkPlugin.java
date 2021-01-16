@@ -63,6 +63,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
 
     public static void registerWith(Registrar registrar) {
+        LogUtils.debug(DEBUG_NAME, "registerWith call");
         if (registrar.activity() == null) {
             // When a background flutter view tries to register the plugin, the registrar has no activity.
             // We stop the registration process as this plugin is foreground only.
@@ -76,15 +77,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+        LogUtils.debug(DEBUG_NAME, "onAttachedToEngine call");
         setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext());
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        LogUtils.debug(DEBUG_NAME, "onDetachedFromEngine call");
         teardownChannels();
     }
 
     private void setupChannels(BinaryMessenger messenger, Context context) {
+        LogUtils.debug(DEBUG_NAME, "setupChannels call");
         this.context = context;
 
         methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
@@ -97,11 +101,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setActivity(Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "setActivity call");
         this.activity = activity;
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
 
     private void teardownChannels() {
+        LogUtils.debug(DEBUG_NAME, "teardownChannels call");
         this.activityPluginBinding = null;
         this.activity = null;
         this.context = null;
@@ -112,6 +118,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        LogUtils.debug(DEBUG_NAME, "onAttachedToActivity call");
         this.activityPluginBinding = activityPluginBinding;
         setActivity(activityPluginBinding.getActivity());
         activityPluginBinding.addOnNewIntentListener(this);
@@ -119,17 +126,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onDetachedFromActivity() {
+        LogUtils.debug(DEBUG_NAME, "onDetachedFromActivity call");
         activityPluginBinding.removeOnNewIntentListener(this);
         this.activity = null;
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
+        LogUtils.debug(DEBUG_NAME, "onDetachedFromActivityForConfigChanges call");
         onDetachedFromActivity();
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+        LogUtils.debug(DEBUG_NAME, "onReattachedToActivityForConfigChanges call");
         onAttachedToActivity(activityPluginBinding);
     }
 
@@ -138,6 +148,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
+        LogUtils.debug(DEBUG_NAME, "onListen call");
         this.eventSink = new MainThreadEventSink(eventSink);
         if (initialParams != null) {
             eventSink.success(initialParams);
@@ -152,6 +163,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onCancel(Object o) {
+        LogUtils.debug(DEBUG_NAME, "onCancel call");
         this.eventSink = new MainThreadEventSink(null);;
         initialError = null;
         initialParams = null;
@@ -165,6 +177,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityStarted(Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "onActivityStarted call");
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
     }
 
@@ -182,6 +195,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "onActivityDestroyed call");
         if (this.activity == activity) {
             activity.getApplication().unregisterActivityLifecycleCallbacks(this);
         }
@@ -192,6 +206,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      --------------------------------------------------------------------------------------------**/
     @Override
     public boolean onNewIntent(Intent intent) {
+        LogUtils.debug(DEBUG_NAME, "onNewIntent call");
         if (this.activity != null) {
             this.activity.setIntent(intent);
             Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
@@ -273,11 +288,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 @Override
                 public void onInitFinished(JSONObject params, BranchError error) {
                     if (error == null) {
-                        Log.d(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
                         try {
                             initialParams = branchSdkHelper.paramsToMap(params);
                         } catch (JSONException e) {
-                            Log.d(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
+                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
                             return;
                         }
                         if (eventSink != null) {
@@ -285,7 +300,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             initialParams = null;
                         }
                     } else {
-                        Log.d(DEBUG_NAME, "BranchReferralInitListener - error: " + error.toString());
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error.toString());
                         if (eventSink != null) {
                             eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(),null);
                             initialError = null;
@@ -317,7 +332,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             public void onLinkCreate(String url, BranchError error) {
 
                 if (error == null) {
-                    Log.d(DEBUG_NAME, "Branch link to share: " + url);
+                    LogUtils.debug(DEBUG_NAME, "Branch link to share: " + url);
                     response.put("success", true);
                     response.put("url", url);
                 } else {
@@ -363,7 +378,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     @Override
                     public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
                         if (error == null) {
-                            Log.d(DEBUG_NAME, "Branch link share: " + sharedLink);
+                            LogUtils.debug(DEBUG_NAME, "Branch link share: " + sharedLink);
                             response.put("success", Boolean.valueOf(true));
                             response.put("url", sharedLink);
                         } else {

@@ -1,7 +1,7 @@
 PODS:
   - Branch (0.36.0)
   - Flutter (1.0.0)
-  - flutter_branch_sdk (1.3.1):
+  - flutter_branch_sdk (1.3.2):
     - Branch (~> 0.36.0)
     - Flutter
 
@@ -22,7 +22,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Branch: 8aebcb7a6465f19f9f4d315acced369ae078d3f2
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_branch_sdk: f20121b7f2a10923aa79f0a16627d217a1b465b6
+  flutter_branch_sdk: ecbe8c173d747c9f8d18a74e72de96cc9159375f
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
