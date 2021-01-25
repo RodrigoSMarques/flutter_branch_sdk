@@ -101,21 +101,22 @@ class _MyAppState extends State<MyApp> {
     */
 
     buo = BranchUniversalObject(
-      canonicalIdentifier: 'flutter/branch',
-      title: 'Flutter Branch Plugin',
-      imageUrl:
-          'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
-      contentDescription: 'Flutter Branch Description',
-      contentMetadata: BranchContentMetaData()
-        ..addCustomMetadata('custom_string', 'abc')
-        ..addCustomMetadata('custom_number', 12345)
-        ..addCustomMetadata('custom_bool', true)
-        ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
-        ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
-      keywords: ['Plugin', 'Branch', 'Flutter'],
-      publiclyIndex: true,
-      locallyIndex: true,
-    );
+        canonicalIdentifier: 'flutter/branch',
+        title: 'Flutter Branch Plugin',
+        imageUrl:
+            'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
+        contentDescription: 'Flutter Branch Description',
+        contentMetadata: BranchContentMetaData()
+          ..addCustomMetadata('custom_string', 'abc')
+          ..addCustomMetadata('custom_number', 12345)
+          ..addCustomMetadata('custom_bool', true)
+          ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
+          ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
+        keywords: ['Plugin', 'Branch', 'Flutter'],
+        publiclyIndex: true,
+        locallyIndex: true,
+        expirationDateInMilliSec:
+            DateTime.now().add(Duration(days: 365)).millisecondsSinceEpoch);
     try {
       FlutterBranchSdk.registerView(buo: buo);
     } catch (e) {
@@ -203,7 +204,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Validate SDK Integration'),
                 onPressed: () {
                   try {
-                    FlutterBranchSdk.validateSDKIntegration();
+                  FlutterBranchSdk.validateSDKIntegration();
                   } catch (e) {
                     print(e);
                   }
@@ -269,7 +270,7 @@ class _MyAppState extends State<MyApp> {
                       child: Text('Register view'),
                       onPressed: () {
                         try {
-                          FlutterBranchSdk.registerView(buo: buo);
+                        FlutterBranchSdk.registerView(buo: buo);
                         } catch (e) {
                           print(e);
                         }
@@ -284,15 +285,15 @@ class _MyAppState extends State<MyApp> {
                       child: Text('Track content'),
                       onPressed: () {
                         try {
-                          FlutterBranchSdk.trackContent(
-                              buo: buo, branchEvent: eventStandart);
-                          FlutterBranchSdk.trackContent(
-                              buo: buo, branchEvent: eventCustom);
+                        FlutterBranchSdk.trackContent(
+                            buo: buo, branchEvent: eventStandart);
+                        FlutterBranchSdk.trackContent(
+                            buo: buo, branchEvent: eventCustom);
 
-                          FlutterBranchSdk.trackContentWithoutBuo(
-                              branchEvent: eventStandart);
-                          FlutterBranchSdk.trackContentWithoutBuo(
-                              branchEvent: eventCustom);
+                        FlutterBranchSdk.trackContentWithoutBuo(
+                            branchEvent: eventStandart);
+                        FlutterBranchSdk.trackContentWithoutBuo(
+                            branchEvent: eventCustom);
                         } catch (e) {
                           print(e);
                         }
