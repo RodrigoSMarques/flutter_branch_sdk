@@ -96,7 +96,18 @@ class FlutterBranchSdkWeb implements FlutterBranchSdkAbstract {
   static Stream<Map<dynamic, dynamic>> initSession(String branchKey) {
     BranchJS.init(branchKey, null, allowInterop((err, data) {
       if (err == null) {
-        _eventChannel.sink.add(_jsObjectToDartObject(data));
+        var parsedData = _jsObjectToDartObject(data);
+        if (parsedData is Map && parsedData.containsKey("data")) {
+          parsedData = parsedData["data"];
+        }
+        if (parsedData is String) {
+          try {
+            parsedData = json.decode(parsedData);
+          } catch (e) {
+            print('Failed to try to parse JSON: $e');
+          }
+        }
+        _eventChannel.sink.add(parsedData);
       } else {
         _eventChannel.addError(Exception(err));
       }
