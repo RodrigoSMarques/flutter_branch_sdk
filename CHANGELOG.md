@@ -1,3 +1,8 @@
+## 1.4.0
+Updated Native ```Android``` and ```iOS``` SDKs
+* Android Native SDK Update 5.0.5 - [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
+* iOS Native SDK Update 1.38.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+
 # 1.3.3
 * Fix crash when setting expirationDateInMilliSec on Android
 
