@@ -78,7 +78,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         LogUtils.debug(DEBUG_NAME, "onAttachedToEngine call");
-        setupChannels(binding.getFlutterEngine().getDartExecutor(), binding.getApplicationContext());
+        setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext());
     }
 
     @Override
@@ -702,7 +702,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    eventSink.success(o);
+                    if (eventSink != null) {
+                        eventSink.success(o);
+                    }
                 }
             });
         }
