@@ -1,4 +1,4 @@
-## 2.0.0-nullsafety.2
+## 2.0.0-nullsafety.3
 * Updated Native `Android` and `iOS` SDKs:  
 **Android Native SDK Update 5.0.5 - [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)  
 **iOS Native SDK Update 1.38.0 - [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)  
