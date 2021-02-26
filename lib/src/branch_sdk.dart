@@ -12,21 +12,16 @@ class FlutterBranchSdk implements FlutterBranchSdkPlatform {
 
   FlutterBranchSdk._();
 
-  FlutterBranchSdkPlatform? __platform;
+  static String _branchKey = '';
 
-  FlutterBranchSdkPlatform get _platform {
-    if (kIsWeb) {
-      __platform = FlutterBranchSdkWeb();
-    } else {
-      __platform = FlutterBranchSdkMobile();
-    }
-    return __platform!;
+  static void initWeb(String branchKey) {
+    _branchKey = branchKey;
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
     if (kIsWeb) {
-//      return __platform
+      return FlutterBranchSdkWeb.setIdentity(userId);
     } else {
       return FlutterBranchSdkMobile.setIdentity(userId);
     }
@@ -86,7 +81,7 @@ class FlutterBranchSdk implements FlutterBranchSdkPlatform {
         throw UnsupportedError(
             "Branch web SDK implementation requires branchKey to be set in initialization");
       }
-      return FlutterBranchSdkWeb.initSession(branchKey);
+      return FlutterBranchSdkWeb.initSession(_branchKey);
     } else {
       return FlutterBranchSdkMobile.initSession();
     }

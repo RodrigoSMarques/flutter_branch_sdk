@@ -31,8 +31,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FlutterBranchSdkMobile.setIdentity('branch_user_test');
-    //FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
+    FlutterBranchSdk.initWeb('key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
+    FlutterBranchSdk.setIdentity('branch_user_test');
+//    FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
 
     listenDynamicLinks();
 
@@ -40,7 +41,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void listenDynamicLinks() async {
-    streamSubscription = FlutterBranchSdkMobile.initSession().listen((data) {
+    streamSubscription = FlutterBranchSdk.initSession().listen((data) {
       print('listenDynamicLinks - DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
       if (data.containsKey('+clicked_branch_link') &&
@@ -121,7 +122,7 @@ class _MyAppState extends State<MyApp> {
         locallyIndex: true,
         expirationDateInMilliSec:
             DateTime.now().add(Duration(days: 365)).millisecondsSinceEpoch);
-    FlutterBranchSdkMobile.registerView(buo: buo!);
+    FlutterBranchSdk.registerView(buo: buo!);
 
     lp = BranchLinkProperties(
         channel: 'facebook',
@@ -210,7 +211,7 @@ class _MyAppState extends State<MyApp> {
                 ElevatedButton(
                   child: Text('Validate SDK Integration'),
                   onPressed: () {
-                    FlutterBranchSdkMobile.validateSDKIntegration();
+                    FlutterBranchSdk.validateSDKIntegration();
                     if (Platform.isAndroid) {
                       showSnackBar(
                           context: context,
@@ -225,7 +226,7 @@ class _MyAppState extends State<MyApp> {
                       child: ElevatedButton(
                         child: Text('Enable tracking'),
                         onPressed: () {
-                          FlutterBranchSdkMobile.disableTracking(false);
+                          FlutterBranchSdk.disableTracking(false);
                         },
                       ),
                     ),
@@ -236,7 +237,7 @@ class _MyAppState extends State<MyApp> {
                       child: ElevatedButton(
                         child: Text('Disable tracking'),
                         onPressed: () {
-                          FlutterBranchSdkMobile.disableTracking(true);
+                          FlutterBranchSdk.disableTracking(true);
                         },
                       ),
                     ),
@@ -260,7 +261,7 @@ class _MyAppState extends State<MyApp> {
                       child: ElevatedButton(
                         child: Text('User logout'),
                         onPressed: () {
-                          FlutterBranchSdkMobile.logout();
+                          FlutterBranchSdk.logout();
                         },
                       ),
                     ),
@@ -273,7 +274,7 @@ class _MyAppState extends State<MyApp> {
                       child: ElevatedButton(
                         child: Text('Register view'),
                         onPressed: () {
-                          FlutterBranchSdkMobile.registerView(buo: buo!);
+                          FlutterBranchSdk.registerView(buo: buo!);
                         },
                       ),
                     ),
@@ -284,14 +285,14 @@ class _MyAppState extends State<MyApp> {
                       child: ElevatedButton(
                         child: Text('Track content'),
                         onPressed: () {
-                          FlutterBranchSdkMobile.trackContent(
+                          FlutterBranchSdk.trackContent(
                               buo: buo!, branchEvent: eventStandart!);
-                          FlutterBranchSdkMobile.trackContent(
+                          FlutterBranchSdk.trackContent(
                               buo: buo!, branchEvent: eventCustom!);
 
-                          FlutterBranchSdkMobile.trackContentWithoutBuo(
+                          FlutterBranchSdk.trackContentWithoutBuo(
                               branchEvent: eventStandart!);
-                          FlutterBranchSdkMobile.trackContentWithoutBuo(
+                          FlutterBranchSdk.trackContentWithoutBuo(
                               branchEvent: eventCustom!);
                         },
                       ),
@@ -306,8 +307,7 @@ class _MyAppState extends State<MyApp> {
                         child: Text('Get First Parameters'),
                         onPressed: () async {
                           Map<dynamic, dynamic> params =
-                              await FlutterBranchSdkMobile
-                                  .getFirstReferringParams();
+                              await FlutterBranchSdk.getFirstReferringParams();
                           controllerData.sink.add(params.toString());
                         },
                       ),
@@ -320,8 +320,7 @@ class _MyAppState extends State<MyApp> {
                         child: Text('Get Last Parameters'),
                         onPressed: () async {
                           Map<dynamic, dynamic> params =
-                              await FlutterBranchSdkMobile
-                                  .getLatestReferringParams();
+                              await FlutterBranchSdk.getLatestReferringParams();
                           controllerData.sink.add(params.toString());
                         },
                       ),
@@ -336,10 +335,9 @@ class _MyAppState extends State<MyApp> {
                         child: Text('List on Search'),
                         onPressed: () async {
                           bool success =
-                              await FlutterBranchSdkMobile.listOnSearch(
-                                  buo: buo!);
+                              await FlutterBranchSdk.listOnSearch(buo: buo!);
                           print(success);
-                          success = await FlutterBranchSdkMobile.listOnSearch(
+                          success = await FlutterBranchSdk.listOnSearch(
                               buo: buo!, linkProperties: lp);
                           print(success);
                         },
@@ -353,12 +351,11 @@ class _MyAppState extends State<MyApp> {
                         child: Text('Remove from Search'),
                         onPressed: () async {
                           bool success =
-                              await FlutterBranchSdkMobile.removeFromSearch(
+                              await FlutterBranchSdk.removeFromSearch(
                                   buo: buo!);
                           print('Remove sucess: $success');
-                          success =
-                              await FlutterBranchSdkMobile.removeFromSearch(
-                                  buo: buo!, linkProperties: lp);
+                          success = await FlutterBranchSdk.removeFromSearch(
+                              buo: buo!, linkProperties: lp);
                           print('Remove sucess: $success');
                         },
                       ),
@@ -373,7 +370,7 @@ class _MyAppState extends State<MyApp> {
                         child: Text('Viewing Credits'),
                         onPressed: () async {
                           bool isUserIdentified =
-                              await FlutterBranchSdkMobile.isUserIdentified();
+                              await FlutterBranchSdk.isUserIdentified();
 
                           if (!isUserIdentified) {
                             showSnackBar(
@@ -384,7 +381,7 @@ class _MyAppState extends State<MyApp> {
 
                           int credits = 0;
                           BranchResponse response =
-                              await FlutterBranchSdkMobile.loadRewards();
+                              await FlutterBranchSdk.loadRewards();
                           if (response.success) {
                             credits = response.result;
                             print('Crédits');
@@ -407,7 +404,7 @@ class _MyAppState extends State<MyApp> {
                         child: Text('Redeeming Credits'),
                         onPressed: () async {
                           bool isUserIdentified =
-                              await FlutterBranchSdkMobile.isUserIdentified();
+                              await FlutterBranchSdk.isUserIdentified();
 
                           print('isUserIdentified: $isUserIdentified');
 
@@ -419,8 +416,7 @@ class _MyAppState extends State<MyApp> {
                           }
                           bool success = false;
                           BranchResponse response =
-                              await FlutterBranchSdkMobile.redeemRewards(
-                                  count: 5);
+                              await FlutterBranchSdk.redeemRewards(count: 5);
                           if (response.success) {
                             success = response.result;
                             print('Redeeming Credits: $success');
@@ -445,7 +441,7 @@ class _MyAppState extends State<MyApp> {
                     child: Text('Get Credits Hystory'),
                     onPressed: () async {
                       bool isUserIdentified =
-                          await FlutterBranchSdkMobile.isUserIdentified();
+                          await FlutterBranchSdk.isUserIdentified();
 
                       print('isUserIdentified: $isUserIdentified');
 
@@ -456,7 +452,7 @@ class _MyAppState extends State<MyApp> {
                       }
 
                       BranchResponse response =
-                          await FlutterBranchSdkMobile.getCreditHistory();
+                          await FlutterBranchSdk.getCreditHistory();
                       if (response.success) {
                         print('Credits Hystory: ${response.result}');
                         showSnackBar(
@@ -539,7 +535,7 @@ class _MyAppState extends State<MyApp> {
 
   void generateLink() async {
     BranchResponse response =
-        await FlutterBranchSdkMobile.getShortUrl(buo: buo!, linkProperties: lp);
+        await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp);
     if (response.success) {
       controllerUrl.sink.add('${response.result}');
     } else {
@@ -549,7 +545,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void shareLink() async {
-    BranchResponse response = await FlutterBranchSdkMobile.showShareSheet(
+    BranchResponse response = await FlutterBranchSdk.showShareSheet(
         buo: buo!,
         linkProperties: lp,
         messageText: 'My Share text',

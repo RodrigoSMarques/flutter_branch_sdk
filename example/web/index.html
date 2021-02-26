@@ -41,5 +41,50 @@
     }
   </script>
   <script src="main.dart.js" type="application/javascript"></script>
+  <script src="main.dart.js" type="application/javascript"></script>
+
+  <script>
+    (function () {
+      window.branch = {
+        _q: [],
+        _v: 1
+      };
+
+      [
+        'addListener',
+        'applyCode',
+        'autoAppIndex',
+        'banner',
+        'closeBanner',
+        'closeJourney',
+        'creditHistory',
+        'credits',
+        'data',
+        'deepview',
+        'deepviewCta',
+        'first',
+        'getCode',
+        'init',
+        'link',
+        'logout',
+        'redeem',
+        'referrals',
+        'removeListener',
+        'sendSMS',
+        'setBranchViewData',
+        'setIdentity',
+        'track',
+        'validateCode',
+        'trackCommerceEvent',
+        'logEvent',
+        'disableTracking'
+      ].forEach(item => {
+        window.branch[item] = (...args) => {
+          window.branch._q.push([item, args]);
+        };
+      });
+    })();
+  </script>
+  <script src="https://cdn.branch.io/branch-latest.min.js"></script>
 </body>
 </html>

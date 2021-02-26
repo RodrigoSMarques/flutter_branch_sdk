@@ -5,7 +5,6 @@ part of flutter_branch_sdk;
  * It provides convenient methods for sharing, deep linking, and tracking how often that content is viewed. This information is then used to provide you with powerful content analytics
  * and deep linking.
  */
-
 class BranchUniversalObject {
   /* Canonical identifier for the content referred. */
   final String canonicalIdentifier;

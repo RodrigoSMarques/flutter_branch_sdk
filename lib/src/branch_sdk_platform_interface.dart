@@ -1,6 +1,10 @@
 part of flutter_branch_sdk;
 
 abstract class FlutterBranchSdkPlatform {
+  static void initWeb(String branchKey) {
+    throw UnsupportedError('initWeb has not been implemented');
+  }
+
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
     throw UnsupportedError('setIdentity has not been implemented');
