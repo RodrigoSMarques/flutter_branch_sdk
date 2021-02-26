@@ -15,10 +15,15 @@ flutter:
         pluginClass: FlutterBranchSdkPlugin
       ios:
         pluginClass: FlutterBranchSdkPlugin
+      web:
+        default_package: FlutterBranchSdkWeb
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  js: ^0.6.3
 
 dev_dependencies:
   flutter_test:

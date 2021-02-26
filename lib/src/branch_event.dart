@@ -1,10 +1,11 @@
-part of flutter_branch_sdk;
+//part of flutter_branch_sdk;
 
 /*
 * Enum for creating Branch events for tracking and analytical purpose.
 * Enum class represent a standard or custom BranchEvents. Standard Branch events are defined with BRANCH_STANDARD_EVENT}.
 * Please use #logEvent() method to log the events for tracking.
 */
+import 'content_meta_data.dart';
 
 enum BranchStandardEvent {
   // Commerce events
@@ -61,6 +62,8 @@ class BranchEvent {
   BranchEvent.customEvent(this._eventName) {
     this._isStandardEvent = false;
   }
+
+  String get eventName => _eventName;
 
   void addCustomData(String key, dynamic value) {
     this._customData[key] = value;

@@ -1,18 +1,8 @@
 part of flutter_branch_sdk;
 
-class FlutterBranchSdk {
-  static const _MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
-  static const _EVENT_CHANNEL = 'flutter_branch_sdk/event';
-
-  static const MethodChannel _messageChannel =
-      const MethodChannel(_MESSAGE_CHANNEL);
-  static const EventChannel _eventChannel = const EventChannel(_EVENT_CHANNEL);
-
-  static Stream<Map>? _initSessionStream;
-
-  static FlutterBranchSdk? _singleton;
-
+class FlutterBranchSdk implements FlutterBranchSdkPlatform {
   /// Constructs a singleton instance of [FlutterBranchSdk].
+  static FlutterBranchSdk? _singleton;
   factory FlutterBranchSdk() {
     if (_singleton == null) {
       _singleton = FlutterBranchSdk._();
@@ -22,79 +12,106 @@ class FlutterBranchSdk {
 
   FlutterBranchSdk._();
 
+  FlutterBranchSdkPlatform? __platform;
+
+  FlutterBranchSdkPlatform get _platform {
+    if (kIsWeb) {
+      __platform = FlutterBranchSdkWeb.;
+    } else {
+      __platform = FlutterBranchSdkMobile();
+    }
+    return __platform!;
+  }
+
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
-    Map<String, dynamic> _params = {};
-    _params['userId'] = userId;
-    _messageChannel.invokeMethod('setIdentity', _params);
+    if (kIsWeb) {
+//      return __platform
+    } else {
+      return FlutterBranchSdkMobile.setIdentity(userId);
+    }
   }
 
   ///Add key value pairs to all requests
   static void setRequestMetadata(String key, String value) {
-    Map<String, dynamic> _params = {};
-    _params['key'] = key;
-    _params['value'] = value;
-
-    _messageChannel.invokeMethod('setRequestMetadata', _params);
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.setRequestMetadata(key, value);
+    } else {
+      return FlutterBranchSdkMobile.setRequestMetadata(key, value);
+    }
   }
 
   ///This method should be called if you know that a different person is about to use the app
   static void logout() {
-    _messageChannel.invokeMethod('logout');
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.logout();
+    } else {
+      return FlutterBranchSdkMobile.logout();
+    }
   }
 
   ///Returns the last parameters associated with the link that referred the user
   static Future<Map<dynamic, dynamic>> getLatestReferringParams() async {
-    return await _messageChannel.invokeMethod('getLatestReferringParams');
+    if (kIsWeb) {
+      return await FlutterBranchSdkWeb.getLatestReferringParams();
+    } else {
+      return await FlutterBranchSdkMobile.getLatestReferringParams();
+    }
   }
 
   ///Returns the first parameters associated with the link that referred the user
   static Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
-    return await _messageChannel.invokeMethod('getFirstReferringParams');
+    if (kIsWeb) {
+      return await FlutterBranchSdkWeb.getFirstReferringParams();
+    } else {
+      return await FlutterBranchSdkMobile.getFirstReferringParams();
+    }
   }
 
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
   static void disableTracking(bool value) async {
-    Map<String, dynamic> _params = {};
-    _params['disable'] = value;
-    _messageChannel.invokeMethod('setTrackingDisabled', _params);
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.disableTracking(value);
+    } else {
+      return FlutterBranchSdkMobile.disableTracking(value);
+    }
   }
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
-  static Stream<Map<dynamic, dynamic>> initSession() {
-    if (_initSessionStream == null)
-      _initSessionStream =
-          _eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
-
-    return _initSessionStream!;
+  static Stream<Map<dynamic, dynamic>> initSession({String branchKey = ''}) {
+    if (kIsWeb) {
+      if (branchKey == null) {
+        throw UnsupportedError(
+            "Branch web SDK implementation requires branchKey to be set in initialization");
+      }
+      return FlutterBranchSdkWeb.initSession(branchKey);
+    } else {
+      return FlutterBranchSdkMobile.initSession();
+    }
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and
   ///handle deep links correctly when you first integrate Branch into your app.
   static void validateSDKIntegration() {
-    _messageChannel.invokeMethod('validateSDKIntegration');
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.validateSDKIntegration();
+    } else {
+      return FlutterBranchSdkMobile.validateSDKIntegration();
+    }
   }
 
   ///Creates a short url for the BUO
   static Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties}) async {
-    Map<String, dynamic> _params = {};
-
-    _params['buo'] = buo.toMap();
-    _params['lp'] = linkProperties.toMap();
-
-    Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('getShortUrl', _params);
-
-    if (response['success']) {
-      return BranchResponse.success(result: response['url']);
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.getShortUrl(
+          buo: buo, linkProperties: linkProperties);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return FlutterBranchSdkMobile.getShortUrl(
+          buo: buo, linkProperties: linkProperties);
     }
   }
 
@@ -105,57 +122,53 @@ class FlutterBranchSdk {
       required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
-    Map<String, dynamic> _params = {};
-
-    _params['buo'] = buo.toMap();
-    _params['lp'] = linkProperties.toMap();
-    _params['messageText'] = messageText;
-    _params['messageTitle'] = androidMessageTitle;
-    _params['sharingTitle'] = androidSharingTitle;
-
-    Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('showShareSheet', _params);
-
-    if (response['success']) {
-      return BranchResponse.success(result: response['url']);
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.showShareSheet(
+          buo: buo,
+          linkProperties: linkProperties,
+          messageText: messageText,
+          androidMessageTitle: androidMessageTitle,
+          androidSharingTitle: androidSharingTitle);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return FlutterBranchSdkMobile.showShareSheet(
+          buo: buo,
+          linkProperties: linkProperties,
+          messageText: messageText,
+          androidMessageTitle: androidMessageTitle,
+          androidSharingTitle: androidSharingTitle);
     }
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContent(
       {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
-    Map<String, dynamic> _params = {};
-
-    _params['buo'] = buo.toMap();
-    if (branchEvent.toMap().isNotEmpty) {
-      _params['event'] = branchEvent.toMap();
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.trackContent(
+          buo: buo, branchEvent: branchEvent);
+    } else {
+      return FlutterBranchSdkMobile.trackContent(
+          buo: buo, branchEvent: branchEvent);
     }
-    _messageChannel.invokeMethod('trackContent', _params);
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContentWithoutBuo({required BranchEvent branchEvent}) {
-    Map<String, dynamic> _params = {};
-
-    if (branchEvent.toMap().isEmpty) {
-      throw ArgumentError('branchEvent is required');
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.trackContentWithoutBuo(
+          branchEvent: branchEvent);
+    } else {
+      return FlutterBranchSdkMobile.trackContentWithoutBuo(
+          branchEvent: branchEvent);
     }
-    _params['event'] = branchEvent.toMap();
-
-    _messageChannel.invokeMethod('trackContentWithoutBuo', _params);
   }
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
   static void registerView({required BranchUniversalObject buo}) {
-    Map<String, dynamic> _params = {};
-
-    _params['buo'] = buo.toMap();
-
-    _messageChannel.invokeMethod('registerView', _params);
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.registerView(buo: buo);
+    } else {
+      return FlutterBranchSdkMobile.registerView(buo: buo);
+    }
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
@@ -163,14 +176,13 @@ class FlutterBranchSdk {
   static Future<bool> listOnSearch(
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
-    Map<String, dynamic> _params = {};
-
-    _params['buo'] = buo.toMap();
-    if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
-      _params['lp'] = linkProperties.toMap();
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.listOnSearch(
+          buo: buo, linkProperties: linkProperties);
+    } else {
+      return FlutterBranchSdkMobile.listOnSearch(
+          buo: buo, linkProperties: linkProperties);
     }
-
-    return await _messageChannel.invokeMethod('listOnSearch', _params);
   }
 
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
@@ -179,28 +191,21 @@ class FlutterBranchSdk {
   static Future<bool> removeFromSearch(
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
-    Map<String, dynamic> _params = {};
-    _params['buo'] = buo.toMap();
-    if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
-      _params['lp'] = linkProperties.toMap();
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.removeFromSearch(
+          buo: buo, linkProperties: linkProperties);
+    } else {
+      return FlutterBranchSdkMobile.removeFromSearch(
+          buo: buo, linkProperties: linkProperties);
     }
-    return await _messageChannel.invokeMethod('removeFromSearch', _params);
   }
 
   ///Retrieves rewards for the current user/session
-  static Future<BranchResponse> loadRewards({String? bucket}) async {
-    Map<String, dynamic> _params = {};
-    if (bucket != null) _params['bucket'] = bucket;
-
-    Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('loadRewards', _params);
-
-    if (response['success']) {
-      return BranchResponse.success(result: response['credits']);
+  static Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.loadRewards(bucket: bucket);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return FlutterBranchSdkMobile.loadRewards(bucket: bucket);
     }
   }
 
@@ -208,58 +213,42 @@ class FlutterBranchSdk {
   ///If the number to redeem exceeds the number available in the bucket, all of the
   ///available credits will be redeemed instead.
   static Future<BranchResponse> redeemRewards(
-      {required int count, String? bucket}) async {
-    Map<String, dynamic> _params = {};
-    _params['count'] = count;
-    if (bucket != null) _params['bucket'] = bucket;
-
-    Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('redeemRewards', _params);
-
-    if (response['success']) {
-      return BranchResponse.success(result: true);
+      {required int count, String bucket = 'default'}) async {
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.redeemRewards(count: count, bucket: bucket);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return FlutterBranchSdkMobile.redeemRewards(count: count, bucket: bucket);
     }
   }
 
   ///Gets the credit history
-  static Future<BranchResponse> getCreditHistory({String? bucket}) async {
-    Map<String, dynamic> _params = {};
-    if (bucket != null) _params['bucket'] = bucket;
-
-    Map<dynamic, dynamic> response =
-        await _messageChannel.invokeMethod('getCreditHistory', _params);
-
-    print('GetCreditHistory ${response.toString()}');
-
-    if (response['success']) {
-      return BranchResponse.success(result: response['data']['history']);
+  static Future<BranchResponse> getCreditHistory(
+      {String bucket = 'default'}) async {
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.getCreditHistory(bucket: bucket);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return FlutterBranchSdkMobile.getCreditHistory(bucket: bucket);
     }
   }
 
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
   ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
   static void setIOSSKAdNetworkMaxTime(int hours) {
-    if (!Platform.isIOS) {
-      return;
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.setIOSSKAdNetworkMaxTime(hours);
+    } else {
+      return FlutterBranchSdkMobile.setIOSSKAdNetworkMaxTime(hours);
     }
-
-    Map<String, dynamic> _params = {};
-    _params['maxTimeInterval'] = hours;
-    _messageChannel.invokeMethod('setSKAdNetworkMaxTime', _params);
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
   ///If you call setIdentity, this device will have that identity associated with this user until logout is called.
   ///This includes persisting through uninstalls, as we track device id.
   static Future<bool> isUserIdentified() async {
-    return await _messageChannel.invokeMethod('isUserIdentified');
+    if (kIsWeb) {
+      return FlutterBranchSdkWeb.isUserIdentified();
+    } else {
+      return FlutterBranchSdkMobile.isUserIdentified();
+    }
   }
 }

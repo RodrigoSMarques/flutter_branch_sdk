@@ -1,4 +1,4 @@
-part of flutter_branch_sdk;
+//part of flutter_branch_sdk;
 
 enum BranchContentSchema {
   COMMERCE_AUCTION,
