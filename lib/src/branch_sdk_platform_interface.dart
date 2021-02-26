@@ -1,9 +1,4 @@
-//part of flutter_branch_sdk;
-
-import 'branch_event.dart';
-import 'branch_response.dart';
-import 'branch_universal_object.dart';
-import 'link_properties.dart';
+part of flutter_branch_sdk;
 
 abstract class FlutterBranchSdkPlatform {
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value

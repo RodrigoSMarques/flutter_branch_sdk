@@ -1,14 +1,4 @@
-//part of flutter_branch_sdk;
-
-import 'dart:io';
-
-import 'package:flutter/services.dart';
-
-import 'branch_event.dart';
-import 'branch_response.dart';
-import 'branch_sdk_platform_interface.dart';
-import 'branch_universal_object.dart';
-import 'link_properties.dart';
+part of flutter_branch_sdk;
 
 class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
   static const _MESSAGE_CHANNEL = 'flutter_branch_sdk/message';

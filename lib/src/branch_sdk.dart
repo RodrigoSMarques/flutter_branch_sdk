@@ -16,7 +16,7 @@ class FlutterBranchSdk implements FlutterBranchSdkPlatform {
 
   FlutterBranchSdkPlatform get _platform {
     if (kIsWeb) {
-      __platform = FlutterBranchSdkWeb.;
+      __platform = FlutterBranchSdkWeb();
     } else {
       __platform = FlutterBranchSdkMobile();
     }

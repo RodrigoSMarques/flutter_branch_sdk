@@ -1,5 +1,4 @@
-//part of flutter_branch_sdk;
-import 'content_schema.dart';
+part of flutter_branch_sdk;
 
 enum BranchCondition {
   OTHER,
