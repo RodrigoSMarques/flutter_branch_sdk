@@ -1,5 +1,5 @@
 part of flutter_branch_sdk;
-
+/*
 class FlutterBranchSdkMobile extends FlutterBranchSdkPlatform {
   static const _MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
   static const _EVENT_CHANNEL = 'flutter_branch_sdk/event';
@@ -23,7 +23,8 @@ class FlutterBranchSdkMobile extends FlutterBranchSdkPlatform {
   FlutterBranchSdkMobile._();
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
-  static void setIdentity(String userId) {
+
+  void setIdentity(String userId) {
     Map<String, dynamic> _params = {};
     _params['userId'] = userId;
     _messageChannel.invokeMethod('setIdentity', _params);
@@ -106,7 +107,6 @@ class FlutterBranchSdkMobile extends FlutterBranchSdkPlatform {
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
     Map<String, dynamic> _params = {};
-
     _params['buo'] = buo.toMap();
     _params['lp'] = linkProperties.toMap();
     _params['messageText'] = messageText;
@@ -263,3 +263,4 @@ class FlutterBranchSdkMobile extends FlutterBranchSdkPlatform {
     return await _messageChannel.invokeMethod('isUserIdentified');
   }
 }
+ */
