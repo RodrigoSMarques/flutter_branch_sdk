@@ -2,6 +2,20 @@ import '../branch_universal_object.dart';
 import '../flutter_branch_sdk.dart';
 
 abstract class FlutterBranchSdkPlatform {
+  static FlutterBranchSdkPlatform? _instance;
+
+  static FlutterBranchSdkPlatform get instance {
+    if (_instance == null) {
+      //if (!kIsWeb) {
+      //  _instance = FlutterBranchSdk();
+      //} else {
+      //  _instance = FlutterBranchSdk();
+      //}
+      _instance = FlutterBranchSdk();
+    }
+    return _instance!;
+  }
+
   void initWeb(String branchKey) {
     throw UnsupportedError('initWeb has not been implemented');
   }

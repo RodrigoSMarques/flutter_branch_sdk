@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp> {
     FlutterBranchSdk().initWeb('key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
     FlutterBranchSdk().setIdentity('branch_user_test');
 //    FlutterBranchSdk().setIOSSKAdNetworkMaxTime(72);
+
     listenDynamicLinks();
 
     initDeepLinkData();
