@@ -15,9 +15,6 @@ flutter:
         pluginClass: FlutterBranchSdkPlugin
       ios:
         pluginClass: FlutterBranchSdkPlugin
-      web:
-        default_package: FlutterBranchSdkWeb
-
 
 dependencies:
   flutter:

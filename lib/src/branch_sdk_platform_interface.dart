@@ -1,23 +1,7 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
-
 import '../branch_universal_object.dart';
-import 'branch_sdk_web.dart';
+import '../flutter_branch_sdk.dart';
 
 abstract class FlutterBranchSdkPlatform {
-  static FlutterBranchSdkPlatform? _instance;
-
-  static FlutterBranchSdkPlatform get instance {
-    if (_instance == null) {
-      if (!kIsWeb) {
-        _instance = FlutterBranchSdk();
-      } else {
-        _instance = FlutterBranchSdkWeb();
-      }
-    }
-    return _instance!;
-  }
-
   void initWeb(String branchKey) {
     throw UnsupportedError('initWeb has not been implemented');
   }

@@ -13,14 +13,14 @@ dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 Map<String, String> _metaData = {};
 
 /// A web implementation of the FlutterBranchSdk plugin.
-class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
-  FlutterBranchSdkPlatform getBranchSdk() => FlutterBranchSdkWeb();
+class FlutterBranchSdk extends FlutterBranchSdkPlatform {
+  FlutterBranchSdkPlatform getManager() => FlutterBranchSdk();
 
   /// Constructs a singleton instance of [FlutterBranchSdk].
-  static FlutterBranchSdkWeb? _singleton;
-  factory FlutterBranchSdkWeb() {
+  static FlutterBranchSdk? _singleton;
+  factory FlutterBranchSdk() {
     if (_singleton == null) {
-      _singleton = FlutterBranchSdkWeb._();
+      _singleton = FlutterBranchSdk._();
     }
     return _singleton!;
   }
@@ -29,9 +29,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   static final StreamController<Map<String, dynamic>> _eventChannel =
       StreamController<Map<String, dynamic>>();
 
-  FlutterBranchSdkWeb._();
+  FlutterBranchSdk._();
 
   static bool _userIdentified = false;
+
+  String _branchKey = '';
+
+  @override
+  void initWeb(String branchKey) {
+    _branchKey = branchKey;
+  }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   @override
@@ -107,7 +114,10 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Listen click em Branch Deeplinks
   @override
   Stream<Map<dynamic, dynamic>> initSession() {
-    final _branchKey = '';
+    if (_branchKey.isEmpty) {
+      throw UnsupportedError('call initWeb before');
+    }
+
     BranchJS.init(_branchKey, null, allowInterop((err, data) {
       if (err == null) {
         var parsedData = _jsObjectToDartObject(data);

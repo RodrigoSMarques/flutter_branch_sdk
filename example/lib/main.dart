@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_branch_sdk/branch_universal_object.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 void main() => runApp(MyApp());
@@ -35,7 +34,6 @@ class _MyAppState extends State<MyApp> {
     FlutterBranchSdk().initWeb('key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
     FlutterBranchSdk().setIdentity('branch_user_test');
 //    FlutterBranchSdk().setIOSSKAdNetworkMaxTime(72);
-
     listenDynamicLinks();
 
     initDeepLinkData();
