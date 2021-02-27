@@ -1,4 +1,4 @@
-part of flutter_branch_sdk;
+part of flutter_branch_sdk_objects;
 /*
 * Enum for creating Branch events for tracking and analytical purpose.
 * Enum class represent a standard or custom BranchEvents. Standard Branch events are defined with BRANCH_STANDARD_EVENT}.

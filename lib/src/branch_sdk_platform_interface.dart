@@ -1,4 +1,4 @@
-part of flutter_branch_sdk;
+import '../branch_universal_object.dart';
 
 abstract class FlutterBranchSdkPlatform {
   static void initWeb(String branchKey) {

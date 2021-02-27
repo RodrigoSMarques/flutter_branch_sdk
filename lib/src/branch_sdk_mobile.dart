@@ -1,6 +1,6 @@
 part of flutter_branch_sdk;
 
-class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
+class FlutterBranchSdkMobile extends FlutterBranchSdkPlatform {
   static const _MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
   static const _EVENT_CHANNEL = 'flutter_branch_sdk/event';
 

@@ -1,4 +1,4 @@
-part of flutter_branch_sdk;
+part of flutter_branch_sdk_objects;
 
 /*
  * Class represents a single piece of content within your app, as well as any associated metadata.

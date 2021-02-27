@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_branch_sdk/branch_universal_object.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 void main() => runApp(MyApp());
