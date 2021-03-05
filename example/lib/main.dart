@@ -207,7 +207,7 @@ class _MyAppState extends State<MyApp> {
                     }
                   },
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('Validate SDK Integration'),
                   onPressed: () {
                     FlutterBranchSdk.validateSDKIntegration();
@@ -222,7 +222,7 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Enable tracking'),
                         onPressed: () {
                           FlutterBranchSdk.disableTracking(false);
@@ -233,7 +233,7 @@ class _MyAppState extends State<MyApp> {
                       width: 10,
                     ),
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Disable tracking'),
                         onPressed: () {
                           FlutterBranchSdk.disableTracking(true);
@@ -246,7 +246,7 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Identify user'),
                         onPressed: () {
                           FlutterBranchSdk.setIdentity('branch_user_test');
@@ -257,7 +257,7 @@ class _MyAppState extends State<MyApp> {
                       width: 10,
                     ),
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('User logout'),
                         onPressed: () {
                           FlutterBranchSdk.logout();
@@ -270,7 +270,7 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Register view'),
                         onPressed: () {
                           FlutterBranchSdk.registerView(buo: buo!);
@@ -281,7 +281,7 @@ class _MyAppState extends State<MyApp> {
                       width: 10,
                     ),
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Track content'),
                         onPressed: () {
                           FlutterBranchSdk.trackContent(
@@ -302,7 +302,7 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Get First Parameters'),
                         onPressed: () async {
                           Map<dynamic, dynamic> params =
@@ -315,7 +315,7 @@ class _MyAppState extends State<MyApp> {
                       width: 10,
                     ),
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Get Last Parameters'),
                         onPressed: () async {
                           Map<dynamic, dynamic> params =
@@ -330,7 +330,7 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('List on Search'),
                         onPressed: () async {
                           bool success =
@@ -346,7 +346,7 @@ class _MyAppState extends State<MyApp> {
                       width: 10,
                     ),
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Remove from Search'),
                         onPressed: () async {
                           bool success =
@@ -365,7 +365,7 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Viewing Credits'),
                         onPressed: () async {
                           bool isUserIdentified =
@@ -399,7 +399,7 @@ class _MyAppState extends State<MyApp> {
                       width: 10,
                     ),
                     Expanded(
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         child: Text('Redeeming Credits'),
                         onPressed: () async {
                           bool isUserIdentified =
@@ -436,7 +436,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ],
                 ),
-                RaisedButton(
+                ElevatedButton(
                     child: Text('Get Credits Hystory'),
                     onPressed: () async {
                       bool isUserIdentified =
@@ -467,7 +467,7 @@ class _MyAppState extends State<MyApp> {
                                 'Get Credits Hystory error: ${response.errorMessage}');
                       }
                     }),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('Generate Link'),
                   onPressed: generateLink,
                 ),
@@ -493,7 +493,7 @@ class _MyAppState extends State<MyApp> {
                     }
                   },
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('Share Link'),
                   onPressed: shareLink,
                 ),
