@@ -118,12 +118,12 @@ Make sure to comment out or remove validateSDKIntegration in your production bui
     });
 ```
 ### Retrieve Install (Install Only) Parameters
-These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
+If you ever want to access the original session params (the parameters passed in for the first install event only), you can use this line. This is useful if you only want to reward users who newly installed the app from a referral link
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
 ```
 ### Retrieve session (install or open) parameters
-If you ever want to access the original session params (the parameters passed in for the first install event only), you can use this line. This is useful if you only want to reward users who newly installed the app from a referral link
+These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
 ```
