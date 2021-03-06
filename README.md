@@ -244,7 +244,7 @@ The Branch Universal Object encapsulates the thing you want to share.
 
 ```dart
     BranchLinkProperties lp = BranchLinkProperties(
-		 //alias: 'flutterplugin', //define link url,
+	   //alias: 'flutterplugin', //define link url,
         channel: 'facebook',
         feature: 'sharing',
         stage: 'new share',
