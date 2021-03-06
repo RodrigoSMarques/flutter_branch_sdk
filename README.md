@@ -55,6 +55,70 @@ Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-bas
 > Note:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
 Use only `branch_key` and update as needed.
 
+### Web Integration
+
+You need add Branch Javascript in your `web\index.html` at the top of your `<body>` tag, to be able to use this package.
+
+```javascript
+  <script>
+    (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
+  </script>
+```
+
+Full example `index.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    Fore more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Demonstrates how to use the flutter_branch_sdk plugin.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="flutter_branch_sdk_example">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>flutter_branch_sdk_example</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script>
+    (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
+  </script>
+  <!-- This script installs service_worker.js to provide PWA functionality to
+       application. For more information, see:
+       https://developers.google.com/web/fundamentals/primers/service-workers -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('flutter-first-frame', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>
+
+```
 
 ## Installation
 To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
@@ -109,6 +173,19 @@ Make sure to comment out or remove `validateSDKIntegration` in your production b
 
 ### Initialize Branch and read deep link
 
+To use in `Flutter Web`, it is necessary to call the method below before any command of SDK:
+
+```dart
+      FlutterBranchSdk.initWeb(
+          branchKey: 'branch_key');
+```
+Be sure to replace `branchKey` with your actual Branch Key found in your [account dashboard](https://dashboard.branch.io/#/settings) (same value inputted in the Android / ioS project).
+
+> Command `FlutterBranchSdk.initWeb` is ignored in the iOS / Android project
+
+
+To listen to the clicks on the deep link and retrieve the data it is necessary to add the code below:
+
 ```dart
     StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
       if (data.containsKey("+clicked_branch_link") &&
@@ -122,6 +199,9 @@ Make sure to comment out or remove `validateSDKIntegration` in your production b
           'InitSession error: ${platformException.code} - ${platformException.message}');
     });
 ```
+
+When a deep link is clicked the above method will be called, with the app is open or closed.
+
 ### Retrieve Install (Install Only) Parameters
 If you ever want to access the original session params (the parameters passed in for the first install event only), you can use this line. This is useful if you only want to reward users who newly installed the app from a referral link.
 
@@ -438,6 +518,8 @@ The response will return an list of map:
 See the `example` directory for a complete sample app using Branch SDK.
 
 ![Example app](https://user-images.githubusercontent.com/17687286/74096674-725c4200-4ae0-11ea-8ef6-94bc02e1913b.png)
+
+See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 
 # Branch Universal Object best practices
 
