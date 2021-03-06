@@ -168,7 +168,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     BranchJS.init(_branchKey, null, allowInterop((err, data) {
       _sessionInitialized = true;
       if (err == null) {
-        if (data != null && (data as String).isNotEmpty) {
+        if (data != null) {
           var parsedData = _jsObjectToDartObject(data);
           if (parsedData is Map && parsedData.containsKey("data")) {
             parsedData = parsedData["data"];
