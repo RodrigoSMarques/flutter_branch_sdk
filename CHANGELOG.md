@@ -1,3 +1,6 @@
+## 2.1.0
+* Experimental Web Support
+
 ## 2.0.0
 * Stable null safety release.
 * Updated Native `Android` and `iOS` SDKs:  

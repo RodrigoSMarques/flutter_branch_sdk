@@ -4,9 +4,10 @@ This is a Flutter plugin that implemented Branch SDK (https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
-Supports both Android and iOS.
-* Android - Branch SDK Version >= 5.0.3 [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
-* iOS - Branch SDK Version >= 0.36.0 [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+Supports Android, iOS and Web.
+
+* Android - Branch SDK Version >= 5.0.7 [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
+* iOS - Branch SDK Version >= 1.39.0 [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
 
 Implemented functions in plugin:
 
@@ -31,6 +32,7 @@ Note: **This plugin not work with FlutterFragmentActivity**
 * Complete the Basic integration in [Branch Dashboard](https://dashboard.branch.io/login)
 
 For details see:
+
 * [iOS - only section: **Configure Branch**](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-branch)
 * [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-branch-dashboard)
 
@@ -48,10 +50,10 @@ Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-bas
 * Configure Info.plist
 * Confirm app prefix
 
-Note 1: Branch SDK 0.32.0 requires at least `iOS 9.0`. <br/>
-        Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
+>Note 1: Branch SDK 0.32.0 requires at least `iOS 9.0`. <br/>
+> Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
 
-Note 2:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
+> Note 2:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
 Use only `branch_key` and update as needed.
 
 
@@ -62,12 +64,15 @@ To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yam
 
 ### Test Branch Integration
 Test your Branch Integration by calling:
+
 ```dart
 FlutterBranchSdk.validateSDKIntegration();
 ```
+
 Check logs to make sure all the SDK Integration tests pass.
 
 Example of log:
+
 ```java
 ------------------- Initiating Branch integration verification --------------------------- ... 
 1. Verifying Branch instance creation ... 
@@ -104,6 +109,7 @@ https://<yourapp>.app.link/NdJ6nFzRbK?bnc_validate=true
 Make sure to comment out or remove validateSDKIntegration in your production build.
 
 ### Initialize Branch and read deep link
+
 ```dart
     StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
       if (data.containsKey("+clicked_branch_link") &&
@@ -118,20 +124,24 @@ Make sure to comment out or remove validateSDKIntegration in your production bui
     });
 ```
 ### Retrieve Install (Install Only) Parameters
-If you ever want to access the original session params (the parameters passed in for the first install event only), you can use this line. This is useful if you only want to reward users who newly installed the app from a referral link
+If you ever want to access the original session params (the parameters passed in for the first install event only), you can use this line. This is useful if you only want to reward users who newly installed the app from a referral link.
+
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
 ```
 ### Retrieve session (install or open) parameters
 These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
+
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
 ```
 ### Create content reference
 The Branch Universal Object encapsulates the thing you want to share.
+
 ```dart
     BranchUniversalObject buo = BranchUniversalObject(
       canonicalIdentifier: 'flutter/branch',
+      //canonicalUrl: '',
       title: 'Flutter Branch Plugin',
       imageUrl: 'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
       contentDescription: 'Flutter Branch Description',
@@ -145,21 +155,33 @@ The Branch Universal Object encapsulates the thing you want to share.
           ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
     );
 ```
+> parameter **canonicalUrl**: 
+> If your content lives both on the web and in the app, make sure you set its canonical URL (i.e. the URL of this piece of content on the web) when building any BUO.
+> By doing so, we’ll attribute clicks on the links that you generate back to their original web page, even if the user goes to the app instead of your website! This will help your SEO efforts.
+
 ### Create link reference
-* Generates the analytical properties for the deep link
-* Used for Create deep link and Share deep link
+* Generates the analytical properties for the deep link.
+* Used for Create deep link and Share deep link.
+
 ```dart
     BranchLinkProperties lp = BranchLinkProperties(
+		 //alias: 'flutterplugin', //define link url,
         channel: 'facebook',
         feature: 'sharing',
         stage: 'new share',
-      tags: ['one', 'two', 'three']
+        tags: ['one', 'two', 'three']
     );
     lp.addControlParam('url', 'http://www.google.com');
     lp.addControlParam('url2', 'http://flutter.dev');
 ```
+> parameter **alias**:
+> Instead of our standard encoded short url, you can specify the vanity alias.
+> For example, instead of a random string of characters/integers, you can set the vanity alias as \*.app.link/devonaustin.
+> Aliases are enforced to be unique and immutable per domain, and per link - they cannot be reused unless deleted.
+           
 ### Create deep link
-Generates a deep link within your app
+Generates a deep link within your app.
+
 ```dart
     BranchResponse response =
         await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
@@ -171,7 +193,8 @@ Generates a deep link within your app
 ```
 ### Show Share Sheet deep link
 Will generate a Branch deep link and tag it with the channel the user selects.
-Note: _For Android additional customization is possible_
+> Note: _For Android additional customization is possible_
+
 ```dart
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
         buo: buo,
@@ -198,13 +221,16 @@ Check the Automatic sitemap generation checkbox.
     print(success);
 ```
 ### Remove content from Search
-Privately indexed Branch Universal Object can be removed
+Privately indexed Branch Universal Object can be removed.
+
 ```dart
     bool success = await FlutterBranchSdk.removeFromSearch(buo: buo);
     print('Remove sucess: $success');
 ```
+
 ### Register Event VIEW_ITEM
 Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
+
 ```dart
 FlutterBranchSdk.registerView(buo: buo);
 ```
@@ -213,16 +239,19 @@ FlutterBranchSdk.registerView(buo: buo);
 Use the `BranchEvent` interface to track special user actions or application specific events beyond app installs, opens, and sharing. You can track events such as when a user adds an item to an on-line shopping cart, or searches for a keyword, among others.
 The `BranchEvent` interface provides an interface to add contents represented by `BranchUniversalObject` in order to associate app contents with events.
 Analytics about your app's BranchEvents can be found on the Branch dashboard, and BranchEvents also provide tight integration with many third party analytics providers.
+
 ```dart
 BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
 FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventStandart);
 ```
 You can use your own custom event names too:
+
 ```dart
 BranchEvent eventCustom = BranchEvent.customEvent('Custom_event');
 FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventCustom);
 ```
 Extra event specific data can be tracked with the event as well:
+
 ```dart
     eventStandart.transactionID = '12344555';
     eventStandart.currency = BranchCurrencyType.BRL;
@@ -242,18 +271,22 @@ Extra event specific data can be tracked with the event as well:
 ```
 
 You can register logs in BranchEvent without Branch Universal Object (BUO) for tracking and analytics:
+
 ```dart
 BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
 FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandart);
 ```
+
 You can use your own custom event names too:
+
 ```dart
 BranchEvent eventCustom = BranchEvent.customEvent('Custom_event');
 FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom);
 ```
 
 ### Track users
-Sets the identity of a user (email, ID, UUID, etc) for events, deep links, and referrals
+Sets the identity of a user (email, ID, UUID, etc) for events, deep links, and referrals.
+
 ```dart
 //login
 FlutterBranchSdk.setIdentity('user1234567890');
@@ -269,6 +302,7 @@ FlutterBranchSdk.logout();
 
 ### Enable or Disable User Tracking
 If you need to comply with a user's request to not be tracked for GDPR purposes, or otherwise determine that a user should not be tracked, utilize this field to prevent Branch from sending network requests. This setting can also be enabled across all users for a particular link, or across your Branch links.
+
 ```dart
 FlutterBranchSdk.disableTracking(false);
 ```
@@ -287,6 +321,7 @@ FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
 
 ### Set time window (in Hours) for SKAdNetwork callouts (iOS only)
 By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
+
 ```dart
 FlutterBranchSdk.setIOSSKAdNetworkMaxTime(24);
 ```
@@ -297,6 +332,7 @@ Branch can help track your Apple Search Ad campaigns by fetching the search ad a
 Add KEY ```branch_check_apple_ads``` in INFO.PLIST to enable checking for Apple Search Ads before Branch initialization.
 
 In `ios/Runner/Info.plist`, you should have something like:
+
 ```xml
  	<key>branch_check_apple_ads</key>
 	<true/>
@@ -304,7 +340,8 @@ In `ios/Runner/Info.plist`, you should have something like:
 
 ### Referral System Rewarding Functionality
 Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make an asynchronous call to retrieve the balance. 
-Read more here: https://docs.branch.io/viral/referrals/#search
+
+Read more here: [https://blog.branch.io/how-to-build-an-optimized-referral-program-for-your-mobile-app/](https://blog.branch.io/how-to-build-an-optimized-referral-program-for-your-mobile-app/)
 
 #### Get Reward Balance
 Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make call to retrieve the balance. Here is the syntax:
@@ -351,6 +388,7 @@ if (response.success) {
 }
 ```
 The response will return an list of map:
+
 ```json
 [
     {
