@@ -11,17 +11,19 @@ Supports Android, iOS and Web.
 
 Implemented functions in plugin:
 
-* Test Branch Integration
-* Track users
-* Enable / Disable User Tracking
-* Get First and Last Parameters
-* Generate Deep Link for Branch Universal Object (BUO)
-* Show Share Sheet for Branch Universal Object (BUO)
-* List BUO on Search / Remove BUO from Search
-* Register view
-* Track User Actions and Events
-* Init Branch Session and Deep Link
-* Referral rewards
+Function | Android | iOS | Web 
+--- | --- | --- | --- |
+Test Branch Integration | X | X | 
+Track users | X | X | X
+Enable / Disable User Tracking | X | X | X
+Get First and Last Parameters | X | X | X
+Generate Deep Link for Branch Universal Object (BUO)| X | X | X
+Show Share Sheet for Branch Universal Object (BUO)| X | X | X
+List BUO on Search / Remove BUO from Search| X | X | 
+Register view| X | X | X
+Track User Actions and Events| X | X | X
+Init Branch Session and Deep Link| X | X | X
+Referral rewards| X | X | X
 
 
 Note: **This plugin not work with FlutterFragmentActivity**

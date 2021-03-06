@@ -235,18 +235,19 @@ class _MyAppState extends State<MyApp> {
                   CustomButton(
                     child: Text('Validate SDK Integration'),
                     onPressed: () {
-                      FlutterBranchSdk.validateSDKIntegration();
                       if (kIsWeb) {
                         showSnackBar(
                             context: context,
                             message:
                                 'validateSDKIntegration() not available in Flutter Web');
-                      } else {
-                        if (Platform.isAndroid) {
-                          showSnackBar(
-                              context: context,
-                              message: 'Check messages in run log or logcat');
-                        }
+                        return;
+                      }
+
+                      FlutterBranchSdk.validateSDKIntegration();
+                      if (Platform.isAndroid) {
+                        showSnackBar(
+                            context: context,
+                            message: 'Check messages in run log or logcat');
                       }
                     },
                   ),
@@ -394,19 +395,18 @@ class _MyAppState extends State<MyApp> {
                                   context: context,
                                   message:
                                       'listOnSearch() not available in Flutter Web');
-                            } else {
-                              bool success =
-                                  await FlutterBranchSdk.listOnSearch(
-                                      buo: buo!);
+                              return;
+                            }
+                            bool success =
+                                await FlutterBranchSdk.listOnSearch(buo: buo!);
 
-                              success = await FlutterBranchSdk.listOnSearch(
-                                  buo: buo!, linkProperties: lp);
+                            success = await FlutterBranchSdk.listOnSearch(
+                                buo: buo!, linkProperties: lp);
 
-                              if (success) {
-                                showSnackBar(
-                                    context: context,
-                                    message: 'Listed on Search');
-                              }
+                            if (success) {
+                              showSnackBar(
+                                  context: context,
+                                  message: 'Listed on Search');
                             }
                           },
                         ),
@@ -423,17 +423,17 @@ class _MyAppState extends State<MyApp> {
                                   context: context,
                                   message:
                                       'removeFromSearch() not available in Flutter Web');
-                            } else {
-                              bool success =
-                                  await FlutterBranchSdk.removeFromSearch(
-                                      buo: buo!);
-                              success = await FlutterBranchSdk.removeFromSearch(
-                                  buo: buo!, linkProperties: lp);
-                              if (success) {
-                                showSnackBar(
-                                    context: context,
-                                    message: 'Removed from Search');
-                              }
+                              return;
+                            }
+                            bool success =
+                                await FlutterBranchSdk.removeFromSearch(
+                                    buo: buo!);
+                            success = await FlutterBranchSdk.removeFromSearch(
+                                buo: buo!, linkProperties: lp);
+                            if (success) {
+                              showSnackBar(
+                                  context: context,
+                                  message: 'Removed from Search');
                             }
                           },
                         ),

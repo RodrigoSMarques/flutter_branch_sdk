@@ -168,7 +168,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     BranchJS.init(_branchKey, null, allowInterop((err, data) {
       _sessionInitialized = true;
       if (err == null) {
-        if (data != null) {
+        if (data != null && (data as String).isNotEmpty) {
           var parsedData = _jsObjectToDartObject(data);
           if (parsedData is Map && parsedData.containsKey("data")) {
             parsedData = parsedData["data"];
@@ -177,7 +177,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
             try {
               parsedData = json.decode(parsedData);
             } catch (e) {
-              print('Failed to try to parse JSON: $e');
+              print('Failed to try to parse JSON: $e - $parsedData');
             }
           }
           _initSessionStream.sink.add(parsedData);
@@ -337,19 +337,22 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       BranchJS.credits(allowInterop((err, data) {
         if (err == null) {
           var parsedData = Map<String, int>.from(_jsObjectToDartObject(data));
-          responseCompleter.complete(BranchResponse.success(
-              result: parsedData.containsKey(bucket)
-                  ? parsedData[bucket]
-                  : parsedData["default"]));
+          if (parsedData.isNotEmpty) {
+            responseCompleter.complete(BranchResponse.success(
+                result: parsedData.containsKey(bucket)
+                    ? parsedData[bucket]
+                    : parsedData['default']));
+          } else {
+            responseCompleter.complete(BranchResponse.success(result: 0));
+          }
         } else {
-          responseCompleter.completeError(BranchResponse.error(
-              errorCode: err is String ? err : err.code,
-              errorMessage: err.message));
+          responseCompleter.complete(
+              BranchResponse.error(errorCode: '999', errorMessage: err));
         }
       }));
     } catch (e) {
       print('loadRewards() error: $e');
-      responseCompleter.completeError(BranchResponse.error(
+      responseCompleter.complete(BranchResponse.error(
           errorCode: '-999', errorMessage: 'loadRewards() error'));
     }
 
@@ -369,14 +372,13 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         if (err == null) {
           responseCompleter.complete(BranchResponse.success(result: true));
         } else {
-          responseCompleter.completeError(BranchResponse.error(
-              errorCode: err is String ? err : err.code,
-              errorMessage: err.message));
+          responseCompleter.complete(BranchResponse.error(
+              errorCode: '999', errorMessage: err.toString()));
         }
       }));
     } catch (e) {
       print('redeemRewards() error: $e');
-      responseCompleter.completeError(BranchResponse.error(
+      responseCompleter.complete(BranchResponse.error(
           errorCode: '-999', errorMessage: 'redeemRewards() error'));
     }
 
@@ -389,20 +391,23 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     Completer<BranchResponse> responseCompleter = Completer();
 
     try {
-      BranchJS.creditHistory(_dartObjectToJsObject({"bucket": bucket}),
+      BranchJS.creditHistory(_dartObjectToJsObject({'bucket': bucket}),
           allowInterop((err, data) {
         if (err == null) {
-          responseCompleter.complete(
-              BranchResponse.success(result: _jsObjectToDartObject(data)));
+          if (data != null) {
+            responseCompleter.complete(
+                BranchResponse.success(result: _jsObjectToDartObject(data)));
+          } else {
+            responseCompleter.complete(BranchResponse.success(result: {}));
+          }
         } else {
-          responseCompleter.completeError(BranchResponse.error(
-              errorCode: err is String ? err : err.code,
-              errorMessage: err.message));
+          responseCompleter.complete(BranchResponse.error(
+              errorCode: '999', errorMessage: err.toString()));
         }
       }));
     } catch (e) {
       print('getCreditHistory() error: $e');
-      responseCompleter.completeError(BranchResponse.error(
+      responseCompleter.complete(BranchResponse.error(
           errorCode: '-999', errorMessage: 'getCreditHistory() error'));
     }
 
