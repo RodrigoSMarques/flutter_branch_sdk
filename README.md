@@ -1,6 +1,6 @@
 # flutter_branch_sdk
 
-This is a Flutter plugin that implemented Branch SDK (https://branch.io).
+This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
@@ -13,20 +13,20 @@ Implemented functions in plugin:
 
 Function | Android | iOS | Web 
 --- | --- | --- | --- |
-Test Branch Integration | X | X | 
+Test Branch Integration | X | X | Not supported
 Track users | X | X | X
 Enable / Disable User Tracking | X | X | X
 Get First and Last Parameters | X | X | X
 Generate Deep Link for Branch Universal Object (BUO)| X | X | X
 Show Share Sheet for Branch Universal Object (BUO)| X | X | X
-List BUO on Search / Remove BUO from Search| X | X | 
+List BUO on Search / Remove BUO from Search| X | X | Not supported
 Register view| X | X | X
 Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
 Referral rewards| X | X | X
 
 
-Note: **This plugin not work with FlutterFragmentActivity**
+>Note: **This plugin not work with FlutterFragmentActivity**
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -52,10 +52,7 @@ Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-bas
 * Configure Info.plist
 * Confirm app prefix
 
->Note 1: Branch SDK 0.32.0 requires at least `iOS 9.0`. <br/>
-> Update the minimum version in the project, in the section **"Deployment Info" -> "Target"**.
-
-> Note 2:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
+> Note:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
 Use only `branch_key` and update as needed.
 
 
@@ -73,7 +70,7 @@ FlutterBranchSdk.validateSDKIntegration();
 
 Check logs to make sure all the SDK Integration tests pass.
 
-Example of log:
+Example of log for Android:
 
 ```java
 ------------------- Initiating Branch integration verification --------------------------- ... 
@@ -108,7 +105,7 @@ https://<yourapp>.app.link/NdJ6nFzRbK
 click on:
 https://<yourapp>.app.link/NdJ6nFzRbK?bnc_validate=true
 ```
-Make sure to comment out or remove validateSDKIntegration in your production build.
+Make sure to comment out or remove `validateSDKIntegration` in your production build.
 
 ### Initialize Branch and read deep link
 
@@ -460,10 +457,11 @@ Practices to avoid:
 4. Don't create many objects at once and register views in a for loop.
 
 # Branch Documentation
-Read the iOS or Android documentation for all Branch object parameters
+Read the iOS or Android documentation for all Branch object parameters:
+
 * Android - [https://help.branch.io/developers-hub/docs/android-advanced-features](https://help.branch.io/developers-hub/docs/android-advanced-features)
 * iOS - [https://help.branch.io/developers-hub/docs/ios-advanced-features](https://help.branch.io/developers-hub/docs/ios-advanced-features)
 
 # Author
-This project was authored by Rodrigo S. Marques. You can contact me at rodrigosmarques@gmail.com
+This project was authored by Rodrigo S. Marques. You can contact me at [rodrigosmarques@gmail.com](mailto:rodrigosmarques@gmail.com)
  
