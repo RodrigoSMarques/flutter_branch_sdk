@@ -1,3 +1,6 @@
+## 3.0.0
+* Initial support to Flutter Web . Thanks @mathatan 
+
 ## 2.0.0
 * Stable null safety release.
 * Updated Native `Android` and `iOS` SDKs:  

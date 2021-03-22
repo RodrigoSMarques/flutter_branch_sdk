@@ -1,4 +1,4 @@
-part of flutter_branch_sdk;
+part of flutter_branch_sdk_objects;
 
 class BranchResponse<T> {
   bool success = true;

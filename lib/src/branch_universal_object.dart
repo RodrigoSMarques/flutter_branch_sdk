@@ -1,11 +1,16 @@
-part of flutter_branch_sdk;
+library flutter_branch_sdk_objects;
+
+part 'branch_event.dart';
+part 'branch_response.dart';
+part 'content_meta_data.dart';
+part 'content_schema.dart';
+part 'link_properties.dart';
 
 /*
  * Class represents a single piece of content within your app, as well as any associated metadata.
  * It provides convenient methods for sharing, deep linking, and tracking how often that content is viewed. This information is then used to provide you with powerful content analytics
  * and deep linking.
  */
-
 class BranchUniversalObject {
   /* Canonical identifier for the content referred. */
   final String canonicalIdentifier;

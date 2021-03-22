@@ -1,11 +1,11 @@
 name: flutter_branch_sdk
 description: Flutter Plugin for create deep link using Brach SDK (https://branch.io). This plugin provides a cross-platform (iOS, Android).
-version: 2.0.0
+version: 3.0.0
 homepage: https://github.com/RodrigoSMarques/flutter_branch_sdk
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.12.13+hotfix.5"
+  flutter: ">=1.22.0"
 
 flutter:
   plugin:
@@ -15,10 +15,19 @@ flutter:
         pluginClass: FlutterBranchSdkPlugin
       ios:
         pluginClass: FlutterBranchSdkPlugin
+      web:
+        fileName: src/flutter_branch_sdk_web.dart
+        pluginClass: FlutterBranchSdk
+
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  plugin_platform_interface: ">=1.0.0 <3.0.0"
+  js: ^0.6.3
+
 
 dev_dependencies:
   flutter_test:
