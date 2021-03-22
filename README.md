@@ -262,7 +262,7 @@ More information about the parameters check [Android documentation](https://help
 > For example, instead of a random string of characters/integers, you can set the vanity alias as \*.app.link/devonaustin.
 > Aliases are enforced to be unique and immutable per domain, and per link - they cannot be reused unless deleted.
 
-More information about the parameters check [Android documentation]https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
+More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
 
            
 ### Create deep link
