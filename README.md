@@ -26,7 +26,7 @@ Init Branch Session and Deep Link| X | X | X
 Referral rewards| X | X | X
 
 
->Note: **This plugin not work with FlutterFragmentActivity**
+>Note: **This plugin not work with FlutterFragmentActivity** in Android 
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -234,9 +234,12 @@ The Branch Universal Object encapsulates the thing you want to share.
           ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
     );
 ```
+
 > parameter **canonicalUrl**: 
 > If your content lives both on the web and in the app, make sure you set its canonical URL (i.e. the URL of this piece of content on the web) when building any BUO.
 > By doing so, we’ll attribute clicks on the links that you generate back to their original web page, even if the user goes to the app instead of your website! This will help your SEO efforts.
+
+More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
 
 ### Create link reference
 * Generates the analytical properties for the deep link.
@@ -253,10 +256,14 @@ The Branch Universal Object encapsulates the thing you want to share.
     lp.addControlParam('url', 'http://www.google.com');
     lp.addControlParam('url2', 'http://flutter.dev');
 ```
+
 > parameter **alias**:
 > Instead of our standard encoded short url, you can specify the vanity alias.
 > For example, instead of a random string of characters/integers, you can set the vanity alias as \*.app.link/devonaustin.
 > Aliases are enforced to be unique and immutable per domain, and per link - they cannot be reused unless deleted.
+
+More information about the parameters check [Android documentation]https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
+
            
 ### Create deep link
 Generates a deep link within your app.
@@ -512,7 +519,6 @@ The response will return an list of map:
 * 1 - A reward that was added manually.
 * 2 - A redemption of credits that occurred through our API or SDKs.
 * 3 - This is a very unique case where we will subtract credits automatically when we detect fraud.
-
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.

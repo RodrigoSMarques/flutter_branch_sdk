@@ -156,4 +156,14 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   Future<bool> isUserIdentified() async {
     throw UnimplementedError('isUserIdentified has not been implemented');
   }
+
+  ///A robust function to give your users the ability to share links via SMS.
+  Future<BranchResponse> sendSMS(
+      {required String phoneNumber,
+      required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      String smsText = '',
+      bool makeNewLink = false}) async {
+    throw UnimplementedError('sendSMS has not been implemented');
+  }
 }

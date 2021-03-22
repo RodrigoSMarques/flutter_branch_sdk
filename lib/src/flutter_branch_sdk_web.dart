@@ -57,11 +57,12 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   @override
   void setIdentity(String userId) {
-    if (_sessionInitialized = false) {
+    /*
+    if (_sessionInitialized == false) {
       throw AssertionError(
           'in Web call initSession() before call setIdentity()');
     }
-
+     */
     try {
       BranchJS.setIdentity(userId, allowInterop((error, data) {
         if (error == null) {
@@ -235,15 +236,14 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         if (err == null) {
           responseCompleter.complete(BranchResponse.success(result: url));
         } else {
-          responseCompleter.completeError(BranchResponse.error(
-              errorCode: err is String ? err : err.code,
-              errorMessage: err.message));
+          responseCompleter.completeError(
+              BranchResponse.error(errorCode: '-1', errorMessage: err));
         }
       }));
     } catch (e) {
       print('getShortUrl() error: $e');
       responseCompleter.completeError(BranchResponse.error(
-          errorCode: '-999', errorMessage: 'getShortUrl() error'));
+          errorCode: '-1', errorMessage: 'getShortUrl() error'));
     }
     return responseCompleter.future;
   }
@@ -353,7 +353,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     } catch (e) {
       print('loadRewards() error: $e');
       responseCompleter.complete(BranchResponse.error(
-          errorCode: '-999', errorMessage: 'loadRewards() error'));
+          errorCode: '-1', errorMessage: 'loadRewards() error'));
     }
 
     return responseCompleter.future;
@@ -379,7 +379,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     } catch (e) {
       print('redeemRewards() error: $e');
       responseCompleter.complete(BranchResponse.error(
-          errorCode: '-999', errorMessage: 'redeemRewards() error'));
+          errorCode: '-1', errorMessage: 'redeemRewards() error'));
     }
 
     return responseCompleter.future;
@@ -408,7 +408,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     } catch (e) {
       print('getCreditHistory() error: $e');
       responseCompleter.complete(BranchResponse.error(
-          errorCode: '-999', errorMessage: 'getCreditHistory() error'));
+          errorCode: '-1', errorMessage: 'getCreditHistory() error'));
     }
 
     return responseCompleter.future;
@@ -429,5 +429,67 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   @override
   Future<bool> isUserIdentified() async {
     return Future.value(_userIdentified);
+  }
+
+  @override
+  Future<BranchResponse> sendSMS(
+      {required String phoneNumber,
+      required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      String smsText = '',
+      bool makeNewLink = false}) {
+    if (phoneNumber.trim().isEmpty) {
+      throw ArgumentError('phoneNumber is required');
+    }
+
+    Map<String, dynamic> contentMetadata = {
+      if (buo.contentMetadata != null) ...buo.contentMetadata!.toMap()
+    };
+
+    if (contentMetadata.containsKey('customMetadata')) {
+      var customMetadata = contentMetadata['customMetadata'];
+      contentMetadata.remove('customMetadata');
+      contentMetadata.addAll(customMetadata);
+    }
+
+    Map<String, dynamic> linkData = {
+      "\$canonical_identifier": buo.canonicalIdentifier,
+      "\$publicly_indexable": buo.publiclyIndex,
+      "\$locally_indexable": buo.locallyIndex,
+      "\$og_title": buo.title,
+      "\$og_description": buo.contentDescription,
+      "\$og_image_url": buo.imageUrl,
+      if (contentMetadata.keys.length > 0) ...contentMetadata
+    };
+
+    if (smsText.trim().isNotEmpty) {
+      if (!smsText.contains('{{ link }}')) {
+        smsText = smsText.trim() + ' {{ link }}';
+      }
+      linkData['\$custom_sms_text'] = smsText;
+    }
+
+    Map<String, dynamic> data = {...linkProperties.toMap(), 'data': linkData};
+
+    final Map<String, dynamic> options = {'make_new_link': makeNewLink};
+
+    Completer<BranchResponse> responseCompleter = Completer();
+
+    try {
+      BranchJS.sendSMS(phoneNumber, _dartObjectToJsObject(data),
+          _dartObjectToJsObject(options), allowInterop((err) {
+        if (err == null) {
+          responseCompleter.complete(BranchResponse.success(result: true));
+        } else {
+          responseCompleter.completeError(
+              BranchResponse.error(errorCode: '-1', errorMessage: err));
+        }
+      }));
+    } catch (e) {
+      print('sendSMS() error: $e');
+      responseCompleter.completeError(BranchResponse.error(
+          errorCode: '-1', errorMessage: 'sendSMS() error: $e'));
+    }
+    return responseCompleter.future;
   }
 }

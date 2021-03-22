@@ -1,5 +1,5 @@
-## 2.1.0
-* Experimental Web Support
+## 3.0.0
+* Initial support to Flutter Web . Thanks @mathatan 
 
 ## 2.0.0
 * Stable null safety release.
