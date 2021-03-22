@@ -142,6 +142,7 @@ class FlutterBranchSdk {
     return _platform.isUserIdentified();
   }
 
+  /*
   ///A robust function to give your users the ability to share links via SMS.
   static Future<BranchResponse> sendSMS(
       {required String phoneNumber,
@@ -156,4 +157,5 @@ class FlutterBranchSdk {
         smsText: smsText,
         makeNewLink: makeNewLink);
   }
+   */
 }

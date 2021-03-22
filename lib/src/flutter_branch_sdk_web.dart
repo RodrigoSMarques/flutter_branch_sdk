@@ -431,6 +431,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     return Future.value(_userIdentified);
   }
 
+  ///A robust function to give your users the ability to share links via SMS.
   @override
   Future<BranchResponse> sendSMS(
       {required String phoneNumber,
