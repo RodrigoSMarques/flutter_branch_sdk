@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:4.1.0'
     }
 }
 
@@ -34,8 +34,9 @@ android {
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:5.+'
+    implementation 'io.branch.sdk.android:library:5.0.7'
     implementation 'com.google.firebase:firebase-appindexing:19.0.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:16+'
-    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.browser:browser:1.3.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'
 }
