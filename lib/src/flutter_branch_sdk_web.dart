@@ -171,8 +171,8 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       if (err == null) {
         if (data != null) {
           var parsedData = _jsObjectToDartObject(data);
-          if (parsedData is Map && parsedData.containsKey("data")) {
-            parsedData = parsedData["data"];
+          if (parsedData is Map && parsedData.containsKey("data_parsed")) {
+            parsedData = parsedData["data_parsed"];
           }
           if (parsedData is String) {
             try {
