@@ -93,7 +93,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             self.eventSink!(FlutterError(code: String(self.initialError!.code),
                                          message: self.initialError!.localizedDescription,
                                          details: nil))
-            
             initialParams = nil
             initialError = nil
         }
