@@ -542,7 +542,7 @@ print(status);
 ```
 > Note: After the user's response, call the `handleATTAuthorizationStatus` Branch SDK method to monitor the performance of the ATT prompt.
 
-![App tracking dialog]((https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png?raw=true))
+![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
 
 
 #### Get tracking authorization status
@@ -584,7 +584,7 @@ print(status);
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app]((https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png?raw=true))
+![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
 
 https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png
 
