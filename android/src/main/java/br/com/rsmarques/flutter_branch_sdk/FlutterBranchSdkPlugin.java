@@ -402,15 +402,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 });
     }
 
-    @UiThread
     private void registerView(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "registerView call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-        buo.registerView();
+        final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                buo.registerView();
+            }
+        });
     }
 
     private void listOnSearch(MethodCall call, Result result) {
@@ -445,55 +450,80 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         result.success(Boolean.valueOf(true));
     }
 
-    @UiThread
     private void trackContent(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "trackContent call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-        BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
-        event.addContentItems(buo).logEvent(context);
+        final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                event.addContentItems(buo).logEvent(context);
+            }
+        });
     }
 
-    @UiThread
     private void trackContentWithoutBuo(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "trackContentWithoutBuo call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
-        event.logEvent(context);
+        final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                event.logEvent(context);
+            }
+        });
     }
 
-    @UiThread
     private void setIdentity(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "setIdentity call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
-        String userId = call.argument("userId");
-        Branch.getAutoInstance(context).setIdentity(userId);
+        final String userId = call.argument("userId");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setIdentity(userId);
+            }
+        });
+
     }
 
-    @UiThread
     private void setRequestMetadata(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "setRequestMetadata call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
-        String key = call.argument("key");
-        String value = call.argument("value");
+        final String key = call.argument("key");
+        final String value = call.argument("value");
 
-        Branch.getAutoInstance(context).setRequestMetadata(key, value);
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setRequestMetadata(key, value);
+            }
+        });
     }
 
-    @UiThread
     private void logout() {
         LogUtils.debug(DEBUG_NAME, "logout call");
-        Branch.getAutoInstance(context).logout();
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).logout();
+            }
+        });
     }
 
     private void getLatestReferringParams(Result result) {
@@ -518,14 +548,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-    @UiThread
     private void setTrackingDisabled(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "setTrackingDisabled call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
-        boolean value = call.argument("disable");
-        Branch.getAutoInstance(context).disableTracking(value);
+        final boolean value = call.argument("disable");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).disableTracking(value);
+            }
+        });
     }
 
     private void loadRewards(final MethodCall call, final Result result) {

@@ -46,6 +46,20 @@ class _MyAppState extends State<MyApp> {
     initDeepLinkData();
 
     FlutterBranchSdk.setIdentity('branch_user_test');
+
+    //requestATTTracking();
+  }
+
+  void requestATTTracking() async {
+    AppTrackingStatus status;
+    status = await FlutterBranchSdk.requestTrackingAuthorization();
+    print(status);
+
+    status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
+    print(status);
+
+    final uuid = await FlutterBranchSdk.getAdvertisingIdentifier();
+    print(uuid);
   }
 
   void listenDynamicLinks() async {

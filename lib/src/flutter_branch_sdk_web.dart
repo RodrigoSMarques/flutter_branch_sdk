@@ -7,6 +7,7 @@ import 'dart:js_util';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
+import 'app_tracking_transparency.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'web/branch_js.dart';
 
@@ -492,5 +493,29 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
           errorCode: '-1', errorMessage: 'sendSMS() error: $e'));
     }
     return responseCompleter.future;
+  }
+
+  /// request AppTracking Autorization and return AppTrackingStatus
+  /// on Android returns notSupported
+  @override
+  Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    throw UnsupportedError(
+        'requestTrackingAuthorization() Not available in Branch JS SDK');
+  }
+
+  /// return AppTrackingStatus
+  /// on Android returns notSupported
+  @override
+  Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    throw UnsupportedError(
+        'getTrackingAuthorizationStatus() Not available in Branch JS SDK');
+  }
+
+  /// return advertising identifier (ie tracking data).
+  /// on Android returns empty string
+  @override
+  Future<String> getAdvertisingIdentifier() async {
+    throw UnsupportedError(
+        'getAdvertisingIdentifier() Not available in Branch JS SDK');
   }
 }

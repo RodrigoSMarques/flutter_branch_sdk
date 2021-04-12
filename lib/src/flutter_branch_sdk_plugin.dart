@@ -158,4 +158,22 @@ class FlutterBranchSdk {
         makeNewLink: makeNewLink);
   }
    */
+
+  /// request AppTracking Autorization and return AppTrackingStatus
+  /// on Android returns notSupported
+  static Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    return _platform.requestTrackingAuthorization();
+  }
+
+  /// return AppTrackingStatus
+  /// on Android returns notSupported
+  static Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    return _platform.getTrackingAuthorizationStatus();
+  }
+
+  /// return advertising identifier (ie tracking data).
+  /// on Android returns empty string
+  static Future<String> getAdvertisingIdentifier() async {
+    return _platform.getAdvertisingIdentifier();
+  }
 }

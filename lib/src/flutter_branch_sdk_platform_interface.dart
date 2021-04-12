@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'app_tracking_transparency.dart';
 import 'branch_universal_object.dart';
 import 'flutter_branch_sdk_mobile.dart';
 
@@ -165,5 +166,26 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       String smsText = '',
       bool makeNewLink = false}) async {
     throw UnimplementedError('sendSMS has not been implemented');
+  }
+
+  /// request AppTracking Autorization and return AppTrackingStatus
+  /// on Android returns notSupported
+  Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    throw UnimplementedError(
+        'requestTrackingAuthorization has not been implemented');
+  }
+
+  /// return AppTrackingStatus
+  /// on Android returns notSupported
+  Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    throw UnimplementedError(
+        'getTrackingAuthorizationStatus has not been implemented');
+  }
+
+  /// return advertising identifier (ie tracking data).
+  /// on Android returns empty string
+  Future<String> getAdvertisingIdentifier() async {
+    throw UnimplementedError(
+        'getAdvertisingIdentifier has not been implemented');
   }
 }
