@@ -574,12 +574,14 @@ enum AppTrackingStatus {
 
 ```
 
-#### Get Advertising Identifier
+#### Get Device Advertising Identifier
 
 ```dart
 AppTrackingStatus status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
 print(status);
 ```
+
+See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.

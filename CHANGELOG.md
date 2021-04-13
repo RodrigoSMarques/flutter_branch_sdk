@@ -3,7 +3,7 @@
 **iOS Native SDK Update 1.39.2 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 * Added new method `requestTrackingAuthorization` : In iOS 14+,  show tracking authorization dialog and request permission. Send `ATTrackingManager.AuthorizationStatus` to monitor `ATT prompt performance` and  return `ATTrackingManager.AuthorizationStatus`. 
 * Added new method `getTrackingAuthorizationStatus`: Return `ATTrackingManager.AuthorizationStatus`
-* Added new method `getAdvertisingIdentifier`: Return AdvertisingIdentifier 
+* Added new method `getAdvertisingIdentifier`: Return Device Advertising Identifier 
  
 ## 3.0.0
 * Initial support to Flutter Web . Thanks @mathatan 
