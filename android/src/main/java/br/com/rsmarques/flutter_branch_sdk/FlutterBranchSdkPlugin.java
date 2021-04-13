@@ -465,14 +465,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 event.addContentItems(buo).logEvent(context);
             }
         });
-        /*
-        new Thread() {
-            @Override
-            public void run() {
-                event.addContentItems(buo).logEvent(context);
-            }
-        }.start();
-         */
     }
 
     private void trackContentWithoutBuo(MethodCall call) {
@@ -489,14 +481,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 event.logEvent(context);
             }
         });
-        /*
-        new Thread() {
-            @Override
-            public void run() {
-                event.logEvent(context);
-            }
-        }.start();
-         */
     }
 
     private void setIdentity(MethodCall call) {
