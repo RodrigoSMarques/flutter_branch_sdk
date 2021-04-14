@@ -142,23 +142,6 @@ class FlutterBranchSdk {
     return _platform.isUserIdentified();
   }
 
-  /*
-  ///A robust function to give your users the ability to share links via SMS.
-  static Future<BranchResponse> sendSMS(
-      {required String phoneNumber,
-      required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      String smsText = '',
-      bool makeNewLink = false}) async {
-    return _platform.sendSMS(
-        phoneNumber: phoneNumber,
-        buo: buo,
-        linkProperties: linkProperties,
-        smsText: smsText,
-        makeNewLink: makeNewLink);
-  }
-   */
-
   /// request AppTracking Autorization and return AppTrackingStatus
   /// on Android returns notSupported
   static Future<AppTrackingStatus> requestTrackingAuthorization() async {

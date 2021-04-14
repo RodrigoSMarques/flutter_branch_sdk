@@ -432,69 +432,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     return Future.value(_userIdentified);
   }
 
-  ///A robust function to give your users the ability to share links via SMS.
-  @override
-  Future<BranchResponse> sendSMS(
-      {required String phoneNumber,
-      required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      String smsText = '',
-      bool makeNewLink = false}) {
-    if (phoneNumber.trim().isEmpty) {
-      throw ArgumentError('phoneNumber is required');
-    }
-
-    Map<String, dynamic> contentMetadata = {
-      if (buo.contentMetadata != null) ...buo.contentMetadata!.toMap()
-    };
-
-    if (contentMetadata.containsKey('customMetadata')) {
-      var customMetadata = contentMetadata['customMetadata'];
-      contentMetadata.remove('customMetadata');
-      contentMetadata.addAll(customMetadata);
-    }
-
-    Map<String, dynamic> linkData = {
-      "\$canonical_identifier": buo.canonicalIdentifier,
-      "\$publicly_indexable": buo.publiclyIndex,
-      "\$locally_indexable": buo.locallyIndex,
-      "\$og_title": buo.title,
-      "\$og_description": buo.contentDescription,
-      "\$og_image_url": buo.imageUrl,
-      if (contentMetadata.keys.length > 0) ...contentMetadata
-    };
-
-    if (smsText.trim().isNotEmpty) {
-      if (!smsText.contains('{{ link }}')) {
-        smsText = smsText.trim() + ' {{ link }}';
-      }
-      linkData['\$custom_sms_text'] = smsText;
-    }
-
-    Map<String, dynamic> data = {...linkProperties.toMap(), 'data': linkData};
-
-    final Map<String, dynamic> options = {'make_new_link': makeNewLink};
-
-    Completer<BranchResponse> responseCompleter = Completer();
-
-    try {
-      BranchJS.sendSMS(phoneNumber, _dartObjectToJsObject(data),
-          _dartObjectToJsObject(options), allowInterop((err) {
-        if (err == null) {
-          responseCompleter.complete(BranchResponse.success(result: true));
-        } else {
-          responseCompleter.completeError(
-              BranchResponse.error(errorCode: '-1', errorMessage: err));
-        }
-      }));
-    } catch (e) {
-      print('sendSMS() error: $e');
-      responseCompleter.completeError(BranchResponse.error(
-          errorCode: '-1', errorMessage: 'sendSMS() error: $e'));
-    }
-    return responseCompleter.future;
-  }
-
   /// request AppTracking Autorization and return AppTrackingStatus
   /// on Android returns notSupported
   @override

@@ -294,17 +294,6 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
     return await _messageChannel.invokeMethod('isUserIdentified');
   }
 
-  ///A robust function to give your users the ability to share links via SMS.
-  @override
-  Future<BranchResponse> sendSMS(
-      {required String phoneNumber,
-      required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      String smsText = '',
-      bool makeNewLink = false}) {
-    throw UnsupportedError('sendSMS() not available in Branch Mobile SDK');
-  }
-
   /// request AppTracking Autorization and return AppTrackingStatus
   /// on Android returns notSupported
   @override
