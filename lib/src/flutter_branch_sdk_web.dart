@@ -7,6 +7,7 @@ import 'dart:js_util';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
+import 'app_tracking_transparency.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'web/branch_js.dart';
 
@@ -29,12 +30,14 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
 
   FlutterBranchSdk._();
 
+  /*
   static FlutterBranchSdkPlatform? __platform;
 
   static FlutterBranchSdkPlatform get _platform {
     __platform ??= FlutterBranchSdkPlatform.instance;
     return __platform!;
   }
+   */
 
   /// Registers this class as the default instance of [SharePlatform].
   static void registerWith(Registrar registrar) {
@@ -47,7 +50,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   static bool _userIdentified = false;
 
   static String _branchKey = '';
-  static bool _sessionInitialized = false;
+  //static bool _sessionInitialized = false;
 
   @override
   void initWeb({required String branchKey}) {
@@ -167,12 +170,12 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     }
 
     BranchJS.init(_branchKey, null, allowInterop((err, data) {
-      _sessionInitialized = true;
+      //_sessionInitialized = true;
       if (err == null) {
         if (data != null) {
           var parsedData = _jsObjectToDartObject(data);
-          if (parsedData is Map && parsedData.containsKey("data")) {
-            parsedData = parsedData["data"];
+          if (parsedData is Map && parsedData.containsKey("data_parsed")) {
+            parsedData = parsedData["data_parsed"];
           }
           if (parsedData is String) {
             try {
@@ -431,66 +434,27 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     return Future.value(_userIdentified);
   }
 
-  ///A robust function to give your users the ability to share links via SMS.
+  /// request AppTracking Autorization and return AppTrackingStatus
+  /// on Android returns notSupported
   @override
-  Future<BranchResponse> sendSMS(
-      {required String phoneNumber,
-      required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      String smsText = '',
-      bool makeNewLink = false}) {
-    if (phoneNumber.trim().isEmpty) {
-      throw ArgumentError('phoneNumber is required');
-    }
+  Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    throw UnsupportedError(
+        'requestTrackingAuthorization() Not available in Branch JS SDK');
+  }
 
-    Map<String, dynamic> contentMetadata = {
-      if (buo.contentMetadata != null) ...buo.contentMetadata!.toMap()
-    };
+  /// return AppTrackingStatus
+  /// on Android returns notSupported
+  @override
+  Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    throw UnsupportedError(
+        'getTrackingAuthorizationStatus() Not available in Branch JS SDK');
+  }
 
-    if (contentMetadata.containsKey('customMetadata')) {
-      var customMetadata = contentMetadata['customMetadata'];
-      contentMetadata.remove('customMetadata');
-      contentMetadata.addAll(customMetadata);
-    }
-
-    Map<String, dynamic> linkData = {
-      "\$canonical_identifier": buo.canonicalIdentifier,
-      "\$publicly_indexable": buo.publiclyIndex,
-      "\$locally_indexable": buo.locallyIndex,
-      "\$og_title": buo.title,
-      "\$og_description": buo.contentDescription,
-      "\$og_image_url": buo.imageUrl,
-      if (contentMetadata.keys.length > 0) ...contentMetadata
-    };
-
-    if (smsText.trim().isNotEmpty) {
-      if (!smsText.contains('{{ link }}')) {
-        smsText = smsText.trim() + ' {{ link }}';
-      }
-      linkData['\$custom_sms_text'] = smsText;
-    }
-
-    Map<String, dynamic> data = {...linkProperties.toMap(), 'data': linkData};
-
-    final Map<String, dynamic> options = {'make_new_link': makeNewLink};
-
-    Completer<BranchResponse> responseCompleter = Completer();
-
-    try {
-      BranchJS.sendSMS(phoneNumber, _dartObjectToJsObject(data),
-          _dartObjectToJsObject(options), allowInterop((err) {
-        if (err == null) {
-          responseCompleter.complete(BranchResponse.success(result: true));
-        } else {
-          responseCompleter.completeError(
-              BranchResponse.error(errorCode: '-1', errorMessage: err));
-        }
-      }));
-    } catch (e) {
-      print('sendSMS() error: $e');
-      responseCompleter.completeError(BranchResponse.error(
-          errorCode: '-1', errorMessage: 'sendSMS() error: $e'));
-    }
-    return responseCompleter.future;
+  /// return advertising identifier (ie tracking data).
+  /// on Android returns empty string
+  @override
+  Future<String> getAdvertisingIdentifier() async {
+    throw UnsupportedError(
+        'getAdvertisingIdentifier() Not available in Branch JS SDK');
   }
 }

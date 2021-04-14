@@ -25,7 +25,6 @@ Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
 Referral rewards| X | X | X
 
-
 >Note: **This plugin not work with FlutterFragmentActivity** in Android 
 
 ## Getting Started
@@ -520,10 +519,76 @@ The response will return an list of map:
 * 2 - A redemption of credits that occurred through our API or SDKs.
 * 3 - This is a very unique case where we will subtract credits automatically when we detect fraud.
 
+
+### iOS 14+ App Tracking Transparency 
+Starting with iOS 14.5, iPadOS 14.5, and tvOS 14.5, you’ll need to receive the user’s permission through the AppTrackingTransparency framework to track them or access their device’s advertising identifier. Tracking refers to the act of linking user or device data collected from your app with user or device data collected from other companies’ apps, websites, or offline properties for targeted advertising or advertising measurement purposes. Tracking also refers to sharing user or device data with data brokers.
+
+See: [https://developer.apple.com/app-store/user-privacy-and-data-use/](https://developer.apple.com/app-store/user-privacy-and-data-use/)
+
+New methods have been made available to deal with App Tracking Transparency.
+
+First, update `Info.plist` file located in ios/Runner directory and add the `NSUserTrackingUsageDescription` key with a custom message describing your usage.
+
+```swift
+    <key>NSUserTrackingUsageDescription</key>
+    <string>App would like to access IDFA for tracking purpose</string>
+```
+
+#### Show tracking authorization dialog and ask for permission
+
+```dart
+AppTrackingStatus status = await FlutterBranchSdk.requestTrackingAuthorization();
+print(status);
+```
+> Note: After the user's response, call the `handleATTAuthorizationStatus` Branch SDK method to monitor the performance of the ATT prompt.
+
+![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/app_tracking_dialog.png)
+
+
+#### Get tracking authorization status
+
+```dart
+AppTrackingStatus status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
+print(status);
+```
+
+##### Values available for AppTrackingStatus
+
+```dart
+enum AppTrackingStatus {
+  /// The user has not yet received an authorization request dialog
+  notDetermined,
+
+  /// The device is restricted, tracking is disabled and the system can't show a request dialog
+  restricted,
+
+  /// The user denies authorization for tracking
+  denied,
+
+  /// The user authorizes access to tracking
+  authorized,
+
+  /// The platform is not iOS or the iOS version is below 14.0
+  notSupported,
+}
+
+```
+
+#### Get Device Advertising Identifier
+
+```dart
+AppTrackingStatus status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
+print(status);
+```
+
+See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
+
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app](https://user-images.githubusercontent.com/17687286/74096674-725c4200-4ae0-11ea-8ef6-94bc02e1913b.png)
+![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
+
+https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png
 
 See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 

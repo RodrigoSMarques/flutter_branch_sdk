@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 
+import 'app_tracking_transparency.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
 
 class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
@@ -293,14 +294,40 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
     return await _messageChannel.invokeMethod('isUserIdentified');
   }
 
-  ///A robust function to give your users the ability to share links via SMS.
+  /// request AppTracking Autorization and return AppTrackingStatus
+  /// on Android returns notSupported
   @override
-  Future<BranchResponse> sendSMS(
-      {required String phoneNumber,
-      required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      String smsText = '',
-      bool makeNewLink = false}) {
-    throw UnsupportedError('sendSMS() not available in Branch Mobile SDK');
+  Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    if (!Platform.isIOS) {
+      return AppTrackingStatus.notSupported;
+    }
+    final int status = (await _messageChannel
+        .invokeMethod<int>('requestTrackingAuthorization'))!;
+    return AppTrackingStatus.values[status];
+  }
+
+  /// return AppTrackingStatus
+  /// on Android returns notSupported
+  @override
+  Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    if (!Platform.isIOS) {
+      return AppTrackingStatus.notSupported;
+    }
+    final int status = (await _messageChannel
+        .invokeMethod<int>('getTrackingAuthorizationStatus'))!;
+    return AppTrackingStatus.values[status];
+  }
+
+  /// return advertising identifier (ie tracking data).
+  /// on Android returns empty string
+  @override
+  Future<String> getAdvertisingIdentifier() async {
+    if (!Platform.isIOS) {
+      return "";
+    }
+
+    final String uuid = (await _messageChannel
+        .invokeMethod<String>('getAdvertisingIdentifier'))!;
+    return uuid;
   }
 }

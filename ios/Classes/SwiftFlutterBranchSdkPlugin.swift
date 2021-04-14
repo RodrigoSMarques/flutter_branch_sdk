@@ -1,6 +1,8 @@
 import Flutter
 import UIKit
 import Branch
+import AppTrackingTransparency
+import AdSupport
 
 var methodChannel: FlutterMethodChannel?
 var eventChannel: FlutterEventChannel?
@@ -168,6 +170,15 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "setSKAdNetworkMaxTime" :
             setSKAdNetworkMaxTime(call: call)
             break
+        case "requestTrackingAuthorization" :
+            requestTrackingAuthorization(result: result)
+            break
+        case "getTrackingAuthorizationStatus" :
+            requestTrackingAuthorization(result: result)
+            break
+        case "getAdvertisingIdentifier" :
+            getAdvertisingIdentifier(result: result)
+            break
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -230,7 +241,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     private func validateSDKIntegration() {
-        Branch.getInstance().validateSDKIntegration()
+        DispatchQueue.main.async {
+            Branch.getInstance().validateSDKIntegration()
+        }
     }
     
     private func trackContent(call: FlutterMethodCall) {
@@ -240,21 +253,30 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let event: BranchEvent? = convertToEvent(dict : eventDict)
         event!.contentItems = [ buo! ]
-        event!.logEvent()
+        
+        DispatchQueue.main.async {
+            event!.logEvent()
+        }
     }
     
     private func trackContentWithoutBuo(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let eventDict = args["event"] as! [String: Any?]
         let event: BranchEvent? = convertToEvent(dict : eventDict)
-        event!.logEvent()
+        
+        DispatchQueue.main.async {
+            event!.logEvent()
+        }
     }
     
     private func registerView(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        buo!.registerView()
+        
+        DispatchQueue.main.async {
+            buo!.registerView()
+        }
     }
     
     private func listOnSearch(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -313,18 +335,27 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func setIdentity(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let userId = args["userId"] as! String
-        Branch.getInstance().setIdentity(userId)
+        
+        DispatchQueue.main.async {
+            Branch.getInstance().setIdentity(userId)
+        }
     }
     
     private func setRequestMetadata(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let key = args["key"] as! String
         let value = args["value"] as! String
-        Branch.getInstance().setRequestMetadataKey(key, value: value)
+        
+        DispatchQueue.main.async {
+            Branch.getInstance().setRequestMetadataKey(key, value: value)
+        }
+        
     }
     
     private func logout() {
-        Branch.getInstance().logout()
+        DispatchQueue.main.async {
+            Branch.getInstance().logout()
+        }
     }
     
     private func getLatestReferringParams(result: @escaping FlutterResult) {
@@ -344,7 +375,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func setTrackingDisabled(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let value = args["disable"] as! Bool
-        Branch.setTrackingDisabled(value)
+        
+        DispatchQueue.main.async {
+            Branch.setTrackingDisabled(value)
+        }
     }
     
     private func loadRewards(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -458,12 +492,67 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func setSKAdNetworkMaxTime(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
-        Branch.getInstance().setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
+        DispatchQueue.main.async {
+            Branch.getInstance().setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
+        }
     }
     
     private func isUserIdentified(result: @escaping FlutterResult) {
         DispatchQueue.main.async {
             result(Branch.getInstance().isUserIdentified())
+        }
+    }
+    
+    /*
+     https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager
+     
+     ATTrackingManager.AuthorizationStatus:
+     - authorized = 3
+     - denied = 2
+     - notDetermined = 0
+     - restricted = 1
+     */
+    
+    private func requestTrackingAuthorization(result: @escaping FlutterResult) {
+        if #available(iOS 14, *) {
+            ATTrackingManager.requestTrackingAuthorization { (status) in
+                Branch.getInstance().handleATTAuthorizationStatus(status.rawValue)
+                
+                DispatchQueue.main.async {
+                    result(Int(status.rawValue))
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                result(Int(4)) // return notSupported
+            }
+        }
+    }
+    
+    private func getTrackingAuthorizationStatus(result: @escaping FlutterResult) {
+        if #available(iOS 14, *) {
+            DispatchQueue.main.async {
+                result(Int(ATTrackingManager.trackingAuthorizationStatus.rawValue))
+            }
+        } else {
+            DispatchQueue.main.async {
+                result(Int(4))  // return notSupported
+            }
+        }
+    }
+    
+    private func getAdvertisingIdentifier(result: @escaping FlutterResult) {
+        if #available(iOS 14, *) {
+            let status = ATTrackingManager.trackingAuthorizationStatus
+            if status == .authorized {
+                result(String(ASIdentifierManager.shared().advertisingIdentifier.uuidString))
+            } else {
+                result(String(""))  // return notSupported
+            }
+        } else {
+            DispatchQueue.main.async {
+                result(String(""))  // return notSupported
+            }
         }
     }
 }

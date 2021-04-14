@@ -56,5 +56,7 @@
 	<false/>
 	<key>branch_key</key>
 	<string>key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>App would like to access IDFA for tracking purpose</string>
 </dict>
 </plist>
