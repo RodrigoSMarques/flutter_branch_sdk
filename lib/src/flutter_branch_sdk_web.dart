@@ -30,12 +30,14 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
 
   FlutterBranchSdk._();
 
+  /*
   static FlutterBranchSdkPlatform? __platform;
 
   static FlutterBranchSdkPlatform get _platform {
     __platform ??= FlutterBranchSdkPlatform.instance;
     return __platform!;
   }
+   */
 
   /// Registers this class as the default instance of [SharePlatform].
   static void registerWith(Registrar registrar) {
@@ -48,7 +50,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   static bool _userIdentified = false;
 
   static String _branchKey = '';
-  static bool _sessionInitialized = false;
+  //static bool _sessionInitialized = false;
 
   @override
   void initWeb({required String branchKey}) {
@@ -168,7 +170,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     }
 
     BranchJS.init(_branchKey, null, allowInterop((err, data) {
-      _sessionInitialized = true;
+      //_sessionInitialized = true;
       if (err == null) {
         if (data != null) {
           var parsedData = _jsObjectToDartObject(data);
