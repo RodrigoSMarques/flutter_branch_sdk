@@ -756,7 +756,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    eventSink.error(s, s1, o);
+                    if (eventSink != null) {
+                        eventSink.error(s, s1, o);
+                    }
                 }
             });
         }
@@ -766,7 +768,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    eventSink.endOfStream();
+                    if (eventSink != null) {
+                        eventSink.endOfStream();
+                    }
                 }
             });
         }
