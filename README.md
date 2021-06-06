@@ -665,8 +665,6 @@ See the `example` directory for a complete sample app using Branch SDK.
 
 ![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
 
-https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png
-
 See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 
 # Branch Universal Object best practices
