@@ -583,6 +583,80 @@ print(status);
 
 See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
 
+
+### Enable Logging
+Use the Branch test key instead of the live key.
+
+Logging is enabled by default in debug mode and disabled in release mode.
+
+To enable/disable logging update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on Android:
+
+For `iOS` add to `INFO.PLIST`:
+
+To disable:
+
+```swift
+	<key>branch_enable_log</key>
+	<false/>
+```
+
+To enable:
+
+```swift
+	<key>branch_enable_log</key>
+	<true/>
+```
+
+For `Android` add to `AndroidManifest.xml`:
+
+To disable:
+
+```java
+    <meta-data android:name="branch_enable_log"
+        android:value="false" />
+```
+
+To enable:
+
+```java
+    <meta-data android:name="branch_enable_log"
+        android:value="true" />
+```
+
+### Facebook App Install Ads
+
+Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
+
+Follow the instructions on the link [Facebook App Install Ads](https://help.branch.io/using-branch/docs/facebook-app-install-ads) {:target="_blank"}
+
+To read Facebook App Install deep links update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on `Android` as in the example:
+
+For `iOS` add to `INFO.PLIST`:
+
+```swift
+	<key>branch_enable_facebook_ads</key>
+	<true/>
+```
+
+For `Android` add to `AndroidManifest.xml`:
+
+```java
+    <meta-data android:name="branch_enable_facebook_ads"
+        android:value="true" />
+```
+
+Follow the instructions to  install Facebook Android / iOS SDK:
+
+`iOS`: 
+
+[https://developers.facebook.com/docs/ios/use-cocoapods](https://developers.facebook.com/docs/ios/use-cocoapods)
+
+
+`Android`: 
+
+[https://developers.facebook.com/docs/android/getting-started](https://developers.facebook.com/docs/ios/use-cocoapods)
+
+
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 

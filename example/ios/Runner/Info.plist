@@ -56,7 +56,9 @@
 	<false/>
 	<key>branch_key</key>
 	<string>key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH</string>
-    <key>NSUserTrackingUsageDescription</key>
-    <string>App would like to access IDFA for tracking purpose</string>
+	<key>branch_enable_log</key>
+	<false/>
+	<key>branch_enable_facebook_ads</key>
+	<true/>
 </dict>
 </plist>
