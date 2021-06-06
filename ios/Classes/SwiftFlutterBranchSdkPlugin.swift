@@ -30,8 +30,17 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
+
         #if DEBUG
-        Branch.getInstance().enableLogging()
+        let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? true
+        if enableLog {
+            Branch.getInstance().enableLogging()
+        }
+        #else
+        let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? false
+        if enableLog {
+            Branch.getInstance().enableLogging()
+        }
         #endif
         
         let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
@@ -40,8 +49,22 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         if enableAppleADS {
             // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
-            print("Branch Apple ADS - delayInitToCheckForSearchAds");
             Branch.getInstance().delayInitToCheckForSearchAds()
+        }
+        
+        let enableFacebookAds = Bundle.infoPlistValue(forKey: "branch_enable_facebook_ads") as? Bool ?? false
+        print("Branch Check Facebook Link: \(String(describing:enableFacebookAds))");
+        
+        if enableFacebookAds {
+            //Facebook App Install Ads
+            //https://help.branch.io/using-branch/docs/facebook-app-install-ads#configure-your-app-to-read-facebook-app-install-deep-links
+            
+            let FBSDKAppLinkUtility: AnyClass? = NSClassFromString("FBSDKAppLinkUtility")
+            if let FBSDKAppLinkUtility = FBSDKAppLinkUtility {
+                Branch.getInstance().registerFacebookDeepLinkingClass(FBSDKAppLinkUtility)
+            } else {
+                NSLog("FBSDKAppLinkUtility not found but branch_enable_facebook_ads set to true. Please be sure you have integrated the Facebook SDK.")
+            }
         }
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
