@@ -57,8 +57,8 @@
 	<key>branch_key</key>
 	<string>key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH</string>
 	<key>branch_enable_log</key>
-	<false/>
-	<key>branch_enable_facebook_ads</key>
 	<true/>
+	<key>branch_enable_facebook_ads</key>
+	<false/>
 </dict>
 </plist>
