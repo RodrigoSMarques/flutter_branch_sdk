@@ -627,7 +627,10 @@ To enable:
 
 Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
 
-Follow the instructions on the link [Facebook App Install Ads](https://help.branch.io/using-branch/docs/facebook-app-install-ads) {:target="_blank"}
+Follow the instructions on the link
+<a href="https://help.branch.io/using-branch/docs/facebook-app-install-ads" target="_blank">https://help.branch.io/using-branch/docs/facebook-app-install-ads</a>.
+
+
 
 To read Facebook App Install deep links update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on `Android` as in the example:
 
@@ -649,12 +652,12 @@ Follow the instructions to  install Facebook Android / iOS SDK:
 
 `iOS`: 
 
-[https://developers.facebook.com/docs/ios/use-cocoapods](https://developers.facebook.com/docs/ios/use-cocoapods)
-
+<a href="https://developers.facebook.com/docs/ios/use-cocoapods" target="_blank">https://developers.facebook.com/docs/ios/use-cocoapods</a>
 
 `Android`: 
 
-[https://developers.facebook.com/docs/android/getting-started](https://developers.facebook.com/docs/ios/use-cocoapods)
+<a href="https://developers.facebook.com/docs/android/getting-started" target="_blank">https://developers.facebook.com/docs/android/getting-started</a>
+
 
 
 # Getting Started

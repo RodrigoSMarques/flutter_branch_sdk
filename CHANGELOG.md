@@ -1,8 +1,8 @@
 ## 3.2.0
 * Updated Native `Android` and `iOS` SDKs:  
-**Android Native SDK Update 5.0.9 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases){:target="_blank"}  
-**iOS Native SDK Update 1.39.3 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases){:target="_blank"}
-* [Added support do Facebook App Install Ads](https://help.branch.io/using-branch/docs/facebook-app-install-ads){:target="_blank"} 
+**Android Native SDK Update 5.0.9 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
+**iOS Native SDK Update 1.39.3 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* [Added support do Facebook App Install Ads](https://help.branch.io/using-branch/docs/facebook-app-install-ads)
 * Allow to enable and disable Branch Log 
 * Bug fix #100 NullPointerException when leaving the app
 * Bug fix eventSink nulllpointer exception
