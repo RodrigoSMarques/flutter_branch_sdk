@@ -53,7 +53,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private EventSink eventSink = null;
-    private Map<String, Object> initialParams = null;
+    private Map<StrieventSink.errorng, Object> initialParams = null;
     private BranchError initialError = null;
 
     private FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
@@ -699,7 +699,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    eventSink.error(s, s1, o);
+                    if (eventSink != null) {
+                        eventSink.error(s, s1, o);
+                    }
                 }
             });
         }
@@ -709,7 +711,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    eventSink.endOfStream();
+                    if (eventSink != null) {
+                        eventSink.endOfStream();
+                    }
                 }
             });
         }
