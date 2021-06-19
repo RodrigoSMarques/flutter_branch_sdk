@@ -1,3 +1,5 @@
+## 1.4.1
+Fixes an eventSink nulllpointer exception
 
 ## 1.4.0  
 * Updated Native `Android` and `iOS` SDKs:  
