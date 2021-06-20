@@ -25,7 +25,6 @@ Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
 Referral rewards| X | X | X
 
-
 >Note: **This plugin not work with FlutterFragmentActivity** in Android 
 
 ## Getting Started
@@ -520,10 +519,151 @@ The response will return an list of map:
 * 2 - A redemption of credits that occurred through our API or SDKs.
 * 3 - This is a very unique case where we will subtract credits automatically when we detect fraud.
 
+
+### iOS 14+ App Tracking Transparency 
+Starting with iOS 14.5, iPadOS 14.5, and tvOS 14.5, you’ll need to receive the user’s permission through the AppTrackingTransparency framework to track them or access their device’s advertising identifier. Tracking refers to the act of linking user or device data collected from your app with user or device data collected from other companies’ apps, websites, or offline properties for targeted advertising or advertising measurement purposes. Tracking also refers to sharing user or device data with data brokers.
+
+See: [https://developer.apple.com/app-store/user-privacy-and-data-use/](https://developer.apple.com/app-store/user-privacy-and-data-use/)
+
+New methods have been made available to deal with App Tracking Transparency.
+
+First, update `Info.plist` file located in ios/Runner directory and add the `NSUserTrackingUsageDescription` key with a custom message describing your usage.
+
+```swift
+    <key>NSUserTrackingUsageDescription</key>
+    <string>App would like to access IDFA for tracking purpose</string>
+```
+
+#### Show tracking authorization dialog and ask for permission
+
+```dart
+AppTrackingStatus status = await FlutterBranchSdk.requestTrackingAuthorization();
+print(status);
+```
+> Note: After the user's response, call the `handleATTAuthorizationStatus` Branch SDK method to monitor the performance of the ATT prompt.
+
+![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/app_tracking_dialog.png)
+
+
+#### Get tracking authorization status
+
+```dart
+AppTrackingStatus status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
+print(status);
+```
+
+##### Values available for AppTrackingStatus
+
+```dart
+enum AppTrackingStatus {
+  /// The user has not yet received an authorization request dialog
+  notDetermined,
+
+  /// The device is restricted, tracking is disabled and the system can't show a request dialog
+  restricted,
+
+  /// The user denies authorization for tracking
+  denied,
+
+  /// The user authorizes access to tracking
+  authorized,
+
+  /// The platform is not iOS or the iOS version is below 14.0
+  notSupported,
+}
+
+```
+
+#### Get Device Advertising Identifier
+
+```dart
+AppTrackingStatus status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
+print(status);
+```
+
+See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
+
+
+### Enable Logging
+Use the Branch test key instead of the live key.
+
+Logging is enabled by default in debug mode and disabled in release mode.
+
+To enable/disable logging update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on Android:
+
+For `iOS` add to `INFO.PLIST`:
+
+To disable:
+
+```swift
+	<key>branch_enable_log</key>
+	<false/>
+```
+
+To enable:
+
+```swift
+	<key>branch_enable_log</key>
+	<true/>
+```
+
+For `Android` add to `AndroidManifest.xml`:
+
+To disable:
+
+```java
+    <meta-data android:name="branch_enable_log"
+        android:value="false" />
+```
+
+To enable:
+
+```java
+    <meta-data android:name="branch_enable_log"
+        android:value="true" />
+```
+
+### Facebook App Install Ads
+
+Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
+
+Follow the instructions on the link
+<a href="https://help.branch.io/using-branch/docs/facebook-app-install-ads" target="_blank">https://help.branch.io/using-branch/docs/facebook-app-install-ads</a>.
+
+
+
+To read Facebook App Install deep links update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on `Android` as in the example:
+
+For `iOS` add to `INFO.PLIST`:
+
+```swift
+	<key>branch_enable_facebook_ads</key>
+	<true/>
+```
+
+For `Android` add to `AndroidManifest.xml`:
+
+```java
+    <meta-data android:name="branch_enable_facebook_ads"
+        android:value="true" />
+```
+
+Follow the instructions to  install Facebook Android / iOS SDK:
+
+`iOS`: 
+
+<a href="https://developers.facebook.com/docs/ios/use-cocoapods" target="_blank">https://developers.facebook.com/docs/ios/use-cocoapods</a>
+
+`Android`: 
+
+<a href="https://developers.facebook.com/docs/android/getting-started" target="_blank">https://developers.facebook.com/docs/android/getting-started</a>
+
+
+
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app](https://user-images.githubusercontent.com/17687286/74096674-725c4200-4ae0-11ea-8ef6-94bc02e1913b.png)
+![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
 
 See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 

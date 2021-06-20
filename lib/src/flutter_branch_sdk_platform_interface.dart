@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'app_tracking_transparency.dart';
 import 'branch_universal_object.dart';
 import 'flutter_branch_sdk_mobile.dart';
 
@@ -157,13 +158,24 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError('isUserIdentified has not been implemented');
   }
 
-  ///A robust function to give your users the ability to share links via SMS.
-  Future<BranchResponse> sendSMS(
-      {required String phoneNumber,
-      required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      String smsText = '',
-      bool makeNewLink = false}) async {
-    throw UnimplementedError('sendSMS has not been implemented');
+  /// request AppTracking Autorization and return AppTrackingStatus
+  /// on Android returns notSupported
+  Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    throw UnimplementedError(
+        'requestTrackingAuthorization has not been implemented');
+  }
+
+  /// return AppTrackingStatus
+  /// on Android returns notSupported
+  Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    throw UnimplementedError(
+        'getTrackingAuthorizationStatus has not been implemented');
+  }
+
+  /// return advertising identifier (ie tracking data).
+  /// on Android returns empty string
+  Future<String> getAdvertisingIdentifier() async {
+    throw UnimplementedError(
+        'getAdvertisingIdentifier has not been implemented');
   }
 }

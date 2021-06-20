@@ -10,12 +10,22 @@ import 'custom_button.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+class MyApp extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Flutter Branch SDK Example",
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
@@ -46,6 +56,20 @@ class _MyAppState extends State<MyApp> {
     initDeepLinkData();
 
     FlutterBranchSdk.setIdentity('branch_user_test');
+
+    //requestATTTracking();
+  }
+
+  void requestATTTracking() async {
+    AppTrackingStatus status;
+    status = await FlutterBranchSdk.requestTrackingAuthorization();
+    print(status);
+
+    status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
+    print(status);
+
+    final uuid = await FlutterBranchSdk.getAdvertisingIdentifier();
+    print(uuid);
   }
 
   void listenDynamicLinks() async {
@@ -194,419 +218,412 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Flutter Branch SDK Example",
-      home: ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Branch.io Plugin Example App'),
-          ),
-          body: Scrollbar(
-            isAlwaysShown: true,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  StreamBuilder<String>(
-                    stream: controllerInitSession.stream,
-                    initialData: '',
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                        return Column(
-                          children: <Widget>[
-                            Center(
-                                child: Text(
-                              snapshot.data!,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red),
-                            ))
-                          ],
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                  CustomButton(
-                    child: Text('Validate SDK Integration'),
-                    onPressed: () {
-                      if (kIsWeb) {
+    return ScaffoldMessenger(
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Branch.io Plugin Example App'),
+        ),
+        body: Scrollbar(
+          isAlwaysShown: true,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                StreamBuilder<String>(
+                  stream: controllerInitSession.stream,
+                  initialData: '',
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                      return Column(
+                        children: <Widget>[
+                          Center(
+                              child: Text(
+                            snapshot.data!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red),
+                          ))
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+                CustomButton(
+                  child: Text('Validate SDK Integration'),
+                  onPressed: () {
+                    if (kIsWeb) {
+                      showSnackBar(
+                          context: context,
+                          message:
+                              'validateSDKIntegration() not available in Flutter Web');
+                      return;
+                    }
+
+                    FlutterBranchSdk.validateSDKIntegration();
+                    if (Platform.isAndroid) {
+                      showSnackBar(
+                          context: context,
+                          message: 'Check messages in run log or logcat');
+                    }
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Enable tracking'),
+                        onPressed: () {
+                          FlutterBranchSdk.disableTracking(false);
+                          showSnackBar(
+                              context: context, message: 'Tracking enabled');
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Disable tracking'),
+                        onPressed: () {
+                          FlutterBranchSdk.disableTracking(true);
+                          showSnackBar(
+                              context: context, message: 'Tracking disabled');
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Identify user'),
+                        onPressed: () {
+                          FlutterBranchSdk.setIdentity('branch_user_test');
+                          showSnackBar(
+                              context: context,
+                              message: 'User branch_user_test identfied');
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('User logout'),
+                        onPressed: () {
+                          FlutterBranchSdk.logout();
+                          showSnackBar(
+                              context: context,
+                              message: 'User branch_user_test logout');
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Register view'),
+                        onPressed: () {
+                          FlutterBranchSdk.registerView(buo: buo!);
+
+                          showSnackBar(
+                              context: context, message: 'Event Registered');
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Track content'),
+                        onPressed: () {
+                          FlutterBranchSdk.trackContent(
+                              buo: buo!, branchEvent: eventStandart!);
+                          FlutterBranchSdk.trackContent(
+                              buo: buo!, branchEvent: eventCustom!);
+
+                          FlutterBranchSdk.trackContentWithoutBuo(
+                              branchEvent: eventStandart!);
+                          FlutterBranchSdk.trackContentWithoutBuo(
+                              branchEvent: eventCustom!);
+
+                          showSnackBar(
+                              context: context, message: 'Tracked content');
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Get First Parameters'),
+                        onPressed: () async {
+                          Map<dynamic, dynamic> params =
+                              await FlutterBranchSdk.getFirstReferringParams();
+                          controllerData.sink.add(params.toString());
+                          showSnackBar(
+                              context: context,
+                              message: 'First Parameters recovered');
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Get Last Parameters'),
+                        onPressed: () async {
+                          Map<dynamic, dynamic> params =
+                              await FlutterBranchSdk.getLatestReferringParams();
+                          controllerData.sink.add(params.toString());
+                          showSnackBar(
+                              context: context,
+                              message: 'Last Parameters recovered');
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('List on Search'),
+                        onPressed: () async {
+                          if (kIsWeb) {
+                            showSnackBar(
+                                context: context,
+                                message:
+                                    'listOnSearch() not available in Flutter Web');
+                            return;
+                          }
+                          bool success =
+                              await FlutterBranchSdk.listOnSearch(buo: buo!);
+
+                          success = await FlutterBranchSdk.listOnSearch(
+                              buo: buo!, linkProperties: lp);
+
+                          if (success) {
+                            showSnackBar(
+                                context: context, message: 'Listed on Search');
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Remove from Search'),
+                        onPressed: () async {
+                          if (kIsWeb) {
+                            showSnackBar(
+                                context: context,
+                                message:
+                                    'removeFromSearch() not available in Flutter Web');
+                            return;
+                          }
+                          bool success =
+                              await FlutterBranchSdk.removeFromSearch(
+                                  buo: buo!);
+                          success = await FlutterBranchSdk.removeFromSearch(
+                              buo: buo!, linkProperties: lp);
+                          if (success) {
+                            showSnackBar(
+                                context: context,
+                                message: 'Removed from Search');
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Viewing Credits'),
+                        onPressed: () async {
+                          bool isUserIdentified =
+                              await FlutterBranchSdk.isUserIdentified();
+
+                          if (!isUserIdentified) {
+                            showSnackBar(
+                                context: context,
+                                message:
+                                    'User not identified. Call setIdentity() before.');
+                            return;
+                          }
+
+                          int credits = 0;
+                          BranchResponse response =
+                              await FlutterBranchSdk.loadRewards();
+                          if (response.success) {
+                            credits = response.result;
+                            print('Crédits');
+                            showSnackBar(
+                                context: context, message: 'Credits: $credits');
+                          } else {
+                            showSnackBar(
+                                context: context,
+                                message:
+                                    'Credits error: ${response.errorMessage}');
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomButton(
+                        child: Text('Redeeming Credits'),
+                        onPressed: () async {
+                          bool isUserIdentified =
+                              await FlutterBranchSdk.isUserIdentified();
+
+                          if (!isUserIdentified) {
+                            showSnackBar(
+                                context: context,
+                                message:
+                                    'User not identified. Call setIdentity() before.');
+                            return;
+                          }
+
+                          bool success = false;
+                          BranchResponse response =
+                              await FlutterBranchSdk.redeemRewards(count: 5);
+                          if (response.success) {
+                            success = response.result;
+                            print('Redeeming Credits: $success');
+                            showSnackBar(
+                                context: context,
+                                message: 'Redeeming Credits: $success');
+                          } else {
+                            print(
+                                'Redeeming Credits error: ${response.errorMessage}');
+                            showSnackBar(
+                                context: context,
+                                message:
+                                    'Redeeming Credits error: ${response.errorMessage}');
+                          }
+                          //success = await
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                CustomButton(
+                    child: Text('Get Credits History'),
+                    onPressed: () async {
+                      bool isUserIdentified =
+                          await FlutterBranchSdk.isUserIdentified();
+
+                      if (!isUserIdentified) {
                         showSnackBar(
                             context: context,
                             message:
-                                'validateSDKIntegration() not available in Flutter Web');
+                                'User not identified. Call setIdentity() before.');
                         return;
                       }
 
-                      FlutterBranchSdk.validateSDKIntegration();
-                      if (Platform.isAndroid) {
+                      BranchResponse response =
+                          await FlutterBranchSdk.getCreditHistory();
+                      if (response.success) {
+                        print('Credits Hystory: ${response.result}');
                         showSnackBar(
                             context: context,
-                            message: 'Check messages in run log or logcat');
-                      }
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Enable tracking'),
-                          onPressed: () {
-                            FlutterBranchSdk.disableTracking(false);
-                            showSnackBar(
-                                context: context, message: 'Tracking enabled');
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Disable tracking'),
-                          onPressed: () {
-                            FlutterBranchSdk.disableTracking(true);
-                            showSnackBar(
-                                context: context, message: 'Tracking disabled');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Identify user'),
-                          onPressed: () {
-                            FlutterBranchSdk.setIdentity('branch_user_test');
-                            showSnackBar(
-                                context: context,
-                                message: 'User branch_user_test identfied');
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('User logout'),
-                          onPressed: () {
-                            FlutterBranchSdk.logout();
-                            showSnackBar(
-                                context: context,
-                                message: 'User branch_user_test logout');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Register view'),
-                          onPressed: () {
-                            FlutterBranchSdk.registerView(buo: buo!);
-
-                            showSnackBar(
-                                context: context, message: 'Event Registered');
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Track content'),
-                          onPressed: () {
-                            FlutterBranchSdk.trackContent(
-                                buo: buo!, branchEvent: eventStandart!);
-                            FlutterBranchSdk.trackContent(
-                                buo: buo!, branchEvent: eventCustom!);
-
-                            FlutterBranchSdk.trackContentWithoutBuo(
-                                branchEvent: eventStandart!);
-                            FlutterBranchSdk.trackContentWithoutBuo(
-                                branchEvent: eventCustom!);
-
-                            showSnackBar(
-                                context: context, message: 'Tracked content');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Get First Parameters'),
-                          onPressed: () async {
-                            Map<dynamic, dynamic> params =
-                                await FlutterBranchSdk
-                                    .getFirstReferringParams();
-                            controllerData.sink.add(params.toString());
-                            showSnackBar(
-                                context: context,
-                                message: 'First Parameters recovered');
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Get Last Parameters'),
-                          onPressed: () async {
-                            Map<dynamic, dynamic> params =
-                                await FlutterBranchSdk
-                                    .getLatestReferringParams();
-                            controllerData.sink.add(params.toString());
-                            showSnackBar(
-                                context: context,
-                                message: 'Last Parameters recovered');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('List on Search'),
-                          onPressed: () async {
-                            if (kIsWeb) {
-                              showSnackBar(
-                                  context: context,
-                                  message:
-                                      'listOnSearch() not available in Flutter Web');
-                              return;
-                            }
-                            bool success =
-                                await FlutterBranchSdk.listOnSearch(buo: buo!);
-
-                            success = await FlutterBranchSdk.listOnSearch(
-                                buo: buo!, linkProperties: lp);
-
-                            if (success) {
-                              showSnackBar(
-                                  context: context,
-                                  message: 'Listed on Search');
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Remove from Search'),
-                          onPressed: () async {
-                            if (kIsWeb) {
-                              showSnackBar(
-                                  context: context,
-                                  message:
-                                      'removeFromSearch() not available in Flutter Web');
-                              return;
-                            }
-                            bool success =
-                                await FlutterBranchSdk.removeFromSearch(
-                                    buo: buo!);
-                            success = await FlutterBranchSdk.removeFromSearch(
-                                buo: buo!, linkProperties: lp);
-                            if (success) {
-                              showSnackBar(
-                                  context: context,
-                                  message: 'Removed from Search');
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Viewing Credits'),
-                          onPressed: () async {
-                            bool isUserIdentified =
-                                await FlutterBranchSdk.isUserIdentified();
-
-                            if (!isUserIdentified) {
-                              showSnackBar(
-                                  context: context,
-                                  message:
-                                      'User not identified. Call setIdentity() before.');
-                              return;
-                            }
-
-                            int credits = 0;
-                            BranchResponse response =
-                                await FlutterBranchSdk.loadRewards();
-                            if (response.success) {
-                              credits = response.result;
-                              print('Crédits');
-                              showSnackBar(
-                                  context: context,
-                                  message: 'Credits: $credits');
-                            } else {
-                              showSnackBar(
-                                  context: context,
-                                  message:
-                                      'Credits error: ${response.errorMessage}');
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          child: Text('Redeeming Credits'),
-                          onPressed: () async {
-                            bool isUserIdentified =
-                                await FlutterBranchSdk.isUserIdentified();
-
-                            if (!isUserIdentified) {
-                              showSnackBar(
-                                  context: context,
-                                  message:
-                                      'User not identified. Call setIdentity() before.');
-                              return;
-                            }
-
-                            bool success = false;
-                            BranchResponse response =
-                                await FlutterBranchSdk.redeemRewards(count: 5);
-                            if (response.success) {
-                              success = response.result;
-                              print('Redeeming Credits: $success');
-                              showSnackBar(
-                                  context: context,
-                                  message: 'Redeeming Credits: $success');
-                            } else {
-                              print(
-                                  'Redeeming Credits error: ${response.errorMessage}');
-                              showSnackBar(
-                                  context: context,
-                                  message:
-                                      'Redeeming Credits error: ${response.errorMessage}');
-                            }
-                            //success = await
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  CustomButton(
-                      child: Text('Get Credits History'),
-                      onPressed: () async {
-                        bool isUserIdentified =
-                            await FlutterBranchSdk.isUserIdentified();
-
-                        if (!isUserIdentified) {
-                          showSnackBar(
-                              context: context,
-                              message:
-                                  'User not identified. Call setIdentity() before.');
-                          return;
-                        }
-
-                        BranchResponse response =
-                            await FlutterBranchSdk.getCreditHistory();
-                        if (response.success) {
-                          print('Credits Hystory: ${response.result}');
-                          showSnackBar(
-                              context: context,
-                              message:
-                                  'Check log for view Credit History. Records: ${(response.result as List).length}');
-                        } else {
-                          print(
-                              'Get Credits History error: ${response.errorMessage}');
-                          showSnackBar(
-                              context: context,
-                              message:
-                                  'Get Credits History error: ${response.errorMessage}');
-                        }
-                      }),
-                  CustomButton(
-                    child: Text('Generate Link'),
-                    onPressed: generateLink,
-                  ),
-                  StreamBuilder<String>(
-                    stream: controllerUrl.stream,
-                    initialData: '',
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                        return Column(
-                          children: <Widget>[
-                            Center(
-                                child: Text(
-                              'Link build',
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                            Center(child: Text(snapshot.data!))
-                          ],
-                        );
+                            message:
+                                'Check log for view Credit History. Records: ${(response.result as List).length}');
                       } else {
-                        return Container();
+                        print(
+                            'Get Credits History error: ${response.errorMessage}');
+                        showSnackBar(
+                            context: context,
+                            message:
+                                'Get Credits History error: ${response.errorMessage}');
                       }
-                    },
+                    }),
+                CustomButton(
+                  child: Text('Generate Link'),
+                  onPressed: generateLink,
+                ),
+                StreamBuilder<String>(
+                  stream: controllerUrl.stream,
+                  initialData: '',
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                      return Column(
+                        children: <Widget>[
+                          Center(
+                              child: Text(
+                            'Link build',
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          )),
+                          Center(child: Text(snapshot.data!))
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+                CustomButton(
+                  child: Text('Share Link'),
+                  onPressed: shareLink,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(),
+                Center(
+                  child: Text(
+                    'Deep Link data',
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
-                  CustomButton(
-                    child: Text('Share Link'),
-                    onPressed: shareLink,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Divider(),
-                  Center(
-                    child: Text(
-                      'Deep Link data',
-                      style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Divider(),
-                  StreamBuilder<String>(
-                    stream: controllerData.stream,
-                    initialData: '',
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                        return Column(
-                          children: [
-                            Center(child: Text(snapshot.data!)),
-                          ],
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ],
-              ),
+                ),
+                Divider(),
+                StreamBuilder<String>(
+                  stream: controllerData.stream,
+                  initialData: '',
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                      return Column(
+                        children: [
+                          Center(child: Text(snapshot.data!)),
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),
