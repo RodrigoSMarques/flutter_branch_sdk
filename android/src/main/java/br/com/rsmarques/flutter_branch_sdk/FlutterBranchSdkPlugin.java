@@ -27,6 +27,8 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 import io.branch.referral.validators.IntegrationValidator;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -62,7 +64,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     /**---------------------------------------------------------------------------------------------
      Plugin registry
      --------------------------------------------------------------------------------------------**/
-
     public static void registerWith(Registrar registrar) {
         LogUtils.debug(DEBUG_NAME, "registerWith call");
         if (registrar.activity() == null) {
@@ -105,6 +106,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "setActivity call");
         this.activity = activity;
         activity.getApplication().registerActivityLifecycleCallbacks(this);
+
+        if (this.activity != null && FlutterFragmentActivity.class.isAssignableFrom(activity.getClass())) {
+                Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+        }
     }
 
     private void teardownChannels() {
@@ -189,7 +194,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onActivityPaused(Activity activity) {}
 
     @Override
-    public void onActivityStopped(Activity activity) {}
+    public void onActivityStopped(Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "onActivityStopped call");
+    }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {}
@@ -301,6 +308,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             initialParams = null;
                         }
                     } else {
+                        if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED || error.getErrorCode() == BranchError.ERR_IMPROPER_REINITIALIZATION) {
+                            return;
+                        }
                         LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error.toString());
                         if (eventSink != null) {
                             eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(),null);
