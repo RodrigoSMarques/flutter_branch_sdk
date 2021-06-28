@@ -1,3 +1,6 @@
+## 3.3.0
+* Added support to `FlutterFragmentActivity`
+
 ## 3.2.0
 * Updated Native `Android` and `iOS` SDKs:  
 **Android Native SDK Update 5.0.9 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
