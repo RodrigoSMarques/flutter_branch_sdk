@@ -6,8 +6,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.0.7 [Android Version History](https://help.branch.io/developers-hub/docs/android-version-history)
-* iOS - Branch SDK Version >= 1.39.0 [iOS Version History](https://help.branch.io/developers-hub/docs/ios-version-history)
+* Android - Branch SDK Version >= 5.0.9 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 1.39.3 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -24,8 +24,6 @@ Register view| X | X | X
 Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
 Referral rewards| X | X | X
-
->Note: **This plugin not work with FlutterFragmentActivity** in Android 
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -120,7 +118,7 @@ Full example `index.html`:
 ```
 
 ## Installation
-To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
+To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://pub.dev/packages/flutter_branch_sdk/install).
 
 ## How to use
 
