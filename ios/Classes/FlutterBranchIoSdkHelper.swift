@@ -191,7 +191,7 @@ func convertToEvent(dict: [String: Any?]) -> BranchEvent? {
     }
     if let dictCustomData = dict["customData"] as? [String: Any] {
         for customData in dictCustomData {
-            event.customData[customData.key] = (customData.value  as! String)
+            event.customData[customData.key] = (customData.value  as? String)
         }
     }
     return event
