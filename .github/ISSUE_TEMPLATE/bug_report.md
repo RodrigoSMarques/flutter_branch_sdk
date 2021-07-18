@@ -24,15 +24,15 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - Flutter: version: [2.2.3]
- - Package version: [3.3.0]
+ - Flutter: version: [e.g. 2.2.3]
+ - Package version: [e.g. 3.3.0]
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
  - Version [e.g. 22]
 
 **Smartphone (please complete the following information):**
- - Flutter: version: [2.2.3]
- - Package version: [3.3.0]
+ - Flutter: version: [e.g. 2.2.3]
+ - Package version: [e.g. 3.3.0]
  - Device: [e.g. iPhone6]
  - OS: [e.g. iOS8.1]
 
