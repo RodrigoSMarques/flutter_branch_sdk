@@ -67,6 +67,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
         
+        let checkPasteboard  = Bundle.infoPlistValue(forKey: "branch_check_pasteboard") as? Bool ?? false
+        print("Branch Clipboard Deferred Deep Linking: \(String(describing:checkPasteboard))");
+
+        if checkPasteboard {
+            Branch.getInstance().checkPasteboardOnInstall()
+        }
+        
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")

@@ -621,6 +621,19 @@ To enable:
         android:value="true" />
 ```
 
+### iOS - Enabled Clipboard Deferred Deep Linking
+
+Use iOS pasteboard to enable deferred deep linking.
+
+To enable Clipboard Deferred Deep Linking update `INFO.PLIST` on `iOS`
+
+Add to `INFO.PLIST`:
+
+```swift
+	<key>branch_check_pasteboard</key>
+	<true/>
+```
+
 ### Facebook App Install Ads
 
 Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
