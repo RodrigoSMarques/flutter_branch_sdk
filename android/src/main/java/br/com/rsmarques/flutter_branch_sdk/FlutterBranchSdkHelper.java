@@ -34,7 +34,7 @@ public class FlutterBranchSdkHelper {
         buo.setCanonicalIdentifier(canonicalIdentifier);
 
         if (argsMap.containsKey("canonicalUrl"))
-            buo.setCanonicalIdentifier((String) argsMap.get("canonicalUrl"));
+            buo.setCanonicalUrl((String) argsMap.get("canonicalUrl"));
         if (argsMap.containsKey("title"))
             buo.setTitle((String) argsMap.get("title"));
         if (argsMap.containsKey("contentDescription"))

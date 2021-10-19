@@ -1,3 +1,9 @@
+## 3.5.0
+* Updated Native `Android` and `iOS` SDKs:  
+  **Android Native SDK Update 5.0.14 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
+  **iOS Native SDK Update 1.40.1 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Bug fix #124: typo in android BUO converter
+
 ## 3.4.0
 * Updated Native `Android` and `iOS` SDKs:  
 **Android Native SDK Update 5.0.10 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
