@@ -2,7 +2,7 @@
 * Updated Native `Android` and `iOS` SDKs:  
   **Android Native SDK Update 5.0.14 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
   **iOS Native SDK Update 1.40.1 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-* [Added support to Clipboard Deferred Deep Linking](https://help.branch.io/developers-hub/docs/ios-advanced-features#clipboard-deferred-deep-linking)
+* Bug fix #124: typo in android BUO converter
 
 ## 3.4.0
 * Updated Native `Android` and `iOS` SDKs:  
