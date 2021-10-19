@@ -52,7 +52,7 @@
         <meta-data
             android:name="io.branch.sdk.BranchKey.test"
             android:value="key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH" />
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="true" />
         <meta-data android:name="branch_enable_log"
             android:value="true" />
         <meta-data android:name="branch_enable_facebook_ads"

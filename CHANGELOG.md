@@ -1,8 +1,23 @@
+## 3.5.0
+* Updated Native `Android` and `iOS` SDKs:  
+  **Android Native SDK Update 5.0.14 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
+  **iOS Native SDK Update 1.40.1 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Bug fix #124: typo in android BUO converter
+
+## 3.4.0
+* Updated Native `Android` and `iOS` SDKs:  
+**Android Native SDK Update 5.0.10 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
+**iOS Native SDK Update 1.39.4 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* [Added support to Clipboard Deferred Deep Linking](https://help.branch.io/developers-hub/docs/ios-advanced-features#clipboard-deferred-deep-linking)
+
+## 3.3.0
+* Added support to `FlutterFragmentActivity`
+
 ## 3.2.0
 * Updated Native `Android` and `iOS` SDKs:  
 **Android Native SDK Update 5.0.9 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
 **iOS Native SDK Update 1.39.3 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-* [Added support do Facebook App Install Ads](https://help.branch.io/using-branch/docs/facebook-app-install-ads)
+* [Added support to Facebook App Install Ads](https://help.branch.io/using-branch/docs/facebook-app-install-ads)
 * Allow to enable and disable Branch Log 
 * Bug fix #100 NullPointerException when leaving the app
 * Bug fix eventSink nulllpointer exception
