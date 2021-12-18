@@ -127,6 +127,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Retrieves rewards for the current user/session
+  @Deprecated('version 4.0.0')
   Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
     throw UnimplementedError('loadRewards has not been implemented');
   }
@@ -134,12 +135,14 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///Redeems the specified number of credits. if there are sufficient credits within it.
   ///If the number to redeem exceeds the number available in the bucket, all of the
   ///available credits will be redeemed instead.
+  @Deprecated('version 4.0.0')
   Future<BranchResponse> redeemRewards(
       {required int count, String bucket = 'default'}) async {
     throw UnimplementedError('redeemRewards has not been implemented');
   }
 
   ///Gets the credit history
+  @Deprecated('version 4.0.0')
   Future<BranchResponse> getCreditHistory({String bucket = 'default'}) async {
     throw UnimplementedError('getCreditHistory has not been implemented');
   }

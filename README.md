@@ -401,7 +401,6 @@ Add key value pairs to all requests
 FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
 ```
 
-
 ### Set time window (in Hours) for SKAdNetwork callouts (iOS only)
 By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
 
@@ -421,7 +420,8 @@ In `ios/Runner/Info.plist`, you should have something like:
 	<true/>
 ```
 
-### Referral System Rewarding Functionality
+### Referral System Rewarding Functionality - ATTENTION: Deprecated on version 4.0.0
+
 Reward balances change randomly on the backend when certain actions are taken (defined by your rules), so you'll need to make an asynchronous call to retrieve the balance. 
 
 Read more here: [https://blog.branch.io/how-to-build-an-optimized-referral-program-for-your-mobile-app/](https://blog.branch.io/how-to-build-an-optimized-referral-program-for-your-mobile-app/)
