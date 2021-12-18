@@ -41,7 +41,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.NewIntentListener;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler, StreamHandler, NewIntentListener, ActivityAware,
         Application.ActivityLifecycleCallbacks {
@@ -64,18 +63,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     /**---------------------------------------------------------------------------------------------
      Plugin registry
      --------------------------------------------------------------------------------------------**/
-    public static void registerWith(Registrar registrar) {
-        LogUtils.debug(DEBUG_NAME, "registerWith call");
-        if (registrar.activity() == null) {
-            // When a background flutter view tries to register the plugin, the registrar has no activity.
-            // We stop the registration process as this plugin is foreground only.
-            return;
-        }
-        FlutterBranchSdkPlugin plugin = new FlutterBranchSdkPlugin();
-        plugin.setupChannels(registrar.messenger(), registrar.activity().getApplicationContext());
-        plugin.setActivity(registrar.activity());
-        registrar.addNewIntentListener(plugin);
-    }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {

@@ -111,6 +111,7 @@ class FlutterBranchSdk {
   }
 
   ///Retrieves rewards for the current user/session
+  @Deprecated('version 4.0.0')
   static Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
     return _platform.loadRewards(bucket: bucket);
   }
@@ -118,12 +119,14 @@ class FlutterBranchSdk {
   ///Redeems the specified number of credits. if there are sufficient credits within it.
   ///If the number to redeem exceeds the number available in the bucket, all of the
   ///available credits will be redeemed instead.
+  @Deprecated('version 4.0.0')
   static Future<BranchResponse> redeemRewards(
       {required int count, String bucket = 'default'}) async {
     return _platform.redeemRewards(count: count, bucket: bucket);
   }
 
   ///Gets the credit history
+  @Deprecated('version 4.0.0')
   static Future<BranchResponse> getCreditHistory(
       {String bucket = 'default'}) async {
     return _platform.getCreditHistory(bucket: bucket);

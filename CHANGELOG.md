@@ -1,3 +1,15 @@
+## 4.0.0
+* Migrate maven repository from jcenter to mavenCentral.
+* Updated compile & target SDK to Android API 31.
+* Updated minSdkVersion to Android API 21.
+* Updated example app Android compileSdkVersion to 31.
+* Removed support for the V1 Android embedding.
+* Deprecate Referral rewards SDK Methods (loadRewards, redeemRewards, getCreditHistory)
+* Removed Referral rewards SDK Methods from example app
+* Updated Native `Android` and `iOS` SDKs:
+  **Android Native SDK Update 5.0.15 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+  **iOS Native SDK Update 1.40.2 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ## 3.5.0
 * Updated Native `Android` and `iOS` SDKs:  
   **Android Native SDK Update 5.0.14 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)  
