@@ -278,9 +278,11 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
   void trackContent(
-      {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
+      {required List<BranchUniversalObject> buo,
+      required BranchEvent branchEvent}) {
+    //TODO: REVIEW Flutter WEB
     Map<String, dynamic> contentMetadata = {
-      if (buo.contentMetadata != null) ...buo.contentMetadata!.toMap()
+      if (buo[0].contentMetadata != null) ...buo[0].contentMetadata!.toMap()
     };
 
     try {
@@ -309,7 +311,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
 
     // This might not be exactly the same thing as BUO.registerView, but there's no clear implementation for web sdk
-    trackContent(buo: buo, branchEvent: branchEvent);
+    trackContent(buo: [buo], branchEvent: branchEvent);
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search

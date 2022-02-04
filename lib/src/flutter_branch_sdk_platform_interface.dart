@@ -95,7 +95,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   void trackContent(
-      {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
+      {required List<BranchUniversalObject> buo,
+      required BranchEvent branchEvent}) {
     throw UnimplementedError('trackContent has not been implemented');
   }
 

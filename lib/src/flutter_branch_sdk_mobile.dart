@@ -149,10 +149,11 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
   void trackContent(
-      {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
+      {required List<BranchUniversalObject> buo,
+      required BranchEvent branchEvent}) {
     Map<String, dynamic> _params = {};
 
-    _params['buo'] = buo.toMap();
+    _params['buo'] = buo.map((b) => b.toMap()).toList();
     if (branchEvent.toMap().isNotEmpty) {
       _params['event'] = branchEvent.toMap();
     }

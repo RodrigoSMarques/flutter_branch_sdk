@@ -278,11 +278,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     private func trackContent(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
+        let buoDict = args["buo"] as! [[String: Any?]]
         let eventDict = args["event"] as! [String: Any?]
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
+        let buoList: [BranchUniversalObject] = buoDict.map { b in
+            convertToBUO(dict: b)!
+        }
         let event: BranchEvent? = convertToEvent(dict : eventDict)
-        event!.contentItems = [ buo! ]
+        event!.contentItems =  buoList
         
         DispatchQueue.main.async {
             event!.logEvent()

@@ -135,11 +135,11 @@ class _HomePageState extends State<HomePage> {
         country: 'Brazil',
         postalCode: '99999-987');
     metadata.setLocation(31.4521685, -114.7352207);
-*/
+  */
 
     buo = BranchUniversalObject(
         canonicalIdentifier: 'flutter/branch',
-        //canonicalUrl: '',
+        canonicalUrl: 'https://flutter.dev',
         title: 'Flutter Branch Plugin',
         imageUrl:
             'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
@@ -172,6 +172,7 @@ class _HomePageState extends State<HomePage> {
         campaign: 'xxxxx',
         tags: ['one', 'two', 'three']);
     lp.addControlParam('\$uri_redirect_mode', '1');
+    lp.addControlParam('referring_user_id', 'asdf');
 
     //parameter alias
     //Instead of our standard encoded short url, you can specify the vanity alias.
@@ -353,9 +354,9 @@ class _HomePageState extends State<HomePage> {
                         child: Text('Track content'),
                         onPressed: () {
                           FlutterBranchSdk.trackContent(
-                              buo: buo!, branchEvent: eventStandart!);
+                              buo: [buo!, buo!], branchEvent: eventStandart!);
                           FlutterBranchSdk.trackContent(
-                              buo: buo!, branchEvent: eventCustom!);
+                              buo: [buo!, buo!], branchEvent: eventCustom!);
 
                           FlutterBranchSdk.trackContentWithoutBuo(
                               branchEvent: eventStandart!);

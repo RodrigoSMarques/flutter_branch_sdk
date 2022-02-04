@@ -79,7 +79,8 @@ class FlutterBranchSdk {
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContent(
-      {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
+      {required List<BranchUniversalObject> buo,
+      required BranchEvent branchEvent}) {
     return _platform.trackContent(buo: buo, branchEvent: branchEvent);
   }
 

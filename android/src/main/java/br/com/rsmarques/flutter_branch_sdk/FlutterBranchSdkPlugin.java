@@ -7,17 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
@@ -27,7 +27,6 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 import io.branch.referral.validators.IntegrationValidator;
-import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -49,16 +48,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
 
-    private MethodChannel methodChannel;
-    private EventChannel eventChannel;
-
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private EventSink eventSink = null;
     private Map<String, Object> initialParams = null;
     private BranchError initialError = null;
 
-    private FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
+    private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
 
     /**---------------------------------------------------------------------------------------------
      Plugin registry
@@ -80,8 +76,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "setupChannels call");
         this.context = context;
 
-        methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
-        eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
+        MethodChannel methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
+        EventChannel eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
 
         methodChannel.setMethodCallHandler(this);
         eventChannel.setStreamHandler(this);
@@ -131,7 +127,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     @Override
-    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
         LogUtils.debug(DEBUG_NAME, "onReattachedToActivityForConfigChanges call");
         onAttachedToActivity(activityPluginBinding);
     }
@@ -278,7 +274,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     /**---------------------------------------------------------------------------------------------
      Branch SDK Call Methods
      --------------------------------------------------------------------------------------------**/
-    private Branch.BranchReferralInitListener branchReferralInitListener = new
+    private final Branch.BranchReferralInitListener branchReferralInitListener = new
             Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject params, BranchError error) {
@@ -298,7 +294,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                         if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED || error.getErrorCode() == BranchError.ERR_IMPROPER_REINITIALIZATION) {
                             return;
                         }
-                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error.toString());
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
                         if (eventSink != null) {
                             eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(),null);
                             initialError = null;
@@ -377,10 +373,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
                         if (error == null) {
                             LogUtils.debug(DEBUG_NAME, "Branch link share: " + sharedLink);
-                            response.put("success", Boolean.valueOf(true));
+                            response.put("success", Boolean.TRUE);
                             response.put("url", sharedLink);
                         } else {
-                            response.put("success", Boolean.valueOf(false));
+                            response.put("success", Boolean.FALSE);
                             response.put("errorCode", String.valueOf(error.getErrorCode()));
                             response.put("errorMessage", error.getMessage());
                         }
@@ -428,7 +424,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         } else {
             buo.listOnGoogleSearch(context);
         }
-        result.success(Boolean.valueOf(true));
+        result.success(Boolean.TRUE);
     }
 
     private void removeFromSearch(MethodCall call, Result result) {
@@ -444,7 +440,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         } else {
             buo.removeFromLocalIndexing(context);
         }
-        result.success(Boolean.valueOf(true));
+        result.success(Boolean.TRUE);
     }
 
     private void trackContent(MethodCall call) {
@@ -453,7 +449,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             throw new IllegalArgumentException("Map argument expected");
         }
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+
+        final List<BranchUniversalObject> buo =new ArrayList();
+        for (HashMap<String, Object> b : (List<HashMap<String, Object>>) argsMap.get("buo")) {
+            buo.add(branchSdkHelper.convertToBUO(b));
+        }
         final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -572,10 +572,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     } else {
                         credits = Branch.getAutoInstance(context).getCreditsForBucket(call.argument("bucket").toString());
                     }
-                    response.put("success", Boolean.valueOf(true));
+                    response.put("success", Boolean.TRUE);
                     response.put("credits", credits);
                 } else {
-                    response.put("success", Boolean.valueOf(false));
+                    response.put("success", Boolean.FALSE);
                     response.put("errorCode", String.valueOf(error.getErrorCode()));
                     response.put("errorMessage", error.getMessage());
                 }
@@ -598,9 +598,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 @Override
                 public void onStateChanged(boolean changed, @Nullable BranchError error) {
                     if (error == null)  {
-                        response.put("success", Boolean.valueOf(true));
+                        response.put("success", Boolean.TRUE);
                     } else {
-                        response.put("success", Boolean.valueOf(false));
+                        response.put("success", Boolean.FALSE);
                         response.put("errorCode", String.valueOf(error.getErrorCode()));
                         response.put("errorMessage", error.getMessage());
                     }
@@ -612,9 +612,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 @Override
                 public void onStateChanged(boolean changed, @Nullable BranchError error) {
                     if (error == null)  {
-                        response.put("success", Boolean.valueOf(true));
+                        response.put("success", Boolean.TRUE);
                     } else {
-                        response.put("success", Boolean.valueOf(false));
+                        response.put("success", Boolean.FALSE);
                         response.put("errorCode", String.valueOf(error.getErrorCode()));
                         response.put("errorMessage", error.getMessage());
                     }
@@ -636,7 +636,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 @Override
                 public void onReceivingResponse(JSONArray list, BranchError error) {
                     if (error == null)  {
-                        response.put("success", Boolean.valueOf(true));
+                        response.put("success", Boolean.TRUE);
                         JSONObject jo = new JSONObject();
                         try {
                             jo.put("history", list);
@@ -645,7 +645,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             e.printStackTrace();
                         }
                     } else {
-                        response.put("success", Boolean.valueOf(false));
+                        response.put("success", Boolean.FALSE);
                         response.put("errorCode", String.valueOf(error.getErrorCode()));
                         response.put("errorMessage", error.getMessage());
                     }
@@ -657,7 +657,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 @Override
                 public void onReceivingResponse(JSONArray list, BranchError error) {
                     if (error == null)  {
-                        response.put("success", Boolean.valueOf(true));
+                        response.put("success", Boolean.TRUE);
                         JSONObject jo = new JSONObject();
                         try {
                             jo.put("history", list);
@@ -667,7 +667,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                         }
 
                     } else {
-                        response.put("success", Boolean.valueOf(false));
+                        response.put("success", Boolean.FALSE);
                         response.put("errorCode", String.valueOf(error.getErrorCode()));
                         response.put("errorMessage", error.getMessage());
                     }
@@ -684,8 +684,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     // MethodChannel.Result wrapper that responds on the platform thread.
     private static class MethodResultWrapper implements Result {
-        private Result methodResult;
-        private Handler handler;
+        private final Result methodResult;
+        private final Handler handler;
 
         MethodResultWrapper(Result result) {
             methodResult = result;
@@ -728,8 +728,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private static class MainThreadEventSink implements EventChannel.EventSink {
-        private EventChannel.EventSink eventSink;
-        private Handler handler;
+        private final EventChannel.EventSink eventSink;
+        private final Handler handler;
 
         MainThreadEventSink(EventChannel.EventSink eventSink) {
             this.eventSink = eventSink;
