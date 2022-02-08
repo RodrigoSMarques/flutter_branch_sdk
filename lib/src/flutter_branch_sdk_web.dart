@@ -30,15 +30,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
 
   FlutterBranchSdk._();
 
-  /*
-  static FlutterBranchSdkPlatform? __platform;
-
-  static FlutterBranchSdkPlatform get _platform {
-    __platform ??= FlutterBranchSdkPlatform.instance;
-    return __platform!;
-  }
-   */
-
   /// Registers this class as the default instance of [SharePlatform].
   static void registerWith(Registrar registrar) {
     FlutterBranchSdkPlatform.instance = FlutterBranchSdk();
@@ -46,11 +37,8 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
 
   static final StreamController<Map<String, dynamic>> _initSessionStream =
       StreamController<Map<String, dynamic>>();
-
   static bool _userIdentified = false;
-
   static String _branchKey = '';
-  //static bool _sessionInitialized = false;
 
   @override
   void initWeb({required String branchKey}) {
@@ -60,12 +48,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   @override
   void setIdentity(String userId) {
-    /*
-    if (_sessionInitialized == false) {
-      throw AssertionError(
-          'in Web call initSession() before call setIdentity()');
-    }
-     */
     try {
       BranchJS.setIdentity(userId, allowInterop((error, data) {
         if (error == null) {
@@ -168,9 +150,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     if (_branchKey.isEmpty) {
       throw AssertionError('call initWeb() before initSession');
     }
-
     BranchJS.init(_branchKey, null, allowInterop((err, data) {
-      //_sessionInitialized = true;
       if (err == null) {
         if (data != null) {
           var parsedData = _jsObjectToDartObject(data);
@@ -193,7 +173,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         _initSessionStream.addError(Exception(err));
       }
     }));
-
     return _initSessionStream.stream;
   }
 
@@ -210,32 +189,20 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties}) async {
-    Map<String, dynamic> contentMetadata = {
-      if (buo.contentMetadata != null) ...buo.contentMetadata!.toMap()
-    };
-
-    if (contentMetadata.containsKey('customMetadata')) {
-      var customMetadata = contentMetadata['customMetadata'];
-      contentMetadata.remove('customMetadata');
-      contentMetadata.addAll(customMetadata);
-    }
+    Map<String, dynamic> data = buo.toMapWeb();
+    linkProperties.getControlParams().forEach((key, value) {
+      data['$key'] = value;
+    });
 
     Map<String, dynamic> linkData = {
-      "\$canonical_identifier": buo.canonicalIdentifier,
-      "\$publicly_indexable": buo.publiclyIndex,
-      "\$locally_indexable": buo.locallyIndex,
-      "\$og_title": buo.title,
-      "\$og_description": buo.contentDescription,
-      "\$og_image_url": buo.imageUrl,
-      if (contentMetadata.keys.length > 0) ...contentMetadata
+      ...linkProperties.toMapWeb(),
+      'data': data
     };
-
-    Map<String, dynamic> data = {...linkProperties.toMap(), 'data': linkData};
 
     Completer<BranchResponse> responseCompleter = Completer();
 
     try {
-      BranchJS.link(_dartObjectToJsObject(data), allowInterop((err, url) {
+      BranchJS.link(_dartObjectToJsObject(linkData), allowInterop((err, url) {
         if (err == null) {
           responseCompleter.complete(BranchResponse.success(result: url));
         } else {
@@ -281,13 +248,19 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
     //TODO: REVIEW Flutter WEB
-    Map<String, dynamic> contentMetadata = {
-      if (buo[0].contentMetadata != null) ...buo[0].contentMetadata!.toMap()
-    };
+    //Map<String, dynamic> contentMetadata = {
+    //  if (buo[0].contentMetadata != null) ...buo[0].contentMetadata!.toMapWeb()
+    //};
+
+    final List<Map<String, dynamic>> contentMetadata =
+        buo.map((b) => b.toMap()).toList();
 
     try {
-      BranchJS.logEvent(branchEvent.eventName,
-          _dartObjectToJsObject({...branchEvent.toMap(), ...contentMetadata}));
+      BranchJS.logEvent(
+        branchEvent.eventName,
+        _dartObjectToJsObject(branchEvent.toMap()),
+        //_dartObjectToJsObject(contentMetadata)
+      );
     } catch (e) {
       print('trackContent() error: $e');
     }
@@ -334,6 +307,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   }
 
   ///Retrieves rewards for the current user/session
+  @Deprecated('version 4.0.0')
   @override
   Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
     Completer<BranchResponse> responseCompleter = Completer();
@@ -367,6 +341,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   ///Redeems the specified number of credits. if there are sufficient credits within it.
   ///If the number to redeem exceeds the number available in the bucket, all of the
   ///available credits will be redeemed instead.
+  @Deprecated('version 4.0.0')
   @override
   Future<BranchResponse> redeemRewards(
       {required int count, String bucket = 'default'}) async {
@@ -391,6 +366,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   }
 
   ///Gets the credit history
+  @Deprecated('version 4.0.0')
   @override
   Future<BranchResponse> getCreditHistory({String bucket = 'default'}) async {
     Completer<BranchResponse> responseCompleter = Completer();

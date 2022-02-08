@@ -283,10 +283,10 @@ class BranchContentMetaData {
   String _addressPostalCode = '';
 
   /// Latitude value  associated with the qualifying content item
-  double _latitude = -1;
+  double? _latitude;
 
   /// Latitude value  associated with the qualifying content item
-  double _longitude = -1;
+  double? _longitude;
 
   List<String> _imageCaptions = const [];
   Map<String, dynamic> _customMetadata = {};
@@ -406,9 +406,52 @@ class BranchContentMetaData {
       ret["address_country"] = this._addressCountry;
     if (this._addressPostalCode.isNotEmpty)
       ret["address_postal_code"] = this._addressPostalCode;
-    if (this._latitude > -1) ret["latitude"] = this._latitude;
-    if (this._longitude > -1) ret["longitude"] = this._longitude;
+    if (this._latitude != null) ret["latitude"] = this._latitude;
+    if (this._longitude != null) ret["longitude"] = this._longitude;
     if (_imageCaptions.isNotEmpty) ret["image_captions"] = this._imageCaptions;
+    if (this._customMetadata.isNotEmpty) {
+      ret["customMetadata"] = this._customMetadata;
+    }
+    print(ret);
+    return ret;
+  }
+
+  Map<String, dynamic> toMapWeb() {
+    Map<String, dynamic> ret = Map<String, dynamic>();
+    if (this.contentSchema != null)
+      ret["\$content_schema"] = getContentSchemaString(this.contentSchema);
+    if (this.quantity > 0) ret["\$quantity"] = this.quantity;
+    if (this.price > 0) ret["\$price"] = this.price;
+    if (this.currencyType != null)
+      ret["\$currency"] = getCurrencyTypeString(this.currencyType!);
+    if (this.sku.isNotEmpty) ret["\$sku"] = this.sku;
+    if (this.productName.isNotEmpty) ret["\$product_name"] = this.productName;
+    if (this.productBrand.isNotEmpty)
+      ret["\$product_brand"] = this.productBrand;
+    if (this.productCategory != null)
+      ret["\$product_category"] =
+          _getProductCategoryString(this.productCategory);
+    if (this.productVariant.isNotEmpty)
+      ret["\$product_variant"] = this.productVariant;
+    if (this.condition != null)
+      ret["\$condition"] = _getProductConditionString(this.condition);
+    if (this.ratingAverage > 0) ret["\$rating_average"] = this.ratingAverage;
+    if (this.ratingCount > 0) ret["\$rating_count"] = this.ratingCount;
+    if (this.ratingMax > 0) ret["\$rating_max"] = this.ratingMax;
+    if (this.rating > 0) ret["\$rating"] = this.rating;
+    if (this._addressStreet.isNotEmpty)
+      ret["\$address_street"] = this._addressStreet;
+    if (this._addressCity.isNotEmpty) ret["\$address_city"] = this._addressCity;
+    if (this._addressRegion.isNotEmpty)
+      ret["\$address_region"] = this._addressRegion;
+    if (this._addressCountry.isNotEmpty)
+      ret["\$address_country"] = this._addressCountry;
+    if (this._addressPostalCode.isNotEmpty)
+      ret["\$address_postal_code"] = this._addressPostalCode;
+    if (this._latitude != null) ret["\$latitude"] = this._latitude;
+    if (this._longitude != null) ret["\$longitude"] = this._longitude;
+    if (_imageCaptions.isNotEmpty)
+      ret["\$image_captions"] = this._imageCaptions;
     if (this._customMetadata.isNotEmpty) {
       ret["customMetadata"] = this._customMetadata;
     }
