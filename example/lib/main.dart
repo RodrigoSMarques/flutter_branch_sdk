@@ -102,42 +102,41 @@ class _HomePageState extends State<HomePage> {
 
   void initDeepLinkData() {
     metadata = BranchContentMetaData()
-        .addCustomMetadata('custom_string', 'abc')
-        .addCustomMetadata('custom_number', 12345)
-        .addCustomMetadata('custom_bool', true)
-        .addCustomMetadata('custom_list_number', [
-      1,
-      2,
-      3,
-      4,
-      5
-    ]).addCustomMetadata('custom_list_string', ['a', 'b', 'c']);
-    //--optional Custom Metadata
-
-    metadata.contentSchema = BranchContentSchema.COMMERCE_PRODUCT;
-    metadata.price = 50.99;
-    metadata.currencyType = BranchCurrencyType.BRL;
-    metadata.quantity = 50;
-    metadata.sku = 'sku';
-    metadata.productName = 'productName';
-    metadata.productBrand = 'productBrand';
-    metadata.productCategory = BranchProductCategory.ELECTRONICS;
-    metadata.productVariant = 'productVariant';
-    metadata.condition = BranchCondition.NEW;
-    metadata.rating = 100;
-    metadata.ratingAverage = 50;
-    metadata.ratingMax = 100;
-    metadata.ratingCount = 2;
-    metadata.setAddress(
-        street: 'street',
-        city: 'city',
-        region: 'ES',
-        country: 'Brazil',
-        postalCode: '99999-987');
-    metadata.setLocation(31.4521685, -114.7352207);
+      ..addCustomMetadata('custom_string', 'abc')
+      ..addCustomMetadata('custom_number', 12345)
+      ..addCustomMetadata('custom_bool', true)
+      ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
+      ..addCustomMetadata('custom_list_string', ['a', 'b', 'c'])
+      //--optional Custom Metadata
+      ..contentSchema = BranchContentSchema.COMMERCE_PRODUCT
+      ..price = 50.99
+      ..currencyType = BranchCurrencyType.BRL
+      ..quantity = 50
+      ..sku = 'sku'
+      ..productName = 'productName'
+      ..productBrand = 'productBrand'
+      ..productCategory = BranchProductCategory.ELECTRONICS
+      ..productVariant = 'productVariant'
+      ..condition = BranchCondition.NEW
+      ..rating = 100
+      ..ratingAverage = 50
+      ..ratingMax = 100
+      ..ratingCount = 2
+      ..setAddress(
+          street: 'street',
+          city: 'city',
+          region: 'ES',
+          country: 'Brazil',
+          postalCode: '99999-987')
+      ..setLocation(31.4521685, -114.7352207);
 
     buo = BranchUniversalObject(
         canonicalIdentifier: 'flutter/branch',
+        //parameter canonicalUrl
+        //If your content lives both on the web and in the app, make sure you set its canonical URL
+        // (i.e. the URL of this piece of content on the web) when building any BUO.
+        // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
+        // even if the user goes to the app instead of your website! This will help your SEO efforts.
         canonicalUrl: 'https://flutter.dev',
         title: 'Flutter Branch Plugin',
         imageUrl:
@@ -158,52 +157,42 @@ class _HomePageState extends State<HomePage> {
         expirationDateInMilliSec:
             DateTime.now().add(Duration(days: 365)).millisecondsSinceEpoch);
 
-    //parameter canonicalUrl
-    //If your content lives both on the web and in the app, make sure you set its canonical URL
-    // (i.e. the URL of this piece of content on the web) when building any BUO.
-    // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
-    // even if the user goes to the app instead of your website! This will help your SEO efforts.
-
-    //FlutterBranchSdk.registerView(buo: buo!);
-
     lp = BranchLinkProperties(
         channel: 'facebook',
         feature: 'sharing',
-        //alias: 'flutterplugin' //define link url,
+        //parameter alias
+        //Instead of our standard encoded short url, you can specify the vanity alias.
+        // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
+        // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
+        //alias: 'https://branch.io' //define link url,
         stage: 'new share',
         campaign: 'xxxxx',
-        tags: ['one', 'two', 'three']);
-    lp.addControlParam('\$uri_redirect_mode', '1');
-    lp.addControlParam('referring_user_id', 'asdf');
+        tags: ['one', 'two', 'three'])
+      ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('referring_user_id', 'asdf');
 
-    //parameter alias
-    //Instead of our standard encoded short url, you can specify the vanity alias.
-    // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
-    // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
+    eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
+      //--optional Event data
+      ..transactionID = '12344555'
+      ..currency = BranchCurrencyType.BRL
+      ..revenue = 1.5
+      ..shipping = 10.2
+      ..tax = 12.3
+      ..coupon = 'test_coupon'
+      ..affiliation = 'test_affiliation'
+      ..eventDescription = 'Event_description'
+      ..searchQuery = 'item 123'
+      ..adType = BranchEventAdType.BANNER
+      ..addCustomData(
+          'Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
+      ..addCustomData(
+          'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
 
-    eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
-    //--optional Event data
-
-    eventStandart!.transactionID = '12344555';
-    eventStandart!.currency = BranchCurrencyType.BRL;
-    eventStandart!.revenue = 1.5;
-    eventStandart!.shipping = 10.2;
-    eventStandart!.tax = 12.3;
-    eventStandart!.coupon = 'test_coupon';
-    eventStandart!.affiliation = 'test_affiliation';
-    eventStandart!.eventDescription = 'Event_description';
-    eventStandart!.searchQuery = 'item 123';
-    eventStandart!.adType = BranchEventAdType.BANNER;
-    eventStandart!.addCustomData(
-        'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
-    eventStandart!.addCustomData(
-        'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
-
-    eventCustom = BranchEvent.customEvent('Custom_event');
-    eventCustom!.addCustomData(
-        'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
-    eventCustom!.addCustomData(
-        'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
+    eventCustom = BranchEvent.customEvent('Custom_event')
+      ..addCustomData(
+          'Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
+      ..addCustomData(
+          'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
   }
 
   void showSnackBar(
@@ -355,12 +344,12 @@ class _HomePageState extends State<HomePage> {
                       child: CustomButton(
                         child: Text('Track content'),
                         onPressed: () {
-                          FlutterBranchSdk.trackContent(
-                              buo: [buo!], branchEvent: eventStandart!);
-                          /*
+                          //FlutterBranchSdk.trackContent(
+                          //    buo: [buo!], branchEvent: eventStandart!);
+
                           FlutterBranchSdk.trackContent(
                               buo: [buo!], branchEvent: eventCustom!);
-
+                          /*
                           FlutterBranchSdk.trackContentWithoutBuo(
                               branchEvent: eventStandart!);
                           FlutterBranchSdk.trackContentWithoutBuo(

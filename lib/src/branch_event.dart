@@ -62,6 +62,7 @@ class BranchEvent {
   }
 
   String get eventName => _eventName;
+  bool get isStandardEvent => _isStandardEvent;
 
   void addCustomData(String key, dynamic value) {
     this._customData[key] = value;
@@ -91,6 +92,30 @@ class BranchEvent {
     if (this.adType != null)
       ret["adType"] = getBranchEventAdTypeString(this.adType!);
     if (this._customData.isNotEmpty) ret["customData"] = _customData;
+    return ret;
+  }
+
+  Map<String, dynamic> toMapWeb() {
+    Map<String, dynamic> ret = Map<String, dynamic>();
+    if (this._isStandardEvent) {
+      if (this.transactionID.isNotEmpty)
+        ret["transactionID"] = this.transactionID;
+      if (this.currency != null)
+        ret["currency"] = getCurrencyTypeString(this.currency!);
+      if (this.revenue != -1) ret["revenue"] = this.revenue;
+      if (this.shipping != -1) ret["shipping"] = this.shipping;
+      if (this.tax != -1) ret["tax"] = this.tax;
+      if (this.coupon.isNotEmpty) ret["coupon"] = this.coupon;
+      if (this.affiliation.isNotEmpty) ret["affiliation"] = this.affiliation;
+      if (this.eventDescription.isNotEmpty)
+        ret["eventDescription"] = this.eventDescription;
+      if (this.searchQuery.isNotEmpty) ret["searchQuery"] = this.searchQuery;
+      if (this.adType != null)
+        ret["adType"] = getBranchEventAdTypeString(this.adType!);
+    }
+    this._customData.forEach((key, value) {
+      ret['$key'] = value;
+    });
     return ret;
   }
 }

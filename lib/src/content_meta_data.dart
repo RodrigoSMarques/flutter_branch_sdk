@@ -412,7 +412,6 @@ class BranchContentMetaData {
     if (this._customMetadata.isNotEmpty) {
       ret["customMetadata"] = this._customMetadata;
     }
-    print(ret);
     return ret;
   }
 
@@ -430,7 +429,7 @@ class BranchContentMetaData {
       ret["\$product_brand"] = this.productBrand;
     if (this.productCategory != null)
       ret["\$product_category"] =
-          _getProductCategoryString(this.productCategory);
+          this.productCategory.toString().split('.').last;
     if (this.productVariant.isNotEmpty)
       ret["\$product_variant"] = this.productVariant;
     if (this.condition != null)
@@ -452,9 +451,9 @@ class BranchContentMetaData {
     if (this._longitude != null) ret["\$longitude"] = this._longitude;
     if (_imageCaptions.isNotEmpty)
       ret["\$image_captions"] = this._imageCaptions;
-    if (this._customMetadata.isNotEmpty) {
-      ret["customMetadata"] = this._customMetadata;
-    }
+    this._customMetadata.forEach((key, value) {
+      ret['$key'] = value;
+    });
     return ret;
   }
 }

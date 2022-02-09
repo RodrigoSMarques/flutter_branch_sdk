@@ -143,6 +143,8 @@ class BranchUniversalObject {
       contentMetadata.remove('customMetadata');
       contentMetadata.addAll(customMetadata);
       ret.addAll(contentMetadata);
+    } else {
+      ret.addAll(contentMetadata);
     }
 
     if (ret.isEmpty) {

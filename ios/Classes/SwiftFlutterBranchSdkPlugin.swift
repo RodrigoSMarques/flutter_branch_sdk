@@ -254,7 +254,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         let response : NSMutableDictionary! = [:]
         buo?.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
-            print(activityType ?? "")
             if completed {
                 response["success"] = NSNumber(value: true)
             } else {

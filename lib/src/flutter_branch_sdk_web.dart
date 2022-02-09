@@ -247,20 +247,15 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   void trackContent(
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
-    //TODO: REVIEW Flutter WEB
-    //Map<String, dynamic> contentMetadata = {
-    //  if (buo[0].contentMetadata != null) ...buo[0].contentMetadata!.toMapWeb()
-    //};
+    JsArray<Object> contentItems = JsArray();
 
-    final List<Map<String, dynamic>> contentMetadata =
-        buo.map((b) => b.toMap()).toList();
+    buo.forEach((element) {
+      contentItems.add(_dartObjectToJsObject(element.toMapWeb()));
+    });
 
     try {
-      BranchJS.logEvent(
-        branchEvent.eventName,
-        _dartObjectToJsObject(branchEvent.toMap()),
-        //_dartObjectToJsObject(contentMetadata)
-      );
+      BranchJS.logEvent(branchEvent.eventName,
+          _dartObjectToJsObject(branchEvent.toMapWeb()), contentItems);
     } catch (e) {
       print('trackContent() error: $e');
     }
@@ -271,7 +266,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   void trackContentWithoutBuo({required BranchEvent branchEvent}) {
     try {
       BranchJS.logEvent(
-          branchEvent.eventName, _dartObjectToJsObject(branchEvent.toMap()));
+          branchEvent.eventName, _dartObjectToJsObject(branchEvent.toMapWeb()));
     } catch (e) {
       print('trackContentWithoutBuo() error: $e');
     }
