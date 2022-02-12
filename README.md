@@ -394,6 +394,8 @@ FlutterBranchSdk.disableTracking(true);
 ```
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
+More information [here](https://help.branch.io/developers-hub/docs/honoring-opt-out-of-processing-requests)
+
 ### Set Request Meta data
 Add key value pairs to all requests
 
@@ -596,6 +598,12 @@ Practices to avoid:
 2. Don't wait to initialize the object and register views until the user goes to share.
 3. Don't wait to initialize the object until you conveniently need a link.
 4. Don't create many objects at once and register views in a for loop.
+
+# Deep links with Short Links
+More information [here](https://help.branch.io/using-branch/docs/creating-a-deep-link#short-links)
+
+# Deep links with Long links
+More information [here](https://help.branch.io/using-branch/docs/creating-a-deep-link#long-links)
 
 # Branch Documentation
 Read the iOS or Android documentation for all Branch object parameters:

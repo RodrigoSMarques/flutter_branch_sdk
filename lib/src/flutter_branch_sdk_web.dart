@@ -38,45 +38,25 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   static final StreamController<Map<String, dynamic>> _initSessionStream =
       StreamController<Map<String, dynamic>>();
   static bool _userIdentified = false;
-  static String _branchKey = '';
 
+  @Deprecated('version 5.0.0')
   @override
-  void initWeb({required String branchKey}) {
-    _branchKey = branchKey;
-  }
+  void initWeb({required String branchKey}) {}
 
-  ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
+  ///Initialises a session with the Branch API
+  ///Listen click em Branch Deeplinks
   @override
-  void setIdentity(String userId) {
-    try {
-      BranchJS.setIdentity(userId, allowInterop((error, data) {
-        if (error == null) {
-          _userIdentified = true;
-        }
-      }));
-    } catch (e) {
-      print('setIdentity() error: $e');
-    }
-  }
+  Stream<Map<dynamic, dynamic>> initSession() {
+    getLatestReferringParams().then((data) {
+      if (data.isNotEmpty) {
+        _initSessionStream.sink
+            .add(data.map((key, value) => MapEntry('$key', value)));
+      } else {
+        _initSessionStream.sink.add({});
+      }
+    });
 
-  ///Add key value pairs to all requests
-  @override
-  void setRequestMetadata(String key, String value) {
-    _metaData[key] = value;
-  }
-
-  ///This method should be called if you know that a different person is about to use the app
-  @override
-  void logout() {
-    try {
-      BranchJS.logout(allowInterop((error) {
-        if (error == null) {
-          _userIdentified = false;
-        }
-      }));
-    } catch (e) {
-      print('logout() error: $e');
-    }
+    return _initSessionStream.stream;
   }
 
   ///Returns the last parameters associated with the link that referred the user, not really applicaple for web though
@@ -90,7 +70,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
           if (data != null) {
             var responseData =
                 Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
-            response.complete(responseData);
+            response.complete(responseData['data_parsed'] ?? {});
           } else {
             response.complete({});
           }
@@ -117,7 +97,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
           if (data != null) {
             var responseData =
                 Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
-            response.complete(responseData);
+            response.complete(responseData['data_parsed'] ?? {});
           } else {
             response.complete({});
           }
@@ -132,6 +112,34 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     return response.future;
   }
 
+  ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
+  @override
+  void setIdentity(String userId) {
+    try {
+      BranchJS.setIdentity(userId, allowInterop((error, data) {
+        if (error == null) {
+          _userIdentified = true;
+        }
+      }));
+    } catch (e) {
+      print('setIdentity() error: $e');
+    }
+  }
+
+  ///This method should be called if you know that a different person is about to use the app
+  @override
+  void logout() {
+    try {
+      BranchJS.logout(allowInterop((error) {
+        if (error == null) {
+          _userIdentified = false;
+        }
+      }));
+    } catch (e) {
+      print('logout() error: $e');
+    }
+  }
+
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
   @override
@@ -141,47 +149,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     } catch (e) {
       print('disableTracking() error: $e');
     }
-  }
-
-  ///Initialises a session with the Branch API
-  ///Listen click em Branch Deeplinks
-  @override
-  Stream<Map<dynamic, dynamic>> initSession() {
-    if (_branchKey.isEmpty) {
-      throw AssertionError('call initWeb() before initSession');
-    }
-    BranchJS.init(_branchKey, null, allowInterop((err, data) {
-      if (err == null) {
-        if (data != null) {
-          var parsedData = _jsObjectToDartObject(data);
-          if (parsedData is Map && parsedData.containsKey("data_parsed")) {
-            parsedData = parsedData["data_parsed"];
-          }
-          if (parsedData is String) {
-            try {
-              parsedData = json.decode(parsedData);
-            } catch (e) {
-              print('Failed to try to parse JSON: $e - $parsedData');
-            }
-          }
-          _initSessionStream.sink.add(parsedData);
-        } else {
-          _initSessionStream.sink.add({});
-        }
-      } else {
-        print('initSession() error: $err');
-        _initSessionStream.addError(Exception(err));
-      }
-    }));
-    return _initSessionStream.stream;
-  }
-
-  ///Use the SDK integration validator to check that you've added the Branch SDK and
-  ///handle deep links correctly when you first integrate Branch into your app.
-  @override
-  void validateSDKIntegration() {
-    throw UnsupportedError(
-        'validateSDKIntegration() not available in Branch JS SDK');
   }
 
   ///Creates a short url for the BUO
@@ -282,6 +249,12 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     trackContent(buo: [buo], branchEvent: branchEvent);
   }
 
+  ///Add key value pairs to all requests
+  @override
+  void setRequestMetadata(String key, String value) {
+    _metaData[key] = value;
+  }
+
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
   ///For iOS:     List items on Spotlight
   @override
@@ -329,7 +302,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'loadRewards() error'));
     }
-
     return responseCompleter.future;
   }
 
@@ -356,7 +328,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'redeemRewards() error'));
     }
-
     return responseCompleter.future;
   }
 
@@ -429,5 +400,17 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
   Future<String> getAdvertisingIdentifier() async {
     throw UnsupportedError(
         'getAdvertisingIdentifier() Not available in Branch JS SDK');
+  }
+
+  ///Use the SDK integration validator to check that you've added the Branch SDK and
+  ///handle deep links correctly when you first integrate Branch into your app.
+  @override
+  void validateSDKIntegration() {
+    throw UnsupportedError(
+        'validateSDKIntegration() not available in Branch JS SDK');
+  }
+
+  void close() {
+    _initSessionStream.close();
   }
 }

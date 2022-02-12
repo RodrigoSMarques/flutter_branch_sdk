@@ -34,9 +34,9 @@ android {
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:5.0.15'
+    implementation 'io.branch.sdk.android:library:5.1.0'
     implementation 'com.google.firebase:firebase-appindexing:19.0.0'
-    implementation 'com.google.android.gms:play-services-ads-identifier:16.0.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:17.1.0+'
     implementation 'androidx.browser:browser:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.4.0'
 }

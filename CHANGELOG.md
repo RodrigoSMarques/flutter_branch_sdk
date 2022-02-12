@@ -1,3 +1,11 @@
+## 5.0.0
+**BREAKING CHANGE**:
+
+* Update README.MD
+* Updated Native `Android` and `iOS` SDKs:
+  **Android Native SDK Update 5.1.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+  **iOS Native SDK Update 1.41.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ## 4.0.0
 * Migrate maven repository from jcenter to mavenCentral.
 * Updated compile & target SDK to Android API 31.

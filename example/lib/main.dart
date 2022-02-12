@@ -8,7 +8,16 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'custom_button.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    FlutterBranchSdk.initWeb(
+        branchKey: 'key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
+  } else {
+    FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
+  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -43,13 +52,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    if (kIsWeb) {
-      FlutterBranchSdk.initWeb(
-          branchKey: 'key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
-    } else {
-      FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
-    }
 
     listenDynamicLinks();
 
