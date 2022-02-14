@@ -3,7 +3,7 @@
 
 * `FlutterBranchSdk.initWeb` deprecated.
 * Branch for Flutter Web initialized in `index.html`, see `Web Integration` section
-* `FlutterBranchSdk.trackContent` method changed to accept of Branch Universal Object :
+* `FlutterBranchSdk.trackContent` method changed to accept List of Branch Universal Object :
 
 	*Before:*
 	```dart
