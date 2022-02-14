@@ -27,6 +27,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  @Deprecated('version 5.0.0')
   void initWeb({required String branchKey}) {
     throw UnimplementedError('initWeb has not been implemented');
   }

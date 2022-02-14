@@ -1,10 +1,33 @@
 ## 5.0.0
 **BREAKING CHANGE**:
 
-* Update README.MD
+* `FlutterBranchSdk.initWeb` deprecated.
+* Branch for Flutter Web initialized in `index.html`, see `Web Integration` section
+* `FlutterBranchSdk.trackContent` method changed to accept of Branch Universal Object :
+
+	*Before:*
+	```
+	FlutterBranchSdk.trackContent(
+	  buo: buo,
+	  branchEvent: event
+	);
+   ```
+
+   *After:*
+ 	```
+     FlutterBranchSdk.trackContent(
+       buo: [buo],
+       branchEvent: event
+     );
+   ```
+ 
+ ------------
+ 
 * Updated Native `Android` and `iOS` SDKs:
-  **Android Native SDK Update 5.1.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-  **iOS Native SDK Update 1.41.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+	* Android Native SDK Update 5.1.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+	
+	* iOS Native SDK Update 1.41.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 ## 4.0.0
 * Migrate maven repository from jcenter to mavenCentral.

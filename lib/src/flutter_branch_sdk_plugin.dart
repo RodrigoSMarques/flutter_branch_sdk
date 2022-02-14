@@ -8,6 +8,7 @@ class FlutterBranchSdk {
     return __platform!;
   }
 
+  @Deprecated('version 5.0.0')
   static void initWeb({required String branchKey}) {
     _platform.initWeb(branchKey: branchKey);
   }

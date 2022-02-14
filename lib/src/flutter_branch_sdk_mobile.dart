@@ -30,6 +30,7 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
 
+  @Deprecated('version 5.0.0')
   @override
   void initWeb({required String branchKey}) {
     //nothing

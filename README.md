@@ -6,8 +6,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.0.14 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 1.40.1 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.1.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 1.41.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -59,8 +59,12 @@ You need add Branch Javascript in your `web\index.html` at the top of your `<bod
 ```javascript
   <script>
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
+    branch.init('key_live_YOUR_KEY_GOES_HERE');
   </script>
 ```
+Change `key_live_YOUR_KEY_GOES_HERE` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
+
+If `branch.init()` fails, all subsequent Branch methods will fail.
 
 Full example `index.html`:
 
@@ -99,6 +103,7 @@ Full example `index.html`:
 <body>
   <script>
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
+    branch.init('key_live_YOUR_KEY_GOES_HERE');
   </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -110,7 +115,6 @@ Full example `index.html`:
       });
     }
   </script>
-  <script src="main.dart.js" type="application/javascript"></script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>
@@ -168,18 +172,7 @@ https://<yourapp>.app.link/NdJ6nFzRbK?bnc_validate=true
 ```
 Make sure to comment out or remove `validateSDKIntegration` in your production build.
 
-### Initialize Branch and read deep link
-
-To use in `Flutter Web`, it is necessary to call the method below before any command of SDK:
-
-```dart
-      FlutterBranchSdk.initWeb(
-          branchKey: 'branch_key');
-```
-Be sure to replace `branchKey` with your actual Branch Key found in your [account dashboard](https://dashboard.branch.io/#/settings) (same value inputted in the Android / ioS project).
-
-> Command `FlutterBranchSdk.initWeb` is ignored in the iOS / Android project
-
+### Read deep link
 
 To listen to the clicks on the deep link and retrieve the data it is necessary to add the code below:
 
@@ -325,13 +318,13 @@ Analytics about your app's BranchEvents can be found on the Branch dashboard, an
 
 ```dart
 BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
-FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventStandart);
+FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandart);
 ```
 You can use your own custom event names too:
 
 ```dart
 BranchEvent eventCustom = BranchEvent.customEvent('Custom_event');
-FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventCustom);
+FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventCustom);
 ```
 Extra event specific data can be tracked with the event as well:
 
@@ -350,8 +343,10 @@ Extra event specific data can be tracked with the event as well:
         'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
     eventStandart.addCustomData(
         'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
-    FlutterBranchSdk.trackContent(buo: buo, branchEvent: eventStandart);
+    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandart);
 ```
+
+`trackContent` accepts a list of Branch Universal Object.
 
 You can register logs in BranchEvent without Branch Universal Object (BUO) for tracking and analytics:
 

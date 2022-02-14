@@ -10,12 +10,7 @@ import 'custom_button.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb) {
-    FlutterBranchSdk.initWeb(
-        branchKey: 'key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
-  } else {
-    FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
-  }
+  FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
   runApp(MyApp());
 }
 
