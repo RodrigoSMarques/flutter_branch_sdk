@@ -6,7 +6,7 @@
 * `FlutterBranchSdk.trackContent` method changed to accept of Branch Universal Object :
 
 	*Before:*
-	```
+	```dart
 	FlutterBranchSdk.trackContent(
 	  buo: buo,
 	  branchEvent: event
@@ -14,7 +14,7 @@
    ```
 
    *After:*
- 	```
+ 	```dart
      FlutterBranchSdk.trackContent(
        buo: [buo],
        branchEvent: event
