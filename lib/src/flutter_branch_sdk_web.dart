@@ -410,6 +410,40 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         'validateSDKIntegration() not available in Branch JS SDK');
   }
 
+  ///Sets the duration in milliseconds that the system should wait for initializing
+  ///a network * request.
+  @override
+  void setConnectTimeout(int connectTimeout) {
+    throw UnsupportedError(
+        'setConnectTimeout() Not available in Branch JS SDK');
+  }
+
+  ///Sets the duration in milliseconds that the system should wait for a response
+  ///before timing out any Branch API.
+  ///Default 5500 ms. Note that this is the total time allocated for all request
+  ///retries as set in setRetryCount(int).
+  @override
+  void setTimeout(int timeout) {
+    throw UnsupportedError('setTimeout() Not available in Branch JS SDK');
+  }
+
+  ///Sets the max number of times to re-attempt a timed-out request to the Branch API, before
+  /// considering the request to have failed entirely. Default to 3.
+  /// Note that the the network timeout, as set in setNetworkTimeout(int),
+  /// together with the retry interval value from setRetryInterval(int) will
+  /// determine if the max retry count will be attempted.
+  @override
+  void setRetryCount(int retryCount) {
+    throw UnsupportedError('setRetryCount() Not available in Branch JS SDK');
+  }
+
+  ///Sets the amount of time in milliseconds to wait before re-attempting a
+  ///timed-out request to the Branch API. Default 1000 ms.
+  @override
+  void setRetryInterval(int retryInterval) {
+    throw UnsupportedError('setRetryInterval() Not available in Branch JS SDK');
+  }
+
   void close() {
     _initSessionStream.close();
   }

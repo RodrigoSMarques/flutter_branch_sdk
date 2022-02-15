@@ -332,4 +332,32 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
         .invokeMethod<String>('getAdvertisingIdentifier'))!;
     return uuid;
   }
+
+  @override
+  void setConnectTimeout(int connectTimeout) {
+    Map<String, dynamic> _params = {};
+    _params['connectTimeout'] = connectTimeout;
+    _messageChannel.invokeMethod('setConnectTimeout', _params);
+  }
+
+  @override
+  void setRetryCount(int retryCount) {
+    Map<String, dynamic> _params = {};
+    _params['retryCount'] = retryCount;
+    _messageChannel.invokeMethod('setRetryCount', _params);
+  }
+
+  @override
+  void setRetryInterval(int retryInterval) {
+    Map<String, dynamic> _params = {};
+    _params['retryInterval'] = retryInterval;
+    _messageChannel.invokeMethod('setRetryInterval', _params);
+  }
+
+  @override
+  void setTimeout(int timeout) {
+    Map<String, dynamic> _params = {};
+    _params['timeout'] = timeout;
+    _messageChannel.invokeMethod('setTimeout', _params);
+  }
 }

@@ -183,4 +183,33 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError(
         'getAdvertisingIdentifier has not been implemented');
   }
+
+  ///Sets the duration in milliseconds that the system should wait for initializing
+  ///a network * request.
+  void setConnectTimeout(int connectTimeout) {
+    throw UnimplementedError('setConnectTimeout has not been implemented');
+  }
+
+  ///Sets the duration in milliseconds that the system should wait for a response
+  ///before timing out any Branch API.
+  ///Default 5500 ms. Note that this is the total time allocated for all request
+  ///retries as set in setRetryCount(int).
+  void setTimeout(int timeout) {
+    throw UnimplementedError('setTimeout has not been implemented');
+  }
+
+  ///Sets the max number of times to re-attempt a timed-out request to the Branch API, before
+  /// considering the request to have failed entirely. Default to 3.
+  /// Note that the the network timeout, as set in setNetworkTimeout(int),
+  /// together with the retry interval value from setRetryInterval(int) will
+  /// determine if the max retry count will be attempted.
+  void setRetryCount(int retryCount) {
+    throw UnimplementedError('setRetryCount has not been implemented');
+  }
+
+  ///Sets the amount of time in milliseconds to wait before re-attempting a
+  ///timed-out request to the Branch API. Default 1000 ms.
+  void setRetryInterval(int retryInterval) {
+    throw UnimplementedError('setRetryInterval has not been implemented');
+  }
 }

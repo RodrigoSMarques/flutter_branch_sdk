@@ -209,6 +209,18 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "getAdvertisingIdentifier" :
             getAdvertisingIdentifier(result: result)
             break
+        case "setConnectTimeout":
+            setConnectTimeout(call: call)
+            break
+        case "setRetryCount":
+            setRetryCount(call: call)
+            break
+        case "setRetryInterval":
+            setRetryInterval(call: call)
+            break
+        case "setTimeout":
+            setTimeout(call: call)
+            break
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -584,6 +596,31 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             DispatchQueue.main.async {
                 result(String(""))  // return notSupported
             }
+        }
+    }
+    private func setTimeout(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let timeout = args["timeout"] as? Int ?? 0
+    }
+
+    private func setConnectTimeout(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let connectTimeout = args["connectTimeout"] as? Int ?? 0
+        DispatchQueue.main.async {
+            Branch.getInstance().setNetworkTimeout(TimeInterval(connectTimeout))
+        }
+    }
+    
+    private func setRetryCount(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let retryCount = args["retryCount"] as? Int ?? 0
+    }
+
+    private func setRetryInterval(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let retryInterval = args["retryInterval"] as? Int ?? 0
+        DispatchQueue.main.async {
+            Branch.getInstance().setRetryInterval(TimeInterval(retryInterval))
         }
     }
 }

@@ -266,6 +266,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "isUserIdentified":
                 isUserIdentified(result);
                 break;
+            case "setConnectTimeout":
+                setConnectTimeout(call);
+                break;
+            case "setTimeout":
+                setTimeout(call);
+                break;
+            case "setRetryCount" :
+                setRetryCount(call);
+                break;
+            case "setRetryInterval" :
+                setRetryInterval(call);
+                break;
             default:
                 result.notImplemented();
         }
@@ -680,6 +692,66 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private void isUserIdentified(Result result) {
         LogUtils.debug(DEBUG_NAME, "isUserIdentified call");
         result.success(Branch.getAutoInstance(context).isUserIdentified());
+    }
+
+    private void setConnectTimeout(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("connectTimeout");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setNetworkConnectTimeout(value);
+            }
+        });
+    }
+
+    private void setTimeout (final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("timeout");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setNetworkTimeout(value);
+            }
+        });
+    }
+
+    private void setRetryCount(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setRetryCount call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("retryCount");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setRetryCount(value);
+            }
+        });
+    }
+
+    private void setRetryInterval(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setRetryInterval call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("retryInterval");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setRetryInterval(value);
+            }
+        });
     }
 
     // MethodChannel.Result wrapper that responds on the platform thread.
