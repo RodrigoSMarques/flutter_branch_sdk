@@ -10,7 +10,6 @@ import 'custom_button.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterBranchSdk.setIOSSKAdNetworkMaxTime(72);
   runApp(MyApp());
 }
 
