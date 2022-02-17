@@ -45,25 +45,32 @@ class BranchLinkProperties {
     Map<String, dynamic> ret = <String, dynamic>{};
 
     if (tags.length > 0) ret['tags'] = tags;
-
     if (feature.isNotEmpty) ret['feature'] = feature;
-
     if (alias.isNotEmpty) ret['alias'] = alias;
-
     if (stage.isNotEmpty) ret['stage'] = stage;
-
     if (matchDuration > 0) ret['matchDuration'] = matchDuration;
-
     if (_controlParams.isNotEmpty) ret['controlParams'] = _controlParams;
-
     if (channel.isNotEmpty) ret['channel'] = channel;
-
     if (campaign.isNotEmpty) ret['campaign'] = campaign;
-
     if (ret.isEmpty) {
       throw ArgumentError('Link Properties is required');
     }
+    return ret;
+  }
 
+  Map<String, dynamic> toMapWeb() {
+    Map<String, dynamic> ret = <String, dynamic>{};
+
+    if (tags.length > 0) ret['tags'] = tags;
+    if (feature.isNotEmpty) ret['feature'] = feature;
+    if (alias.isNotEmpty) ret['alias'] = alias;
+    if (stage.isNotEmpty) ret['stage'] = stage;
+    if (matchDuration > 0) ret['matchDuration'] = matchDuration;
+    if (channel.isNotEmpty) ret['channel'] = channel;
+    if (campaign.isNotEmpty) ret['campaign'] = campaign;
+    if (ret.isEmpty) {
+      throw ArgumentError('Link Properties is required');
+    }
     return ret;
   }
 }
