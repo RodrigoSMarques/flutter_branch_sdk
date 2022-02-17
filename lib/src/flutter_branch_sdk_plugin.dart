@@ -8,6 +8,7 @@ class FlutterBranchSdk {
     return __platform!;
   }
 
+  @Deprecated('version 5.0.0')
   static void initWeb({required String branchKey}) {
     _platform.initWeb(branchKey: branchKey);
   }
@@ -79,7 +80,8 @@ class FlutterBranchSdk {
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContent(
-      {required BranchUniversalObject buo, required BranchEvent branchEvent}) {
+      {required List<BranchUniversalObject> buo,
+      required BranchEvent branchEvent}) {
     return _platform.trackContent(buo: buo, branchEvent: branchEvent);
   }
 
@@ -161,5 +163,34 @@ class FlutterBranchSdk {
   /// on Android returns empty string
   static Future<String> getAdvertisingIdentifier() async {
     return _platform.getAdvertisingIdentifier();
+  }
+
+  ///Sets the duration in milliseconds that the system should wait for initializing
+  ///a network * request.
+  static void setConnectTimeout(int connectTimeout) {
+    return _platform.setConnectTimeout(connectTimeout);
+  }
+
+  ///Sets the duration in milliseconds that the system should wait for a response
+  ///before timing out any Branch API.
+  ///Default 5500 ms. Note that this is the total time allocated for all request
+  ///retries as set in setRetryCount(int).
+  static void setTimeout(int timeout) {
+    return _platform.setTimeout(timeout);
+  }
+
+  ///Sets the max number of times to re-attempt a timed-out request to the Branch API, before
+  /// considering the request to have failed entirely. Default to 3.
+  /// Note that the the network timeout, as set in setNetworkTimeout(int),
+  /// together with the retry interval value from setRetryInterval(int) will
+  /// determine if the max retry count will be attempted.
+  static void setRetryCount(int retryCount) {
+    return _platform.setRetryCount(retryCount);
+  }
+
+  ///Sets the amount of time in milliseconds to wait before re-attempting a
+  ///timed-out request to the Branch API. Default 1000 ms.
+  static void setRetryInterval(int retryInterval) {
+    return _platform.setRetryInterval(retryInterval);
   }
 }

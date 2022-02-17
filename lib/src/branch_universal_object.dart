@@ -109,4 +109,47 @@ class BranchUniversalObject {
     }
     return ret;
   }
+
+  Map<String, dynamic> toMapWeb() {
+    Map<String, dynamic> ret = <String, dynamic>{};
+    if (this.canonicalIdentifier.isNotEmpty)
+      ret["\$canonical_identifier"] = this.canonicalIdentifier;
+
+    if (this.canonicalUrl.isNotEmpty) ret["\$canonicalUrl"] = this.canonicalUrl;
+
+    if (this.title.isNotEmpty) ret["\$og_title"] = this.title;
+
+    if (this.contentDescription.isNotEmpty)
+      ret["\$og_description"] = this.contentDescription;
+
+    if (this.imageUrl.isNotEmpty) ret["\$og_image_url"] = this.imageUrl;
+
+    if (this.keywords.isNotEmpty) ret["\$keywords"] = this.keywords;
+
+    ret["\$creation_timestamp"] = this._creationDateTimeStamp;
+
+    if (this.expirationDateInMilliSec > 0)
+      ret["\$exp_date"] = this.expirationDateInMilliSec;
+
+    ret["\$locally_indexable"] = this.locallyIndex;
+    ret["\$publicly_indexable"] = this.publiclyIndex;
+
+    Map<String, dynamic> contentMetadata = {
+      if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()
+    };
+
+    if (contentMetadata.containsKey('customMetadata')) {
+      var customMetadata = contentMetadata['customMetadata'];
+      contentMetadata.remove('customMetadata');
+      contentMetadata.addAll(customMetadata);
+      ret.addAll(contentMetadata);
+    } else {
+      ret.addAll(contentMetadata);
+    }
+
+    if (ret.isEmpty) {
+      throw ArgumentError('Branch Universal Object is required');
+    }
+    return ret;
+  }
 }
