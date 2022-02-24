@@ -200,7 +200,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "onNewIntent call");
         if (this.activity != null) {
             this.activity.setIntent(intent);
-            Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
+
+            if (intent != null &&
+                intent.hasExtra("branch_force_new_session") &&
+                intent.getBooleanExtra("branch_force_new_session",false)) {
+                Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
+            }
+
+            return true;
         }
         return false;
     }
