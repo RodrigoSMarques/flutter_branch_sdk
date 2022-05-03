@@ -212,4 +212,11 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   void setRetryInterval(int retryInterval) {
     throw UnimplementedError('setRetryInterval has not been implemented');
   }
+
+  ///Gets the available last attributed touch data with a custom set attribution window.
+  Future<BranchResponse> getLastAttributedTouchData(
+      {int? attributionWindow}) async {
+    throw UnimplementedError(
+        'getLastAttributedTouchData has not been implemented');
+  }
 }

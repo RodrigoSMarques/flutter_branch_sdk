@@ -360,4 +360,27 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
     _params['timeout'] = timeout;
     _messageChannel.invokeMethod('setTimeout', _params);
   }
+
+  @override
+  Future<BranchResponse> getLastAttributedTouchData(
+      {int? attributionWindow}) async {
+    Map<String, dynamic> params = {};
+
+    if (attributionWindow != null) {
+      params['attributionWindow'] = attributionWindow;
+    }
+
+    Map<dynamic, dynamic> response = await _messageChannel.invokeMethod(
+        'getLastAttributedTouchData', params);
+
+    print('getLastAttributedTouchData ${response.toString()}');
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['data']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
 }

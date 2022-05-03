@@ -525,6 +525,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void shareLink() async {
+    /*
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
         buo: buo!,
         linkProperties: lp,
@@ -542,6 +543,14 @@ class _HomePageState extends State<HomePage> {
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
+
+     */
+
+    BranchResponse response =
+        await FlutterBranchSdk.getLastAttributedTouchData();
+    print(response.toString());
+    showSnackBar(
+        context: context, message: response.toString(), duration: 5);
   }
 
   @override

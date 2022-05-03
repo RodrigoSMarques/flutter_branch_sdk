@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
@@ -285,6 +287,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "setRetryInterval" :
                 setRetryInterval(call);
                 break;
+            case "getLastAttributedTouchData" :
+                getLastAttributedTouchData(call, result);
             default:
                 result.notImplemented();
         }
@@ -761,6 +765,66 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         });
     }
 
+    private void getLastAttributedTouchData(final MethodCall call, final Result result) {
+        LogUtils.debug(DEBUG_NAME, "getLastAttributedTouchData call");
+
+        final Map<String, Object> response = new HashMap<>();
+
+        if (call.hasArgument("attributionWindow")) {
+            final int attributionWindow = call.argument("attributionWindow");
+
+            Branch.getAutoInstance(context).getLastAttributedTouchData(
+                    new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
+                        @Override
+                        public void onDataFetched(JSONObject jsonObject, BranchError error) {
+                            if (error == null)  {
+                                response.put("success", Boolean.TRUE);
+                                JSONObject jo = new JSONObject();
+                                try {
+                                    jo.put("latd", jsonObject);
+                                    response.put("data", branchSdkHelper.paramsToMap(jo));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                response.put("success", Boolean.FALSE);
+                                response.put("errorCode", String.valueOf(error.getErrorCode()));
+                                response.put("errorMessage", error.getMessage());
+                            }
+                            try {
+                                result.success(response);
+                            } catch (Exception e) {
+                                LogUtils.debug(DEBUG_NAME, e.getMessage());
+                            }
+                            //result.success(response);
+                        }
+                    }, attributionWindow);
+        } else {
+            Branch.getAutoInstance(context).getLastAttributedTouchData(
+                    new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
+                        @Override
+                        public void onDataFetched(JSONObject jsonObject, BranchError error) {
+                            if (error == null)  {
+                                response.put("success", Boolean.TRUE);
+                                JSONObject jo = new JSONObject();
+                                try {
+                                    jo.put("latd", jsonObject);
+                                    response.put("data", branchSdkHelper.paramsToMap(jo));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                response.put("success", Boolean.FALSE);
+                                response.put("errorCode", String.valueOf(error.getErrorCode()));
+                                response.put("errorMessage", error.getMessage());
+                            }
+                            result.success(response);
+                        }
+                    });
+
+        }
+    }
+
     // MethodChannel.Result wrapper that responds on the platform thread.
     private static class MethodResultWrapper implements Result {
         private final Result methodResult;
@@ -851,6 +915,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             });
         }
     }
+
+
 }
 
 

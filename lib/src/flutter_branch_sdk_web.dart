@@ -444,6 +444,36 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     throw UnsupportedError('setRetryInterval() Not available in Branch JS SDK');
   }
 
+  @override
+  Future<BranchResponse> getLastAttributedTouchData(
+      {int? attributionWindow}) async {
+    Completer<BranchResponse> responseCompleter = Completer();
+
+    try {
+      BranchJS.lastAttributedTouchData(attributionWindow,
+          allowInterop((err, data) {
+        if (err == null) {
+          if (data != null) {
+            print(data);
+            responseCompleter.complete(
+                BranchResponse.success(result: _jsObjectToDartObject(data)));
+          } else {
+            responseCompleter.complete(BranchResponse.success(result: {}));
+          }
+        } else {
+          responseCompleter.complete(BranchResponse.error(
+              errorCode: '999', errorMessage: err.toString()));
+        }
+      }));
+    } catch (error) {
+      print('getLastAttributedTouchData() error: $error');
+      responseCompleter.complete(BranchResponse.error(
+          errorCode: '-1', errorMessage: 'getLastAttributedTouchData() error'));
+    }
+
+    return responseCompleter.future;
+  }
+
   void close() {
     _initSessionStream.close();
   }
