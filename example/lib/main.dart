@@ -535,7 +535,7 @@ class _HomePageState extends State<HomePage> {
 
     if (response.success) {
       showSnackBar(
-          context: context, message: 'showShareSheet Sucess', duration: 5);
+          context: context, message: 'showShareSheet Success', duration: 5);
     } else {
       showSnackBar(
           context: context,
@@ -548,9 +548,8 @@ class _HomePageState extends State<HomePage> {
 
     BranchResponse response =
         await FlutterBranchSdk.getLastAttributedTouchData();
-    print(response.toString());
     showSnackBar(
-        context: context, message: response.toString(), duration: 5);
+        context: context, message: response.result.toString(), duration: 5);
   }
 
   @override

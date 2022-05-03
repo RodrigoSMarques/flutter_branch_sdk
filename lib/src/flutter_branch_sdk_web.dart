@@ -444,6 +444,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     throw UnsupportedError('setRetryInterval() Not available in Branch JS SDK');
   }
 
+  ///Gets the available last attributed touch data with a custom set attribution window.
   @override
   Future<BranchResponse> getLastAttributedTouchData(
       {int? attributionWindow}) async {

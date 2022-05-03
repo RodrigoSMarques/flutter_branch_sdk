@@ -373,10 +373,8 @@ class FlutterBranchSdkMobile implements FlutterBranchSdkPlatform {
     Map<dynamic, dynamic> response = await _messageChannel.invokeMethod(
         'getLastAttributedTouchData', params);
 
-    print('getLastAttributedTouchData ${response.toString()}');
-
     if (response['success']) {
-      return BranchResponse.success(result: response['data']);
+      return BranchResponse.success(result: response['data']['latd']);
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],
