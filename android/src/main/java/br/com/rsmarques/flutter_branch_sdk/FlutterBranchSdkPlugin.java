@@ -58,9 +58,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
 
-    /**---------------------------------------------------------------------------------------------
-     Plugin registry
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * Plugin registry
+     * --------------------------------------------------------------------------------------------
+     **/
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
@@ -93,7 +95,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         activity.getApplication().registerActivityLifecycleCallbacks(this);
 
         if (this.activity != null && FlutterFragmentActivity.class.isAssignableFrom(activity.getClass())) {
-                Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+            Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
         }
     }
 
@@ -104,9 +106,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         this.context = null;
     }
 
-    /**---------------------------------------------------------------------------------------------
-     ActivityAware Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * ActivityAware Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
         LogUtils.debug(DEBUG_NAME, "onAttachedToActivity call");
@@ -134,9 +138,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         onAttachedToActivity(activityPluginBinding);
     }
 
-    /**---------------------------------------------------------------------------------------------
-     StreamHandler Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * StreamHandler Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
         LogUtils.debug(DEBUG_NAME, "onListen call");
@@ -146,7 +152,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             initialParams = null;
             initialError = null;
         } else if (initialError != null) {
-            eventSink.error(String.valueOf(initialError.getErrorCode()), initialError.getMessage(),null);
+            eventSink.error(String.valueOf(initialError.getErrorCode()), initialError.getMessage(), null);
             initialParams = null;
             initialError = null;
         }
@@ -160,11 +166,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         initialParams = null;
     }
 
-    /**---------------------------------------------------------------------------------------------
-     ActivityLifecycleCallbacks Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * ActivityLifecycleCallbacks Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
-    public void onActivityCreated(Activity activity, Bundle bundle) {}
+    public void onActivityCreated(Activity activity, Bundle bundle) {
+    }
 
     @Override
     public void onActivityStarted(Activity activity) {
@@ -173,10 +182,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {}
+    public void onActivityResumed(Activity activity) {
+    }
 
     @Override
-    public void onActivityPaused(Activity activity) {}
+    public void onActivityPaused(Activity activity) {
+    }
 
     @Override
     public void onActivityStopped(Activity activity) {
@@ -184,7 +195,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {}
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+    }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -194,9 +206,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-    /**---------------------------------------------------------------------------------------------
-     NewIntentListener Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * NewIntentListener Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public boolean onNewIntent(Intent intent) {
         LogUtils.debug(DEBUG_NAME, "onNewIntent call");
@@ -204,19 +218,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             this.activity.setIntent(intent);
 
             if (intent != null &&
-                intent.hasExtra("branch_force_new_session") &&
-                intent.getBooleanExtra("branch_force_new_session",false)) {
+                    intent.hasExtra("branch_force_new_session") &&
+                    intent.getBooleanExtra("branch_force_new_session", false)) {
                 Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
             }
-
             return true;
         }
         return false;
     }
 
-    /**---------------------------------------------------------------------------------------------
-     MethodCallHandler Interface Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * MethodCallHandler Interface Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result rawResult) {
         Result result = new MethodResultWrapper(rawResult);
@@ -281,22 +296,24 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "setTimeout":
                 setTimeout(call);
                 break;
-            case "setRetryCount" :
+            case "setRetryCount":
                 setRetryCount(call);
                 break;
-            case "setRetryInterval" :
+            case "setRetryInterval":
                 setRetryInterval(call);
                 break;
-            case "getLastAttributedTouchData" :
+            case "getLastAttributedTouchData":
                 getLastAttributedTouchData(call, result);
             default:
                 result.notImplemented();
         }
     }
 
-    /**---------------------------------------------------------------------------------------------
-     Branch SDK Call Methods
-     --------------------------------------------------------------------------------------------**/
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * Branch SDK Call Methods
+     * --------------------------------------------------------------------------------------------
+     **/
     private final Branch.BranchReferralInitListener branchReferralInitListener = new
             Branch.BranchReferralInitListener() {
                 @Override
@@ -319,7 +336,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                         }
                         LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
                         if (eventSink != null) {
-                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(),null);
+                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
                             initialError = null;
                         } else {
                             initialError = error;
@@ -473,7 +490,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
-        final List<BranchUniversalObject> buo =new ArrayList();
+        final List<BranchUniversalObject> buo = new ArrayList();
         for (HashMap<String, Object> b : (List<HashMap<String, Object>>) argsMap.get("buo")) {
             buo.add(branchSdkHelper.convertToBUO(b));
         }
@@ -620,7 +637,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getAutoInstance(context).redeemRewards(count, new Branch.BranchReferralStateChangedListener() {
                 @Override
                 public void onStateChanged(boolean changed, @Nullable BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.TRUE);
                     } else {
                         response.put("success", Boolean.FALSE);
@@ -634,7 +651,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getAutoInstance(context).redeemRewards(call.argument("bucket").toString(), count, new Branch.BranchReferralStateChangedListener() {
                 @Override
                 public void onStateChanged(boolean changed, @Nullable BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.TRUE);
                     } else {
                         response.put("success", Boolean.FALSE);
@@ -658,7 +675,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getAutoInstance(context).getCreditHistory(new Branch.BranchListResponseListener() {
                 @Override
                 public void onReceivingResponse(JSONArray list, BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.TRUE);
                         JSONObject jo = new JSONObject();
                         try {
@@ -679,7 +696,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getAutoInstance(context).getCreditHistory(call.argument("bucket").toString(), new Branch.BranchListResponseListener() {
                 @Override
                 public void onReceivingResponse(JSONArray list, BranchError error) {
-                    if (error == null)  {
+                    if (error == null) {
                         response.put("success", Boolean.TRUE);
                         JSONObject jo = new JSONObject();
                         try {
@@ -720,7 +737,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         });
     }
 
-    private void setTimeout (final MethodCall call) {
+    private void setTimeout(final MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
@@ -770,6 +787,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         final Map<String, Object> response = new HashMap<>();
 
+        response.put("success", Boolean.FALSE);
+        response.put("errorCode", "xxxx");
+        response.put("errorMessage", "xxxx");
+        result.success(response);
+        return;
+        /*
         if (call.hasArgument("attributionWindow")) {
             final int attributionWindow = call.argument("attributionWindow");
 
@@ -777,7 +800,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
                         @Override
                         public void onDataFetched(JSONObject jsonObject, BranchError error) {
-                            if (error == null)  {
+                            if (error == null) {
                                 response.put("success", Boolean.TRUE);
                                 JSONObject jo = new JSONObject();
                                 try {
@@ -791,12 +814,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                                 response.put("errorCode", String.valueOf(error.getErrorCode()));
                                 response.put("errorMessage", error.getMessage());
                             }
-                            try {
-                                result.success(response);
-                            } catch (Exception e) {
-                                LogUtils.debug(DEBUG_NAME, e.getMessage());
-                            }
-                            //result.success(response);
+                            result.success(response);
                         }
                     }, attributionWindow);
         } else {
@@ -804,7 +822,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
                         @Override
                         public void onDataFetched(JSONObject jsonObject, BranchError error) {
-                            if (error == null)  {
+                            if (error == null) {
                                 response.put("success", Boolean.TRUE);
                                 JSONObject jo = new JSONObject();
                                 try {
@@ -821,8 +839,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             result.success(response);
                         }
                     });
-
         }
+         */
     }
 
     // MethodChannel.Result wrapper that responds on the platform thread.
@@ -841,7 +859,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new Runnable() {
                         @Override
                         public void run() {
-                            methodResult.success(result);
+                            //methodResult.success(result);
+                            try {
+                                methodResult.success(result);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         }
@@ -853,7 +876,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new Runnable() {
                         @Override
                         public void run() {
-                            methodResult.error(errorCode, errorMessage, errorDetails);
+                            //methodResult.error(errorCode, errorMessage, errorDetails);
+                            try {
+                                methodResult.error(errorCode, errorMessage, errorDetails);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         }
@@ -864,7 +892,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new Runnable() {
                         @Override
                         public void run() {
-                            methodResult.notImplemented();
+                            //methodResult.notImplemented();
+                            try {
+                                methodResult.notImplemented();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         }
@@ -884,8 +917,17 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    /*
                     if (eventSink != null) {
                         eventSink.success(o);
+                    }
+                    */
+                    try {
+                        if (eventSink != null) {
+                            eventSink.success(o);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -896,8 +938,17 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    /*
                     if (eventSink != null) {
                         eventSink.error(s, s1, o);
+                    }
+                    */
+                    try {
+                        if (eventSink != null) {
+                            eventSink.error(s, s1, o);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -908,15 +959,22 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    /*
                     if (eventSink != null) {
                         eventSink.endOfStream();
+                    }
+                    */
+                    try {
+                        if (eventSink != null) {
+                            eventSink.endOfStream();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
         }
     }
-
-
 }
 
 
