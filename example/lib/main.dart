@@ -392,6 +392,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+                CustomButton(
+                  child: Text('Get last Attributed'),
+                  onPressed: getLastAttributed,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -525,7 +529,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void shareLink() async {
-    /*
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
         buo: buo!,
         linkProperties: lp,
@@ -543,9 +546,9 @@ class _HomePageState extends State<HomePage> {
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
+  }
 
-     */
-
+  void getLastAttributed() async {
     BranchResponse response =
         await FlutterBranchSdk.getLastAttributedTouchData();
     showSnackBar(
