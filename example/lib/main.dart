@@ -551,8 +551,16 @@ class _HomePageState extends State<HomePage> {
   void getLastAttributed() async {
     BranchResponse response =
         await FlutterBranchSdk.getLastAttributedTouchData();
-    showSnackBar(
-        context: context, message: response.result.toString(), duration: 5);
+    if (response.success) {
+      showSnackBar(
+          context: context, message: response.result.toString(), duration: 5);
+    } else {
+      showSnackBar(
+          context: context,
+          message:
+              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
+          duration: 5);
+    }
   }
 
   @override
