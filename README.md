@@ -405,6 +405,23 @@ By default, Branch limits calls to SKAdNetwork to within 72 hours after first in
 FlutterBranchSdk.setIOSSKAdNetworkMaxTime(24);
 ```
 
+### Retrieve Branch's Last Attributed Touch Data
+
+Allow retrieval of our last attributed touch data (LATD) from the client. This results in an asynchronous call being made to Branch’s servers with LATD data returned when possible.
+
+Last attributed touch data contains the information associated with that user's last viewed impression or clicked link.
+
+
+```dart
+BranchResponse response =
+        await FlutterBranchSdk.getLastAttributedTouchData();
+    if (response.success) {
+      print(response.result.toString());
+    }
+```
+
+More information [here](https://help.branch.io/developers-hub/docs/retrieving-branchs-last-attributed-touch-data).
+
 ### Apple Search Ads
 Branch can help track your Apple Search Ad campaigns by fetching the search ad attribution from Apple at app install.
 

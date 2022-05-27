@@ -232,6 +232,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             break
         default:
             result(FlutterMethodNotImplemented)
+            break
         }
     }
     
@@ -401,7 +402,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         DispatchQueue.main.async {
             Branch.getInstance().setRequestMetadataKey(key, value: value)
         }
-        
     }
     
     private func logout() {
@@ -636,6 +636,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
+    
     private func setTimeout(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let _  = args["timeout"] as? Int ?? 0

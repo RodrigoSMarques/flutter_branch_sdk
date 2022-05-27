@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -307,6 +306,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             default:
                 result.notImplemented();
+                break;
         }
     }
 
@@ -788,15 +788,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         final Map<String, Object> response = new HashMap<>();
 
-        response.put("success", Boolean.FALSE);
-        response.put("errorCode", "xxxx");
-        response.put("errorMessage", "xxxx");
-        result.success(response);
-        return;
-        /*
         if (call.hasArgument("attributionWindow")) {
             final int attributionWindow = call.argument("attributionWindow");
-
             Branch.getAutoInstance(context).getLastAttributedTouchData(
                     new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
                         @Override
@@ -818,6 +811,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             result.success(response);
                         }
                     }, attributionWindow);
+
         } else {
             Branch.getAutoInstance(context).getLastAttributedTouchData(
                     new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
@@ -841,7 +835,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                         }
                     });
         }
-         */
     }
 
     // MethodChannel.Result wrapper that responds on the platform thread.
@@ -860,7 +853,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new Runnable() {
                         @Override
                         public void run() {
-                            //methodResult.success(result);
                             try {
                                 methodResult.success(result);
                             } catch (Exception e) {
@@ -877,7 +869,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new Runnable() {
                         @Override
                         public void run() {
-                            //methodResult.error(errorCode, errorMessage, errorDetails);
                             try {
                                 methodResult.error(errorCode, errorMessage, errorDetails);
                             } catch (Exception e) {
@@ -893,7 +884,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     new Runnable() {
                         @Override
                         public void run() {
-                            //methodResult.notImplemented();
                             try {
                                 methodResult.notImplemented();
                             } catch (Exception e) {
@@ -918,11 +908,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    /*
-                    if (eventSink != null) {
-                        eventSink.success(o);
-                    }
-                    */
                     try {
                         if (eventSink != null) {
                             eventSink.success(o);
@@ -939,11 +924,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    /*
-                    if (eventSink != null) {
-                        eventSink.error(s, s1, o);
-                    }
-                    */
                     try {
                         if (eventSink != null) {
                             eventSink.error(s, s1, o);
@@ -960,11 +940,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    /*
-                    if (eventSink != null) {
-                        eventSink.endOfStream();
-                    }
-                    */
                     try {
                         if (eventSink != null) {
                             eventSink.endOfStream();

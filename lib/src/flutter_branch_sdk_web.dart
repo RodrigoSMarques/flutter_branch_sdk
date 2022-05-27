@@ -13,6 +13,7 @@ import 'web/branch_js.dart';
 
 /// A workaround to deep-converting an object from JS to a Dart Object.
 dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
+
 dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 Map<String, String> _metaData = {};
 
