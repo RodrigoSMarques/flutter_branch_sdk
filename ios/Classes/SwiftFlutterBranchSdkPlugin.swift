@@ -8,7 +8,9 @@ var methodChannel: FlutterMethodChannel?
 var eventChannel: FlutterEventChannel?
 let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
-let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR"
+let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
+let PLUGIN_NAME = "Flutter";
+let PLUGIN_VERSION = "5.1.0"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
@@ -29,19 +31,23 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
     }
     
+    
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
-
-        #if DEBUG
+        
+        
+        Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION);
+        
+#if DEBUG
         let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? true
         if enableLog {
             Branch.getInstance().enableLogging()
         }
-        #else
+#else
         let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? false
         if enableLog {
             Branch.getInstance().enableLogging()
         }
-        #endif
+#endif
         
         let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
         
@@ -69,7 +75,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         let checkPasteboard  = Bundle.infoPlistValue(forKey: "branch_check_pasteboard") as? Bool ?? false
         print("Branch Clipboard Deferred Deep Linking: \(String(describing:checkPasteboard))");
-
+        
         if checkPasteboard {
             Branch.getInstance().checkPasteboardOnInstall()
         }
@@ -221,8 +227,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "setTimeout":
             setTimeout(call: call)
             break
+        case "getLastAttributedTouchData":
+            getLastAttributedTouchData(call: call, result: result)
+            break
         default:
             result(FlutterMethodNotImplemented)
+            break
         }
     }
     
@@ -262,7 +272,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let shareText = args["messageText"] as! String
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
-        let controller = UIApplication.shared.keyWindow!.rootViewController as! FlutterViewController
+        let controller = UIApplication.shared.keyWindow!.rootViewController
         
         let response : NSMutableDictionary! = [:]
         buo?.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
@@ -392,7 +402,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         DispatchQueue.main.async {
             Branch.getInstance().setRequestMetadataKey(key, value: value)
         }
-        
     }
     
     private func logout() {
@@ -532,6 +541,35 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         }
     }
     
+    private func getLastAttributedTouchData(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        
+        let args = call.arguments as! [String: Any?]
+        let response : NSMutableDictionary! = [:]
+        let data : NSMutableDictionary! = [:]
+        let attributionWindow = args["attributionWindow"] as? Int ?? 0
+        
+        Branch.getInstance().lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
+            if error == nil {
+                if latd != nil {
+                    data["latd"] = latd
+                } else {
+                    data["latd"] = [:]
+                }
+                response["success"] = NSNumber(value: true)
+                response["data"] = data
+            } else {
+                print("Failed to lastAttributedTouchData: \(String(describing: error))")
+                let err = (error! as NSError)
+                response["success"] = NSNumber(value: false)
+                response["errorCode"] = String(err.code)
+                response["errorMessage"] = err.localizedDescription
+            }
+            DispatchQueue.main.async {
+                result(response)
+            }
+        }
+    }
+    
     private func setSKAdNetworkMaxTime(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
@@ -598,11 +636,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
+    
     private func setTimeout(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
-        let timeout = args["timeout"] as? Int ?? 0
+        let _  = args["timeout"] as? Int ?? 0
     }
-
+    
     private func setConnectTimeout(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let connectTimeout = args["connectTimeout"] as? Int ?? 0
@@ -613,9 +652,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     private func setRetryCount(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
-        let retryCount = args["retryCount"] as? Int ?? 0
+        let _ = args["retryCount"] as? Int ?? 0
     }
-
+    
     private func setRetryInterval(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let retryInterval = args["retryInterval"] as? Int ?? 0

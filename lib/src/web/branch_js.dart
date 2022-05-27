@@ -949,4 +949,8 @@ class BranchJS {
   /// The do-not-track mode state is persistent: it is saved for the user across browser sessions for the web site.
   @JS('disableTracking')
   external static void disableTracking([bool disableTracking]);
+
+  @JS('lastAttributedTouchData')
+  external static void lastAttributedTouchData(attributionWindow,
+      [Function callback]);
 }

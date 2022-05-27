@@ -193,4 +193,11 @@ class FlutterBranchSdk {
   static void setRetryInterval(int retryInterval) {
     return _platform.setRetryInterval(retryInterval);
   }
+
+  ///Gets the available last attributed touch data with a custom set attribution window.
+  static Future<BranchResponse> getLastAttributedTouchData(
+      {int? attributionWindow}) async {
+    return _platform.getLastAttributedTouchData(
+        attributionWindow: attributionWindow);
+  }
 }

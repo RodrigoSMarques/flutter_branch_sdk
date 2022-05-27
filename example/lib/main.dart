@@ -392,6 +392,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+                CustomButton(
+                  child: Text('Get last Attributed'),
+                  onPressed: getLastAttributed,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -534,7 +538,22 @@ class _HomePageState extends State<HomePage> {
 
     if (response.success) {
       showSnackBar(
-          context: context, message: 'showShareSheet Sucess', duration: 5);
+          context: context, message: 'showShareSheet Success', duration: 5);
+    } else {
+      showSnackBar(
+          context: context,
+          message:
+              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
+          duration: 5);
+    }
+  }
+
+  void getLastAttributed() async {
+    BranchResponse response =
+        await FlutterBranchSdk.getLastAttributedTouchData();
+    if (response.success) {
+      showSnackBar(
+          context: context, message: response.result.toString(), duration: 5);
     } else {
       showSnackBar(
           context: context,
