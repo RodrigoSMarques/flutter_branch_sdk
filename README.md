@@ -23,7 +23,7 @@ List BUO on Search / Remove BUO from Search| X | X | Not supported
 Register view| X | X | X
 Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
-Referral rewards| X | X | X
+Last Attributed Touch Data| X | X | X
 
 ## Getting Started
 ### Configure Branch Dashboard
