@@ -1,3 +1,7 @@
+## 5.1.1
+* Updated Native `Android` SDK:
+    * Android Native SDK Update 5.1.5 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Removed dependencies: `flutter_lints` (not in used) 
 ## 5.1.0
 * Fix issue #143: Infinite loop with POST requests when offline
 * Fix issue #146: clicked_branch_link is to true when app is opened from deeplink and then putted in background and reopened
