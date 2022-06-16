@@ -4,13 +4,6 @@ Demonstrates how to use the flutter_branch_sdk plugin.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+See the `example` directory for a complete sample app using Branch SDK.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Example app](https://user-images.githubusercontent.com/17687286/70445281-0b87c180-1a7a-11ea-8611-7217d46c75a7.png)
