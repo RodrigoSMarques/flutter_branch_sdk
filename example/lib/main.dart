@@ -10,12 +10,15 @@ import 'custom_button.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: "Flutter Branch SDK Example",
       debugShowCheckedModeBanner: false,
       home: HomePage(),
@@ -24,8 +27,10 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -59,13 +64,19 @@ class _HomePageState extends State<HomePage> {
   void requestATTTracking() async {
     AppTrackingStatus status;
     status = await FlutterBranchSdk.requestTrackingAuthorization();
-    print(status);
+    if (kDebugMode) {
+      print(status);
+    }
 
     status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
-    print(status);
+    if (kDebugMode) {
+      print(status);
+    }
 
     final uuid = await FlutterBranchSdk.getAdvertisingIdentifier();
-    print(uuid);
+    if (kDebugMode) {
+      print(uuid);
+    }
   }
 
   void listenDynamicLinks() async {
@@ -88,11 +99,7 @@ class _HomePageState extends State<HomePage> {
             duration: 10);
       }
     }, onError: (error) {
-      PlatformException platformException = error as PlatformException;
-      print(
-          'InitSession error: ${platformException.code} - ${platformException.message}');
-      controllerInitSession.add(
-          'InitSession error: ${platformException.code} - ${platformException.message}');
+      print('InitSesseion error: ${error.toString()}');
     });
   }
 
@@ -150,8 +157,9 @@ class _HomePageState extends State<HomePage> {
         keywords: ['Plugin', 'Branch', 'Flutter'],
         publiclyIndex: true,
         locallyIndex: true,
-        expirationDateInMilliSec:
-            DateTime.now().add(Duration(days: 365)).millisecondsSinceEpoch);
+        expirationDateInMilliSec: DateTime.now()
+            .add(const Duration(days: 365))
+            .millisecondsSinceEpoch);
 
     lp = BranchLinkProperties(
         channel: 'facebook',
@@ -213,9 +221,9 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Branch.io Plugin Example App'),
         ),
         body: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -230,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text(
                             snapshot.data!,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red),
@@ -243,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 CustomButton(
-                  child: Text('Validate SDK Integration'),
+                  child: const Text('Validate SDK Integration'),
                   onPressed: () {
                     if (kIsWeb) {
                       showSnackBar(
@@ -266,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     Expanded(
                       child: CustomButton(
-                        child: Text('Enable tracking'),
+                        child: const Text('Enable tracking'),
                         onPressed: () {
                           FlutterBranchSdk.disableTracking(false);
                           showSnackBar(
@@ -274,12 +282,12 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: CustomButton(
-                        child: Text('Disable tracking'),
+                        child: const Text('Disable tracking'),
                         onPressed: () {
                           FlutterBranchSdk.disableTracking(true);
                           showSnackBar(
@@ -294,7 +302,7 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     Expanded(
                       child: CustomButton(
-                        child: Text('Identify user'),
+                        child: const Text('Identify user'),
                         onPressed: () {
                           FlutterBranchSdk.setIdentity('branch_user_test');
                           showSnackBar(
@@ -303,12 +311,12 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: CustomButton(
-                        child: Text('User logout'),
+                        child: const Text('User logout'),
                         onPressed: () {
                           FlutterBranchSdk.logout();
                           showSnackBar(
@@ -324,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     Expanded(
                       child: CustomButton(
-                        child: Text('Register view'),
+                        child: const Text('Register view'),
                         onPressed: () {
                           FlutterBranchSdk.registerView(buo: buo!);
 
@@ -333,24 +341,24 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: CustomButton(
-                        child: Text('Track content'),
+                        child: const Text('Track content'),
                         onPressed: () {
                           //FlutterBranchSdk.trackContent(
                           //    buo: [buo!], branchEvent: eventStandart!);
 
                           FlutterBranchSdk.trackContent(
                               buo: [buo!], branchEvent: eventCustom!);
-                          /*
+
                           FlutterBranchSdk.trackContentWithoutBuo(
                               branchEvent: eventStandart!);
                           FlutterBranchSdk.trackContentWithoutBuo(
                               branchEvent: eventCustom!);
-                          */
+
                           showSnackBar(
                               context: context, message: 'Tracked content');
                         },
@@ -363,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     Expanded(
                       child: CustomButton(
-                        child: Text('Get First Parameters'),
+                        child: const Text('Get First Parameters'),
                         onPressed: () async {
                           Map<dynamic, dynamic> params =
                               await FlutterBranchSdk.getFirstReferringParams();
@@ -374,12 +382,12 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: CustomButton(
-                        child: Text('Get Last Parameters'),
+                        child: const Text('Get Last Parameters'),
                         onPressed: () async {
                           Map<dynamic, dynamic> params =
                               await FlutterBranchSdk.getLatestReferringParams();
@@ -393,15 +401,15 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 CustomButton(
-                  child: Text('Get last Attributed'),
                   onPressed: getLastAttributed,
+                  child: const Text('Get last Attributed'),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Expanded(
                       child: CustomButton(
-                        child: Text('List on Search'),
+                        child: const Text('List on Search'),
                         onPressed: () async {
                           if (kIsWeb) {
                             showSnackBar(
@@ -423,12 +431,12 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: CustomButton(
-                        child: Text('Remove from Search'),
+                        child: const Text('Remove from Search'),
                         onPressed: () async {
                           if (kIsWeb) {
                             showSnackBar(
@@ -453,8 +461,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 CustomButton(
-                  child: Text('Generate Link'),
                   onPressed: generateLink,
+                  child: const Text('Generate Link'),
                 ),
                 StreamBuilder<String>(
                   stream: controllerUrl.stream,
@@ -463,14 +471,25 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                       return Column(
                         children: <Widget>[
-                          Center(
+                          const Center(
                               child: Text(
                             'Link build',
                             style: TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold),
                           )),
-                          Center(child: Text(snapshot.data!))
+                          Center(
+                              child: GestureDetector(
+                            onTap: () async {
+                              await Clipboard.setData(
+                                  ClipboardData(text: snapshot.data!));
+                              showSnackBar(
+                                  context: context,
+                                  message: 'Copied to Clipboard',
+                                  duration: 2);
+                            },
+                            child: Text(snapshot.data!),
+                          ))
                         ],
                       );
                     } else {
@@ -479,21 +498,21 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 CustomButton(
-                  child: Text('Share Link'),
                   onPressed: shareLink,
+                  child: const Text('Share Link'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Divider(),
-                Center(
+                const Divider(),
+                const Center(
                   child: Text(
                     'Deep Link data',
                     style: TextStyle(
                         color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 StreamBuilder<String>(
                   stream: controllerData.stream,
                   initialData: '',

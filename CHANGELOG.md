@@ -1,3 +1,21 @@
+## 6.0.0
+* Updated Native `Android` SDK:
+    * Android Native SDK Update 5.2.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+    
+###BREAKING CHANGE
+
+* Minimum required Dart SDK version to 2.17 (Flutter 3.0)
+* Removed deprecated methods: 
+  * `initWeb`
+  * `loadRewards`
+  * `redeemRewards`
+  * `getCreditHistory`
+
+###Refactors
+
+* General improvements in code
+* Fix analyzer code style warnings
+
 ## 5.1.1
 * Updated Native `Android` SDK:
     * Android Native SDK Update 5.1.5 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
@@ -13,7 +31,7 @@
 	* iOS Native SDK Update 1.42.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 ## 5.0.0
-**BREAKING CHANGE**:
+###BREAKING CHANGE:
 
 * `FlutterBranchSdk.initWeb` deprecated.
 * Branch for Flutter Web initialized in `index.html`, see `Web Integration` section
@@ -87,7 +105,7 @@
 * Added new method `getAdvertisingIdentifier`: Return Device Advertising Identifier 
  
 ## 3.0.0
-* Initial support to Flutter Web . Thanks @mathatan 
+* Initial support to Flutter Web. Thanks @mathatan 
 
 ## 2.0.0
 * Stable null safety release.
@@ -123,7 +141,8 @@ Updated Native ```Android``` and ```iOS``` SDKs
 * Android Native SDK Update 5.0.3 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * iOS Native SDK Update 0.35.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
- __BREAKING CHANGES__
+###BREAKING CHANGES
+ 
 Add KEY ```branch_check_apple_ads``` in INFO.PLIST  to enable checking for Apple Search Ads before Branch initialization
 
 ## 1.0.0

@@ -1,35 +1,32 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'app_tracking_transparency.dart';
-import 'branch_universal_object.dart';
-import 'flutter_branch_sdk_mobile.dart';
+import 'flutter_branch_sdk_method_channel.dart';
+import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_universal_object.dart';
 
-export 'branch_universal_object.dart';
-
-/// The interface that all implementations of flutter_branch_sdk must
-/// implement.
 abstract class FlutterBranchSdkPlatform extends PlatformInterface {
-  /// Constructs an instance of [FlutterBranchSdkPlatform].
+  /// Constructs a FlutterBranchSdkPlatform.
   FlutterBranchSdkPlatform() : super(token: _token);
-
-  static FlutterBranchSdkPlatform _instance = FlutterBranchSdkMobile();
 
   static final Object _token = Object();
 
-  /// The default instance of [FlutterLocalNotificationsPlatform] to use.
+  static FlutterBranchSdkPlatform _instance = FlutterBranchSdkMethodChannel();
+
+  /// The default instance of [FlutterBranchSdkPlatform] to use.
+  ///
+  /// Defaults to [FlutterBranchSdkMethodChannel].
   static FlutterBranchSdkPlatform get instance => _instance;
 
-  /// Platform-specific plugins should set this with their own platform-specific
-  /// class that extends [FlutterBranchSdkPlatform] when they register
-  /// themselves.
+  /// Platform-specific implementations should set this with their own
+  /// platform-specific class that extends [FlutterBranchSdkPlatform] when
+  /// they register themselves.
   static set instance(FlutterBranchSdkPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
 
-  @Deprecated('version 5.0.0')
-  void initWeb({required String branchKey}) {
-    throw UnimplementedError('initWeb has not been implemented');
+  Future<String?> getPlatformVersion() {
+    throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -126,27 +123,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
     throw UnimplementedError('removeFromSearch has not been implemented');
-  }
-
-  ///Retrieves rewards for the current user/session
-  @Deprecated('version 4.0.0')
-  Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
-    throw UnimplementedError('loadRewards has not been implemented');
-  }
-
-  ///Redeems the specified number of credits. if there are sufficient credits within it.
-  ///If the number to redeem exceeds the number available in the bucket, all of the
-  ///available credits will be redeemed instead.
-  @Deprecated('version 4.0.0')
-  Future<BranchResponse> redeemRewards(
-      {required int count, String bucket = 'default'}) async {
-    throw UnimplementedError('redeemRewards has not been implemented');
-  }
-
-  ///Gets the credit history
-  @Deprecated('version 4.0.0')
-  Future<BranchResponse> getCreditHistory({String bucket = 'default'}) async {
-    throw UnimplementedError('getCreditHistory has not been implemented');
   }
 
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)

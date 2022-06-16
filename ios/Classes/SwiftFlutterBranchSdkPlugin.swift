@@ -191,15 +191,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "validateSDKIntegration":
             validateSDKIntegration()
             break
-        case "loadRewards":
-            loadRewards(call: call, result: result)
-            break
-        case "redeemRewards":
-            redeemRewards(call: call, result: result)
-            break
-        case "getCreditHistory":
-            getCreditHistory(call: call, result: result)
-            break
         case "isUserIdentified":
             isUserIdentified(result: result)
             break
@@ -283,6 +274,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 if let err = (error as NSError?) {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = "-999"
+                    response["errorMessage"] = "No message"
                 }
             }
             DispatchQueue.main.async {
@@ -430,114 +424,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         DispatchQueue.main.async {
             Branch.setTrackingDisabled(value)
-        }
-    }
-    
-    private func loadRewards(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let response : NSMutableDictionary! = [:]
-        
-        Branch.getInstance().loadRewards { (changed, error) in
-            if (error == nil) {
-                var credits : Int = 0
-                if let bucket = args["bucket"] as? String {
-                    credits = Branch.getInstance().getCreditsForBucket(bucket)
-                } else {
-                    credits = Branch.getInstance().getCredits()
-                }
-                response["success"] = NSNumber(value: true)
-                response["credits"] = credits
-            } else {
-                let err = (error! as NSError)
-                response["success"] = NSNumber(value: false)
-                response["errorCode"] = String(err.code)
-                response["errorMessage"] = err.localizedDescription
-            }
-            DispatchQueue.main.async {
-                result(response)
-            }
-        }
-    }
-    
-    private func redeemRewards(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let count = args["count"] as! Int
-        let response : NSMutableDictionary! = [:]
-        
-        if let bucket = args["bucket"] as? String {
-            Branch.getInstance().redeemRewards(count, forBucket: bucket, callback: {(success, error) in
-                if success {
-                    response["success"] = NSNumber(value: true)
-                }
-                else {
-                    print("Failed to redeem credits: \(String(describing: error))")
-                    let err = (error! as NSError)
-                    response["success"] = NSNumber(value: false)
-                    response["errorCode"] = String(err.code)
-                    response["errorMessage"] = err.localizedDescription
-                }
-                DispatchQueue.main.async {
-                    result(response)
-                }
-            })
-        } else {
-            Branch.getInstance().redeemRewards(count, callback: {(success, error) in
-                if success {
-                    response["success"] = NSNumber(value: true)
-                }
-                else {
-                    print("Failed to redeem credits: \(String(describing: error))")
-                    let err = (error! as NSError)
-                    response["success"] = NSNumber(value: false)
-                    response["errorCode"] = String(err.code)
-                    response["errorMessage"] = err.localizedDescription
-                }
-                DispatchQueue.main.async {
-                    result(response)
-                }
-            })
-        }
-    }
-    
-    private func getCreditHistory(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let response : NSMutableDictionary! = [:]
-        let data : NSMutableDictionary! = [:]
-        
-        if let bucket = args["bucket"] as? String {
-            Branch.getInstance().getCreditHistory(forBucket: bucket, andCallback: { (creditHistory, error) in
-                if error == nil {
-                    data["history"] = creditHistory
-                    response["success"] = NSNumber(value: true)
-                    response["data"] = data
-                } else {
-                    print("Failed to redeem credits: \(String(describing: error))")
-                    let err = (error! as NSError)
-                    response["success"] = NSNumber(value: false)
-                    response["errorCode"] = String(err.code)
-                    response["errorMessage"] = err.localizedDescription
-                }
-                DispatchQueue.main.async {
-                    result(response)
-                }
-            })
-        } else {
-            Branch.getInstance().getCreditHistory { (creditHistory, error) in
-                if error == nil {
-                    data["history"] = creditHistory
-                    response["success"] = NSNumber(value: true)
-                    response["data"] = data
-                } else {
-                    print("Failed to redeem credits: \(String(describing: error))")
-                    let err = (error! as NSError)
-                    response["success"] = NSNumber(value: false)
-                    response["errorCode"] = String(err.code)
-                    response["errorMessage"] = err.localizedDescription
-                }
-                DispatchQueue.main.async {
-                    result(response)
-                }
-            }
         }
     }
     

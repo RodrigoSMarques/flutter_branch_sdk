@@ -22,7 +22,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Branch: a6f1d597dc7c027360f386d05e8d109043b207d8
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_branch_sdk: ecb5dd985a092ef5aecc9195c6645649e6ea1b9f
+  flutter_branch_sdk: c7161eca896193a81bbb452f2cb492d5d89f0d91
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

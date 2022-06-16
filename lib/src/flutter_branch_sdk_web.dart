@@ -1,14 +1,18 @@
+// In order to *not* need this ignore, consider extracting the "web" version
+// of your plugin as a separate package, instead of inlining it in the same
+// package as the core of your plugin.
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:async';
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
 import 'dart:js';
-// ignore: avoid_web_libraries_in_flutter
 import 'dart:js_util';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import 'app_tracking_transparency.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
+import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_universal_object.dart';
 import 'web/branch_js.dart';
 
 /// A workaround to deep-converting an object from JS to a Dart Object.
@@ -17,32 +21,18 @@ dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
 dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 Map<String, String> _metaData = {};
 
-/// A web implementation of the FlutterBranchSdk plugin.
-class FlutterBranchSdk extends FlutterBranchSdkPlatform {
-  static FlutterBranchSdk? _singleton;
+/// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
+class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
+  /// Constructs a FlutterBranchSdkWeb
+  FlutterBranchSdkWeb();
 
-  /// Constructs a singleton instance of [MethodChannelFlutterBranchSdk].
-  factory FlutterBranchSdk() {
-    if (_singleton == null) {
-      _singleton = FlutterBranchSdk._();
-    }
-    return _singleton!;
-  }
-
-  FlutterBranchSdk._();
-
-  /// Registers this class as the default instance of [SharePlatform].
   static void registerWith(Registrar registrar) {
-    FlutterBranchSdkPlatform.instance = FlutterBranchSdk();
+    FlutterBranchSdkPlatform.instance = FlutterBranchSdkWeb();
   }
 
   static final StreamController<Map<String, dynamic>> _initSessionStream =
       StreamController<Map<String, dynamic>>();
   static bool _userIdentified = false;
-
-  @Deprecated('version 5.0.0')
-  @override
-  void initWeb({required String branchKey}) {}
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
@@ -80,7 +70,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      print('getLatestReferringParams() error: $e');
+      debugPrint('getLatestReferringParams() error: $e');
       response.completeError(e);
     }
     return response.future;
@@ -107,7 +97,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      print('getFirstReferringParams() error: $e');
+      debugPrint('getFirstReferringParams() error: $e');
       response.completeError(e);
     }
     return response.future;
@@ -123,7 +113,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      print('setIdentity() error: $e');
+      debugPrint('setIdentity() error: $e');
     }
   }
 
@@ -137,7 +127,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      print('logout() error: $e');
+      debugPrint('logout() error: $e');
     }
   }
 
@@ -148,7 +138,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
     try {
       BranchJS.disableTracking(value);
     } catch (e) {
-      print('disableTracking() error: $e');
+      debugPrint('disableTracking() error: $e');
     }
   }
 
@@ -159,7 +149,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties}) async {
     Map<String, dynamic> data = buo.toMapWeb();
     linkProperties.getControlParams().forEach((key, value) {
-      data['$key'] = value;
+      data[key] = value;
     });
 
     Map<String, dynamic> linkData = {
@@ -179,7 +169,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      print('getShortUrl() error: $e');
+      debugPrint('getShortUrl() error: $e');
       responseCompleter.completeError(BranchResponse.error(
           errorCode: '-1', errorMessage: 'getShortUrl() error'));
     }
@@ -217,15 +207,15 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       required BranchEvent branchEvent}) {
     JsArray<Object> contentItems = JsArray();
 
-    buo.forEach((element) {
+    for (var element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMapWeb()));
-    });
+    }
 
     try {
       BranchJS.logEvent(branchEvent.eventName,
           _dartObjectToJsObject(branchEvent.toMapWeb()), contentItems);
     } catch (e) {
-      print('trackContent() error: $e');
+      debugPrint('trackContent() error: $e');
     }
   }
 
@@ -236,7 +226,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       BranchJS.logEvent(
           branchEvent.eventName, _dartObjectToJsObject(branchEvent.toMapWeb()));
     } catch (e) {
-      print('trackContentWithoutBuo() error: $e');
+      debugPrint('trackContentWithoutBuo() error: $e');
     }
   }
 
@@ -273,93 +263,6 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
     throw UnsupportedError('removeFromSearch() Not supported by Branch JS SDK');
-  }
-
-  ///Retrieves rewards for the current user/session
-  @Deprecated('version 4.0.0')
-  @override
-  Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
-
-    try {
-      BranchJS.credits(allowInterop((err, data) {
-        if (err == null) {
-          var parsedData = Map<String, int>.from(_jsObjectToDartObject(data));
-          if (parsedData.isNotEmpty) {
-            responseCompleter.complete(BranchResponse.success(
-                result: parsedData.containsKey(bucket)
-                    ? parsedData[bucket]
-                    : parsedData['default']));
-          } else {
-            responseCompleter.complete(BranchResponse.success(result: 0));
-          }
-        } else {
-          responseCompleter.complete(
-              BranchResponse.error(errorCode: '999', errorMessage: err));
-        }
-      }));
-    } catch (e) {
-      print('loadRewards() error: $e');
-      responseCompleter.complete(BranchResponse.error(
-          errorCode: '-1', errorMessage: 'loadRewards() error'));
-    }
-    return responseCompleter.future;
-  }
-
-  ///Redeems the specified number of credits. if there are sufficient credits within it.
-  ///If the number to redeem exceeds the number available in the bucket, all of the
-  ///available credits will be redeemed instead.
-  @Deprecated('version 4.0.0')
-  @override
-  Future<BranchResponse> redeemRewards(
-      {required int count, String bucket = 'default'}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
-
-    try {
-      BranchJS.redeem(count, bucket, allowInterop((err) {
-        if (err == null) {
-          responseCompleter.complete(BranchResponse.success(result: true));
-        } else {
-          responseCompleter.complete(BranchResponse.error(
-              errorCode: '999', errorMessage: err.toString()));
-        }
-      }));
-    } catch (e) {
-      print('redeemRewards() error: $e');
-      responseCompleter.complete(BranchResponse.error(
-          errorCode: '-1', errorMessage: 'redeemRewards() error'));
-    }
-    return responseCompleter.future;
-  }
-
-  ///Gets the credit history
-  @Deprecated('version 4.0.0')
-  @override
-  Future<BranchResponse> getCreditHistory({String bucket = 'default'}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
-
-    try {
-      BranchJS.creditHistory(_dartObjectToJsObject({'bucket': bucket}),
-          allowInterop((err, data) {
-        if (err == null) {
-          if (data != null) {
-            responseCompleter.complete(
-                BranchResponse.success(result: _jsObjectToDartObject(data)));
-          } else {
-            responseCompleter.complete(BranchResponse.success(result: {}));
-          }
-        } else {
-          responseCompleter.complete(BranchResponse.error(
-              errorCode: '999', errorMessage: err.toString()));
-        }
-      }));
-    } catch (e) {
-      print('getCreditHistory() error: $e');
-      responseCompleter.complete(BranchResponse.error(
-          errorCode: '-1', errorMessage: 'getCreditHistory() error'));
-    }
-
-    return responseCompleter.future;
   }
 
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
@@ -456,7 +359,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
           allowInterop((err, data) {
         if (err == null) {
           if (data != null) {
-            print(data);
+            debugPrint(data);
             responseCompleter.complete(
                 BranchResponse.success(result: _jsObjectToDartObject(data)));
           } else {
@@ -468,7 +371,7 @@ class FlutterBranchSdk extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (error) {
-      print('getLastAttributedTouchData() error: $error');
+      debugPrint('getLastAttributedTouchData() error: $error');
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'getLastAttributedTouchData() error'));
     }
