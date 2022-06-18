@@ -1,7 +1,8 @@
 ## 6.0.0
 * Updated Native `Android` SDK:
     * Android Native SDK Update 5.2.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-    
+    * iOS Native SDK Update 1.43.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ###BREAKING CHANGE
 
 * Minimum required Dart SDK version to 2.17 (Flutter 3.0)
