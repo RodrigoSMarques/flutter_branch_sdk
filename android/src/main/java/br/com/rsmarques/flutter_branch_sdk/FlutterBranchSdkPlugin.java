@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,6 +13,10 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +25,7 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.branch.referral.QRCode.BranchQRCode;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.LinkProperties;
@@ -291,6 +297,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         break;
       case "getLastAttributedTouchData":
         getLastAttributedTouchData(call, result);
+        break;
+      case "getQRCodeAsData":
+        getQRCode("D", call, result);
+        break;
+      case "getQRCodeAsImage":
+        getQRCode("I", call, result);
         break;
       default:
         result.notImplemented();
@@ -707,118 +719,77 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
   }
 
-  // MethodChannel.Result wrapper that responds on the platform thread.
-  private static class MethodResultWrapper implements Result {
-    private final Result methodResult;
-    private final Handler handler;
+  private void getQRCode(final String type, final MethodCall call, final Result result) {
 
-    MethodResultWrapper(Result result) {
-      methodResult = result;
-      handler = new Handler(Looper.getMainLooper());
+    LogUtils.debug(DEBUG_NAME, "getQRCodeAsData call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
     }
+    HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
-    @Override
-    public void success(final Object result) {
-      handler.post(
-              new Runnable() {
-                @Override
-                public void run() {
-                  try {
-                    methodResult.success(result);
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-                }
-              });
-    }
+    final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+    final LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
+    final BranchQRCode branchQRCode = branchSdkHelper.convertToQRCode((HashMap<String, Object>) argsMap.get("qrCodeSettings"));
+    final Map<String, Object> response = new HashMap<>();
 
-    @Override
-    public void error(
-            final String errorCode, final String errorMessage, final Object errorDetails) {
-      handler.post(
-              new Runnable() {
-                @Override
-                public void run() {
-                  try {
-                    methodResult.error(errorCode, errorMessage, errorDetails);
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-                }
-              });
-    }
-
-    @Override
-    public void notImplemented() {
-      handler.post(
-              new Runnable() {
-                @Override
-                public void run() {
-                  try {
-                    methodResult.notImplemented();
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-                }
-              });
-    }
-  }
-
-  private static class MainThreadEventSink implements EventChannel.EventSink {
-    private final EventChannel.EventSink eventSink;
-    private final Handler handler;
-
-    MainThreadEventSink(EventChannel.EventSink eventSink) {
-      this.eventSink = eventSink;
-      handler = new Handler(Looper.getMainLooper());
-    }
-
-    @Override
-    public void success(final Object o) {
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            if (eventSink != null) {
-              eventSink.success(o);
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
+    if (type.equals("D")) {
+      try {
+        branchQRCode.getQRCodeAsData(context, buo, linkProperties, new BranchQRCode.BranchQRCodeDataHandler() {
+          @Override
+          public void onSuccess(byte[] qrCodeData) {
+            response.put("success", Boolean.TRUE);
+            response.put("data", qrCodeData);
+            result.success(response);
           }
-        }
-      });
-    }
-
-    @Override
-    public void error(final String s, final String s1, final Object o) {
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            if (eventSink != null) {
-              eventSink.error(s, s1, o);
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
+          @Override
+          public void onFailure(Exception error) {
+            response.put("success", Boolean.FALSE);
+            response.put("errorCode", "-1");
+            response.put("errorMessage", error.getMessage());
+            result.success(response);
           }
-        }
-      });
-    }
+        });
+      } catch (IOException e) {
+        response.put("success", Boolean.FALSE);
+        response.put("errorCode", "-1");
+        response.put("errorMessage", e.getMessage());
+        result.success(response);
+      }
+    } else {
+      //https://gist.github.com/nikartm/79932c0a4f0a644f7ce020143146db98
+      //https://github.com/flutter/plugins/blob/main/packages/image_picker/image_picker_android/android/src/main/java/io/flutter/plugins/imagepicker/FileUtils.java
+    //https://stackoverflow.com/questions/39538073/android-store-image-on-a-temp-file-cross-activity
+      //https://github.com/flutter/plugins/blob/main/packages/image_picker/image_picker_android/android/src/main/AndroidManifest.xml
+      //https://github.com/flutter/plugins/blob/main/packages/image_picker/image_picker_android/android/src/main/res/xml/flutter_image_picker_file_paths.xml
 
-    @Override
-    public void endOfStream() {
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            if (eventSink != null) {
-              eventSink.endOfStream();
+      try {
+        branchQRCode.getQRCodeAsImage(activity, buo, linkProperties, new BranchQRCode.BranchQRCodeImageHandler() {
+          @Override
+          public void onSuccess(Bitmap qrCodeImage) {
+            FileOutputStream outStream = null;
+            try {
+              outStream = new FileOutputStream(new File(context.getCacheDir(), "tempBMP"));
+            } catch (FileNotFoundException e) {
+              e.printStackTrace();
             }
-          } catch (Exception e) {
-            e.printStackTrace();
+            /*
+            final Bitmap myBitmap = new Bitmap();
+            myBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outStream);
+            outStream.close();
+             */
           }
-        }
-      });
+
+          @Override
+          public void onFailure(Exception e) {
+
+          }
+        });
+      } catch (IOException e) {
+        response.put("success", Boolean.FALSE);
+        response.put("errorCode", "-1");
+        response.put("errorMessage", e.getMessage());
+        result.success(response);
+      }
     }
   }
 }

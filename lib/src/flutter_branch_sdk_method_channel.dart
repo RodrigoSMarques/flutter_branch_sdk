@@ -7,7 +7,7 @@ import 'objects/app_tracking_transparency.dart';
 import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
-class FlutterBranchSdkMethodChannel extends FlutterBranchSdkPlatform {
+class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   static const MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
   static const EVENT_CHANNEL = 'flutter_branch_sdk/event';
 
@@ -266,6 +266,52 @@ class FlutterBranchSdkMethodChannel extends FlutterBranchSdkPlatform {
 
     if (response['success']) {
       return BranchResponse.success(result: response['data']['latd']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  @override
+  Future<BranchResponse> getQRCodeAsData(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    Map<String, dynamic> params = {};
+    params['buo'] = buo.toMap();
+    params['lp'] = linkProperties.toMap();
+    params['qrCodeSettings'] = qrCodeSettings.toMap();
+
+    Map<dynamic, dynamic> response =
+        await messageChannel.invokeMethod('getQRCodeAsData', params);
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['result']);
+    } else {
+      return BranchResponse.error(
+          errorCode: response['errorCode'],
+          errorMessage: response['errorMessage']);
+    }
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as a Image.
+  @override
+  Future<BranchResponse> getQRCodeAsImage(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    Map<String, dynamic> params = {};
+    params['buo'] = buo.toMap();
+    params['lp'] = linkProperties.toMap();
+    params['qrCodeSettings'] = qrCodeSettings.toMap();
+
+    Map<dynamic, dynamic> response =
+        await messageChannel.invokeMethod('getQRCodeAsImage', params);
+
+    if (response['success']) {
+      return BranchResponse.success(result: response['result']);
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],

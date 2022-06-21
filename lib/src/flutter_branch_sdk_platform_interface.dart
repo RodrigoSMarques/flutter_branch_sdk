@@ -25,10 +25,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   void setIdentity(String userId) {
     throw UnimplementedError('setIdentity has not been implemented');
@@ -194,5 +190,21 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       {int? attributionWindow}) async {
     throw UnimplementedError(
         'getLastAttributedTouchData has not been implemented');
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  Future<BranchResponse> getQRCodeAsData(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    throw UnimplementedError('getQRCodeAsData has not been implemented');
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as a Image.
+  Future<BranchResponse> getQRCodeAsImage(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    throw UnimplementedError('getQRCodeAsImage has not been implemented');
   }
 }

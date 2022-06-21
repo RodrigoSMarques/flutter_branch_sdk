@@ -171,4 +171,22 @@ class FlutterBranchSdk {
     return FlutterBranchSdkPlatform.instance
         .getLastAttributedTouchData(attributionWindow: attributionWindow);
   }
+
+  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  static Future<BranchResponse> getQRCodeAsData(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCode}) async {
+    return FlutterBranchSdkPlatform.instance.getQRCodeAsData(
+        buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as a Image.
+  static Future<BranchResponse> getQRCodeAsImage(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCode}) async {
+    return FlutterBranchSdkPlatform.instance.getQRCodeAsImage(
+        buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
+  }
 }

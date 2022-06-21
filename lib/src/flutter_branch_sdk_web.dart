@@ -375,8 +375,60 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'getLastAttributedTouchData() error'));
     }
-
     return responseCompleter.future;
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  @override
+  Future<BranchResponse> getQRCodeAsData(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    // TODO: implement getQRCodeAsData
+    Completer<BranchResponse> responseCompleter = Completer();
+
+    Map<String, dynamic> data = buo.toMapWeb();
+    linkProperties.getControlParams().forEach((key, value) {
+      data[key] = value;
+    });
+
+    Map<String, dynamic> linkData = {
+      ...linkProperties.toMapWeb(),
+      'data': data
+    };
+
+    try {
+      BranchJS.qrCode(linkData, qrCodeSettings.toMapWeb(),
+          allowInterop((err, data) {
+        if (err == null) {
+          if (data != null) {
+            debugPrint(data);
+            responseCompleter.complete(
+                BranchResponse.success(result: _jsObjectToDartObject(data)));
+          } else {
+            responseCompleter.complete(BranchResponse.success(result: {}));
+          }
+        } else {
+          responseCompleter.complete(BranchResponse.error(
+              errorCode: '999', errorMessage: err.toString()));
+        }
+      }));
+    } catch (error) {
+      debugPrint('qrCode() error: $error');
+      responseCompleter.complete(BranchResponse.error(
+          errorCode: '-1', errorMessage: 'qrCode() error'));
+    }
+    return responseCompleter.future;
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as a Image.
+  @override
+  Future<BranchResponse> getQRCodeAsImage(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) {
+    // TODO: implement getQRCodeAsImage
+    throw UnimplementedError();
   }
 
   void close() {

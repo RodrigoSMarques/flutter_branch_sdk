@@ -953,4 +953,8 @@ class BranchJS {
   @JS('lastAttributedTouchData')
   external static void lastAttributedTouchData(attributionWindow,
       [Function callback]);
+
+  @JS('qrCode')
+  external static void qrCode(qrCodeLinkData, qrCodeSettings,
+      [Function callback]);
 }

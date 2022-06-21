@@ -196,6 +196,7 @@ func convertToEvent(dict: [String: Any?]) -> BranchEvent? {
     }
     return event
 }
+
 func convertToAdType(adType: String) -> BranchEventAdType {
     switch adType {
     case "BANNER":
@@ -210,6 +211,35 @@ func convertToAdType(adType: String) -> BranchEventAdType {
         return BranchEventAdType.none
     }
 }
+
+func convertToQRCode(dict: [String: Any?]) -> BranchQRCode {
+    let qrCode : BranchQRCode = BranchQRCode()
+    
+    if let width = dict["width"] as? Int {
+        qrCode.width = NSNumber(value: width)
+    }
+    if let margin = dict["margin"] as? Int {
+        qrCode.margin = NSNumber(value: margin)
+    }
+    if let codeColor = dict["codeColor"] as? String {
+        qrCode.codeColor = UIColor.init(hexString: codeColor)
+    }
+    if let backgroundColor = dict["backgroundColor"] as? String {
+        qrCode.backgroundColor = UIColor.init(hexString: backgroundColor)
+    }
+    if let imageFormat = dict["imageFormat"] as? String {
+        if (imageFormat == "JPEG") {
+            qrCode.imageFormat = BranchQRCodeImageFormat.JPEG
+        } else {
+            qrCode.imageFormat = BranchQRCodeImageFormat.PNG
+        }
+    }
+    if let centerLogoUrl = dict["centerLogoUrl"] as? String {
+        qrCode.centerLogo = centerLogoUrl
+    }
+    return qrCode
+}
+
 //---------------------------------------------------------------------------------------------
 // Extension
 // --------------------------------------------------------------------------------------------
@@ -227,8 +257,37 @@ extension Date {
 extension Bundle {
     static func infoPlistValue(forKey key: String) -> Any? {
         guard let value = Bundle.main.object(forInfoDictionaryKey: key) else {
-           return nil
+            return nil
         }
         return value
+    }
+}
+
+extension UIColor {
+    convenience init(hexString: String, alpha: CGFloat = 1.0) {
+        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let scanner = Scanner(string: hexString)
+        if (hexString.hasPrefix("#")) {
+            scanner.scanLocation = 1
+        }
+        var color: UInt32 = 0
+        scanner.scanHexInt32(&color)
+        let mask = 0x000000FF
+        let r = Int(color >> 16) & mask
+        let g = Int(color >> 8) & mask
+        let b = Int(color) & mask
+        let red   = CGFloat(r) / 255.0
+        let green = CGFloat(g) / 255.0
+        let blue  = CGFloat(b) / 255.0
+        self.init(red:red, green:green, blue:blue, alpha:alpha)
+    }
+    func toHexString() -> String {
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
+        return String(format:"#%06x", rgb)
     }
 }

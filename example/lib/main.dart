@@ -545,6 +545,20 @@ class _HomePageState extends State<HomePage> {
       controllerUrl.sink
           .add('Error : ${response.errorCode} - ${response.errorMessage}');
     }
+
+    BranchResponse responseQrCode = await FlutterBranchSdk.getQRCodeAsData(
+        buo: buo!,
+        linkProperties: lp,
+        qrCode: BranchQrCode(
+            primaryColor: Colors.blue,
+            backgroundColor: const Color(0xff443a49),
+            imageFormat: BranchImageFormat.PNG));
+    if (responseQrCode.success) {
+      print(responseQrCode.result);
+    } else {
+      print(
+          'Error : ${responseQrCode.errorCode} - ${responseQrCode.errorMessage}');
+    }
   }
 
   void shareLink() async {

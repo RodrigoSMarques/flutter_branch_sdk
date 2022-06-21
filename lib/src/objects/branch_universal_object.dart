@@ -1,6 +1,9 @@
 library flutter_branch_sdk_objects;
 
+import 'package:flutter/material.dart';
+
 part 'branch_event.dart';
+part 'branch_qrcode.dart';
 part 'branch_response.dart';
 part 'content_meta_data.dart';
 part 'content_schema.dart';
