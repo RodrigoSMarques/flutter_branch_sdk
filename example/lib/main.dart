@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
           ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
           ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
          */
-        contentMetadata: metadata,
+        //contentMetadata: metadata,
         keywords: ['Plugin', 'Branch', 'Flutter'],
         publiclyIndex: true,
         locallyIndex: true,
@@ -550,11 +550,29 @@ class _HomePageState extends State<HomePage> {
         buo: buo!,
         linkProperties: lp,
         qrCode: BranchQrCode(
-            primaryColor: Colors.blue,
-            backgroundColor: const Color(0xff443a49),
+            primaryColor: Colors.black,
+            //backgroundColor: const Color(0xff443a49),
+            backgroundColor: Colors.white,
             imageFormat: BranchImageFormat.PNG));
     if (responseQrCode.success) {
       print(responseQrCode.result);
+    } else {
+      print(
+          'Error : ${responseQrCode.errorCode} - ${responseQrCode.errorMessage}');
+    }
+
+    BranchResponse responseQrCode2 = await FlutterBranchSdk.getQRCodeAsImage(
+        buo: buo!,
+        linkProperties: lp,
+        qrCode: BranchQrCode(
+            primaryColor: Colors.black,
+            //backgroundColor: const Color(0xff443a49),
+            backgroundColor: Colors.white,
+            imageFormat: BranchImageFormat.PNG));
+    if (responseQrCode2.success) {
+      print((responseQrCode2.result as Image).width);
+      print((responseQrCode2.result as Image).height);
+      print('done');
     } else {
       print(
           'Error : ${responseQrCode.errorCode} - ${responseQrCode.errorMessage}');

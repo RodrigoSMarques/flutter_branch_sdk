@@ -955,6 +955,6 @@ class BranchJS {
       [Function callback]);
 
   @JS('qrCode')
-  external static void qrCode(qrCodeLinkData, qrCodeSettings,
+  external static void qrCode(Object qrCodeLinkData, Object qrCodeSettings,
       [Function callback]);
 }

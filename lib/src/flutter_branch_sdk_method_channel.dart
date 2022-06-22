@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
@@ -279,13 +281,12 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    Map<String, dynamic> params = {};
-    params['buo'] = buo.toMap();
-    params['lp'] = linkProperties.toMap();
-    params['qrCodeSettings'] = qrCodeSettings.toMap();
-
     Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('getQRCodeAsData', params);
+        await messageChannel.invokeMethod('getQRCode', {
+      'buo': buo.toMap(),
+      'lp': linkProperties.toMap(),
+      'qrCodeSettings': qrCodeSettings.toMap()
+    });
 
     if (response['success']) {
       return BranchResponse.success(result: response['result']);
@@ -302,16 +303,16 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    Map<String, dynamic> params = {};
-    params['buo'] = buo.toMap();
-    params['lp'] = linkProperties.toMap();
-    params['qrCodeSettings'] = qrCodeSettings.toMap();
-
     Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('getQRCodeAsImage', params);
+        await messageChannel.invokeMethod('getQRCode', {
+      'buo': buo.toMap(),
+      'lp': linkProperties.toMap(),
+      'qrCodeSettings': qrCodeSettings.toMap()
+    });
 
     if (response['success']) {
-      return BranchResponse.success(result: response['result']);
+      return BranchResponse.success(
+          result: Image.memory(base64Decode(response['result'])));
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],

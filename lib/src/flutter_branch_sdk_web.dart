@@ -8,6 +8,7 @@ import 'dart:js';
 import 'dart:js_util';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'flutter_branch_sdk_platform_interface.dart';
@@ -384,7 +385,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    // TODO: implement getQRCodeAsData
     Completer<BranchResponse> responseCompleter = Completer();
 
     Map<String, dynamic> data = buo.toMapWeb();
@@ -398,13 +398,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     };
 
     try {
-      BranchJS.qrCode(linkData, qrCodeSettings.toMapWeb(),
-          allowInterop((err, data) {
+      BranchJS.qrCode(_dartObjectToJsObject(linkData),
+          _dartObjectToJsObject(qrCodeSettings.toMapWeb()),
+          allowInterop((err, qrCode) {
         if (err == null) {
-          if (data != null) {
-            debugPrint(data);
-            responseCompleter.complete(
-                BranchResponse.success(result: _jsObjectToDartObject(data)));
+          if (qrCode != null) {
+            responseCompleter
+                .complete(BranchResponse.success(result: qrCode.base64()));
           } else {
             responseCompleter.complete(BranchResponse.success(result: {}));
           }
@@ -426,9 +426,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   Future<BranchResponse> getQRCodeAsImage(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) {
-    // TODO: implement getQRCodeAsImage
-    throw UnimplementedError();
+      required BranchQrCode qrCodeSettings}) async {
+    BranchResponse response = await getQRCodeAsData(
+        buo: buo,
+        linkProperties: linkProperties,
+        qrCodeSettings: qrCodeSettings);
+    if (response.success) {
+      return BranchResponse.success(
+          result: Image.memory(base64Decode(response.result)));
+    }
+    return response;
   }
 
   void close() {

@@ -298,11 +298,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       case "getLastAttributedTouchData":
         getLastAttributedTouchData(call, result);
         break;
-      case "getQRCodeAsData":
-        getQRCode("D", call, result);
-        break;
-      case "getQRCodeAsImage":
-        getQRCode("I", call, result);
+      case "getQRCode":
+        getQRCode(call, result);
         break;
       default:
         result.notImplemented();
@@ -719,7 +716,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
   }
 
-  private void getQRCode(final String type, final MethodCall call, final Result result) {
+  private void getQRCode(final MethodCall call, final Result result) {
 
     LogUtils.debug(DEBUG_NAME, "getQRCodeAsData call");
     if (!(call.arguments instanceof Map)) {
@@ -732,13 +729,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     final BranchQRCode branchQRCode = branchSdkHelper.convertToQRCode((HashMap<String, Object>) argsMap.get("qrCodeSettings"));
     final Map<String, Object> response = new HashMap<>();
 
-    if (type.equals("D")) {
       try {
         branchQRCode.getQRCodeAsData(context, buo, linkProperties, new BranchQRCode.BranchQRCodeDataHandler() {
           @Override
           public void onSuccess(byte[] qrCodeData) {
             response.put("success", Boolean.TRUE);
-            response.put("data", qrCodeData);
+            response.put("result", qrCodeData);
             result.success(response);
           }
           @Override
@@ -755,43 +751,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         response.put("errorMessage", e.getMessage());
         result.success(response);
       }
-    } else {
-      //https://gist.github.com/nikartm/79932c0a4f0a644f7ce020143146db98
-      //https://github.com/flutter/plugins/blob/main/packages/image_picker/image_picker_android/android/src/main/java/io/flutter/plugins/imagepicker/FileUtils.java
-    //https://stackoverflow.com/questions/39538073/android-store-image-on-a-temp-file-cross-activity
-      //https://github.com/flutter/plugins/blob/main/packages/image_picker/image_picker_android/android/src/main/AndroidManifest.xml
-      //https://github.com/flutter/plugins/blob/main/packages/image_picker/image_picker_android/android/src/main/res/xml/flutter_image_picker_file_paths.xml
-
-      try {
-        branchQRCode.getQRCodeAsImage(activity, buo, linkProperties, new BranchQRCode.BranchQRCodeImageHandler() {
-          @Override
-          public void onSuccess(Bitmap qrCodeImage) {
-            FileOutputStream outStream = null;
-            try {
-              outStream = new FileOutputStream(new File(context.getCacheDir(), "tempBMP"));
-            } catch (FileNotFoundException e) {
-              e.printStackTrace();
-            }
-            /*
-            final Bitmap myBitmap = new Bitmap();
-            myBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outStream);
-            outStream.close();
-             */
-          }
-
-          @Override
-          public void onFailure(Exception e) {
-
-          }
-        });
-      } catch (IOException e) {
-        response.put("success", Boolean.FALSE);
-        response.put("errorCode", "-1");
-        response.put("errorMessage", e.getMessage());
-        result.success(response);
-      }
     }
-  }
 }
 
 

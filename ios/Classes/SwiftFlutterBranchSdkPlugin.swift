@@ -221,11 +221,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "getLastAttributedTouchData":
             getLastAttributedTouchData(call: call, result: result)
             break
-        case "getQRCodeAsData":
-            getQRCode(type: "D", call: call, result: result)
-            break
-        case "getQRCodeAsImage":
-            getQRCode(type: "I", call: call, result: result)
+        case "getQRCode":
+            getQRCode(call: call, result: result)
             break
         default:
             result(FlutterMethodNotImplemented)
@@ -555,50 +552,33 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         }
     }
     
-    private func getQRCode(type: String, call: FlutterMethodCall, result: @escaping FlutterResult) {
+    private func getQRCode(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let lpDict = args["lp"] as! [String: Any?]
         let qrCodeDict = args["qrCodeSettings"] as! [String: Any?]
-
+        
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
         let qrCode : BranchQRCode? = convertToQRCode(dict: qrCodeDict)
         
         let response : NSMutableDictionary! = [:]
         
-        if (type == "D") {
-            qrCode?.getAsData(buo, linkProperties: lp, completion: { data, error in
-                if (error == nil) {
-                    response["success"] = NSNumber(value: true)
-                    response["data"] = FlutterStandardTypedData(bytes: data!)
-                } else {
-                    response["success"] = NSNumber(value: false)
-                    if let err = (error as NSError?) {
-                        response["errorCode"] = String(err.code)
-                        response["errorMessage"] = err.localizedDescription
-                    }
+        qrCode?.getAsData(buo, linkProperties: lp, completion: { data, error in
+            if (error == nil) {
+                response["success"] = NSNumber(value: true)
+                response["result"] = FlutterStandardTypedData(bytes: data!)
+            } else {
+                response["success"] = NSNumber(value: false)
+                if let err = (error as NSError?) {
+                    response["errorCode"] = String(err.code)
+                    response["errorMessage"] = err.localizedDescription
                 }
-                DispatchQueue.main.async {
-                    result(response)
-                }
-
-            })
-        } else {
-            qrCode?.getAsImage(buo, linkProperties: lp, completion: { image, error in
-                if (error == nil) {
-                    
-                } else {
-                    response["success"] = NSNumber(value: false)
-                    if let err = (error as NSError?) {
-                        response["errorCode"] = String(err.code)
-                        response["errorMessage"] = err.localizedDescription
-                    }
-                }
-                DispatchQueue.main.async {
-                    result(response)
-                }
-            })
-        }
+            }
+            DispatchQueue.main.async {
+                result(response)
+            }
+            
+        })
     }
 }
