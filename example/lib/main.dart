@@ -390,12 +390,15 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                CustomButton(
-                    onPressed: () async {
-                      await Clipboard.setData(ClipboardData(text: url));
-                      Navigator.pop(this.context);
-                    },
-                    child: const Center(child: Text('Copy link'))),
+                IntrinsicWidth(
+                  stepWidth: 300,
+                  child: CustomButton(
+                      onPressed: () async {
+                        await Clipboard.setData(ClipboardData(text: url));
+                        Navigator.pop(this.context);
+                      },
+                      child: const Center(child: Text('Copy link'))),
+                ),
               ],
             ),
           );
@@ -410,7 +413,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) {
           return Container(
             padding: const EdgeInsets.all(12),
-            height: 350,
+            height: 370,
             child: Column(
               children: <Widget>[
                 const Center(
@@ -427,9 +430,12 @@ class _HomePageState extends State<HomePage> {
                   height: 250,
                   width: 250,
                 ),
-                CustomButton(
-                    onPressed: () => Navigator.pop(this.context),
-                    child: const Center(child: Text('Close'))),
+                IntrinsicWidth(
+                  stepWidth: 300,
+                  child: CustomButton(
+                      onPressed: () => Navigator.pop(this.context),
+                      child: const Center(child: Text('Close'))),
+                ),
               ],
             ),
           );
