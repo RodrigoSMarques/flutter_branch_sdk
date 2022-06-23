@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -311,8 +310,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     });
 
     if (response['success']) {
-      return BranchResponse.success(
-          result: Image.memory(base64Decode(response['result'])));
+      return BranchResponse.success(result: Image.memory(response['result']));
     } else {
       return BranchResponse.error(
           errorCode: response['errorCode'],

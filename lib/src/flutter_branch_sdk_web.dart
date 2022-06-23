@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'dart:js';
 import 'dart:js_util';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -360,7 +359,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, data) {
         if (err == null) {
           if (data != null) {
-            debugPrint(data);
             responseCompleter.complete(
                 BranchResponse.success(result: _jsObjectToDartObject(data)));
           } else {
@@ -403,8 +401,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            responseCompleter
-                .complete(BranchResponse.success(result: qrCode.base64()));
+            responseCompleter.complete(
+                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
           } else {
             responseCompleter.complete(BranchResponse.success(result: {}));
           }
@@ -433,7 +431,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         qrCodeSettings: qrCodeSettings);
     if (response.success) {
       return BranchResponse.success(
-          result: Image.memory(base64Decode(response.result)));
+          result: Image.memory(
+        response.result,
+      ));
     }
     return response;
   }
