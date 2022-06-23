@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
 
     initDeepLinkData();
 
-    identifyUser();
+    FlutterBranchSdk.setIdentity('branch_user_test');
 
     //requestATTTracking();
   }
@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
         print(
             '------------------------------------------------------------------------------------------------');
         showSnackBar(
-            context: context,
             message: 'Link clicked: Custom string - ${data['custom_string']}',
             duration: 10);
       }
@@ -169,10 +168,10 @@ class _HomePageState extends State<HomePage> {
         // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
         //alias: 'https://branch.io' //define link url,
         stage: 'new share',
-        campaign: 'xxxxx',
+        campaign: 'campaign',
         tags: ['one', 'two', 'three'])
       ..addControlParam('\$uri_redirect_mode', '1')
-      ..addControlParam('referring_user_id', 'asdf');
+      ..addControlParam('referring_user_id', 'user_id');
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
@@ -198,10 +197,7 @@ class _HomePageState extends State<HomePage> {
           'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
   }
 
-  void showSnackBar(
-      {required BuildContext context,
-      required String message,
-      int duration = 1}) {
+  void showSnackBar({required String message, int duration = 1}) {
     scaffoldMessengerKey.currentState!.removeCurrentSnackBar();
     scaffoldMessengerKey.currentState!.showSnackBar(
       SnackBar(
@@ -214,41 +210,39 @@ class _HomePageState extends State<HomePage> {
   void validSdkIntegration() {
     if (kIsWeb) {
       showSnackBar(
-          context: context,
           message: 'validateSDKIntegration() not available in Flutter Web');
       return;
     }
 
     FlutterBranchSdk.validateSDKIntegration();
     if (Platform.isAndroid) {
-      showSnackBar(
-          context: context, message: 'Check messages in run log or logcat');
+      showSnackBar(message: 'Check messages in run log or logcat');
     }
   }
 
   void enableTracking() {
     FlutterBranchSdk.disableTracking(false);
-    showSnackBar(context: context, message: 'Tracking enabled');
+    showSnackBar(message: 'Tracking enabled');
   }
 
   void disableTracking() {
     FlutterBranchSdk.disableTracking(true);
-    showSnackBar(context: context, message: 'Tracking disabled');
+    showSnackBar(message: 'Tracking disabled');
   }
 
   void identifyUser() {
     FlutterBranchSdk.setIdentity('branch_user_test');
-    showSnackBar(context: context, message: 'User branch_user_test identfied');
+    showSnackBar(message: 'User branch_user_test identfied');
   }
 
   void userLogout() {
     FlutterBranchSdk.logout();
-    showSnackBar(context: context, message: 'User branch_user_test logout');
+    showSnackBar(message: 'User branch_user_test logout');
   }
 
   void registerView() {
     FlutterBranchSdk.registerView(buo: buo!);
-    showSnackBar(context: context, message: 'Event Registered');
+    showSnackBar(message: 'Event Registered');
   }
 
   void trackContent() {
@@ -260,21 +254,21 @@ class _HomePageState extends State<HomePage> {
 
     FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
 
-    showSnackBar(context: context, message: 'Tracked content');
+    showSnackBar(message: 'Tracked content');
   }
 
   void getFirstParameters() async {
     Map<dynamic, dynamic> params =
         await FlutterBranchSdk.getFirstReferringParams();
     controllerData.sink.add(params.toString());
-    showSnackBar(context: context, message: 'First Parameters recovered');
+    showSnackBar(message: 'First Parameters recovered');
   }
 
   void getLastParameters() async {
     Map<dynamic, dynamic> params =
         await FlutterBranchSdk.getLatestReferringParams();
     controllerData.sink.add(params.toString());
-    showSnackBar(context: context, message: 'Last Parameters recovered');
+    showSnackBar(message: 'Last Parameters recovered');
   }
 
   void getLastAttributed() async {
@@ -282,11 +276,9 @@ class _HomePageState extends State<HomePage> {
         await FlutterBranchSdk.getLastAttributedTouchData();
     if (response.success) {
       controllerData.sink.add(response.result.toString());
-      showSnackBar(
-          context: context, message: 'Last Attributed TouchData recovered');
+      showSnackBar(message: 'Last Attributed TouchData recovered');
     } else {
       showSnackBar(
-          context: context,
           message:
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
@@ -295,9 +287,7 @@ class _HomePageState extends State<HomePage> {
 
   void listOnSearch() async {
     if (kIsWeb) {
-      showSnackBar(
-          context: context,
-          message: 'listOnSearch() not available in Flutter Web');
+      showSnackBar(message: 'listOnSearch() not available in Flutter Web');
       return;
     }
     //Buo without Link Properties
@@ -308,40 +298,39 @@ class _HomePageState extends State<HomePage> {
         await FlutterBranchSdk.listOnSearch(buo: buo!, linkProperties: lp);
 
     if (success) {
-      showSnackBar(context: context, message: 'Listed on Search');
+      showSnackBar(message: 'Listed on Search');
     }
   }
 
   void removeFromSearch() async {
     if (kIsWeb) {
-      showSnackBar(
-          context: context,
-          message: 'removeFromSearch() not available in Flutter Web');
+      showSnackBar(message: 'removeFromSearch() not available in Flutter Web');
       return;
     }
     bool success = await FlutterBranchSdk.removeFromSearch(buo: buo!);
     success =
         await FlutterBranchSdk.removeFromSearch(buo: buo!, linkProperties: lp);
     if (success) {
-      showSnackBar(context: context, message: 'Removed from Search');
+      showSnackBar(message: 'Removed from Search');
     }
   }
 
-  void generateLink() async {
+  void generateLink(BuildContext context) async {
     BranchResponse response =
         await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp);
     if (response.success) {
-      showGeneratedLink(response.result);
+      showGeneratedLink(this.context, response.result);
     } else {
       showSnackBar(
-          context: context,
           message: 'Error : ${response.errorCode} - ${response.errorMessage}');
     }
   }
 
-  void generateQrCode() async {
+  void generateQrCode(
+    BuildContext context,
+  ) async {
     /*
-    BranchResponse responseQrCode = await FlutterBranchSdk.getQRCodeAsData(
+    BranchResponse responseQrCodeData = await FlutterBranchSdk.getQRCodeAsData(
         buo: buo!,
         linkProperties: lp,
         qrCode: BranchQrCode(
@@ -349,33 +338,33 @@ class _HomePageState extends State<HomePage> {
             //backgroundColor: const Color(0xff443a49),
             backgroundColor: Colors.white,
             imageFormat: BranchImageFormat.PNG));
-    if (responseQrCode.success) {
-      print(responseQrCode.result);
+    if (responseQrCodeData.success) {
+      print(responseQrCodeData.result);
     } else {
       print(
-          'Error : ${responseQrCode.errorCode} - ${responseQrCode.errorMessage}');
+          'Error : ${responseQrCodeData.errorCode} - ${responseQrCodeData.errorMessage}');
     }
      */
 
-    BranchResponse responseQrCode = await FlutterBranchSdk.getQRCodeAsImage(
-        buo: buo!,
-        linkProperties: lp,
-        qrCode: BranchQrCode(
-            primaryColor: Colors.black,
-            //backgroundColor: const Color(0xff443a49),
-            backgroundColor: Colors.white,
-            imageFormat: BranchImageFormat.PNG));
-    if (responseQrCode.success) {
-      showQrCode(responseQrCode.result);
+    BranchResponse responseQrCodeImage =
+        await FlutterBranchSdk.getQRCodeAsImage(
+            buo: buo!,
+            linkProperties: lp,
+            qrCode: BranchQrCode(
+                primaryColor: Colors.black,
+                //backgroundColor: const Color(0xff443a49),
+                backgroundColor: Colors.white,
+                imageFormat: BranchImageFormat.PNG));
+    if (responseQrCodeImage.success) {
+      showQrCode(this.context, responseQrCodeImage.result);
     } else {
       showSnackBar(
-          context: context,
           message:
-              'Error : ${responseQrCode.errorCode} - ${responseQrCode.errorMessage}');
+              'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
     }
   }
 
-  void showGeneratedLink(String url) async {
+  void showGeneratedLink(BuildContext context, String url) async {
     showModalBottomSheet(
         isDismissible: true,
         isScrollControlled: true,
@@ -411,7 +400,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  void showQrCode(Image image) async {
+  void showQrCode(BuildContext context, Image image) async {
     showModalBottomSheet(
         isDismissible: true,
         isScrollControlled: true,
@@ -419,7 +408,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) {
           return Container(
             padding: const EdgeInsets.all(12),
-            height: 370,
+            height: 350,
             child: Column(
               children: <Widget>[
                 const Center(
@@ -433,9 +422,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Image(
                   image: image.image,
-                  height: 300,
-                  width: 300,
+                  height: 250,
+                  width: 250,
                 ),
+                CustomButton(
+                    onPressed: () => Navigator.pop(this.context),
+                    child: const Center(child: Text('Close'))),
               ],
             ),
           );
@@ -451,11 +443,9 @@ class _HomePageState extends State<HomePage> {
         androidSharingTitle: 'My Share with');
 
     if (response.success) {
-      showSnackBar(
-          context: context, message: 'showShareSheet Success', duration: 5);
+      showSnackBar(message: 'showShareSheet Success', duration: 5);
     } else {
       showSnackBar(
-          context: context,
           message:
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
@@ -605,13 +595,13 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: CustomButton(
-                        onPressed: () => generateLink,
+                        onPressed: () => generateLink(context),
                         child: const Text('Generate Link'),
                       ),
                     ),
                     Expanded(
                       child: CustomButton(
-                        onPressed: () => generateQrCode,
+                        onPressed: () => generateQrCode(context),
                         child: const Text('Generate QrCode'),
                       ),
                     ),
@@ -620,9 +610,6 @@ class _HomePageState extends State<HomePage> {
                 CustomButton(
                   onPressed: shareLink,
                   child: const Text('Share Link'),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 const Divider(),
                 const Center(
