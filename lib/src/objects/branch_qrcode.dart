@@ -72,7 +72,7 @@ class BranchQrCode {
     }
     ret["image_format"] = imageFormat.name.toLowerCase();
     if (centerLogoUrl.isNotEmpty) {
-      ret["centerLogoUrl"] = centerLogoUrl;
+      ret["center_logo_url"] = centerLogoUrl;
     }
     return ret;
   }

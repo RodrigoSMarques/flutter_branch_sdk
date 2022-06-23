@@ -352,7 +352,7 @@ class _HomePageState extends State<HomePage> {
             linkProperties: lp,
             qrCode: BranchQrCode(
                 primaryColor: Colors.black,
-                //backgroundColor: const Color(0xff443a49),
+                //primaryColor: const Color(0xff443a49),
                 centerLogoUrl:
                     'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg',
                 backgroundColor: Colors.white,
