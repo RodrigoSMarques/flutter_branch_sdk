@@ -98,15 +98,14 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
-    Map<String, dynamic> params = {};
-    params['buo'] = buo.toMap();
-    params['lp'] = linkProperties.toMap();
-    params['messageText'] = messageText;
-    params['messageTitle'] = androidMessageTitle;
-    params['sharingTitle'] = androidSharingTitle;
-
     Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('showShareSheet', params);
+        await messageChannel.invokeMethod('showShareSheet', {
+      'buo': buo.toMap(),
+      'lp': linkProperties.toMap(),
+      'messageText': messageText,
+      'messageTitle': androidMessageTitle,
+      'sharingTitle': androidSharingTitle
+    });
 
     if (response['success']) {
       return BranchResponse.success(result: response['url']);
@@ -316,5 +315,19 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
           errorCode: response['errorCode'],
           errorMessage: response['errorMessage']);
     }
+  }
+
+  @override
+  void shareWithLPLinkMetadata(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required Image icon,
+      required String title}) async {
+    Map<String, dynamic> params = {};
+    params['buo'] = buo.toMap();
+    params['lp'] = linkProperties.toMap();
+    params['title'] = title;
+
+    messageChannel.invokeMethod('shareWithLPLinkMetadata', params);
   }
 }

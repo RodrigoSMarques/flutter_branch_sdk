@@ -1,5 +1,7 @@
 library flutter_branch_sdk;
 
+import 'package:flutter/widgets.dart';
+
 import 'src/flutter_branch_sdk_platform_interface.dart';
 import 'src/objects/app_tracking_transparency.dart';
 import 'src/objects/branch_universal_object.dart';

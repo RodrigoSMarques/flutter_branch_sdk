@@ -47,6 +47,8 @@ class _HomePageState extends State<HomePage> {
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
 
+  static const imageURL =
+      'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg';
   @override
   void initState() {
     super.initState();
@@ -140,8 +142,7 @@ class _HomePageState extends State<HomePage> {
         // even if the user goes to the app instead of your website! This will help your SEO efforts.
         canonicalUrl: 'https://flutter.dev',
         title: 'Flutter Branch Plugin',
-        imageUrl:
-            'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
+        imageUrl: imageURL,
         contentDescription: 'Flutter Branch Description',
         /*
         contentMetadata: BranchContentMetaData()
@@ -353,8 +354,7 @@ class _HomePageState extends State<HomePage> {
             qrCode: BranchQrCode(
                 primaryColor: Colors.black,
                 //primaryColor: const Color(0xff443a49),
-                centerLogoUrl:
-                    'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg',
+                centerLogoUrl: imageURL,
                 backgroundColor: Colors.white,
                 imageFormat: BranchImageFormat.PNG));
     if (responseQrCodeImage.success) {
@@ -458,6 +458,12 @@ class _HomePageState extends State<HomePage> {
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
+
+    FlutterBranchSdk.shareWithLPLinkMetadata(
+        buo: buo!,
+        linkProperties: lp,
+        title: "Teste shareWithLPLinkMetadata",
+        icon: Image.network(imageURL));
   }
 
   @override

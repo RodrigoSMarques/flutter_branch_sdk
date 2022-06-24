@@ -189,4 +189,18 @@ class FlutterBranchSdk {
     return FlutterBranchSdkPlatform.instance.getQRCodeAsImage(
         buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
   }
+
+  static void shareWithLPLinkMetadata(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required Image icon,
+      required String title}) {
+    Map<String, dynamic> params = {};
+    params['buo'] = buo.toMap();
+    params['lp'] = linkProperties.toMap();
+    params['title'] = title;
+
+    FlutterBranchSdkPlatform.instance.shareWithLPLinkMetadata(
+        buo: buo, linkProperties: linkProperties, icon: icon, title: title);
+  }
 }

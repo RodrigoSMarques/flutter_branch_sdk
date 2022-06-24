@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_branch_sdk_method_channel.dart';
@@ -205,6 +206,14 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
+    throw UnimplementedError('getQRCodeAsImage has not been implemented');
+  }
+
+  void shareWithLPLinkMetadata(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required Image icon,
+      required String title}) {
     throw UnimplementedError('getQRCodeAsImage has not been implemented');
   }
 }

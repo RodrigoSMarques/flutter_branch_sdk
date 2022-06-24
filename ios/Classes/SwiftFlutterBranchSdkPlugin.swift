@@ -224,6 +224,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "getQRCode":
             getQRCode(call: call, result: result)
             break
+        case"shareWithLPLinkMetadata":
+            shareWithLPLinkMetadata(call: call, result: result)
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -472,60 +474,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             result(Branch.getInstance().isUserIdentified())
         }
     }
-    
-    /*
-     https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager
-     
-     ATTrackingManager.AuthorizationStatus:
-     - authorized = 3
-     - denied = 2
-     - notDetermined = 0
-     - restricted = 1
-     */
-    
-    private func requestTrackingAuthorization(result: @escaping FlutterResult) {
-        if #available(iOS 14, *) {
-            ATTrackingManager.requestTrackingAuthorization { (status) in
-                Branch.getInstance().handleATTAuthorizationStatus(status.rawValue)
-                
-                DispatchQueue.main.async {
-                    result(Int(status.rawValue))
-                }
-            }
-        } else {
-            DispatchQueue.main.async {
-                result(Int(4)) // return notSupported
-            }
-        }
-    }
-    
-    private func getTrackingAuthorizationStatus(result: @escaping FlutterResult) {
-        if #available(iOS 14, *) {
-            DispatchQueue.main.async {
-                result(Int(ATTrackingManager.trackingAuthorizationStatus.rawValue))
-            }
-        } else {
-            DispatchQueue.main.async {
-                result(Int(4))  // return notSupported
-            }
-        }
-    }
-    
-    private func getAdvertisingIdentifier(result: @escaping FlutterResult) {
-        if #available(iOS 14, *) {
-            let status = ATTrackingManager.trackingAuthorizationStatus
-            if status == .authorized {
-                result(String(ASIdentifierManager.shared().advertisingIdentifier.uuidString))
-            } else {
-                result(String(""))  // return notSupported
-            }
-        } else {
-            DispatchQueue.main.async {
-                result(String(""))  // return notSupported
-            }
-        }
-    }
-    
+
     private func setTimeout(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let _  = args["timeout"] as? Int ?? 0
@@ -581,4 +530,84 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             
         })
     }
-}
+    
+    private func shareWithLPLinkMetadata(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        
+        let args = call.arguments as! [String: Any?]
+        let buoDict = args["buo"] as! [String: Any?]
+        let lpDict = args["lp"] as! [String: Any?]
+        let title = args["title"] as! String
+        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
+        let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
+        var iconImage : UIImage?
+        
+        if let buoURL = buo?.imageUrl {
+            let url = URL(string: buoURL)!
+            UIImage.loadFrom(url: url) { image in
+                iconImage = image
+            }
+        } else {
+            iconImage = Bundle.main.icon
+        }
+        
+        let bsl = BranchShareLink(universalObject: buo!, linkProperties: lp!)
+        if #available(iOS 13.0, *) {
+            bsl.addLPLinkMetadata(title, icon: iconImage)
+            let controller = UIApplication.shared.keyWindow!.rootViewController
+            bsl.presentActivityViewController(from: controller, anchor: nil)
+        }
+    }
+    
+    /*
+     https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager
+     
+     ATTrackingManager.AuthorizationStatus:
+     - authorized = 3
+     - denied = 2
+     - notDetermined = 0
+     - restricted = 1
+     */
+    
+    private func requestTrackingAuthorization(result: @escaping FlutterResult) {
+        if #available(iOS 14, *) {
+            ATTrackingManager.requestTrackingAuthorization { (status) in
+                Branch.getInstance().handleATTAuthorizationStatus(status.rawValue)
+                
+                DispatchQueue.main.async {
+                    result(Int(status.rawValue))
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                result(Int(4)) // return notSupported
+            }
+        }
+    }
+    
+    private func getTrackingAuthorizationStatus(result: @escaping FlutterResult) {
+        if #available(iOS 14, *) {
+            DispatchQueue.main.async {
+                result(Int(ATTrackingManager.trackingAuthorizationStatus.rawValue))
+            }
+        } else {
+            DispatchQueue.main.async {
+                result(Int(4))  // return notSupported
+            }
+        }
+    }
+    
+    private func getAdvertisingIdentifier(result: @escaping FlutterResult) {
+        if #available(iOS 14, *) {
+            let status = ATTrackingManager.trackingAuthorizationStatus
+            if status == .authorized {
+                result(String(ASIdentifierManager.shared().advertisingIdentifier.uuidString))
+            } else {
+                result(String(""))  // return notSupported
+            }
+        } else {
+            DispatchQueue.main.async {
+                result(String(""))  // return notSupported
+            }
+        }
+    }
+    }
