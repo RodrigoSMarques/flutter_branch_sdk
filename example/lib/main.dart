@@ -474,7 +474,7 @@ class _HomePageState extends State<HomePage> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Branch.io Plugin Example App'),
+          title: const Text('Flutter Branch SDK Example'),
         ),
         body: Scrollbar(
           thumbVisibility: true,

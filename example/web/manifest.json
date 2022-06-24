@@ -1,11 +1,11 @@
 {
-    "name": "flutter_branch_sdk_example",
-    "short_name": "flutter_branch_sdk_example",
+    "description": "Demonstrates how to use the flutter_branch_sdk plugin.",
+    "name": "Flutter Branch SDK Example",
+    "short_name": "Flutter_Branch_SDK",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Demonstrates how to use the flutter_branch_sdk plugin.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
