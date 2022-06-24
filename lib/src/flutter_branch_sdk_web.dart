@@ -147,15 +147,12 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties}) async {
-    Map<String, dynamic> data = buo.toMapWeb();
+    Map<String, dynamic> data = buo.toMap();
     linkProperties.getControlParams().forEach((key, value) {
       data[key] = value;
     });
 
-    Map<String, dynamic> linkData = {
-      ...linkProperties.toMapWeb(),
-      'data': data
-    };
+    Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
 
     Completer<BranchResponse> responseCompleter = Completer();
 
@@ -208,12 +205,12 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     JsArray<Object> contentItems = JsArray();
 
     for (var element in buo) {
-      contentItems.add(_dartObjectToJsObject(element.toMapWeb()));
+      contentItems.add(_dartObjectToJsObject(element.toMap()));
     }
 
     try {
       BranchJS.logEvent(branchEvent.eventName,
-          _dartObjectToJsObject(branchEvent.toMapWeb()), contentItems);
+          _dartObjectToJsObject(branchEvent.toMap()), contentItems);
     } catch (e) {
       debugPrint('trackContent() error: $e');
     }
@@ -224,7 +221,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void trackContentWithoutBuo({required BranchEvent branchEvent}) {
     try {
       BranchJS.logEvent(
-          branchEvent.eventName, _dartObjectToJsObject(branchEvent.toMapWeb()));
+          branchEvent.eventName, _dartObjectToJsObject(branchEvent.toMap()));
     } catch (e) {
       debugPrint('trackContentWithoutBuo() error: $e');
     }
@@ -385,19 +382,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required BranchQrCode qrCodeSettings}) async {
     Completer<BranchResponse> responseCompleter = Completer();
 
-    Map<String, dynamic> data = buo.toMapWeb();
+    Map<String, dynamic> data = buo.toMap();
     linkProperties.getControlParams().forEach((key, value) {
       data[key] = value;
     });
 
-    Map<String, dynamic> linkData = {
-      ...linkProperties.toMapWeb(),
-      'data': data
-    };
+    Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
 
     try {
       BranchJS.qrCode(_dartObjectToJsObject(linkData),
-          _dartObjectToJsObject(qrCodeSettings.toMapWeb()),
+          _dartObjectToJsObject(qrCodeSettings.toMap()),
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {

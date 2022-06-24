@@ -75,33 +75,9 @@ class BranchEvent {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> ret = <String, dynamic>{};
 
-    ret["eventName"] = _eventName;
-    ret["isStandardEvent"] = _isStandardEvent;
-    if (transactionID.isNotEmpty) {
-      ret["transactionID"] = transactionID;
-    }
-    if (currency != null) {
-      ret["currency"] = getCurrencyTypeString(currency!);
-    }
-    if (revenue != -1) ret["revenue"] = revenue;
-    if (shipping != -1) ret["shipping"] = shipping;
-    if (tax != -1) ret["tax"] = tax;
-    if (coupon.isNotEmpty) ret["coupon"] = coupon;
-    if (affiliation.isNotEmpty) ret["affiliation"] = affiliation;
-    if (eventDescription.isNotEmpty) {
-      ret["eventDescription"] = eventDescription;
-    }
-    if (searchQuery.isNotEmpty) ret["searchQuery"] = searchQuery;
-    if (adType != null) {
-      ret["adType"] = getBranchEventAdTypeString(adType!);
-    }
-    if (_customData.isNotEmpty) ret["customData"] = _customData;
-    return ret;
-  }
-
-  Map<String, dynamic> toMapWeb() {
-    Map<String, dynamic> ret = <String, dynamic>{};
-    if (_isStandardEvent) {
+    if (!kIsWeb) {
+      ret["eventName"] = _eventName;
+      ret["isStandardEvent"] = _isStandardEvent;
       if (transactionID.isNotEmpty) {
         ret["transactionID"] = transactionID;
       }
@@ -122,10 +98,34 @@ class BranchEvent {
       if (adType != null) {
         ret["adType"] = getBranchEventAdTypeString(adType!);
       }
+      if (_customData.isNotEmpty) ret["customData"] = _customData;
+    } else {
+      if (_isStandardEvent) {
+        if (transactionID.isNotEmpty) {
+          ret["transactionID"] = transactionID;
+        }
+        if (currency != null) {
+          ret["currency"] = getCurrencyTypeString(currency!);
+        }
+        if (revenue != -1) ret["revenue"] = revenue;
+        if (shipping != -1) ret["shipping"] = shipping;
+        if (tax != -1) ret["tax"] = tax;
+        if (coupon.isNotEmpty) ret["coupon"] = coupon;
+        if (affiliation.isNotEmpty) ret["affiliation"] = affiliation;
+        if (eventDescription.isNotEmpty) {
+          ret["eventDescription"] = eventDescription;
+        }
+        if (searchQuery.isNotEmpty) {
+          ret["searchQuery"] = searchQuery;
+        }
+        if (adType != null) {
+          ret["adType"] = getBranchEventAdTypeString(adType!);
+        }
+      }
+      _customData.forEach((key, value) {
+        ret[key] = value;
+      });
     }
-    _customData.forEach((key, value) {
-      ret[key] = value;
-    });
     return ret;
   }
 }

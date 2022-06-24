@@ -214,6 +214,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       required BranchLinkProperties linkProperties,
       required Image icon,
       required String title}) {
-    throw UnimplementedError('getQRCodeAsImage has not been implemented');
+    throw UnimplementedError(
+        'shareWithLPLinkMetadata has not been implemented');
   }
 }

@@ -1,5 +1,6 @@
 library flutter_branch_sdk_objects;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 part 'branch_event.dart';
@@ -81,79 +82,73 @@ class BranchUniversalObject {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> ret = <String, dynamic>{};
-    if (canonicalIdentifier.isNotEmpty) {
-      ret["canonicalIdentifier"] = canonicalIdentifier;
-    }
+    if (!kIsWeb) {
+      if (canonicalIdentifier.isNotEmpty) {
+        ret["canonicalIdentifier"] = canonicalIdentifier;
+      }
 
-    if (canonicalUrl.isNotEmpty) ret["canonicalUrl"] = canonicalUrl;
+      if (canonicalUrl.isNotEmpty) ret["canonicalUrl"] = canonicalUrl;
 
-    if (title.isNotEmpty) ret["title"] = title;
+      if (title.isNotEmpty) ret["title"] = title;
 
-    if (contentDescription.isNotEmpty) {
-      ret["contentDescription"] = contentDescription;
-    }
+      if (contentDescription.isNotEmpty) {
+        ret["contentDescription"] = contentDescription;
+      }
 
-    if (imageUrl.isNotEmpty) ret["imageUrl"] = imageUrl;
+      if (imageUrl.isNotEmpty) ret["imageUrl"] = imageUrl;
 
-    if (keywords.isNotEmpty) ret["keywords"] = keywords;
+      if (keywords.isNotEmpty) ret["keywords"] = keywords;
 
-    ret["creationDate"] = _creationDateTimeStamp;
+      ret["creationDate"] = _creationDateTimeStamp;
 
-    if (expirationDateInMilliSec > 0) {
-      ret["expirationDate"] = expirationDateInMilliSec;
-    }
+      if (expirationDateInMilliSec > 0) {
+        ret["expirationDate"] = expirationDateInMilliSec;
+      }
 
-    ret["locallyIndex"] = locallyIndex;
-    ret["publiclyIndex"] = publiclyIndex;
+      ret["locallyIndex"] = locallyIndex;
+      ret["publiclyIndex"] = publiclyIndex;
 
-    if (contentMetadata != null && contentMetadata!.toMap().isNotEmpty) {
-      ret["contentMetadata"] = contentMetadata!.toMap();
-    }
-
-    if (ret.isEmpty) {
-      throw ArgumentError('Branch Universal Object is required');
-    }
-    return ret;
-  }
-
-  Map<String, dynamic> toMapWeb() {
-    Map<String, dynamic> ret = <String, dynamic>{};
-    if (canonicalIdentifier.isNotEmpty) {
-      ret["\$canonical_identifier"] = canonicalIdentifier;
-    }
-
-    if (canonicalUrl.isNotEmpty) ret["\$canonicalUrl"] = canonicalUrl;
-
-    if (title.isNotEmpty) ret["\$og_title"] = title;
-
-    if (contentDescription.isNotEmpty) {
-      ret["\$og_description"] = contentDescription;
-    }
-
-    if (imageUrl.isNotEmpty) ret["\$og_image_url"] = imageUrl;
-
-    if (keywords.isNotEmpty) ret["\$keywords"] = keywords;
-
-    ret["\$creation_timestamp"] = _creationDateTimeStamp;
-
-    if (expirationDateInMilliSec > 0) {
-      ret["\$exp_date"] = expirationDateInMilliSec;
-    }
-
-    ret["\$locally_indexable"] = locallyIndex;
-    ret["\$publicly_indexable"] = publiclyIndex;
-
-    Map<String, dynamic> contentMetadata = {
-      if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()
-    };
-
-    if (contentMetadata.containsKey('customMetadata')) {
-      var customMetadata = contentMetadata['customMetadata'];
-      contentMetadata.remove('customMetadata');
-      contentMetadata.addAll(customMetadata);
-      ret.addAll(contentMetadata);
+      if (contentMetadata != null && contentMetadata!.toMap().isNotEmpty) {
+        ret["contentMetadata"] = contentMetadata!.toMap();
+      }
     } else {
-      ret.addAll(contentMetadata);
+      if (canonicalIdentifier.isNotEmpty) {
+        ret["\$canonical_identifier"] = canonicalIdentifier;
+      }
+
+      if (canonicalUrl.isNotEmpty) ret["\$canonicalUrl"] = canonicalUrl;
+
+      if (title.isNotEmpty) ret["\$og_title"] = title;
+
+      if (contentDescription.isNotEmpty) {
+        ret["\$og_description"] = contentDescription;
+      }
+
+      if (imageUrl.isNotEmpty) ret["\$og_image_url"] = imageUrl;
+
+      if (keywords.isNotEmpty) ret["\$keywords"] = keywords;
+
+      ret["\$creation_timestamp"] = _creationDateTimeStamp;
+
+      if (expirationDateInMilliSec > 0) {
+        ret["\$exp_date"] = expirationDateInMilliSec;
+      }
+
+      ret["\$locally_indexable"] = locallyIndex;
+      ret["\$publicly_indexable"] = publiclyIndex;
+
+      Map<String, dynamic> contentMetadata = {
+        if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()
+      };
+
+      if (contentMetadata.containsKey('customMetadata')) {
+        var customMetadata = contentMetadata['customMetadata'];
+        contentMetadata.remove('customMetadata');
+        contentMetadata.addAll(customMetadata);
+        ret.addAll(contentMetadata);
+      } else {
+        ret.addAll(contentMetadata);
+      }
     }
 
     if (ret.isEmpty) {

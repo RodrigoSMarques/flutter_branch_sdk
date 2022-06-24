@@ -459,11 +459,13 @@ class _HomePageState extends State<HomePage> {
           duration: 5);
     }
 
-    FlutterBranchSdk.shareWithLPLinkMetadata(
-        buo: buo!,
-        linkProperties: lp,
-        title: "Teste shareWithLPLinkMetadata",
-        icon: Image.network(imageURL));
+    if (Platform.isIOS) {
+      FlutterBranchSdk.shareWithLPLinkMetadata(
+          buo: buo!,
+          linkProperties: lp,
+          title: "ShareWithLPLinkMetadata test",
+          icon: Image.network(imageURL));
+    }
   }
 
   @override

@@ -36,43 +36,40 @@ class BranchQrCode {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> ret = <String, dynamic>{};
 
-    if (primaryColor != null) {
-      ret["codeColor"] = _colorToHex(primaryColor!);
-    }
-    if (backgroundColor != null) {
-      ret["backgroundColor"] = _colorToHex(backgroundColor!);
-    }
-    if (margin != null) {
-      ret["margin"] = margin;
-    }
-    if (width != null) {
-      ret["width"] = width;
-    }
-    ret["imageFormat"] = imageFormat.name.toUpperCase();
-    if (centerLogoUrl.isNotEmpty) {
-      ret["centerLogoUrl"] = centerLogoUrl;
-    }
-    return ret;
-  }
-
-  Map<String, dynamic> toMapWeb() {
-    Map<String, dynamic> ret = <String, dynamic>{};
-
-    if (primaryColor != null) {
-      ret["code_color"] = _colorToHex(primaryColor!);
-    }
-    if (backgroundColor != null) {
-      ret["background_color"] = _colorToHex(backgroundColor!);
-    }
-    if (margin != null) {
-      ret["margin"] = margin;
-    }
-    if (width != null) {
-      ret["width"] = width;
-    }
-    ret["image_format"] = imageFormat.name.toLowerCase();
-    if (centerLogoUrl.isNotEmpty) {
-      ret["center_logo_url"] = centerLogoUrl;
+    if (!kIsWeb) {
+      if (primaryColor != null) {
+        ret["codeColor"] = _colorToHex(primaryColor!);
+      }
+      if (backgroundColor != null) {
+        ret["backgroundColor"] = _colorToHex(backgroundColor!);
+      }
+      if (margin != null) {
+        ret["margin"] = margin;
+      }
+      if (width != null) {
+        ret["width"] = width;
+      }
+      ret["imageFormat"] = imageFormat.name.toUpperCase();
+      if (centerLogoUrl.isNotEmpty) {
+        ret["centerLogoUrl"] = centerLogoUrl;
+      }
+    } else {
+      if (primaryColor != null) {
+        ret["code_color"] = _colorToHex(primaryColor!);
+      }
+      if (backgroundColor != null) {
+        ret["background_color"] = _colorToHex(backgroundColor!);
+      }
+      if (margin != null) {
+        ret["margin"] = margin;
+      }
+      if (width != null) {
+        ret["width"] = width;
+      }
+      ret["image_format"] = imageFormat.name.toLowerCase();
+      if (centerLogoUrl.isNotEmpty) {
+        ret["center_logo_url"] = centerLogoUrl;
+      }
     }
     return ret;
   }
