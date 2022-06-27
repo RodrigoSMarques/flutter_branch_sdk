@@ -26,7 +26,7 @@ jobs:
         with:
           channel: "stable"
       - name: Install dependencies & Build web
-        run: tools\build-web.sh
+        run: tools/build-web.sh
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.1
         with:
