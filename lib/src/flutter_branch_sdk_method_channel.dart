@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -321,12 +322,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   void shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
-      required Image icon,
+      required Uint8List icon,
       required String title}) async {
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
     params['title'] = title;
+    params['iconData'] = icon;
 
     messageChannel.invokeMethod('shareWithLPLinkMetadata', params);
   }

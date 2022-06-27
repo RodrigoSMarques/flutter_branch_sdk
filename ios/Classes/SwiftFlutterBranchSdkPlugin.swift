@@ -474,7 +474,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             result(Branch.getInstance().isUserIdentified())
         }
     }
-
+    
     private func setTimeout(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let _  = args["timeout"] as? Int ?? 0
@@ -541,11 +541,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
         var iconImage : UIImage?
         
-        if let buoURL = buo?.imageUrl {
-            let url = URL(string: buoURL)!
-            UIImage.loadFrom(url: url) { image in
-                iconImage = image
-            }
+        if let iconData = args["iconData"] as? FlutterStandardTypedData {
+            iconImage = UIImage(data: iconData.data)
         } else {
             iconImage = Bundle.main.icon
         }
@@ -610,4 +607,4 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
-    }
+}

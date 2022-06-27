@@ -459,12 +459,27 @@ class _HomePageState extends State<HomePage> {
           duration: 5);
     }
 
+    ///Load icon from Assets
+    final iconData = (await rootBundle.load('assets/images/branch_logo.jpeg'))
+        .buffer
+        .asUint8List();
+
+    /*
+    ///Load icon from Web
+    final iconData =
+        (await NetworkAssetBundle(Uri.parse(imageURL)).load(imageURL))
+            .buffer
+            .asUint8List();
+    */
     if (Platform.isIOS) {
       FlutterBranchSdk.shareWithLPLinkMetadata(
           buo: buo!,
           linkProperties: lp,
-          title: "ShareWithLPLinkMetadata test",
-          icon: Image.network(imageURL));
+          title: "Share With LPLinkMetadata",
+          icon: iconData);
+    } else {
+      showSnackBar(message: 'removeFromSearch() available only in iOS devices');
+      return;
     }
   }
 

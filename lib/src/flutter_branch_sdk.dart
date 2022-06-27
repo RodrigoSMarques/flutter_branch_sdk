@@ -193,7 +193,7 @@ class FlutterBranchSdk {
   static void shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
-      required Image icon,
+      required Uint8List icon,
       required String title}) {
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();

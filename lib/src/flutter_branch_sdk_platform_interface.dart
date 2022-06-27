@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'dart:typed_data';
+
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_branch_sdk_method_channel.dart';
@@ -212,7 +213,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   void shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
-      required Image icon,
+      required Uint8List icon,
       required String title}) {
     throw UnimplementedError(
         'shareWithLPLinkMetadata has not been implemented');
