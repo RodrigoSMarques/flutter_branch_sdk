@@ -20,7 +20,7 @@ jobs:
       with:
         channel: "stable"
     - name: Install dependencies
-      run: flutter pub get
+      run: pwd && flutter pub get
     - name: Build web
       run: flutter build web
     - name: Deploy to Netlify
