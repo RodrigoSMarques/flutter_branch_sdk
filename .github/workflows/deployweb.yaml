@@ -20,9 +20,8 @@ jobs:
       with:
         channel: "stable"
     - name: Install dependencies
+      run: cd example
       run: flutter pub get
-    - name: Run analyze
-      run: flutter analyze
     - name: Build web
       run: flutter build web
     - name: Deploy to Netlify
