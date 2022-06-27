@@ -27,11 +27,11 @@ jobs:
           channel: "stable"
           cache: true
       - name: Install dependencies & Build web
-        run: sh "bash ./tools/build-web.sh" 
+        run: sh "bash tools/build-web.sh" 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.1
         with:
-          publish-dir: './build/web'
+          publish-dir: './example/build/web'
           production-branch: master
           production-deploy: true
           github-token: ${{ secrets.MY_GITHUB_TOKEN }}
