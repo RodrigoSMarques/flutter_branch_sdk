@@ -1,4 +1,6 @@
-# flutter_branch_sdk
+# Branch SDK Plugin
+
+[![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch.png?raw=true)](https://branch.io)
 
 This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
 
