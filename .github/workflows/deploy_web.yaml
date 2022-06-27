@@ -25,6 +25,9 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          cache: true
+      - name: Make executeable build-web.sh
+        run: chmod +x tools/build-web.sh
       - name: Install dependencies & Build web
         run: tools/build-web.sh
       - name: Deploy to Netlify
