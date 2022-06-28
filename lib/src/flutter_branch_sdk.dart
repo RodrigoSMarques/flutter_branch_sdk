@@ -198,7 +198,7 @@ class FlutterBranchSdk {
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
-    params['title'] = title
+    params['title'] = title;
 
     FlutterBranchSdkPlatform.instance.shareWithLPLinkMetadata(
         buo: buo, linkProperties: linkProperties, icon: icon, title: title);
