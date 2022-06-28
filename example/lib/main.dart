@@ -312,7 +312,7 @@ class _HomePageState extends State<HomePage> {
     success =
         await FlutterBranchSdk.removeFromSearch(buo: buo!, linkProperties: lp);
     if (success) {
-      showSnackBar(message: 'Removed from Search');
+      showSnackBar(message: 'Removed from Search')
     }
   }
 
