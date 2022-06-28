@@ -20,6 +20,6 @@ jobs:
         source_folder: '.'
         destination_repo: 'r-s-marques/flutter_branch_sdk'
         destination_base_branch: 'dev'
-        destination_head_branch: 'dev-1'
+        destination_head_branch: 'release'
         user_email: 'rodrigosmarques@gmail.com'
         user_name: 'RodrigoSMarques'
