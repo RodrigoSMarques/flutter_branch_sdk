@@ -3,5 +3,6 @@
 # parse_server_sdk is set to the relative path.
 
 cd example
+flutter config --no-analytics
 flutter pub get
 flutter build web
