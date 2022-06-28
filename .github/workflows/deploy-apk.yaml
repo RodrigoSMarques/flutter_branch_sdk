@@ -23,9 +23,9 @@ jobs:
           channel: "stable"
           cache: true
       - name: Make executeable build-apk.sh
-        run: chmod +x tools/build-apk.sh
+        run: chmod +x tool/build-apk.sh
       - name: Install dependencies & Build apk
-        run: tools/build-apk.sh
+        run: tool/build-apk.sh
       - uses: actions/upload-artifact@v1
         with:
           name: release-apk

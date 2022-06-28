@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - "master"      
+      - "dev"      
     paths-ignore:
       - "**/README.md"
       - "docs/**"    
@@ -25,9 +26,9 @@ jobs:
           channel: "stable"
           cache: true
       - name: Make executeable build-web.sh
-        run: chmod +x tools/build-web.sh
+        run: chmod +x tool/build-web.sh
       - name: Install dependencies & Build web
-        run: tools/build-web.sh
+        run: tool/build-web.sh
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.1
         with:
