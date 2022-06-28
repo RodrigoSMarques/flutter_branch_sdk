@@ -22,4 +22,5 @@ jobs:
           refreshToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_REFRESH_TOKEN }}
           flutter: true
           format: true
+          skipTests: true
           dryRunOnly: true
