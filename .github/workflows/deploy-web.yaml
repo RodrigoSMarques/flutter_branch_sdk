@@ -10,8 +10,7 @@ on:
   pull_request:
     branches:
       - "dev"     
-      - "master"            
-  workflow_dispatch:
+      - "master"
 
 jobs:
   build:
