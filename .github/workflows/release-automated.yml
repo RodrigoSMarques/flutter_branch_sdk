@@ -1,7 +1,9 @@
 name: release-automated
 on:
-  release:
-    types: [ published ]
+  push:
+    branches:
+      - "dev"
+
 jobs:
   release:
     runs-on: ubuntu-latest
