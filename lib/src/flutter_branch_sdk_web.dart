@@ -392,6 +392,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
 
     Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
 
+    return BranchResponse.error(errorCode: '-1000', errorMessage: "Teste");
+
     try {
       BranchJS.qrCode(_dartObjectToJsObject(linkData),
           _dartObjectToJsObject(qrCodeSettings.toMap()),
@@ -425,6 +427,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
+    return BranchResponse.error(errorCode: '-1000', errorMessage: "Teste");
+
     try {
       BranchResponse response = await getQRCodeAsData(
           buo: buo,
