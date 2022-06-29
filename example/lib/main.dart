@@ -330,7 +330,6 @@ class _HomePageState extends State<HomePage> {
   void generateQrCode(
     BuildContext context,
   ) async {
-    /*
     BranchResponse responseQrCodeData = await FlutterBranchSdk.getQRCodeAsData(
         buo: buo!,
         linkProperties: lp,
@@ -346,7 +345,8 @@ class _HomePageState extends State<HomePage> {
       print(
           'Error : ${responseQrCodeData.errorCode} - ${responseQrCodeData.errorMessage}');
     }
-     */
+
+    /*
 
     BranchResponse responseQrCodeImage =
         await FlutterBranchSdk.getQRCodeAsImage(
@@ -365,6 +365,8 @@ class _HomePageState extends State<HomePage> {
           message:
               'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
     }
+
+     */
   }
 
   void showGeneratedLink(BuildContext context, String url) async {

@@ -399,14 +399,15 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           if (qrCode != null) {
             print('Qrcode runtimeType : ${qrCode.runtimeType}');
             print('Qrcode data: $qrCode');
-            print('Qrcode buffer: ${qrCode?.rawBuffer}');
+            print('Qrcode buffer: ${qrCode?.base64()}');
 
             late dynamic data;
 
             if (!kDebugMode) {
               data = qrCode;
             } else {
-              data = qrCode.rawBuffer.asUint8List();
+              //data = qrCode.rawBuffer.asUint8List();
+              data = qrCode.base64();
             }
 
             responseCompleter.complete(BranchResponse.success(result: data));
