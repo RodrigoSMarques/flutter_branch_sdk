@@ -71,7 +71,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      debugPrint('getLatestReferringParams() error: $e');
+      debugPrint('getLatestReferringParams() error: ${e.toString()}');
       response.completeError(e);
     }
     return response.future;
@@ -98,7 +98,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      debugPrint('getFirstReferringParams() error: $e');
+      debugPrint('getFirstReferringParams() error: ${e.toString()}');
       response.completeError(e);
     }
     return response.future;
@@ -114,7 +114,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      debugPrint('setIdentity() error: $e');
+      debugPrint('setIdentity() error: ${e.toString()}');
     }
   }
 
@@ -128,7 +128,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      debugPrint('logout() error: $e');
+      debugPrint('logout() error: ${e.toString()}');
     }
   }
 
@@ -139,7 +139,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     try {
       BranchJS.disableTracking(value);
     } catch (e) {
-      debugPrint('disableTracking() error: $e');
+      debugPrint('disableTracking() error: ${e.toString()}');
     }
   }
 
@@ -167,7 +167,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      debugPrint('getShortUrl() error: $e');
+      debugPrint('getShortUrl() error: ${e.toString()}');
       responseCompleter.completeError(BranchResponse.error(
           errorCode: '-1', errorMessage: 'getShortUrl() error'));
     }
@@ -213,7 +213,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.logEvent(branchEvent.eventName,
           _dartObjectToJsObject(branchEvent.toMap()), contentItems);
     } catch (e) {
-      debugPrint('trackContent() error: $e');
+      debugPrint('trackContent() error: ${e.toString()}');
     }
   }
 
@@ -224,7 +224,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.logEvent(
           branchEvent.eventName, _dartObjectToJsObject(branchEvent.toMap()));
     } catch (e) {
-      debugPrint('trackContentWithoutBuo() error: $e');
+      debugPrint('trackContentWithoutBuo() error: ${e.toString()}');
     }
   }
 
@@ -356,6 +356,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.lastAttributedTouchData(attributionWindow,
           allowInterop((err, data) {
         if (err == null) {
+          print(data);
           if (data != null) {
             responseCompleter.complete(
                 BranchResponse.success(result: _jsObjectToDartObject(data)));
@@ -367,8 +368,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
               errorCode: '999', errorMessage: err.toString()));
         }
       }));
-    } catch (error) {
-      debugPrint('getLastAttributedTouchData() error: $error');
+    } catch (e) {
+      print(e);
+      debugPrint('getLastAttributedTouchData() error: ${e.toString()}');
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'getLastAttributedTouchData() error'));
     }
@@ -395,7 +397,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           _dartObjectToJsObject(qrCodeSettings.toMap()),
           allowInterop((err, qrCode) {
         if (err == null) {
-          debugPrint(qrCode);
+          print(qrCode);
           if (qrCode != null) {
             responseCompleter.complete(
                 BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
@@ -408,8 +410,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
               errorCode: '999', errorMessage: err.toString()));
         }
       }));
-    } catch (error) {
-      debugPrint('qrCode() error: $error');
+    } catch (e) {
+      print('qrCode() error: ${e.toString()}');
+      debugPrint('qrCode() error: ${e.toString()}');
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'qrCode() error'));
     }

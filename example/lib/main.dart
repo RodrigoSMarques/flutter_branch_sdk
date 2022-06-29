@@ -335,7 +335,8 @@ class _HomePageState extends State<HomePage> {
         linkProperties: lp,
         qrCode: BranchQrCode(
             primaryColor: Colors.black,
-            //backgroundColor: const Color(0xff443a49),
+            //backgroundColor: const Color(0xff443a49), //Hex Color
+            centerLogoUrl: imageURL,
             backgroundColor: Colors.white,
             imageFormat: BranchImageFormat.PNG));
     if (responseQrCodeData.success) {
