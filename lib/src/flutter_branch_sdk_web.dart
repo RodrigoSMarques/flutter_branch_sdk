@@ -6,8 +6,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 import 'dart:js_util';
+import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -397,11 +397,21 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
+            late Uint8List data;
             print('Qrcode runtimeType : ${qrCode.runtimeType}');
             print('Qrcode data: $qrCode');
 
-            responseCompleter.complete(
-                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
+            if (qrCode.runtimeType.toString() == 'LegacyJavaScriptObject') {
+              data = qrCode.rawBuffer.asUint8List();
+            }
+            if (qrCode.runtimeType.toString() == 'JsObject') {
+              print(qrCode.toString());
+              data = qrCode['rawBuffer'].asUint8List();
+              final base64 = qrCode.callMethod('base64');
+              print(base64);
+            }
+            }
+            responseCompleter.complete(BranchResponse.success(result: data));
           } else {
             responseCompleter.complete(BranchResponse.error(
                 errorCode: '-1', errorMessage: 'Qrcode generate error'));
