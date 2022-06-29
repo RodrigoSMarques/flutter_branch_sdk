@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:js';
 import 'dart:js_util';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -396,9 +397,18 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            print(qrCode.runtimeType);
-            print(qrCode.rawBuffer.runtimeType);
-            final data = qrCode.rawBuffer.asUint8List();
+            print('Qrcode runtimeType : ${qrCode.runtimeType}');
+            print('Qrcode data: $qrCode');
+            print('Qrcode buffer: ${qrCode?.rawBuffer}');
+
+            late dynamic data;
+
+            if (!kDebugMode) {
+              data = qrCode;
+            } else {
+              data = qrCode.rawBuffer.asUint8List();
+            }
+
             responseCompleter.complete(BranchResponse.success(result: data));
           } else {
             responseCompleter.complete(BranchResponse.error(
