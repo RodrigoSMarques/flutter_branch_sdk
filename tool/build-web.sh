@@ -6,4 +6,4 @@ cd example
 flutter config --no-analytics
 flutter pub get
 #flutter build web --source-maps
-flutter build web --profile --web-renderer html --dart-define=Dart2jsOptimization=O0
+flutter build web --profile --source-maps --dart-define=Dart2jsOptimization=O0
