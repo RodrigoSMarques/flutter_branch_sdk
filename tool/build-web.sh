@@ -5,4 +5,4 @@
 cd example
 flutter config --no-analytics
 flutter pub get
-flutter build web
+flutter build web --source-maps

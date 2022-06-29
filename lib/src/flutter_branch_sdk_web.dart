@@ -396,28 +396,21 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           _dartObjectToJsObject(qrCodeSettings.toMap()),
           allowInterop((err, qrCode) {
         if (err == null) {
-          print(qrCode.rawBuffer.asUint8List());
           if (qrCode != null) {
-            responseCompleter.complete(BranchResponse.error(
-                errorCode: '998', errorMessage: 'Qrcode error'));
-            //responseCompleter.complete(
-            //    BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
+            responseCompleter.complete(
+                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
           } else {
             responseCompleter.complete(BranchResponse.error(
-                errorCode: '999', errorMessage: 'Qrcode error'));
-            //responseCompleter
-            //    .complete(BranchResponse.success(result: Uint8List(0)));
+                errorCode: '-1', errorMessage: 'Qrcode generate error'));
           }
         } else {
           responseCompleter.complete(BranchResponse.error(
-              errorCode: '999', errorMessage: err.toString()));
+              errorCode: '-1', errorMessage: err.toString()));
         }
       }));
     } catch (e) {
-      print('qrCode() error: ${e.toString()}');
-      debugPrint('qrCode() error: ${e.toString()}');
       responseCompleter.complete(BranchResponse.error(
-          errorCode: '-1', errorMessage: 'qrCode() error'));
+          errorCode: '-1', errorMessage: 'qrCode generate error'));
     }
     return responseCompleter.future;
   }
