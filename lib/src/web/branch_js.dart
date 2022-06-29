@@ -951,10 +951,10 @@ class BranchJS {
   external static void disableTracking([bool disableTracking]);
 
   @JS('lastAttributedTouchData')
-  external static void lastAttributedTouchData(attributionWindow,
-      [Function callback]);
+  external static void lastAttributedTouchData(
+      attributionWindow, Function callback);
 
   @JS('qrCode')
-  external static void qrCode(Object qrCodeLinkData, Object qrCodeSettings,
-      [Function callback]);
+  external static void qrCode(
+      Object qrCodeLinkData, Object qrCodeSettings, Function callback);
 }
