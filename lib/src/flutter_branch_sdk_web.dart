@@ -396,7 +396,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           _dartObjectToJsObject(qrCodeSettings.toMap()),
           allowInterop((err, qrCode) {
         if (err == null) {
-          print(qrCode);
+          print(qrCode.rawBuffer.asUint8List());
           if (qrCode != null) {
             responseCompleter.complete(BranchResponse.error(
                 errorCode: '998', errorMessage: 'Qrcode error'));
