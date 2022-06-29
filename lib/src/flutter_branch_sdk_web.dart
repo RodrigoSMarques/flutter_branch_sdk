@@ -355,7 +355,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.lastAttributedTouchData(attributionWindow,
           allowInterop((err, data) {
         if (err == null) {
-          print(data);
           if (data != null) {
             responseCompleter.complete(
                 BranchResponse.success(result: _jsObjectToDartObject(data)));
@@ -397,8 +396,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            responseCompleter.complete(
-                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
+            final data = qrCode.rawBuffer.asUint8List();
+            responseCompleter.complete(BranchResponse.success(result: data));
           } else {
             responseCompleter.complete(BranchResponse.error(
                 errorCode: '-1', errorMessage: 'Qrcode generate error'));
@@ -421,8 +420,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    return BranchResponse.error(errorCode: '-1000', errorMessage: "Teste");
-
     try {
       BranchResponse response = await getQRCodeAsData(
           buo: buo,
