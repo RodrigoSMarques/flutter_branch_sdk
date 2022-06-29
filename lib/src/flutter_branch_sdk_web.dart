@@ -410,7 +410,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
               final base64 = qrCode.callMethod('base64');
               print(base64);
             }
-            }
             responseCompleter.complete(BranchResponse.success(result: data));
           } else {
             responseCompleter.complete(BranchResponse.error(
