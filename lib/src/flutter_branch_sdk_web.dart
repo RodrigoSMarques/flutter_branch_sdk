@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 import 'dart:js_util';
+import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -394,11 +395,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           _dartObjectToJsObject(qrCodeSettings.toMap()),
           allowInterop((err, qrCode) {
         if (err == null) {
+          debugPrint(qrCode);
           if (qrCode != null) {
             responseCompleter.complete(
                 BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
           } else {
-            responseCompleter.complete(BranchResponse.success(result: {}));
+            responseCompleter
+                .complete(BranchResponse.success(result: Uint8List(0)));
           }
         } else {
           responseCompleter.complete(BranchResponse.error(
