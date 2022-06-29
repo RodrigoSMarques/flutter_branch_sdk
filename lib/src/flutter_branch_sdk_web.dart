@@ -401,16 +401,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             print('Qrcode data: $qrCode');
             print('Qrcode buffer: ${qrCode?.base64()}');
 
-            late dynamic data;
-
-            if (!kDebugMode) {
-              data = qrCode;
-            } else {
-              //data = qrCode.rawBuffer.asUint8List();
-              data = qrCode.base64();
-            }
-
-            responseCompleter.complete(BranchResponse.success(result: data));
+            responseCompleter.complete(
+                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
           } else {
             responseCompleter.complete(BranchResponse.error(
                 errorCode: '-1', errorMessage: 'Qrcode generate error'));
