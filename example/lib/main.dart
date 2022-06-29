@@ -347,26 +347,22 @@ class _HomePageState extends State<HomePage> {
     }
     */
 
-    try {
-      BranchResponse responseQrCodeImage =
-          await FlutterBranchSdk.getQRCodeAsImage(
-              buo: buo!,
-              linkProperties: lp,
-              qrCode: BranchQrCode(
-                  primaryColor: Colors.black,
-                  //primaryColor: const Color(0xff443a49), //Hex colors
-                  centerLogoUrl: imageURL,
-                  backgroundColor: Colors.white,
-                  imageFormat: BranchImageFormat.PNG));
-      if (responseQrCodeImage.success) {
-        showQrCode(this.context, responseQrCodeImage.result);
-      } else {
-        showSnackBar(
-            message:
-                'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
-      }
-    } catch (error) {
-      showSnackBar(message: 'Error : ${error.toString()}');
+    BranchResponse responseQrCodeImage =
+        await FlutterBranchSdk.getQRCodeAsImage(
+            buo: buo!,
+            linkProperties: lp,
+            qrCode: BranchQrCode(
+                primaryColor: Colors.black,
+                //primaryColor: const Color(0xff443a49), //Hex colors
+                centerLogoUrl: imageURL,
+                backgroundColor: Colors.white,
+                imageFormat: BranchImageFormat.PNG));
+    if (responseQrCodeImage.success) {
+      showQrCode(this.context, responseQrCodeImage.result);
+    } else {
+      showSnackBar(
+          message:
+              'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
     }
   }
 

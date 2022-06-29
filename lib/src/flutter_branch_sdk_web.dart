@@ -419,17 +419,24 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    BranchResponse response = await getQRCodeAsData(
-        buo: buo,
-        linkProperties: linkProperties,
-        qrCodeSettings: qrCodeSettings);
-    if (response.success) {
-      return BranchResponse.success(
-          result: Image.memory(
-        response.result,
-      ));
+    try {
+      BranchResponse response = await getQRCodeAsData(
+          buo: buo,
+          linkProperties: linkProperties,
+          qrCodeSettings: qrCodeSettings);
+      if (response.success) {
+        return BranchResponse.success(
+            result: Image.memory(
+          response.result,
+        ));
+      } else {
+        return BranchResponse.error(
+            errorCode: response.errorCode, errorMessage: response.errorMessage);
+      }
+    } catch (error) {
+      return BranchResponse.error(
+          errorCode: "-1", errorMessage: error.toString());
     }
-    return response;
   }
 
   void close() {
