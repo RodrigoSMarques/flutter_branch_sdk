@@ -396,6 +396,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
+            print(qrCode.runtimeType);
+            print(qrCode.rawBuffer.runtimeType);
             final data = qrCode.rawBuffer.asUint8List();
             responseCompleter.complete(BranchResponse.success(result: data));
           } else {
