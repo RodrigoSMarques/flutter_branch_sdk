@@ -399,7 +399,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           if (qrCode != null) {
             print('Qrcode runtimeType : ${qrCode.runtimeType}');
             print('Qrcode data: $qrCode');
-            print('Qrcode buffer: ${qrCode?.base64()}');
 
             responseCompleter.complete(
                 BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
