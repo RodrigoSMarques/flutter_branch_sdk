@@ -2,10 +2,12 @@ name: deploy-web
 
 on:
   push:
-    branches: 
-      - "master"    
+    branches:
+      - "dev"
+      - "master"
     paths-ignore:
       - "**/README.md"
+      - - "**/CHANGELOG.md"
       - "docs/**"    
   pull_request:
     branches:
@@ -43,5 +45,3 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         timeout-minutes: 1
-
-    
