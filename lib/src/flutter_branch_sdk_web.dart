@@ -397,7 +397,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            late Uint8List data;
+            late Uint8List? data;
             print('Qrcode runtimeType : ${qrCode.runtimeType}');
             print('Qrcode data: $qrCode');
 
