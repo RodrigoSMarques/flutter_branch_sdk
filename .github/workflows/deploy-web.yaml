@@ -7,7 +7,7 @@ on:
       - "master"
     paths-ignore:
       - "**/README.md"
-      - - "**/CHANGELOG.md"
+      - "**/CHANGELOG.md"
       - "docs/**"    
   pull_request:
     branches:
