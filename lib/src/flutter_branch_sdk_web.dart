@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 import 'dart:js_util';
-import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -399,34 +398,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            print('Qrcode runtimeType : ${qrCode.runtimeType.toString()}');
-            print('Qrcode data: $qrCode');
-
-            if (qrCode.runtimeType.toString() == 'LegacyJavaScriptObject') {
-              final data = qrCode.rawBuffer.asUint8List();
-              print(qrCode.base64());
-              responseCompleter.complete(BranchResponse.success(result: data));
-              return;
-            } else {
-              final data = qrCode.rawBuffer.asUint8List();
-              /*
-
-              if ((qrCode as JsObject).hasProperty('rawBuffer')) {
-                data = qrCode['rawBuffer'];
-              }
-              print(data);
-              if ((qrCode).hasProperty('base64')) {
-                final base64 = qrCode.callMethod('base64');
-                print(base64);
-              }
-
-               */
-              responseCompleter.complete(BranchResponse.success(result: data));
-              return;
-            }
-            print('Náo entrou no if');
-            responseCompleter
-                .complete(BranchResponse.success(result: Uint8List(0)));
+            print(qrCode.base64());
+            responseCompleter.complete(
+                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
           } else {
             responseCompleter.complete(BranchResponse.error(
                 errorCode: '-1', errorMessage: 'Qrcode generate error'));
