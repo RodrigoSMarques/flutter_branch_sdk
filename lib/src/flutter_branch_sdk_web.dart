@@ -375,7 +375,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     return responseCompleter.future;
   }
 
-  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
   @override
   Future<BranchResponse> getQRCodeAsData(
       {required BranchUniversalObject buo,
