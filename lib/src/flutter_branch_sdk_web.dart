@@ -397,20 +397,24 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            late Uint8List? data;
             print('Qrcode runtimeType : ${qrCode.runtimeType}');
             print('Qrcode data: $qrCode');
 
             if (qrCode.runtimeType.toString() == 'LegacyJavaScriptObject') {
-              data = qrCode.rawBuffer.asUint8List();
+              final data = qrCode.rawBuffer.asUint8List();
+              responseCompleter.complete(BranchResponse.success(result: data));
+              return;
             }
             if (qrCode.runtimeType.toString() == 'JsObject') {
               print(qrCode.toString());
-              data = qrCode['rawBuffer'].asUint8List();
+              final data = qrCode['rawBuffer'].asUint8List();
               final base64 = qrCode.callMethod('base64');
               print(base64);
+              responseCompleter.complete(BranchResponse.success(result: data));
+              return;
             }
-            responseCompleter.complete(BranchResponse.success(result: data));
+            responseCompleter
+                .complete(BranchResponse.success(result: Uint8List(0)));
           } else {
             responseCompleter.complete(BranchResponse.error(
                 errorCode: '-1', errorMessage: 'Qrcode generate error'));
