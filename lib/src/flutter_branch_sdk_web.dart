@@ -22,6 +22,8 @@ dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
 dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 Map<String, String> _metaData = {};
 
+//typedef QrCodeData = void Function(dynamic rawBuffer, Function base64);
+
 /// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
 class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   /// Constructs a FlutterBranchSdkWeb
@@ -401,11 +403,14 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             print('Qrcode data: $qrCode');
 
             if (qrCode.runtimeType.toString() == 'LegacyJavaScriptObject') {
-              final data = qrCode.rawBuffer.asUint8List();
+//              final data = rawBuff
+              var data = Uint8List(0);
               responseCompleter.complete(BranchResponse.success(result: data));
               return;
             } else {
               var data = Uint8List(0);
+              /*
+
               if ((qrCode as JsObject).hasProperty('rawBuffer')) {
                 data = qrCode['rawBuffer'];
               }
@@ -415,6 +420,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
                 print(base64);
               }
 
+               */
               responseCompleter.complete(BranchResponse.success(result: data));
               return;
             }
