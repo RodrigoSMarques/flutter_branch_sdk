@@ -404,8 +404,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
               final data = qrCode.rawBuffer.asUint8List();
               responseCompleter.complete(BranchResponse.success(result: data));
               return;
-            }
-            if (qrCode is JsObject) {
+            } else {
               final data = qrCode['rawBuffer'];
               print(data);
               final base64 = qrCode.callMethod('base64');
