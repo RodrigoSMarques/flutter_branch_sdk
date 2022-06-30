@@ -21,8 +21,6 @@ dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
 dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 Map<String, String> _metaData = {};
 
-//typedef QrCodeData = void Function(dynamic rawBuffer, Function base64);
-
 /// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
 class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   /// Constructs a FlutterBranchSdkWeb
@@ -398,7 +396,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
-            print(qrCode.base64());
             responseCompleter.complete(
                 BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
           } else {

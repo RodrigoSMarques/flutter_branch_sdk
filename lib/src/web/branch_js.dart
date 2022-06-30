@@ -3,6 +3,7 @@ library branchjs;
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js';
+import 'dart:typed_data';
 
 import 'package:js/js.dart';
 
@@ -21,7 +22,7 @@ external dynamic browserPrompt(String message, [String data]);
 @JS()
 @anonymous
 class QrCodeData {
-  external dynamic rawBuffer;
+  external ByteBuffer rawBuffer;
   external Function base64();
 }
 
