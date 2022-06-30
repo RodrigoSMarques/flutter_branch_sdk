@@ -405,12 +405,17 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
               responseCompleter.complete(BranchResponse.success(result: data));
               return;
             } else {
-              final data = qrCode['rawBuffer'];
+              var data = Uint8List(0);
+              if ((qrCode as JsObject).hasProperty('rawBuffer')) {
+                data = qrCode['rawBuffer'];
+              }
               print(data);
-              final base64 = qrCode.callMethod('base64');
-              print(base64);
-              responseCompleter
-                  .complete(BranchResponse.success(result: data.asUint8List()));
+              if ((qrCode).hasProperty('base64')) {
+                final base64 = qrCode.callMethod('base64');
+                print(base64);
+              }
+
+              responseCompleter.complete(BranchResponse.success(result: data));
               return;
             }
             print('Náo entrou no if');
