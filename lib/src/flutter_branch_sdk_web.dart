@@ -403,12 +403,12 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             print('Qrcode data: $qrCode');
 
             if (qrCode.runtimeType.toString() == 'LegacyJavaScriptObject') {
-//              final data = rawBuff
-              var data = Uint8List(0);
+              final data = qrCode.rawBuffer.asUint8List();
+              print(qrCode.base64());
               responseCompleter.complete(BranchResponse.success(result: data));
               return;
             } else {
-              var data = Uint8List(0);
+              final data = qrCode.rawBuffer.asUint8List();
               /*
 
               if ((qrCode as JsObject).hasProperty('rawBuffer')) {

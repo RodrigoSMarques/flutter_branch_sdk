@@ -6,8 +6,6 @@ import 'dart:js';
 
 import 'package:js/js.dart';
 
-typedef QrCodeData = void Function(dynamic rawBuffer, Function base64);
-
 @JS('JSON.stringify')
 external String jsonStringify(Object obj);
 
@@ -19,6 +17,13 @@ external dynamic navigatorShare(Object data);
 
 @JS('prompt')
 external dynamic browserPrompt(String message, [String data]);
+
+@JS()
+@anonymous
+class QrCodeData {
+  external dynamic rawBuffer;
+  external Function base64();
+}
 
 @JS('branch')
 class BranchJS {
@@ -888,7 +893,7 @@ class BranchJS {
   ///     "Error message",
   ///     'https://bnc.lt/l/3HZMytU-BW' // Branch deep linking URL
   /// );
-  ///
+
   @JS('qrCode')
   external static void qrCode(Object qrCodeLinkData, Object qrCodeSettings,
       Function(String? err, QrCodeData? qrCode) callback);
