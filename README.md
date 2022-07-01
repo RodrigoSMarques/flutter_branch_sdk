@@ -333,8 +333,9 @@ Will show Share Sheet with customization.
 ### Create a QR Code
 
 > ###QR Code Access Required
-> Access to Branch's QR Code API and SDK requires premium product access. Please reach out to your account manager or [https://branch.io/pricing/](https://branch.io/pricing/) to activate.
-{: .blockquote-tip}
+> Access to Branch's QR Code API and SDK requires premium product access. 
+> Please reach out to your account manager or [https://branch.io/pricing/](https://branch.io/pricing/) to activate.
+
 
 Will generates a custom QR Code with a unique Branch link which you can deep link and track analytics with.
 
