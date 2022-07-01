@@ -274,7 +274,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     }
   }
 
-  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
   @override
   Future<BranchResponse> getQRCodeAsData(
       {required BranchUniversalObject buo,
@@ -318,6 +318,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     }
   }
 
+  ///Share with LPLinkMetadata on iOS
   @override
   void shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
@@ -327,9 +328,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
-    params['title'] = title;
+    params['messageText'] = title;
     params['iconData'] = icon;
 
-    messageChannel.invokeMethod('shareWithLPLinkMetadata', params);
+    if (Platform.isIOS) {
+      messageChannel.invokeMethod('shareWithLPLinkMetadata', params);
+    } else {
+      messageChannel.invokeMethod('showShareSheet', {params});
+    }
   }
 }

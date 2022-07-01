@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
 import 'dart:js_util';
+import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -438,6 +439,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       return BranchResponse.error(
           errorCode: "-1", errorMessage: error.toString());
     }
+  }
+
+  @override
+  void shareWithLPLinkMetadata(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required Uint8List icon,
+      required String title}) {
+    throw UnsupportedError(
+        'shareWithLPLinkMetadata() Not available in Branch JS SDK');
   }
 
   void close() {

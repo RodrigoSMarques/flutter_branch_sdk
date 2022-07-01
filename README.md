@@ -27,6 +27,7 @@ Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
 Last Attributed Touch Data| X | X | X
 QR codes| X | X | X
+Share with LPLinkMetadata |  | X | 
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -187,9 +188,7 @@ To listen to the clicks on the deep link and retrieve the data it is necessary t
          print('Custom string: ${data["custom_string"]}');
       }
     }, onError: (error) {
-      PlatformException platformException = error as PlatformException;
-      print(
-          'InitSession error: ${platformException.code} - ${platformException.message}');
+		print('InitSesseion error: ${error.toString()}');
     });
 ```
 
@@ -207,7 +206,7 @@ These session parameters will be available at any point later on with this comma
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
 ```
-### Create content reference
+###Create content reference
 The Branch Universal Object encapsulates the thing you want to share.
 
 ```dart
@@ -234,7 +233,7 @@ The Branch Universal Object encapsulates the thing you want to share.
 
 More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
 
-### Create link reference
+###Create link reference
 * Generates the analytical properties for the deep link.
 * Used for Create deep link and Share deep link.
 
@@ -288,6 +287,103 @@ Will generate a Branch deep link and tag it with the channel the user selects.
       print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
 ```
+
+### Show Share Sheet deep link
+Will generate a Branch deep link and tag it with the channel the user selects.
+> Note: _For Android additional customization is possible_
+
+```dart
+    BranchResponse response = await FlutterBranchSdk.showShareSheet(
+        buo: buo,
+        linkProperties: lp,
+        messageText: 'My Share text',
+        androidMessageTitle: 'My Message Title',
+        androidSharingTitle: 'My Share with');
+
+    if (response.success) {
+      print('showShareSheet Sucess');
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+    }
+```
+
+### Share with LPLinkMetadata
+> Note: _Requires iOS 13 or higher, else call showShareSheet `function`_
+
+Will show Share Sheet with customization.
+
+#### Parameters
+1. Content - verify section [Create content reference](#Create-content-reference)
+
+2. Link Reference - verify section [Create link reference](#Create-link-reference)
+
+3. Title (String) - Title for Share Sheet
+
+3. Icon (Uint8List) - Image for Share Sheet. Load image before from Web or assets.
+
+
+```dart
+      FlutterBranchSdk.shareWithLPLinkMetadata(
+          buo: buo!,
+          linkProperties: lp,
+          title: "Share With LPLinkMetadata",
+          icon: iconData);
+```
+
+### Create a QR Code
+
+> ###QR Code Access Required
+> Access to Branch's QR Code API and SDK requires premium product access. Please reach out to your account manager or [https://branch.io/pricing/](https://branch.io/pricing/) to activate.
+{: .blockquote-tip}
+
+Will generates a custom QR Code with a unique Branch link which you can deep link and track analytics with.
+
+#### Parameters
+1. Content - verify section [Create content reference](#Create-content-reference)
+
+2. Link Reference - verify section [Create link reference](#Create-link-reference)
+
+3. BranchQrCode object (QR Code settings)
+
+Parameter | Type | Definition 
+--- | --- | --- | --- |
+primaryColor | Color | Color name ou Hex color value
+backgroundColor | Color | Color name ou Hex color value of the background of the QR code itself.
+margin|Integer (Pixels)|The number of pixels you want for the margin. Min 1px. Max 20px.
+width|Integer (Pixels)|Output size of QR Code image. Min 300px. Max 2000px. (Only applicable to JPEG/PNG)
+imageFormat|BranchImageFormat|JPEG, PNG
+centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. [https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg](https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg)
+
+```dart
+    BranchResponse responseQrCodeImage =
+        await FlutterBranchSdk.getQRCodeAsImage(
+            buo: buo!,
+            linkProperties: lp,
+            qrCode: BranchQrCode(
+                primaryColor: Colors.black,
+                //primaryColor: const Color(0xff443a49), //Hex colors
+                centerLogoUrl: imageURL,
+                backgroundColor: Colors.white,
+                imageFormat: BranchImageFormat.PNG));
+
+    if (response.success) {
+      print('QrCode Sucess');
+      showQrCode(this.context, responseQrCodeImage.result);
+ 		/*
+        Image(
+          image: responseQrCodeImage.result,
+          height: 250,
+          width: 250,
+        ),
+      */
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+
+```
+
+- Method `getQRCodeAsImage` returns the QR code as a Image.
+- Method `getQRCodeAsData`  returns the QR code as Uint8List. Can be stored in a file or converted to image.
+
 ### List content on Search
 * For Android list BUO links in Google Search with App Indexing
 * For iOs list BUO links in Spotlight

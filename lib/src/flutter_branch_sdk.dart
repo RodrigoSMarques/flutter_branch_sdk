@@ -172,7 +172,7 @@ class FlutterBranchSdk {
         .getLastAttributedTouchData(attributionWindow: attributionWindow);
   }
 
-  ///Creates a Branch QR Code image. Returns the QR code as Data (base64).
+  ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
   static Future<BranchResponse> getQRCodeAsData(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,

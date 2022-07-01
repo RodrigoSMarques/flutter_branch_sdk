@@ -280,8 +280,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 } else {
-                    response["errorCode"] = "-999"
-                    response["errorMessage"] = "No message"
+                    response["errorCode"] = "-1"
+                    response["errorMessage"] = "Canceled by user"
                 }
             }
             DispatchQueue.main.async {
@@ -536,7 +536,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
         let lpDict = args["lp"] as! [String: Any?]
-        let title = args["title"] as! String
+        let messageText = args["messageText"] as! String
         let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
         let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
         var iconImage : UIImage?
@@ -549,9 +549,11 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         let bsl = BranchShareLink(universalObject: buo!, linkProperties: lp!)
         if #available(iOS 13.0, *) {
-            bsl.addLPLinkMetadata(title, icon: iconImage)
+            bsl.addLPLinkMetadata(messageText, icon: iconImage)
             let controller = UIApplication.shared.keyWindow!.rootViewController
             bsl.presentActivityViewController(from: controller, anchor: nil)
+        } else {
+            showShareSheet(call: call, result: result)
         }
     }
     

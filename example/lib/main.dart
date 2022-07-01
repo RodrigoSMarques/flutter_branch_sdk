@@ -459,6 +459,12 @@ class _HomePageState extends State<HomePage> {
               'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
+  }
+
+  void shareWithLPLinkMetadata() async {
+    /// Create a BranchShareLink instance with a BranchUniversalObject and LinkProperties.
+    /// Set the BranchShareLink's LPLinkMetadata by using the addLPLinkMetadata() function.
+    ///Present the BranchShareLink's Share Sheet.
 
     ///Load icon from Assets
     final iconData = (await rootBundle.load('assets/images/branch_logo.jpeg'))
@@ -472,6 +478,7 @@ class _HomePageState extends State<HomePage> {
             .buffer
             .asUint8List();
     */
+
     if (Platform.isIOS) {
       FlutterBranchSdk.shareWithLPLinkMetadata(
           buo: buo!,
@@ -479,7 +486,8 @@ class _HomePageState extends State<HomePage> {
           title: "Share With LPLinkMetadata",
           icon: iconData);
     } else {
-      showSnackBar(message: 'removeFromSearch() available only in iOS devices');
+      showSnackBar(
+          message: 'shareWithLPLinkMetadata() available only in iOS devices');
       return;
     }
   }
@@ -628,20 +636,34 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: CustomButton(
                         onPressed: () => generateLink(context),
-                        child: const Text('Generate Link'),
+                        child: const Text('Generate Link',
+                            textAlign: TextAlign.center),
                       ),
                     ),
                     Expanded(
                       child: CustomButton(
                         onPressed: () => generateQrCode(context),
-                        child: const Text('Generate QrCode'),
+                        child: const Text('Generate QrCode',
+                            textAlign: TextAlign.center),
                       ),
                     ),
                   ],
                 ),
-                CustomButton(
-                  onPressed: shareLink,
-                  child: const Text('Share Link'),
+                Row(
+                  children: [
+                    Expanded(
+                        child: (CustomButton(
+                      onPressed: shareLink,
+                      child:
+                          const Text('Share Link', textAlign: TextAlign.center),
+                    ))),
+                    Expanded(
+                        child: CustomButton(
+                      onPressed: shareWithLPLinkMetadata,
+                      child: const Text('Share Link with LPLinkMetadata',
+                          textAlign: TextAlign.center),
+                    ))
+                  ],
                 ),
                 const Divider(),
                 const Center(
