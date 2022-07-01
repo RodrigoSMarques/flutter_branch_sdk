@@ -618,7 +618,7 @@ To enable:
         android:value="true" />
 ```
 
-### iOS - Enabled Clipboard Deferred Deep Linking
+### Enabled Clipboard Deferred Deep Linking in iOS
 
 Use iOS pasteboard to enable deferred deep linking.
 
