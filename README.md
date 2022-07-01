@@ -288,25 +288,6 @@ Will generate a Branch deep link and tag it with the channel the user selects.
     }
 ```
 
-### Show Share Sheet deep link
-Will generate a Branch deep link and tag it with the channel the user selects.
-> Note: _For Android additional customization is possible_
-
-```dart
-    BranchResponse response = await FlutterBranchSdk.showShareSheet(
-        buo: buo,
-        linkProperties: lp,
-        messageText: 'My Share text',
-        androidMessageTitle: 'My Message Title',
-        androidSharingTitle: 'My Share with');
-
-    if (response.success) {
-      print('showShareSheet Sucess');
-    } else {
-      print('Error : ${response.errorCode} - ${response.errorMessage}');
-    }
-```
-
 ### Share with LPLinkMetadata
 > Note: _Requires iOS 13 or higher, else call showShareSheet `function`_
 
@@ -332,7 +313,8 @@ Will show Share Sheet with customization.
 
 ### Create a QR Code
 
-> ###QR Code Access Required
+> **QR Code Access Required**
+> 
 > Access to Branch's QR Code API and SDK requires premium product access. 
 > Please reach out to your account manager or [https://branch.io/pricing/](https://branch.io/pricing/) to activate.
 
