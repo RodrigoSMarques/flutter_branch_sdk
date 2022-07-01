@@ -200,13 +200,32 @@ If you ever want to access the original session params (the parameters passed in
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
 ```
+
 ### Retrieve session (install or open) parameters
 These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
 
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
 ```
-### Create content reference
+
+### Retrieve Branch's Last Attributed Touch Data
+
+Allow retrieval of our last attributed touch data (LATD) from the client. This results in an asynchronous call being made to Branch’s servers with LATD data returned when possible.
+
+Last attributed touch data contains the information associated with that user's last viewed impression or clicked link.
+
+
+```dart
+BranchResponse response =
+        await FlutterBranchSdk.getLastAttributedTouchData();
+    if (response.success) {
+      print(response.result.toString());
+    }
+```
+
+More information [here](https://help.branch.io/developers-hub/docs/retrieving-branchs-last-attributed-touch-data).
+
+### Create content reference (Branch Universal Object)
 The Branch Universal Object encapsulates the thing you want to share.
 
 ```dart
@@ -233,7 +252,7 @@ The Branch Universal Object encapsulates the thing you want to share.
 
 More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
 
-### Create link reference
+### Create link reference (BranchLinkProperties)
 * Generates the analytical properties for the deep link.
 * Used for Create deep link and Share deep link.
 
@@ -269,7 +288,7 @@ Generates a deep link within your app.
         print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
 ```
-### Show Share Sheet deep link
+### Show Share Sheet with deep link
 Will generate a Branch deep link and tag it with the channel the user selects.
 > Note: _For Android additional customization is possible_
 
@@ -288,7 +307,7 @@ Will generate a Branch deep link and tag it with the channel the user selects.
     }
 ```
 
-### Share with LPLinkMetadata
+### Show Share wheet with LPLinkMetadata
 > Note: _Requires iOS 13 or higher, else call showShareSheet `function`_
 
 Will show Share Sheet with customization.
@@ -368,16 +387,14 @@ centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. 
 - Method `getQRCodeAsData`  returns the QR code as Uint8List. Can be stored in a file or converted to image.
 
 ### List content on Search
-* For Android list BUO links in Google Search with App Indexing
+* For Android list BUO links in Google Search with Firebase App Indexing API and locally  in Google In Apps search
 * For iOs list BUO links in Spotlight
-
-Enable automatic sitemap generation on the Organic Search page of the [Branch Dashboard](https://dashboard.branch.io/search). 
-Check the Automatic sitemap generation checkbox.
 
 ```dart
     bool success = await FlutterBranchSdk.listOnSearch(buo: buo);
     print(success);
 ```
+
 ### Remove content from Search
 Privately indexed Branch Universal Object can be removed.
 
@@ -486,23 +503,6 @@ By default, Branch limits calls to SKAdNetwork to within 72 hours after first in
 ```dart
 FlutterBranchSdk.setIOSSKAdNetworkMaxTime(24);
 ```
-
-### Retrieve Branch's Last Attributed Touch Data
-
-Allow retrieval of our last attributed touch data (LATD) from the client. This results in an asynchronous call being made to Branch’s servers with LATD data returned when possible.
-
-Last attributed touch data contains the information associated with that user's last viewed impression or clicked link.
-
-
-```dart
-BranchResponse response =
-        await FlutterBranchSdk.getLastAttributedTouchData();
-    if (response.success) {
-      print(response.result.toString());
-    }
-```
-
-More information [here](https://help.branch.io/developers-hub/docs/retrieving-branchs-last-attributed-touch-data).
 
 ### Apple Search Ads
 Branch can help track your Apple Search Ad campaigns by fetching the search ad attribution from Apple at app install.
