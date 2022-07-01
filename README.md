@@ -250,7 +250,7 @@ The Branch Universal Object encapsulates the thing you want to share.
 > If your content lives both on the web and in the app, make sure you set its canonical URL (i.e. the URL of this piece of content on the web) when building any BUO.
 > By doing so, we’ll attribute clicks on the links that you generate back to their original web page, even if the user goes to the app instead of your website! This will help your SEO efforts.
 
-More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
+More information about the parameters, verify [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
 
 ### Create link reference (BranchLinkProperties)
 * Generates the analytical properties for the deep link.
@@ -273,9 +273,8 @@ More information about the parameters check [Android documentation](https://help
 > For example, instead of a random string of characters/integers, you can set the vanity alias as \*.app.link/devonaustin.
 > Aliases are enforced to be unique and immutable per domain, and per link - they cannot be reused unless deleted.
 
-More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
-
-           
+More information about the parameters, verify [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
+ 
 ### Create deep link
 Generates a deep link within your app.
 
