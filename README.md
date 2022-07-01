@@ -329,7 +329,7 @@ Will generates a custom QR Code with a unique Branch link which you can deep lin
 3. BranchQrCode object (QR Code settings)
 
 Parameter | Type | Definition 
---- | --- | --- | --- |
+--- | --- | --- 
 primaryColor | Color | Color name ou Hex color value
 backgroundColor | Color | Color name ou Hex color value of the background of the QR code itself.
 margin|Integer (Pixels)|The number of pixels you want for the margin. Min 1px. Max 20px.
