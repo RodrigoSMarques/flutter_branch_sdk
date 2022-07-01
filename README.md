@@ -206,7 +206,7 @@ These session parameters will be available at any point later on with this comma
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
 ```
-###Create content reference
+### Create content reference
 The Branch Universal Object encapsulates the thing you want to share.
 
 ```dart
@@ -233,7 +233,7 @@ The Branch Universal Object encapsulates the thing you want to share.
 
 More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
 
-###Create link reference
+### Create link reference
 * Generates the analytical properties for the deep link.
 * Used for Create deep link and Share deep link.
 
@@ -339,9 +339,9 @@ Will show Share Sheet with customization.
 Will generates a custom QR Code with a unique Branch link which you can deep link and track analytics with.
 
 #### Parameters
-1. Content - verify section [Create content reference](#Create-content-reference)
+1. Content - verify section [Create content reference](#create-content-reference)
 
-2. Link Reference - verify section [Create link reference](#Create-link-reference)
+2. Link Reference - verify section [Create link reference](#create-link-reference)
 
 3. BranchQrCode object (QR Code settings)
 
