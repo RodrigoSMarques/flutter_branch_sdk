@@ -9,8 +9,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Show variables
+      - name: Show variables 1
         run: echo ${{ github.repository }}
+      - name: Show variables 2
         run: echo ${{ github.repository_owner }}
       - name: Repository Dispatch
         if: ${{ github.repository == 'RodrigoSMarques/flutter_branch_sdk' }}
