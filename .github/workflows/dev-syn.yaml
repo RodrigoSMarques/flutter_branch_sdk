@@ -1,0 +1,14 @@
+name: sync_dev_fork
+
+on:
+  push:
+    branches:
+      - "dev"
+
+jobs:
+  sync:
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+        event-type: commit-dev
