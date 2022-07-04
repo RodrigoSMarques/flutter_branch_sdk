@@ -9,12 +9,12 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-    if: ${{ github.event.repository.name == 'RodrigoSMarques/flutter_branch_sdk' }}
       - name: Show variables
-        run: - run: echo ${{ github.event.repository.name }}
+      run: echo ${{ github.event.repository.name }}
       - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.FORK_REPO_ACCESS_TOKEN}}
-          repository: r-s-marques/flutter_branch_sdk
-          event-type: commit-dev
+      if: ${{ github.event.repository.name == 'RodrigoSMarques/flutter_branch_sdk' }}
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.FORK_REPO_ACCESS_TOKEN}}
+        repository: r-s-marques/flutter_branch_sdk
+        event-type: commit-dev
