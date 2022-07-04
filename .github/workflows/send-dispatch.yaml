@@ -3,7 +3,8 @@ name: Send Dispatch to Branch fork
 on:
   push:
     branches:
-      - "master"
+#      - "master"
+      - "dev"      
   workflow_dispatch:
 
 jobs:
@@ -15,5 +16,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.TOKEN_BRANCH_UPSTREAM}}
-          repository: BranchMetrics/flutter_branch_sdk
+#          repository: BranchMetrics/flutter_branch_sdk
+          repository: r-s-marques/flutter_branch_sdk
           event-type: new-release
