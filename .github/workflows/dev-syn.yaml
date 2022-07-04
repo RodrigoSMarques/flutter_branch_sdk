@@ -6,9 +6,9 @@ on:
       - "dev"
 
 jobs:
-  sync:
-    - name: Repository Dispatch
-      uses: peter-evans/repository-dispatch@v2
-      with:
-        token: ${{ secrets.MY_GITHUB_TOKEN }}
-        event-type: commit-dev
+  - name: Repository Dispatch
+    uses: peter-evans/repository-dispatch@v2
+    with:
+      token: ${{ secrets.MY_GITHUB_TOKEN }}
+      repository: r-s-marques/flutter_branch_sdk
+      event-type: commit-dev
