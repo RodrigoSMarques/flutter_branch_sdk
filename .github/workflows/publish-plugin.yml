@@ -23,7 +23,7 @@ jobs:
       
       - name: Publish flutter package
         #uses: k-paxian/dart-package-publisher@v1.4
-        uses: RodrigoSMarques/dart-package-publisher@v1.6
+        uses: RodrigoSMarques/dart-package-publisher
         with:
           accessToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_ACCESS_TOKEN  }}
           refreshToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_REFRESH_TOKEN }}
