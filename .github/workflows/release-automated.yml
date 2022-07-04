@@ -1,4 +1,4 @@
-name: release-automated
+name: Publish package - pub.dev
 on:
   push:
     tags:

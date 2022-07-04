@@ -1,4 +1,4 @@
-name: deploy-apk
+name: Create sample app APK
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: deploy-web
+name: Deploying the sample app to the web
 
 on:
   push:
