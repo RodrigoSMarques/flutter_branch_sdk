@@ -9,6 +9,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+    if: ${{ github.event.repository.name == 'RodrigoSMarques/flutter_branch_sdk' }}
+      - name: Show variables
+        run: - run: echo ${{ github.event.repository.name }}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
