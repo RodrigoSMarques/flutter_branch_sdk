@@ -1,6 +1,8 @@
 name: Publish plugin - pub.dev
 
 on:
+    branches:
+      - "dev"      
   push:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -19,11 +21,9 @@ jobs:
           channel: "stable"
           cache: true
       
-      - name: Generate docs
-        run: dart doc
-
       - name: Publish flutter package
-        uses: k-paxian/dart-package-publisher@v1.4
+        #uses: k-paxian/dart-package-publisher@v1.4
+        uses: RodrigoSMarques/dart-package-publisher@v1.5
         with:
           accessToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_ACCESS_TOKEN  }}
           refreshToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_REFRESH_TOKEN }}
