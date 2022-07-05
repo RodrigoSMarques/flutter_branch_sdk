@@ -5,7 +5,7 @@ on:
 #    branches:
 #      - "dev"      
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*'
   workflow_dispatch:
   
 jobs:
@@ -22,8 +22,8 @@ jobs:
           cache: true
       
       - name: Publish flutter package
-        #uses: k-paxian/dart-package-publisher@v1.4
-        uses: RodrigoSMarques/dart-package-publisher@master
+        uses: k-paxian/dart-package-publisher@v1.4
+#        uses: RodrigoSMarques/dart-package-publisher@master
         with:
           accessToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_ACCESS_TOKEN  }}
           refreshToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_REFRESH_TOKEN }}
@@ -31,5 +31,5 @@ jobs:
           format: true
           skipTests: true
           dryRunOnly: true
-          docs: true
+#          docs: true
           
