@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   StreamController<String> controllerInitSession = StreamController<String>();
 
   static const imageURL =
-      'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg';
+      'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg';
   @override
   void initState() {
     super.initState();

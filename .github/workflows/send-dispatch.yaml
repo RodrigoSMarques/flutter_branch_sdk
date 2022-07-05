@@ -2,9 +2,11 @@ name: Send Dispatch to Branch fork
 
 on:
   push:
-    branches:
-#      - "master"
-      - "dev"      
+#    branches:
+#    - "master"
+#    - "dev"      
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
   workflow_dispatch:
 
 jobs:

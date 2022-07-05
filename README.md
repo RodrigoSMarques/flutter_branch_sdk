@@ -1,6 +1,6 @@
 # Branch SDK Plugin
 
-[![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch.png?raw=true)](https://branch.io)
+[![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.png?raw=true)](https://branch.io)
 
 This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
 
@@ -233,7 +233,7 @@ The Branch Universal Object encapsulates the thing you want to share.
       canonicalIdentifier: 'flutter/branch',
       //canonicalUrl: '',
       title: 'Flutter Branch Plugin',
-      imageUrl: 'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
+      imageUrl: 'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg',
       contentDescription: 'Flutter Branch Description',
       keywords: ['Plugin', 'Branch', 'Flutter'],
       publiclyIndex: true,
@@ -306,7 +306,7 @@ Will generate a Branch deep link and tag it with the channel the user selects.
     }
 ```
 
-### Show Share wheet with LPLinkMetadata
+### Show Share Sheet with LPLinkMetadata
 > Note: _Requires iOS 13 or higher, else call showShareSheet `function`_
 
 Will show Share Sheet with customization.
@@ -353,7 +353,7 @@ backgroundColor | Color | Color name ou Hex color value of the background of the
 margin|Integer (Pixels)|The number of pixels you want for the margin. Min 1px. Max 20px.
 width|Integer (Pixels)|Output size of QR Code image. Min 300px. Max 2000px. (Only applicable to JPEG/PNG)
 imageFormat|BranchImageFormat|JPEG, PNG
-centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. [https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg](https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/dev/assets/branch_logo_qrcode.jpeg)
+centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. [https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg](https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg)
 
 ```dart
     BranchResponse responseQrCodeImage =
@@ -368,7 +368,7 @@ centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. 
                 imageFormat: BranchImageFormat.PNG));
 
     if (response.success) {
-      print('QrCode Sucess');
+      print('QrCode Success');
       showQrCode(this.context, responseQrCodeImage.result);
  		/*
         Image(
@@ -537,7 +537,7 @@ print(status);
 ```
 > Note: After the user's response, call the `handleATTAuthorizationStatus` Branch SDK method to monitor the performance of the ATT prompt.
 
-![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/app_tracking_dialog.png)
+![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/app_tracking_dialog.png)
 
 
 #### Get tracking authorization status
@@ -671,7 +671,7 @@ Follow the instructions to  install Facebook Android / iOS SDK:
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
+![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/example.png)
 
 See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 

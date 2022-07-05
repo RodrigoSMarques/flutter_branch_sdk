@@ -1,14 +1,17 @@
 name: Deploying the sample app to the web
 
 on:
-  push:
-    branches:
-      - "master"
-    paths-ignore:
-      - "**/README.md"
-      - "**/CHANGELOG.md"
-      - "docs/**"    
-  workflow_dispatch:
+#  pull_request:
+#    branches:
+#      - "master"       
+#    paths-ignore:
+#      - "**/README.md"
+#      - "**/CHANGELOG.md"
+#      - "docs/**"     
+    push:
+      tags:
+        - 'v*'
+    workflow_dispatch:
 
 jobs:
   build:
@@ -27,6 +30,7 @@ jobs:
       - name: Install dependencies & Build web
         run: tool/build-web.sh
       - name: Deploy to Netlify
+        if: ${{ github.repository == 'RodrigoSMarques/flutter_branch_sdk' }}
         uses: nwtgck/actions-netlify@v1.1
         with:
           publish-dir: './example/build/web'
