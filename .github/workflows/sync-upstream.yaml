@@ -1,0 +1,41 @@
+name: 'Upstream Sync'
+
+on:
+  repository_dispatch:
+    types: [new-release]
+  workflow_dispatch:  # click the button on Github repo!
+
+jobs:
+  update_repository_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository master
+        uses: TobKed/github-forks-sync-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: RodrigoSMarques/flutter_branch_sdk
+          target_repository: BranchMetrics/flutter_branch_sdk
+          upstream_branch: master
+          target_branch: master
+          force: true
+          tags: true
+      - name: Repository dev
+        uses: TobKed/github-forks-sync-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: RodrigoSMarques/flutter_branch_sdk
+          target_repository: BranchMetrics/flutter_branch_sdk
+          upstream_branch: dev
+          target_branch: dev
+          force: true
+          tags: true
+      - name: Repository bugfix
+        uses: TobKed/github-forks-sync-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: RodrigoSMarques/flutter_branch_sdk
+          target_repository: BranchMetrics/flutter_branch_sdk
+          upstream_branch: bugfix
+          target_branch: bugfix
+          force: true
+          tags: true

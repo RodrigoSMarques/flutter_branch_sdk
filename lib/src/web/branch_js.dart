@@ -3,6 +3,7 @@ library branchjs;
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js';
+import 'dart:typed_data';
 
 import 'package:js/js.dart';
 
@@ -17,6 +18,13 @@ external dynamic navigatorShare(Object data);
 
 @JS('prompt')
 external dynamic browserPrompt(String message, [String data]);
+
+@JS()
+@anonymous
+class QrCodeData {
+  external ByteBuffer rawBuffer;
+  external Function base64();
+}
 
 @JS('branch')
 class BranchJS {
@@ -56,47 +64,6 @@ class BranchJS {
   @JS('addListener')
   external static void addListener([String event, Function listener]);
 
-  // Some internal method not documented
-  // @JS('applyCode')
-  // external static void applyCode();
-
-  /// autoAppIndex(data, callback)
-  /// Parameters
-  ///
-  /// data: Object, optional - Information on how to build your App Indexing tags for your webpage
-  ///
-  /// callback: function, optional - Returns an error string if unsuccessful
-  ///
-  /// This function generates and inserts Firebase App Indexing tags between the <head></head> section of your webpage.
-  /// Once inserted, these tags will help Google index and surface content from your App in Google Search.
-  ///
-  /// Listed below are optional parameters which can be used to build your page's App Indexing Tags:
-  ///
-  /// Key	Value
-  /// "androidPackageName"	Android App's package name
-  /// "androidURL"	A custom scheme for your Android App such as: example/home/cupertino/12345 where example is the App's URI scheme and home/cupertino/12345 routes to unique content in the App
-  /// "iosAppId"	iTunes App Store ID for your iOS App
-  /// "iosURL"	A custom scheme for your iOS App such as: example/home/cupertino/12345
-  /// "data"	Any additional deep link data that you would like to pass to your App
-  /// Resultant Firebase App Indexing tags will have the following format:
-  ///
-  /// Text
-  /// Text
-  /// JavaScript
-  /// <link rel="alternate" href="android-app://{androidPackageName}/{androidURL}?{branch_tracking_params_and_additional_deep_link_data}"/>
-  /// <link rel="alternate" href="ios-app://{iosAppId}/{iosURL}?{branch_tracking_params_and_additional_deep_link_data}"/>
-  /// Example
-  ///
-  /// branch.autoAppIndex({
-  ///     iosAppId:'123456789',
-  ///     iosURL:'example/home/cupertino/12345',
-  ///     androidPackageName:'com.somecompany.app',
-  ///     androidURL:'example/home/cupertino/12345',
-  ///     data:{"walkScore":65, "transitScore":50}
-  /// }, function(err) { console.log(err); });
-  @JS('autoAppIndex')
-  external static void autoAppIndex([data, Function callback]);
-
   // No documentation in full reference
   // @JS('banner')
   // external static void banner();
@@ -119,97 +86,6 @@ class BranchJS {
   /// branch.closeJourney(function(err) { console.log(err); });
   @JS('closeJourney')
   external static void closeJourney([Function callback]);
-
-  /// creditHistory(options, callback)
-  /// Parameters
-  ///
-  /// options: Object, optional - options controlling the returned history
-  ///
-  /// callback: function, required - returns an array with credit history
-  /// data
-  ///
-  /// This call will retrieve the entire history of credits and redemptions from the individual user.
-  /// Properties available in the options object:
-  ///
-  /// Key	Value
-  /// bucket	optional (max 63 characters) - The bucket from which to retrieve credit transactions.
-  /// begin_after_id	optional - The credit transaction id of the last item in the previous retrieval. Retrieval will start from the transaction next to it. If none is specified, retrieval starts from the very beginning in the transaction history, depending on the order.
-  /// length	optional - The number of credit transactions to retrieve. If none is specified, up to 100 credit transactions will be retrieved.
-  /// direction	DEPRECATED - The order of credit transactions to retrieve. If direction is 1, retrieval is in least recent first order; If direction is 0, or if none is specified, retrieval is in most recent first order. No longer supported.
-  /// Usage
-  ///
-  /// branch.creditHistory(
-  ///      options,
-  ///      callback(err, data)
-  /// );
-  /// Example
-  ///
-  /// branch.creditHistory(
-  ///     {
-  ///       "length":50,
-  ///       "direction":0, // no longer supported.
-  ///       "begin_after_id":"123456789012345",
-  ///       "bucket":"default"
-  ///     }
-  ///     callback (err, data)
-  /// );
-  /// Callback Format
-  ///
-  /// callback(
-  ///     "Error message",
-  /// [
-  ///     {
-  ///         "transaction": {
-  ///                            "date": "2014-10-14T01:54:40.425Z",
-  ///                            "id": "50388077461373184",
-  ///                            "bucket": "default",
-  ///                            "type": 0,
-  ///                            "amount": 5
-  ///                        },
-  ///         "referrer": "12345678",
-  ///         "referree": null
-  ///     },
-  ///     {
-  ///         "transaction": {
-  ///                            "date": "2014-10-14T01:55:09.474Z",
-  ///                            "id": "50388199301710081",
-  ///                            "bucket": "default",
-  ///                            "type": 2,
-  ///                            "amount": -3
-  ///                        },
-  ///         "referrer": null,
-  ///         "referree": "12345678"
-  ///     }
-  /// ]
-  /// );
-  @JS('creditHistory')
-  external static void creditHistory([options, Function callback]);
-
-  /// credits(callback)
-  /// Parameters
-  ///
-  /// callback: function, required - returns an object with credit data.
-  ///
-  /// Formerly showCredits()]
-  ///
-  /// This call will retrieve the entire history of credits and redemptions from the individual user.
-  ///
-  /// Usage
-  ///
-  /// branch.credits(
-  ///     callback (err, data)
-  /// );
-  /// Callback Format
-  ///
-  /// callback(
-  ///     "Error message",
-  ///     {
-  ///         'default': 15,
-  ///         'other bucket': 9
-  ///     }
-  /// );
-  @JS('credits')
-  external static void credits(Function callback);
 
   /// data(callback)
   /// Parameters
@@ -525,45 +401,6 @@ class BranchJS {
   @JS('logout')
   external static void logout([Function callback]);
 
-  /// redeem(amount, bucket, callback)
-  /// Parameters
-  ///
-  /// amount: number, required - an amount (int) of number of credits to redeem
-  ///
-  /// bucket: string, required - the name of the bucket (string) of which bucket to redeem the credits from
-  ///
-  /// callback: function, optional - returns an error if unsuccessful
-  ///
-  /// Formerly redeemCredits()]
-  ///
-  /// Credits are stored in buckets, which you can define as points, currency, whatever makes sense
-  /// for your app. When you want to redeem credits, call this method with the number of points to be
-  /// redeemed, and the bucket to redeem them from.
-  ///
-  /// branch.redeem(
-  ///     amount, // Amount of credits to be redeemed
-  ///     bucket,  // String of bucket name to redeem credits from
-  ///     callback (err)
-  /// );
-  /// Example
-  ///
-  /// branch.redeem(
-  ///     5,
-  ///     "Rubies",
-  ///     function(err) {
-  ///         console.log(err);
-  ///     }
-  /// );
-  /// Callback Format
-  ///
-  /// callback("Error message");
-  @JS('redeem')
-  external static void redeem(int amount, String bucket, [Function callback]);
-
-  // No documentation on reference
-  // @JS('referrals')
-  // external static void referrals();
-
   /// removeListener(listener)
   /// Parameters
   ///
@@ -743,10 +580,6 @@ class BranchJS {
   @JS('track')
   external static void track(String event,
       [Object metadata, Function callback]);
-
-  // No documentation in reference
-  // @JS('validateCode')
-  // external static void validateCode();
 
   /// trackCommerceEvent(event, commerce_data, metadata, callback)
   /// Parameters
@@ -949,4 +782,120 @@ class BranchJS {
   /// The do-not-track mode state is persistent: it is saved for the user across browser sessions for the web site.
   @JS('disableTracking')
   external static void disableTracking([bool disableTracking]);
+
+  /// lastAttributedTouchData (number, callback)
+  ///
+  /// number -attribution_window - the number of days to look up attribution data
+  /// callback: function, optional - returns last attributed touch data
+  ///
+  /// Returns last attributed touch data for current user. Last attributed touch
+  /// data has the information associated with that user's last viewed impression
+  /// or clicked link.
+  /// Usage
+  ///
+  /// branch.lastAttributedTouchData(
+  ///     attribution_window,
+  ///     callback (err, data)
+  /// );
+  /// Example
+  ///
+  /// branch.lastAttributedTouchData(
+  ///     10,
+  ///     function(err, data) {
+  ///     console.log(err, data);
+  /// });
+  /// Callback Format
+  ///
+  /// callback(
+  ///     "Error message",
+  ///     '{}'
+  /// );
+  @JS('lastAttributedTouchData')
+  external static void lastAttributedTouchData(attributionWindow,
+      [Function callback]);
+
+  /// qrcode(data, callback)
+  /// Parameters
+  ///
+  /// data: Object, required - link data and metadata.
+  ///qrCodeSettings: Object required -QR code Settings
+  ///
+  /// callback: function, required - returns a string of the Branch deep
+  /// linking URL.
+  ///
+  /// Formerly createLink()
+  ///
+  /// Creates and returns a deep linking URL. The data parameter can include an
+  /// object with optional data you would like to store, including Facebook
+  /// Open Graph data.
+  ///
+  /// data The dictionary to embed with the link. Accessed as session or install parameters from
+  /// the SDK.
+  ///
+  /// Note
+  /// You can customize the Facebook OG tags of each URL if you want to dynamically share content by
+  /// using the following optional keys in the data dictionary. Please use this
+  /// Facebook tool to debug your OG tags!
+  ///
+  /// Key	Value
+  /// "$og_title"	The title you'd like to appear for the link in social media
+  /// "$og_description"	The description you'd like to appear for the link in social media
+  /// "$og_image_url"	The URL for the image you'd like to appear for the link in social media
+  /// "$og_video"	The URL for the video
+  /// "$og_url"	The URL you'd like to appear
+  /// "$og_redirect"	If you want to bypass our OG tags and use your own, use this key with the URL that contains your site's metadata.
+  /// Also, you can set custom redirection by inserting the following optional keys in the dictionary:
+  ///
+  /// Key	Value
+  /// "$desktop_url"	Where to send the user on a desktop or laptop. By default it is the Branch-hosted text-me service
+  /// "$android_url"	The replacement URL for the Play Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
+  /// "$ios_url"	The replacement URL for the App Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
+  /// "$ipad_url"	Same as above but for iPad Store
+  /// "$fire_url"	Same as above but for Amazon Fire Store
+  /// "$blackberry_url"	Same as above but for Blackberry Store
+  /// "$windows_phone_url"	Same as above but for Windows Store
+  /// "$after_click_url"	When a user returns to the browser after going to the app, take them to this URL. iOS only; Android coming soon
+  /// You have the ability to control the direct deep linking of each link as well:
+  ///
+  /// Key	Value
+  /// "$deeplink_path"	The value of the deep link path that you'd like us to append to your URI. For example, you could specify "$deeplink_path": "radio/station/456" and we'll open the app with the URI "yourapp://radio/station/456?link_click_id=branch-identifier". This is primarily for supporting legacy deep linking infrastructure.
+  /// "$always_deeplink"	true or false. (default is not to deep link first) This key can be specified to have our linking service force try to open the app, even if we're not sure the user has the app installed. If the app is not installed, we fall back to the respective app store or $platform_url key. By default, we only open the app if we've seen a user initiate a session in your app from a Branch link (has been cookied and deep linked by Branch).
+  /// Usage
+  ///
+  /// branch.link(
+  ///     data,
+  ///     callback (err, link)
+  /// );
+  /// Example
+  ///
+  /// branch.link({
+  ///     tags: [ 'tag1', 'tag2' ],
+  ///     channel: 'facebook',
+  ///     feature: 'dashboard',
+  ///     stage: 'new user',
+  ///     data: {
+  ///         mydata: 'something',
+  ///         foo: 'bar',
+  ///         '$desktop_url': 'http://myappwebsite.com',
+  ///         '$ios_url': 'http://myappwebsite.com/ios',
+  ///         '$ipad_url': 'http://myappwebsite.com/ipad',
+  ///         '$android_url': 'http://myappwebsite.com/android',
+  ///         '$og_app_id': '12345',
+  ///         '$og_title': 'My App',
+  ///         '$og_description': 'My app\'s description.',
+  ///         '$og_image_url': 'http://myappwebsite.com/image.png'
+  ///     }
+  /// }, function(err, link) {
+  ///     console.log(err, link);
+  /// });
+  /// Callback Format
+  ///
+  /// callback(
+  ///     "Error message",
+  ///     'https://bnc.lt/l/3HZMytU-BW' // Branch deep linking URL
+  /// );
+
+  @JS('qrCode')
+  external static void qrCode(Object qrCodeLinkData, Object qrCodeSettings,
+      Function(String? err, QrCodeData? qrCode) callback);
 }

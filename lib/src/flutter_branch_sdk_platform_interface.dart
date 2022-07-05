@@ -1,35 +1,30 @@
+import 'dart:typed_data';
+
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'app_tracking_transparency.dart';
-import 'branch_universal_object.dart';
-import 'flutter_branch_sdk_mobile.dart';
+import 'flutter_branch_sdk_method_channel.dart';
+import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_universal_object.dart';
 
-export 'branch_universal_object.dart';
-
-/// The interface that all implementations of flutter_branch_sdk must
-/// implement.
 abstract class FlutterBranchSdkPlatform extends PlatformInterface {
-  /// Constructs an instance of [FlutterBranchSdkPlatform].
+  /// Constructs a FlutterBranchSdkPlatform.
   FlutterBranchSdkPlatform() : super(token: _token);
-
-  static FlutterBranchSdkPlatform _instance = FlutterBranchSdkMobile();
 
   static final Object _token = Object();
 
-  /// The default instance of [FlutterLocalNotificationsPlatform] to use.
+  static FlutterBranchSdkPlatform _instance = FlutterBranchSdkMethodChannel();
+
+  /// The default instance of [FlutterBranchSdkPlatform] to use.
+  ///
+  /// Defaults to [FlutterBranchSdkMethodChannel].
   static FlutterBranchSdkPlatform get instance => _instance;
 
-  /// Platform-specific plugins should set this with their own platform-specific
-  /// class that extends [FlutterBranchSdkPlatform] when they register
-  /// themselves.
+  /// Platform-specific implementations should set this with their own
+  /// platform-specific class that extends [FlutterBranchSdkPlatform] when
+  /// they register themselves.
   static set instance(FlutterBranchSdkPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
-  }
-
-  @Deprecated('version 5.0.0')
-  void initWeb({required String branchKey}) {
-    throw UnimplementedError('initWeb has not been implemented');
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -128,27 +123,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError('removeFromSearch has not been implemented');
   }
 
-  ///Retrieves rewards for the current user/session
-  @Deprecated('version 4.0.0')
-  Future<BranchResponse> loadRewards({String bucket = 'default'}) async {
-    throw UnimplementedError('loadRewards has not been implemented');
-  }
-
-  ///Redeems the specified number of credits. if there are sufficient credits within it.
-  ///If the number to redeem exceeds the number available in the bucket, all of the
-  ///available credits will be redeemed instead.
-  @Deprecated('version 4.0.0')
-  Future<BranchResponse> redeemRewards(
-      {required int count, String bucket = 'default'}) async {
-    throw UnimplementedError('redeemRewards has not been implemented');
-  }
-
-  ///Gets the credit history
-  @Deprecated('version 4.0.0')
-  Future<BranchResponse> getCreditHistory({String bucket = 'default'}) async {
-    throw UnimplementedError('getCreditHistory has not been implemented');
-  }
-
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
   ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
   void setIOSSKAdNetworkMaxTime(int hours) {
@@ -211,5 +185,37 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///timed-out request to the Branch API. Default 1000 ms.
   void setRetryInterval(int retryInterval) {
     throw UnimplementedError('setRetryInterval has not been implemented');
+  }
+
+  ///Gets the available last attributed touch data with a custom set attribution window.
+  Future<BranchResponse> getLastAttributedTouchData(
+      {int? attributionWindow}) async {
+    throw UnimplementedError(
+        'getLastAttributedTouchData has not been implemented');
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
+  Future<BranchResponse> getQRCodeAsData(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    throw UnimplementedError('getQRCodeAsData has not been implemented');
+  }
+
+  ///Creates a Branch QR Code image. Returns the QR code as a Image.
+  Future<BranchResponse> getQRCodeAsImage(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required BranchQrCode qrCodeSettings}) async {
+    throw UnimplementedError('getQRCodeAsImage has not been implemented');
+  }
+
+  void shareWithLPLinkMetadata(
+      {required BranchUniversalObject buo,
+      required BranchLinkProperties linkProperties,
+      required Uint8List icon,
+      required String title}) {
+    throw UnimplementedError(
+        'shareWithLPLinkMetadata has not been implemented');
   }
 }

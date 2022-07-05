@@ -1,0 +1,41 @@
+name: Create sample app APK
+
+on:
+#  pull_request:
+#    branches:
+#      - "master"       
+#    paths-ignore:
+#      - "**/README.md"
+#      - "**/CHANGELOG.md"
+#      - "docs/**"     
+    push:
+      tags:
+        - 'v*'
+    workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"        
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+      - name: Make executeable build-apk.sh
+        run: chmod +x tool/build-apk.sh
+      - name: Install dependencies & Build apk
+        run: tool/build-apk.sh
+      - uses: actions/upload-artifact@v1
+        with:
+          name: release-apk
+          path: ./example/build/app/outputs/apk/release/app-release.apk

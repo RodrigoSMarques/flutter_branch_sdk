@@ -1,4 +1,6 @@
-# flutter_branch_sdk
+# Branch SDK Plugin
+
+[![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.png?raw=true)](https://branch.io)
 
 This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
 
@@ -6,8 +8,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.1.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 1.41.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.2.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 1.43.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -23,7 +25,9 @@ List BUO on Search / Remove BUO from Search| X | X | Not supported
 Register view| X | X | X
 Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
-Referral rewards| X | X | X
+Last Attributed Touch Data| X | X | X
+QR codes| X | X | X
+Share with LPLinkMetadata |  | X | 
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -184,9 +188,7 @@ To listen to the clicks on the deep link and retrieve the data it is necessary t
          print('Custom string: ${data["custom_string"]}');
       }
     }, onError: (error) {
-      PlatformException platformException = error as PlatformException;
-      print(
-          'InitSession error: ${platformException.code} - ${platformException.message}');
+		print('InitSesseion error: ${error.toString()}');
     });
 ```
 
@@ -198,13 +200,32 @@ If you ever want to access the original session params (the parameters passed in
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
 ```
+
 ### Retrieve session (install or open) parameters
 These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
 
 ```dart
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
 ```
-### Create content reference
+
+### Retrieve Branch's Last Attributed Touch Data
+
+Allow retrieval of our last attributed touch data (LATD) from the client. This results in an asynchronous call being made to Branch’s servers with LATD data returned when possible.
+
+Last attributed touch data contains the information associated with that user's last viewed impression or clicked link.
+
+
+```dart
+BranchResponse response =
+        await FlutterBranchSdk.getLastAttributedTouchData();
+    if (response.success) {
+      print(response.result.toString());
+    }
+```
+
+More information [here](https://help.branch.io/developers-hub/docs/retrieving-branchs-last-attributed-touch-data).
+
+### Create content reference (Branch Universal Object)
 The Branch Universal Object encapsulates the thing you want to share.
 
 ```dart
@@ -212,7 +233,7 @@ The Branch Universal Object encapsulates the thing you want to share.
       canonicalIdentifier: 'flutter/branch',
       //canonicalUrl: '',
       title: 'Flutter Branch Plugin',
-      imageUrl: 'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
+      imageUrl: 'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg',
       contentDescription: 'Flutter Branch Description',
       keywords: ['Plugin', 'Branch', 'Flutter'],
       publiclyIndex: true,
@@ -229,9 +250,9 @@ The Branch Universal Object encapsulates the thing you want to share.
 > If your content lives both on the web and in the app, make sure you set its canonical URL (i.e. the URL of this piece of content on the web) when building any BUO.
 > By doing so, we’ll attribute clicks on the links that you generate back to their original web page, even if the user goes to the app instead of your website! This will help your SEO efforts.
 
-More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
+More information about the parameters, verify [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#parameters) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#methods-and-properties) 
 
-### Create link reference
+### Create link reference (BranchLinkProperties)
 * Generates the analytical properties for the deep link.
 * Used for Create deep link and Share deep link.
 
@@ -252,9 +273,8 @@ More information about the parameters check [Android documentation](https://help
 > For example, instead of a random string of characters/integers, you can set the vanity alias as \*.app.link/devonaustin.
 > Aliases are enforced to be unique and immutable per domain, and per link - they cannot be reused unless deleted.
 
-More information about the parameters check [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
-
-           
+More information about the parameters, verify [Android documentation](https://help.branch.io/developers-hub/docs/android-full-reference#creating-a-deep-link) and [iOS documentation](https://help.branch.io/developers-hub/docs/ios-full-reference#link-properties-parameters) 
+ 
 ### Create deep link
 Generates a deep link within your app.
 
@@ -267,7 +287,7 @@ Generates a deep link within your app.
         print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
 ```
-### Show Share Sheet deep link
+### Show Share Sheet with deep link
 Will generate a Branch deep link and tag it with the channel the user selects.
 > Note: _For Android additional customization is possible_
 
@@ -285,17 +305,95 @@ Will generate a Branch deep link and tag it with the channel the user selects.
       print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
 ```
-### List content on Search
-* For Android list BUO links in Google Search with App Indexing
-* For iOs list BUO links in Spotlight
 
-Enable automatic sitemap generation on the Organic Search page of the [Branch Dashboard](https://dashboard.branch.io/search). 
-Check the Automatic sitemap generation checkbox.
+### Show Share Sheet with LPLinkMetadata
+> Note: _Requires iOS 13 or higher, else call showShareSheet `function`_
+
+Will show Share Sheet with customization.
+
+#### Parameters
+1. Content - verify section [Create content reference](#Create-content-reference)
+
+2. Link Reference - verify section [Create link reference](#Create-link-reference)
+
+3. Title (String) - Title for Share Sheet
+
+3. Icon (Uint8List) - Image for Share Sheet. Load image before from Web or assets.
+
+
+```dart
+      FlutterBranchSdk.shareWithLPLinkMetadata(
+          buo: buo!,
+          linkProperties: lp,
+          title: "Share With LPLinkMetadata",
+          icon: iconData);
+```
+
+### Create a QR Code
+
+> **QR Code Access Required**
+> 
+> Access to Branch's QR Code API and SDK requires premium product access. 
+> Please reach out to your account manager or [https://branch.io/pricing/](https://branch.io/pricing/) to activate.
+
+
+Will generates a custom QR Code with a unique Branch link which you can deep link and track analytics with.
+
+#### Parameters
+1. Content - verify section [Create content reference](#create-content-reference)
+
+2. Link Reference - verify section [Create link reference](#create-link-reference)
+
+3. BranchQrCode object (QR Code settings)
+
+Parameter | Type | Definition 
+--- | --- | --- 
+primaryColor | Color | Color name ou Hex color value
+backgroundColor | Color | Color name ou Hex color value of the background of the QR code itself.
+margin|Integer (Pixels)|The number of pixels you want for the margin. Min 1px. Max 20px.
+width|Integer (Pixels)|Output size of QR Code image. Min 300px. Max 2000px. (Only applicable to JPEG/PNG)
+imageFormat|BranchImageFormat|JPEG, PNG
+centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. [https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg](https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg)
+
+```dart
+    BranchResponse responseQrCodeImage =
+        await FlutterBranchSdk.getQRCodeAsImage(
+            buo: buo!,
+            linkProperties: lp,
+            qrCode: BranchQrCode(
+                primaryColor: Colors.black,
+                //primaryColor: const Color(0xff443a49), //Hex colors
+                centerLogoUrl: imageURL,
+                backgroundColor: Colors.white,
+                imageFormat: BranchImageFormat.PNG));
+
+    if (response.success) {
+      print('QrCode Success');
+      showQrCode(this.context, responseQrCodeImage.result);
+ 		/*
+        Image(
+          image: responseQrCodeImage.result,
+          height: 250,
+          width: 250,
+        ),
+      */
+    } else {
+      print('Error : ${response.errorCode} - ${response.errorMessage}');
+
+```
+
+- Method `getQRCodeAsImage` returns the QR code as a Image.
+- Method `getQRCodeAsData`  returns the QR code as Uint8List. Can be stored in a file or converted to image.
+
+### List content on Search
+* For Android list BUO links in Google Search with Firebase App Indexing API and locally  in Google In Apps search
+* For iOs list BUO links in Spotlight
 
 ```dart
     bool success = await FlutterBranchSdk.listOnSearch(buo: buo);
     print(success);
 ```
+
 ### Remove content from Search
 Privately indexed Branch Universal Object can be removed.
 
@@ -439,7 +537,7 @@ print(status);
 ```
 > Note: After the user's response, call the `handleATTAuthorizationStatus` Branch SDK method to monitor the performance of the ATT prompt.
 
-![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/app_tracking_dialog.png)
+![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/app_tracking_dialog.png)
 
 
 #### Get tracking authorization status
@@ -520,7 +618,7 @@ To enable:
         android:value="true" />
 ```
 
-### iOS - Enabled Clipboard Deferred Deep Linking
+### Enabled Clipboard Deferred Deep Linking in iOS
 
 Use iOS pasteboard to enable deferred deep linking.
 
@@ -573,7 +671,7 @@ Follow the instructions to  install Facebook Android / iOS SDK:
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/example.png)
+![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/example.png)
 
 See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 
