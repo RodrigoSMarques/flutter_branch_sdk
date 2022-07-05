@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  CustomButton({required this.onPressed, required this.child});
+  const CustomButton({Key? key, required this.onPressed, required this.child})
+      : super(key: key);
 
   final GestureTapCallback onPressed;
   final Widget child;
@@ -10,10 +11,10 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 50,
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
         child: ElevatedButton(
-          child: child,
           onPressed: onPressed,
+          child: child,
         ));
   }
 }

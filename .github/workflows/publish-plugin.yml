@@ -1,0 +1,35 @@
+name: Publish plugin - pub.dev
+
+on:
+  push:
+#    branches:
+#      - "dev"      
+    tags:
+      - 'v*'
+  workflow_dispatch:
+  
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+      
+      - name: Publish flutter package
+        uses: k-paxian/dart-package-publisher@v1.4
+#        uses: RodrigoSMarques/dart-package-publisher@master
+        with:
+          accessToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_ACCESS_TOKEN  }}
+          refreshToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_REFRESH_TOKEN }}
+          flutter: true
+          format: true
+          skipTests: true
+          dryRunOnly: true
+#          docs: true
+          

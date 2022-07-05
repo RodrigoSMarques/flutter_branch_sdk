@@ -1,0 +1,47 @@
+name: Deploying the sample app to the web
+
+on:
+#  pull_request:
+#    branches:
+#      - "master"       
+#    paths-ignore:
+#      - "**/README.md"
+#      - "**/CHANGELOG.md"
+#      - "docs/**"     
+    push:
+      tags:
+        - 'v*'
+    workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+      - name: Make executeable build-web.sh
+        run: chmod +x tool/build-web.sh
+      - name: Install dependencies & Build web
+        run: tool/build-web.sh
+      - name: Deploy to Netlify
+        if: ${{ github.repository == 'RodrigoSMarques/flutter_branch_sdk' }}
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './example/build/web'
+          production-branch: master
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1

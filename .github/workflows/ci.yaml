@@ -1,0 +1,43 @@
+name: Plugin code analysis
+
+on:
+  push:
+    branches:
+      - "master"
+    paths-ignore:
+      - "**/README.md"
+      - "docs/**"
+  pull_request:
+    branches:
+      - "master"
+      - "dev"
+
+jobs:
+  check-lint-flutter:
+    name: Lint (flutter)
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - name: Lint
+        run: flutter format --output=none --set-exit-if-changed lib/
+  check-code-analysis-flutter:
+    name: Code analysis (flutter)
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos

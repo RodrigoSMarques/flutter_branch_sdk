@@ -1,0 +1,22 @@
+name: Send Dispatch to Branch fork
+
+on:
+  push:
+#    branches:
+#    - "master"
+#    - "dev"      
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  send-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        if: ${{ github.repository == 'RodrigoSMarques/flutter_branch_sdk' }}
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TOKEN_BRANCH_UPSTREAM}}
+          repository: BranchMetrics/flutter_branch_sdk
+          event-type: new-release

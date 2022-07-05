@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.QRCode.BranchQRCode;
 import io.branch.referral.util.AdType;
 import io.branch.referral.util.BRANCH_STANDARD_EVENT;
 import io.branch.referral.util.BranchContentSchema;
@@ -202,6 +203,34 @@ public class FlutterBranchSdkHelper {
             }
         }
         return event;
+    }
+
+    BranchQRCode convertToQRCode(HashMap<String, Object> qrCodeMap) {
+        BranchQRCode branchQRCode = new BranchQRCode();
+        if (qrCodeMap.containsKey("width")) {
+            branchQRCode.setWidth((int) qrCodeMap.get("width"));
+        }
+        if (qrCodeMap.containsKey("margin")) {
+            branchQRCode.setMargin((int) qrCodeMap.get("margin"));
+        }
+        if (qrCodeMap.containsKey("codeColor")) {
+            branchQRCode.setCodeColor((String) qrCodeMap.get("codeColor"));
+        }
+        if (qrCodeMap.containsKey("backgroundColor")) {
+            branchQRCode.setBackgroundColor((String) qrCodeMap.get("backgroundColor"));
+        }
+        if (qrCodeMap.containsKey("imageFormat")) {
+            final String imageFormat = (String) qrCodeMap.get("imageFormat");
+            if (imageFormat.equals("JPEG")) {
+                branchQRCode.setImageFormat(BranchQRCode.BranchImageFormat.JPEG);
+            } else {
+                branchQRCode.setImageFormat(BranchQRCode.BranchImageFormat.PNG);
+            }
+        }
+        if (qrCodeMap.containsKey("centerLogoUrl")) {
+            branchQRCode.setCenterLogo((String) qrCodeMap.get("centerLogoUrl"));
+        }
+        return  branchQRCode;
     }
 
     AdType convertToAdType(String adType) {
