@@ -1,3 +1,6 @@
+## 6.1.0
+* Updated `Android Advertising ID (AAID)` version in Android SDK.
+
 ## 6.0.0
 ### BREAKING CHANGE
 * Minimum required Dart SDK version to 2.17 (Flutter 3.0)
