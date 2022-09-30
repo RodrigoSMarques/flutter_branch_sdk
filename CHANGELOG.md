@@ -1,3 +1,6 @@
+## 6.2.0
+* Update `BranchStandardEvent` list.
+
 ## 6.1.0
 * Updated `Android Advertising ID (AAID)` version in Android SDK.
 

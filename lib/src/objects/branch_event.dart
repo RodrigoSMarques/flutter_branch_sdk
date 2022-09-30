@@ -14,17 +14,26 @@ enum BranchStandardEvent {
   ADD_PAYMENT_INFO,
   PURCHASE,
   SPEND_CREDITS,
+  CLICK_AD,
+  RESERVE,
+  VIEW_AD,
   // Content Events
   SEARCH,
   VIEW_ITEM,
   VIEW_ITEMS,
   RATE,
   SHARE,
+  INITIATE_STREAM,
+  COMPLETE_STREAM,
   // User Lifecycle Events
   COMPLETE_REGISTRATION,
   COMPLETE_TUTORIAL,
   ACHIEVE_LEVEL,
-  UNLOCK_ACHIEVEMENT
+  UNLOCK_ACHIEVEMENT,
+  INVITE,
+  LOGIN,
+  START_TRIAL,
+  SUBSCRIBE
 }
 
 String getBranchStandardEventString(BranchStandardEvent branchStandardEvent) {
