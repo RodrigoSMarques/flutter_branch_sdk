@@ -442,7 +442,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         Branch.getInstance().lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
             if error == nil {
                 if latd != nil {
-                    data["latd"] = latd
+                    data["latd"] = ["attibution_window": latd!.attributionWindow,
+                                    "last_atributed_touch_data" : latd!.lastAttributedTouchJSON]
                 } else {
                     data["latd"] = [:]
                 }
