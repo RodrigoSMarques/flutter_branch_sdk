@@ -1,5 +1,5 @@
 ## 6.2.1
-* Fix issue #181: `Calling the getLastAttributedTouchData() exit with exeption on IOS 15.7
+* Fix issue #181: `Calling the getLastAttributedTouchData() exit with exception on IOS 15.7
 
 ## 6.2.0
 * Update `BranchStandardEvent` list.
