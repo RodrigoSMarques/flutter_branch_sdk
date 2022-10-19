@@ -1,3 +1,6 @@
+## 5.1.2
+* Fix issue #181: `Calling the getLastAttributedTouchData() exit with exception on IOS 15.7
+
 ## 5.1.1
 * Updated Native `Android` SDK:
     * Android Native SDK Update 5.1.5 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
