@@ -337,4 +337,12 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       messageChannel.invokeMethod('showShareSheet', {params});
     }
   }
+
+  ///Open deep links in your own app
+  @override
+  void handleDeepLink(String deepLink) {
+    Map<String, dynamic> params = {};
+    params['deepLink'] = deepLink;
+    messageChannel.invokeMethod('handleDeepLink', params);
+  }
 }

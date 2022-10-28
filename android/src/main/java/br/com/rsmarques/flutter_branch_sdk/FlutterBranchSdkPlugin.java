@@ -297,6 +297,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       case "getQRCode":
         getQRCode(call, result);
         break;
+      case "handleDeepLink":
+        handleDeepLink(call, result);
+        break;
       default:
         result.notImplemented();
         break;
@@ -750,6 +753,17 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         result.success(response);
       }
     }
+
+  private void handleDeepLink(final MethodCall call, final Result result) {
+    LogUtils.debug(DEBUG_NAME, "handleDeepLink call");
+    if (call.hasArgument("deepLink") && this.activity != null) {
+      final String deepLink = call.argument("deepLink");
+      Intent intent = this.activity.getIntent();
+      intent.putExtra("branch", deepLink);
+      intent.putExtra("branch_force_new_session", true);
+      onNewIntent(intent);
+    }
+  }
 }
 
 

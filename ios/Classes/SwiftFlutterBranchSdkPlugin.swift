@@ -226,6 +226,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             break
         case"shareWithLPLinkMetadata":
             shareWithLPLinkMetadata(call: call, result: result)
+        case "handleDeepLink":
+            handleDeepLink(call: call, result: result)
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -556,6 +558,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         } else {
             showShareSheet(call: call, result: result)
         }
+    }
+
+    private func handleDeepLink(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args = call.arguments as! [String: Any?]
+        let deepLink = args["deepLink"] as! String
+        Branch.getInstance().handleDeepLink(withNewSession: URL(string: deepLink))
     }
     
     /*

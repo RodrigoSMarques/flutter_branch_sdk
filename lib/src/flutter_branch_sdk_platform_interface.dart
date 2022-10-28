@@ -218,4 +218,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError(
         'shareWithLPLinkMetadata has not been implemented');
   }
+
+  void handleDeepLink(String deepLink) {
+    throw UnimplementedError('handleDeepLink has not been implemented');
+  }
 }

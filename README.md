@@ -666,7 +666,11 @@ Follow the instructions to  install Facebook Android / iOS SDK:
 
 <a href="https://developers.facebook.com/docs/android/getting-started" target="_blank">https://developers.facebook.com/docs/android/getting-started</a>
 
+### Handle Links in Your Own App
 
+```dart
+FlutterBranchSdk.handleDeepLink("https://your.own.link");
+```
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
