@@ -27,6 +27,21 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  ///Initialize Branch SDK
+  /// [useTestKey] - Sets `true` to use the test `key_test_...
+  /// [enableLogging] - Sets `true` turn on debug logging
+  /// [delayInitToCheckForSearchAds] - Sets `true` to enable Apple Search Ads Check (only iOS)
+  /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
+  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  Future<void> init(
+      {bool useTestKey = false,
+      bool enableLogging = false,
+      bool delayInitToCheckForSearchAds = false,
+      bool enableFacebookLinkCheck = false,
+      bool disableTracking = false}) async {
+    throw UnimplementedError('init has not been implemented');
+  }
+
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   void setIdentity(String userId) {
     throw UnimplementedError('setIdentity has not been implemented');

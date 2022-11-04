@@ -297,6 +297,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       case "getQRCode":
         getQRCode(call, result);
         break;
+      case "enableTestMode":
+        Branch.enableTestMode();
+        break;
       default:
         result.notImplemented();
         break;

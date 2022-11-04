@@ -34,6 +34,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   static final StreamController<Map<String, dynamic>> _initSessionStream =
       StreamController<Map<String, dynamic>>();
   static bool _userIdentified = false;
+  static bool isInitialized = false;
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
