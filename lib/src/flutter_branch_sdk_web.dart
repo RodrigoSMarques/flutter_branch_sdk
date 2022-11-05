@@ -31,6 +31,22 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     FlutterBranchSdkPlatform.instance = FlutterBranchSdkWeb();
   }
 
+  ///Initialize Branch SDK
+  /// [useTestKey] - Sets `true` to use the test `key_test_...
+  /// [enableLogging] - Sets `true` turn on debug logging
+  /// [delayInitToCheckForSearchAds] - Sets `true` to enable Apple Search Ads Check (only iOS)
+  /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
+  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  @override
+  Future<void> init(
+      {bool useTestKey = false,
+      bool enableLogging = false,
+      bool delayInitToCheckForSearchAds = false,
+      bool enableFacebookLinkCheck = false,
+      bool disableTracking = false}) async {
+    debugPrint('');
+  }
+
   static final StreamController<Map<String, dynamic>> _initSessionStream =
       StreamController<Map<String, dynamic>>();
   static bool _userIdentified = false;

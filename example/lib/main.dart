@@ -10,6 +10,7 @@ import 'custom_button.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
   runApp(const MyApp());
 }
 
@@ -152,7 +153,7 @@ class _HomePageState extends State<HomePage> {
           ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
           ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
          */
-        //contentMetadata: metadata,
+        contentMetadata: metadata,
         keywords: ['Plugin', 'Branch', 'Flutter'],
         publiclyIndex: true,
         locallyIndex: true,
