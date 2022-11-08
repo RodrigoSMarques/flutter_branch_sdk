@@ -161,8 +161,8 @@ public class FlutterBranchSdkHelper {
             }
         }
         if (argsMap.containsKey("controlParams")) {
-            for (Map.Entry<String, String> content : ((HashMap<String, String>) argsMap.get("controlParams")).entrySet()) {
-                linkProperties.addControlParameter(content.getKey(), content.getValue());
+            for (Map.Entry<String, Object> content : ((HashMap<String, Object>) argsMap.get("controlParams")).entrySet()) {
+                linkProperties.addControlParameter(content.getKey(), content.getValue().toString());
             }
         }
         return linkProperties;
