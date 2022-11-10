@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   void initDeepLinkData() {
     metadata = BranchContentMetaData()
-      ..addCustomMetadata('custom_string', 'abc')
+      ..addCustomMetadata('custom_string', 'abcd')
       ..addCustomMetadata('custom_number', 12345)
       ..addCustomMetadata('custom_bool', true)
       ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
           ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
           ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
          */
-        //contentMetadata: metadata,
+        contentMetadata: metadata,
         keywords: ['Plugin', 'Branch', 'Flutter'],
         publiclyIndex: true,
         locallyIndex: true,
@@ -172,6 +172,10 @@ class _HomePageState extends State<HomePage> {
         campaign: 'campaign',
         tags: ['one', 'two', 'three'])
       ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('\$ios_nativelink', true)
+      ..addControlParam('\$match_duration', 7200)
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
       ..addControlParam('referring_user_id', 'user_id');
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
@@ -215,10 +219,14 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
+    /*
     FlutterBranchSdk.validateSDKIntegration();
     if (Platform.isAndroid) {
       showSnackBar(message: 'Check messages in run log or logcat');
     }
+     */
+    FlutterBranchSdk.handleDeepLink(
+        'https://flutterbranchsdk.test-app.link/sxz79EtAPub');
   }
 
   void enableTracking() {

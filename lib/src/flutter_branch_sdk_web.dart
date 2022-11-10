@@ -368,7 +368,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         }
       }));
     } catch (e) {
-      print(e);
       debugPrint('getLastAttributedTouchData() error: ${e.toString()}');
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'getLastAttributedTouchData() error'));
@@ -449,6 +448,12 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required String title}) {
     throw UnsupportedError(
         'shareWithLPLinkMetadata() Not available in Branch JS SDK');
+  }
+
+  ///Have Branch end the current deep link session and start a new session with the provided URL.
+  @override
+  void handleDeepLink(String url) {
+    throw UnsupportedError('handleDeepLink() Not available in Branch JS SDK');
   }
 
   void close() {

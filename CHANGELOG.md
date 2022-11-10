@@ -1,5 +1,8 @@
+## 6.3.0
+* Fix issue #188: `Failed to handle method call: java.lang.NullPointerException`
+
 ## 6.2.1
-* Fix issue #181: `Calling the getLastAttributedTouchData() exit with exception on IOS 15.7
+* Fix issue #181: `Calling the getLastAttributedTouchData() exit with exception on IOS 15.7`
 
 ## 6.2.0
 * Update `BranchStandardEvent` list.
