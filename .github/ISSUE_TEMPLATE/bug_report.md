@@ -23,18 +23,18 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Smartphone (Please complete the following information. remove session if not platform):**
  - Flutter: version: [e.g. 2.2.3]
  - Package version: [e.g. 3.3.0]
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
+ - OS: [e.g. iOS16.0, Android 12]
+ - Device: [e.g. iPhone14, Google Pixel]
+ 
+**Web (please complete the following information. remove session if not platform):**
  - Flutter: version: [e.g. 2.2.3]
  - Package version: [e.g. 3.3.0]
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
-
-**Additional context**
+ - OS: [e.g. Windows, Mac, Linux]
+ - Browser [e.g. chrome, safari, edge]
+ - Version [e.g. 22] 
+ 
+ - **Additional context**
 Add any other context about the problem here.

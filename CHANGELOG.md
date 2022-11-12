@@ -1,5 +1,8 @@
 ## 6.3.0
+* New Method `handleDeepLink`
 * Fix issue #188: `Failed to handle method call: java.lang.NullPointerException`
+* Fix issue #189: `Fix crash when adding a boolean control param`
+* Fix issue #190: `getTrackingAuthorizationStatus will open the iOS-dialog to requestTrackingAuthorization`
 
 ## 6.2.1
 * Fix issue #181: `Calling the getLastAttributedTouchData() exit with exception on IOS 15.7`

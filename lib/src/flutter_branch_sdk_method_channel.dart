@@ -2,6 +2,7 @@ import 'dart:io';
 
 //import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -332,11 +333,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     params['messageText'] = title;
     params['iconData'] = icon;
 
-    if (Platform.isIOS) {
-      messageChannel.invokeMethod('shareWithLPLinkMetadata', params);
-    } else {
-      messageChannel.invokeMethod('showShareSheet', {params});
-    }
+    messageChannel.invokeMethod('shareWithLPLinkMetadata', params);
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.

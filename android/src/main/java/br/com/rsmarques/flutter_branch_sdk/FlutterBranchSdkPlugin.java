@@ -237,6 +237,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       case "getShortUrl":
         getShortUrl(call, result);
         break;
+      case "shareWithLPLinkMetadata":
       case "showShareSheet":
         showShareSheet(call, result);
         break;

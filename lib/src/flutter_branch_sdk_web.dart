@@ -4,7 +4,7 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js';
+import 'dart:js' as js;
 import 'dart:js_util';
 import 'dart:typed_data';
 
@@ -57,7 +57,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     final Completer<Map<dynamic, dynamic>> response = Completer();
 
     try {
-      BranchJS.data(allowInterop((err, data) {
+      BranchJS.data(js.allowInterop((err, data) {
         if (err == null) {
           if (data != null) {
             var responseData =
@@ -84,7 +84,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         Completer<Map<dynamic, dynamic>>();
 
     try {
-      BranchJS.first(allowInterop((err, data) {
+      BranchJS.first(js.allowInterop((err, data) {
         if (err == null) {
           if (data != null) {
             var responseData =
@@ -108,7 +108,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void setIdentity(String userId) {
     try {
-      BranchJS.setIdentity(userId, allowInterop((error, data) {
+      BranchJS.setIdentity(userId, js.allowInterop((error, data) {
         if (error == null) {
           _userIdentified = true;
         }
@@ -122,7 +122,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void logout() {
     try {
-      BranchJS.logout(allowInterop((error) {
+      BranchJS.logout(js.allowInterop((error) {
         if (error == null) {
           _userIdentified = false;
         }
@@ -158,7 +158,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     Completer<BranchResponse> responseCompleter = Completer();
 
     try {
-      BranchJS.link(_dartObjectToJsObject(linkData), allowInterop((err, url) {
+      BranchJS.link(_dartObjectToJsObject(linkData),
+          js.allowInterop((err, url) {
         if (err == null) {
           responseCompleter.complete(BranchResponse.success(result: url));
         } else {
@@ -203,7 +204,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void trackContent(
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
-    JsArray<Object> contentItems = JsArray();
+    js.JsArray<Object> contentItems = js.JsArray();
 
     for (var element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMap()));
@@ -354,7 +355,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
 
     try {
       BranchJS.lastAttributedTouchData(attributionWindow,
-          allowInterop((err, data) {
+          js.allowInterop((err, data) {
         if (err == null) {
           if (data != null) {
             responseCompleter.complete(
@@ -393,7 +394,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     try {
       BranchJS.qrCode(_dartObjectToJsObject(linkData),
           _dartObjectToJsObject(qrCodeSettings.toMap()),
-          allowInterop((err, qrCode) {
+          js.allowInterop((err, qrCode) {
         if (err == null) {
           if (qrCode != null) {
             responseCompleter.complete(
@@ -446,14 +447,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    throw UnsupportedError(
-        'shareWithLPLinkMetadata() Not available in Branch JS SDK');
+    //throw UnsupportedError(
+    //    'shareWithLPLinkMetadata() Not available in Branch JS SDK');
+    showShareSheet(
+        buo: buo, linkProperties: linkProperties, messageText: title);
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
   void handleDeepLink(String url) {
-    throw UnsupportedError('handleDeepLink() Not available in Branch JS SDK');
+    js.context.callMethod('open', [url, '_self']);
   }
 
   void close() {

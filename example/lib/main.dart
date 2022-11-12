@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -383,7 +382,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) {
           return Container(
             padding: const EdgeInsets.all(12),
-            height: 150,
+            height: 200,
             child: Column(
               children: <Widget>[
                 const Center(
@@ -407,6 +406,18 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pop(this.context);
                       },
                       child: const Center(child: Text('Copy link'))),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                IntrinsicWidth(
+                  stepWidth: 300,
+                  child: CustomButton(
+                      onPressed: () {
+                        FlutterBranchSdk.handleDeepLink(url);
+                        Navigator.pop(this.context);
+                      },
+                      child: const Center(child: Text('Handle deep link'))),
                 ),
               ],
             ),
@@ -487,17 +498,11 @@ class _HomePageState extends State<HomePage> {
             .asUint8List();
     */
 
-    if (Platform.isIOS) {
-      FlutterBranchSdk.shareWithLPLinkMetadata(
-          buo: buo!,
-          linkProperties: lp,
-          title: "Share With LPLinkMetadata",
-          icon: iconData);
-    } else {
-      showSnackBar(
-          message: 'shareWithLPLinkMetadata() available only in iOS devices');
-      return;
-    }
+    FlutterBranchSdk.shareWithLPLinkMetadata(
+        buo: buo!,
+        linkProperties: lp,
+        title: "Share With LPLinkMetadata",
+        icon: iconData);
   }
 
   @override

@@ -203,7 +203,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             requestTrackingAuthorization(result: result)
             break
         case "getTrackingAuthorizationStatus" :
-            requestTrackingAuthorization(result: result)
+            getTrackingAuthorizationStatus(result: result)
             break
         case "getAdvertisingIdentifier" :
             getAdvertisingIdentifier(result: result)
@@ -232,7 +232,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case"handleDeepLink":
             handleDeepLink(call: call)
             break
-
         default:
             result(FlutterMethodNotImplemented)
             break
