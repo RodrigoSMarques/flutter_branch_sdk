@@ -9,7 +9,7 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 Supports Android, iOS and Web.
 
 * Android - Branch SDK Version >= 5.2.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 1.43.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 1.44.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -28,6 +28,7 @@ Init Branch Session and Deep Link| X | X | X
 Last Attributed Touch Data| X | X | X
 QR codes| X | X | X
 Share with LPLinkMetadata |  | X | 
+Handle Links in Your Own App| X | X | X
 
 ## Getting Started
 ### Configure Branch Dashboard
@@ -385,6 +386,19 @@ centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. 
 - Method `getQRCodeAsImage` returns the QR code as a Image.
 - Method `getQRCodeAsData`  returns the QR code as Uint8List. Can be stored in a file or converted to image.
 
+### Handle Links in Your Own App
+
+Allows you to deep link into your own from your app itself
+
+```dart
+    FlutterBranchSdk.handleDeepLink(
+        'https://flutterbranchsdk.test-app.link/sxz79EtAPub');
+```
+
+Replace *"https://flutterbranchsdk.test-app.link/sxz79EtAPub"* with your own link URL.
+
+> Handling a new deep link in your app will clear the current session data and a new referred "open" will be attributed.
+
 ### List content on Search
 * For Android list BUO links in Google Search with Firebase App Indexing API and locally  in Google In Apps search
 * For iOs list BUO links in Spotlight
@@ -619,6 +633,7 @@ To enable:
 ```
 
 ### Enabled Clipboard Deferred Deep Linking in iOS
+> Enabled by default starting with **iOS 15+ Only**
 
 Use iOS pasteboard to enable deferred deep linking.
 

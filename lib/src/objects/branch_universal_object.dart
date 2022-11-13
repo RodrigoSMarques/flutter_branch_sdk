@@ -38,7 +38,7 @@ class BranchUniversalObject {
   bool publiclyIndex = true;
 
   /* Any keyword associated with the content. Used for indexing */
-  List<dynamic> keywords;
+  List<String> keywords;
 
   /* Expiry date for the content and any associated links. Represented as epoch milli second */
   int expirationDateInMilliSec = 0;
@@ -61,7 +61,7 @@ class BranchUniversalObject {
       this.expirationDateInMilliSec = 0});
 
   ///Adds any keywords associated with the content referred
-  void addKeyWords(List<dynamic> keywords) {
+  void addKeyWords(List<String> keywords) {
     keywords.addAll(keywords);
   }
 
@@ -76,7 +76,7 @@ class BranchUniversalObject {
   }
 
   ///Get the keywords associated with this BranchUniversalObject
-  List<dynamic> getKeywords() {
+  List<String> getKeywords() {
     return keywords;
   }
 

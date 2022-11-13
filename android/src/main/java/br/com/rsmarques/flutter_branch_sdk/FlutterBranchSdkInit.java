@@ -8,7 +8,7 @@ import io.branch.referral.Branch;
 public class FlutterBranchSdkInit {
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String PLUGIN_NAME = "Flutter";
-    private static final String PLUGIN_VERSION = "6.0.0";
+    private static final String PLUGIN_VERSION = "6.3.0";
 
     public static void init(Context context) {
         ApplicationInfoHelper applicationInfoHelper = new ApplicationInfoHelper(context);

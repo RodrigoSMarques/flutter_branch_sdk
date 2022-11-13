@@ -352,6 +352,7 @@ class BranchContentMetaData {
   }
 
   BranchContentMetaData addCustomMetadata(String key, dynamic value) {
+    assert(value != null, 'Null value not allowed in CustomMetadata');
     _customMetadata[key] = value;
     return this;
   }

@@ -203,4 +203,8 @@ class FlutterBranchSdk {
     FlutterBranchSdkPlatform.instance.shareWithLPLinkMetadata(
         buo: buo, linkProperties: linkProperties, icon: icon, title: title);
   }
+
+  static void handleDeepLink(String url) {
+    FlutterBranchSdkPlatform.instance.handleDeepLink(url);
+  }
 }

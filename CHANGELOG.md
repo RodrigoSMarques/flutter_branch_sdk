@@ -1,3 +1,12 @@
+## 6.3.0
+* New Method `handleDeepLink`
+* Fix issue #188: `Failed to handle method call: java.lang.NullPointerException`
+* Fix issue #189: `Fix crash when adding a boolean control param`
+* Fix issue #190: `getTrackingAuthorizationStatus will open the iOS-dialog to requestTrackingAuthorization`
+
+## 6.2.1
+* Fix issue #181: `Calling the getLastAttributedTouchData() exit with exception on IOS 15.7`
+
 ## 6.2.0
 * Update `BranchStandardEvent` list.
 
@@ -23,7 +32,6 @@
 * Updated Native `Android` and `iOS` SDKs:
     * Android Native SDK Update 5.2.+ - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
     * iOS Native SDK Update 1.43.+ - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-
 
 ## 5.1.1
 * Updated Native `Android` SDK:
