@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   void initDeepLinkData() {
     metadata = BranchContentMetaData()
-      ..addCustomMetadata('custom_string', 'abc')
+      ..addCustomMetadata('custom_string', 'abcd')
       ..addCustomMetadata('custom_number', 12345)
       ..addCustomMetadata('custom_bool', true)
       ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
@@ -173,6 +172,10 @@ class _HomePageState extends State<HomePage> {
         campaign: 'campaign',
         tags: ['one', 'two', 'three'])
       ..addControlParam('\$uri_redirect_mode', '1')
+      ..addControlParam('\$ios_nativelink', true)
+      ..addControlParam('\$match_duration', 7200)
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
       ..addControlParam('referring_user_id', 'user_id');
 
     eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
@@ -216,10 +219,14 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
+    /*
     FlutterBranchSdk.validateSDKIntegration();
     if (Platform.isAndroid) {
       showSnackBar(message: 'Check messages in run log or logcat');
     }
+     */
+    FlutterBranchSdk.handleDeepLink(
+        'https://flutterbranchsdk.test-app.link/sxz79EtAPub');
   }
 
   void enableTracking() {
@@ -376,7 +383,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) {
           return Container(
             padding: const EdgeInsets.all(12),
-            height: 150,
+            height: 200,
             child: Column(
               children: <Widget>[
                 const Center(
@@ -400,6 +407,18 @@ class _HomePageState extends State<HomePage> {
                         Navigator.pop(this.context);
                       },
                       child: const Center(child: Text('Copy link'))),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                IntrinsicWidth(
+                  stepWidth: 300,
+                  child: CustomButton(
+                      onPressed: () {
+                        FlutterBranchSdk.handleDeepLink(url);
+                        Navigator.pop(this.context);
+                      },
+                      child: const Center(child: Text('Handle deep link'))),
                 ),
               ],
             ),
@@ -480,17 +499,11 @@ class _HomePageState extends State<HomePage> {
             .asUint8List();
     */
 
-    if (Platform.isIOS) {
-      FlutterBranchSdk.shareWithLPLinkMetadata(
-          buo: buo!,
-          linkProperties: lp,
-          title: "Share With LPLinkMetadata",
-          icon: iconData);
-    } else {
-      showSnackBar(
-          message: 'shareWithLPLinkMetadata() available only in iOS devices');
-      return;
-    }
+    FlutterBranchSdk.shareWithLPLinkMetadata(
+        buo: buo!,
+        linkProperties: lp,
+        title: "Share With LPLinkMetadata",
+        icon: iconData);
   }
 
   @override

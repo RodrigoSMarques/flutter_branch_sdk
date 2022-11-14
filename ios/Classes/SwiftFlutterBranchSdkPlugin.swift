@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "6.0.0"
+let PLUGIN_VERSION = "6.3.0"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
@@ -218,7 +218,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             requestTrackingAuthorization(result: result)
             break
         case "getTrackingAuthorizationStatus" :
-            requestTrackingAuthorization(result: result)
+            getTrackingAuthorizationStatus(result: result)
             break
         case "getAdvertisingIdentifier" :
             getAdvertisingIdentifier(result: result)
@@ -243,6 +243,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             break
         case"shareWithLPLinkMetadata":
             shareWithLPLinkMetadata(call: call, result: result)
+            break
+        case"handleDeepLink":
+            handleDeepLink(call: call)
+            break
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -650,6 +654,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         } else {
             showShareSheet(call: call, result: result)
         }
+    }
+    
+    private func handleDeepLink(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let url = args["url"] as! String
+        Branch.getInstance().handleDeepLink(withNewSession: URL(string: url))
     }
     
     /*

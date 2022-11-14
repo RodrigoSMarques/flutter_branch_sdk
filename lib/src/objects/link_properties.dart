@@ -37,7 +37,11 @@ class BranchLinkProperties {
   }
 
   BranchLinkProperties addControlParam(String key, dynamic value) {
-    _controlParams[key] = value;
+    assert(value != null, 'Null value not allowed in ControlParam');
+    if (value is List) {
+      throw ArgumentError('List value not allowed in ControlParms ');
+    }
+    _controlParams[key] = value.toString();
     return this;
   }
 
