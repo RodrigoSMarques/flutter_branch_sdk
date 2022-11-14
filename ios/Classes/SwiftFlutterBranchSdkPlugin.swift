@@ -16,6 +16,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
+    var initialLaunchOptions: [AnyHashable: Any]?
+    var isInitialized = false
     
     //---------------------------------------------------------------------------------------------
     // Plugin registry
@@ -34,88 +36,98 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         
+        /*
+         Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION);
+         
+         #if DEBUG
+         let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? true
+         if enableLog {
+         Branch.getInstance().enableLogging()
+         }
+         #else
+         let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? false
+         if enableLog {
+         Branch.getInstance().enableLogging()
+         }
+         #endif
+         
+         let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
+         
+         print("Branch Check Apple ADS active: \(String(describing:enableAppleADS))");
+         
+         if enableAppleADS {
+         // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
+         Branch.getInstance().delayInitToCheckForSearchAds()
+         }
+         
+         let enableFacebookAds = Bundle.infoPlistValue(forKey: "branch_enable_facebook_ads") as? Bool ?? false
+         print("Branch Check Facebook Link: \(String(describing:enableFacebookAds))");
+         
+         if enableFacebookAds {
+         //Facebook App Install Ads
+         //https://help.branch.io/using-branch/docs/facebook-app-install-ads#configure-your-app-to-read-facebook-app-install-deep-links
+         
+         let FBSDKAppLinkUtility: AnyClass? = NSClassFromString("FBSDKAppLinkUtility")
+         if let FBSDKAppLinkUtility = FBSDKAppLinkUtility {
+         Branch.getInstance().registerFacebookDeepLinkingClass(FBSDKAppLinkUtility)
+         } else {
+         NSLog("FBSDKAppLinkUtility not found but branch_enable_facebook_ads set to true. Please be sure you have integrated the Facebook SDK.")
+         }
+         }
+         
+         let checkPasteboard  = Bundle.infoPlistValue(forKey: "branch_check_pasteboard") as? Bool ?? false
+         print("Branch Clipboard Deferred Deep Linking: \(String(describing:checkPasteboard))");
+         
+         if checkPasteboard {
+         Branch.getInstance().checkPasteboardOnInstall()
+         }
+         
+         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
+         if error == nil {
+         print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
+         guard let _ = self.eventSink else {
+         self.initialParams = params as? [String: Any]
+         return
+         }
+         self.eventSink!(params as? [String: Any])
+         } else {
+         let err = (error! as NSError)
+         print("Branch InitSession error: \(err.localizedDescription)")
+         guard let _ = self.eventSink else {
+         self.initialError = err
+         return
+         }
+         self.eventSink!(FlutterError(code: String(err.code),
+         message: err.localizedDescription,
+         details: nil))
+         }
+         }
+         */
         
-        Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION);
-        
-#if DEBUG
-        let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? true
-        if enableLog {
-            Branch.getInstance().enableLogging()
-        }
-#else
-        let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? false
-        if enableLog {
-            Branch.getInstance().enableLogging()
-        }
-#endif
-        
-        let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
-        
-        print("Branch Check Apple ADS active: \(String(describing:enableAppleADS))");
-        
-        if enableAppleADS {
-            // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
-            Branch.getInstance().delayInitToCheckForSearchAds()
-        }
-        
-        let enableFacebookAds = Bundle.infoPlistValue(forKey: "branch_enable_facebook_ads") as? Bool ?? false
-        print("Branch Check Facebook Link: \(String(describing:enableFacebookAds))");
-        
-        if enableFacebookAds {
-            //Facebook App Install Ads
-            //https://help.branch.io/using-branch/docs/facebook-app-install-ads#configure-your-app-to-read-facebook-app-install-deep-links
-            
-            let FBSDKAppLinkUtility: AnyClass? = NSClassFromString("FBSDKAppLinkUtility")
-            if let FBSDKAppLinkUtility = FBSDKAppLinkUtility {
-                Branch.getInstance().registerFacebookDeepLinkingClass(FBSDKAppLinkUtility)
-            } else {
-                NSLog("FBSDKAppLinkUtility not found but branch_enable_facebook_ads set to true. Please be sure you have integrated the Facebook SDK.")
-            }
-        }
-        
-        let checkPasteboard  = Bundle.infoPlistValue(forKey: "branch_check_pasteboard") as? Bool ?? false
-        print("Branch Clipboard Deferred Deep Linking: \(String(describing:checkPasteboard))");
-        
-        if checkPasteboard {
-            Branch.getInstance().checkPasteboardOnInstall()
-        } else if #available(iOS 15.0, *) {
-            Branch.getInstance().checkPasteboardOnInstall()
-        }
-        
-        Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
-            if error == nil {
-                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
-                guard let _ = self.eventSink else {
-                    self.initialParams = params as? [String: Any]
-                    return
-                }
-                self.eventSink!(params as? [String: Any])
-            } else {
-                let err = (error! as NSError)
-                print("Branch InitSession error: \(err.localizedDescription)")
-                guard let _ = self.eventSink else {
-                    self.initialError = err
-                    return
-                }
-                self.eventSink!(FlutterError(code: String(err.code),
-                                             message: err.localizedDescription,
-                                             details: nil))
-            }
-        }
+        initialLaunchOptions = launchOptions
         return true
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        
         let branchHandled = Branch.getInstance().application(app, open: url, options: options)
         return branchHandled
     }
     
+    public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
+        
+        let branchHandled = Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
+        return branchHandled
+    }
+    
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
+        
         let handledByBranch = Branch.getInstance().continue(userActivity)
         return handledByBranch
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+        
         Branch.getInstance().handlePushNotification(userInfo)
     }
     
@@ -151,6 +163,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     // --------------------------------------------------------------------------------------------
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch (call.method) {
+        case "init":
+            setupBranch(call: call, result: result)
+            break
         case "getShortUrl":
             getShortUrl(call: call, result: result)
             break
@@ -241,6 +256,83 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     //---------------------------------------------------------------------------------------------
     // Branch SDK Call Methods
     // --------------------------------------------------------------------------------------------
+    private func setupBranch(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        
+        let args = call.arguments as! [String: Any?]
+        
+        if args["useTestKey"] as! Bool == true {
+            print("Teste key - ok")
+            Branch.setUseTestBranchKey(true)
+        }
+        
+        if args["disableTracking"] as! Bool == true {
+            Branch.setTrackingDisabled(true)
+        }
+        
+        Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  args["version"] as! String)
+        
+        if args["enableLogging"] as! Bool == true {
+            Branch.getInstance().enableLogging()
+        }
+        
+        // enable pasteboard check for iOS 15+ only
+        if #available(iOS 15, *) {
+            Branch.getInstance().checkPasteboardOnInstall()
+        }
+        
+        if args["delayInitToCheckForSearchAds"] as! Bool == true {
+            Branch.getInstance().delayInitToCheckForSearchAds()
+        }
+        
+        if args["enableFacebookLinkCheck"] as! Bool == true {
+            //Facebook App Install Ads
+            //https://help.branch.io/using-branch/docs/facebook-app-install-ads#configure-your-app-to-read-facebook-app-install-deep-links
+            
+            let FBSDKAppLinkUtility: AnyClass? = NSClassFromString("FBSDKAppLinkUtility")
+            if let FBSDKAppLinkUtility = FBSDKAppLinkUtility {
+                Branch.getInstance().registerFacebookDeepLinkingClass(FBSDKAppLinkUtility)
+            } else {
+                NSLog("FBSDKAppLinkUtility not found but branch_enable_facebook_ads set to true. Please be sure you have integrated the Facebook SDK.")
+            }
+        }
+        
+        /*
+         if let userActivityDict = initialLaunchOptions?[UIApplication.LaunchOptionsKey.userActivityDictionary] as? [AnyHashable : Any],
+         let coldLaunchUserActivity = userActivityDict["UIApplicationLaunchOptionsUserActivityKey"] as? NSUserActivity {
+         if coldLaunchUserActivity.webpageURL != nil {
+         //Branch.getInstance().handleDeepLink(withNewSession: URL(string: coldLaunchUserActivity?.webpageURL))
+         }
+         }
+         
+         let coldLaunchURL = initialLaunchOptions![UIApplication.LaunchOptionsKey.url]
+         if let coldLaunchURL {
+         Branch.getInstance().handleDeepLink(withNewSession: URL(string: coldLaunchURL as! String))
+         }
+         */
+        
+        Branch.getInstance().initSession(launchOptions: initialLaunchOptions) { (params, error) in
+            if error == nil {
+                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
+                guard let _ = self.eventSink else {
+                    self.initialParams = params as? [String: Any]
+                    return
+                }
+                self.eventSink!(params as? [String: Any])
+            } else {
+                let err = (error! as NSError)
+                print("Branch InitSession error: \(err.localizedDescription)")
+                guard let _ = self.eventSink else {
+                    self.initialError = err
+                    return
+                }
+                self.eventSink!(FlutterError(code: String(err.code),
+                                             message: err.localizedDescription,
+                                             details: nil))
+            }
+        }
+        isInitialized = true
+    }
+    
     private func getShortUrl(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]

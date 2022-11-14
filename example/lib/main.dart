@@ -9,6 +9,7 @@ import 'custom_button.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
   runApp(const MyApp());
 }
 

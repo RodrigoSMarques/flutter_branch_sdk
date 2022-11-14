@@ -1,7 +1,4 @@
 import 'dart:io';
-
-//import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -12,6 +9,7 @@ import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
 class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
+  static const PLUGIN_VERSION = "7.0.0";
   static const MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
   static const EVENT_CHANNEL = 'flutter_branch_sdk/event';
 
@@ -20,6 +18,31 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   final eventChannel = const EventChannel(EVENT_CHANNEL);
 
   static Stream<Map<dynamic, dynamic>>? _initSessionStream;
+
+  static bool isInitialized = false;
+
+  ///Initialize Branch SDK
+  /// [useTestKey] - Sets `true` to use the test `key_test_...
+  /// [enableLogging] - Sets `true` turn on debug logging
+  /// [delayInitToCheckForSearchAds] - Sets `true` to enable Apple Search Ads Check (only iOS)
+  /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
+  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  @override
+  Future<void> init(
+      {bool useTestKey = false,
+      bool enableLogging = false,
+      bool delayInitToCheckForSearchAds = false,
+      bool enableFacebookLinkCheck = false,
+      bool disableTracking = false}) async {
+    await messageChannel.invokeMethod('init', {
+      'version': PLUGIN_VERSION,
+      'useTestKey': useTestKey,
+      'enableLogging': enableLogging,
+      'delayInitToCheckForSearchAds': delayInitToCheckForSearchAds,
+      'enableFacebookLinkCheck': enableFacebookLinkCheck,
+      'disableTracking': disableTracking
+    });
+  }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   @override

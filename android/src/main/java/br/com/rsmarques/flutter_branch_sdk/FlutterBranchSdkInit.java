@@ -25,7 +25,8 @@ public class FlutterBranchSdkInit {
         }
 
         // Branch object initialization
-        Branch.registerPlugin(PLUGIN_NAME, PLUGIN_VERSION);
+        //Branch.registerPlugin(PLUGIN_NAME, PLUGIN_VERSION);
+        Branch.registerPlugin(PLUGIN_NAME, BuildConfig.FBRANCH_VERSION);
         Branch.getAutoInstance(context);
     }
 }

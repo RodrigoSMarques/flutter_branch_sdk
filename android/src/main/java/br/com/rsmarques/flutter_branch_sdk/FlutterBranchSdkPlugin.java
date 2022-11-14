@@ -300,6 +300,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         break;
       case "handleDeepLink":
         handleDeepLink(call);
+      case "enableTestMode":
+        Branch.enableTestMode();
         break;
       default:
         result.notImplemented();
