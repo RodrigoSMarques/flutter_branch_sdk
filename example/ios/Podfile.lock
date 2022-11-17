@@ -20,9 +20,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_branch_sdk/ios"
 
 SPEC CHECKSUMS:
-  Branch: b5b57fc2e6f098916fd2ea26c9b66f52ffe7e293
+  Branch: 74cc856025984f691833c8fa332834ac38a0cf4e
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_branch_sdk: dcf38505c8dcb3249841e2acaf323f4a39f30e2b
+  flutter_branch_sdk: 10d9e7a902b78c69bc7480ec27df2475f548fc7b
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 

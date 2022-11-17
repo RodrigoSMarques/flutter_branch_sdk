@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,9 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'custom_button.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
+  await FlutterBranchSdk.init(useTestKey: false, enableLogging: false);
   runApp(const MyApp());
 }
 
@@ -219,14 +220,10 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    /*
     FlutterBranchSdk.validateSDKIntegration();
     if (Platform.isAndroid) {
       showSnackBar(message: 'Check messages in run log or logcat');
     }
-     */
-    FlutterBranchSdk.handleDeepLink(
-        'https://flutterbranchsdk.test-app.link/sxz79EtAPub');
   }
 
   void enableTracking() {
