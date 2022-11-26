@@ -1,8 +1,5 @@
 import 'dart:io';
 
-//import 'dart:typed_data';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -343,5 +340,32 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       throw ArgumentError('url is required');
     }
     messageChannel.invokeMethod('handleDeepLink', {'url': url});
+  }
+
+  /// Add a Partner Parameter for Facebook.
+  /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  /// See Facebook's documentation for details on valid parameters
+  @override
+  void addFacebookPartnerParameter(String key, String value) {
+    messageChannel.invokeMethod(
+        'addFacebookPartnerParameter', {'key': key, 'value': value});
+  }
+
+  /// Clears all Partner Parameters
+  @override
+  void clearPartnerParameters() {
+    messageChannel.invokeMethod('clearPartnerParameters');
+  }
+
+  /// Add the pre-install campaign analytics
+  @override
+  void setPreinstallCampaign(String value) {
+    messageChannel.invokeMethod('setPreinstallCampaign', {'value': value});
+  }
+
+  /// Add the pre-install campaign analytics
+  @override
+  void setPreinstallPartner(String value) {
+    messageChannel.invokeMethod('setPreinstallPartner', {'value': value});
   }
 }

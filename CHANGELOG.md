@@ -1,3 +1,10 @@
+## 6.4.0
+* New Methods:
+    - `addFacebookPartnerParameter` - See [documentation](https://help.branch.io/developers-hub/docs/pass-hashed-information-for-facebook-advanced-matching) on partner parameters for details.
+    - `clearPartnerParameter` - Clears all Partner Parameters
+    - `setPreinstallCampaign` -  [Add the pre-install campaign analytics](https://help.branch.io/developers-hub/docs/pre-install-analytics)
+    - `setPreinstallPartner` -  [Add the pre-install campaign analytics](https://help.branch.io/developers-hub/docs/pre-install-analytics)
+
 ## 6.3.0
 * New Method `handleDeepLink`
 * Fix issue #188: `Failed to handle method call: java.lang.NullPointerException`

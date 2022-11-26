@@ -190,6 +190,7 @@ class FlutterBranchSdk {
         buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
   }
 
+  ///Share with LPLinkMetadata on iOS
   static void shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
@@ -204,7 +205,30 @@ class FlutterBranchSdk {
         buo: buo, linkProperties: linkProperties, icon: icon, title: title);
   }
 
+  ///Have Branch end the current deep link session and start a new session with the provided URL.
   static void handleDeepLink(String url) {
     FlutterBranchSdkPlatform.instance.handleDeepLink(url);
+  }
+
+  /// Add a Partner Parameter for Facebook.
+  /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  /// See Facebook's documentation for details on valid parameters
+  static void addFacebookPartnerParameter(String key, String value) {
+    FlutterBranchSdkPlatform.instance.addFacebookPartnerParameter(key, value);
+  }
+
+  /// Clears all Partner Parameters
+  static void clearPartnerParameters() {
+    FlutterBranchSdkPlatform.instance.clearPartnerParameters();
+  }
+
+  /// Add the pre-install campaign analytics
+  static void setPreinstallCampaign(String value) {
+    FlutterBranchSdkPlatform.instance.setPreinstallCampaign(value);
+  }
+
+  /// Add the pre-install campaign analytics
+  static void setPreinstallPartner(String value) {
+    FlutterBranchSdkPlatform.instance.setPreinstallPartner(value);
   }
 }

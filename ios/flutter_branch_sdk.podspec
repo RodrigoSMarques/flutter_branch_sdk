@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_branch_sdk'
-  s.version          = '3.0.0'
+  s.version          = '6.4.0'
   s.summary          = 'Flutter Plugin for create deep link using Brach SDK (https://branch.io). This plugin provides a cross-platform (iOS, Android, Web).'
   s.description      = <<-DESC
 Flutter Plugin for create deep link using Brach SDK (https://branch.io). This plugin provides a cross-platform (iOS, Android, Web).
