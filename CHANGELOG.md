@@ -4,6 +4,10 @@
     - `clearPartnerParameter` - Clears all Partner Parameters
     - `setPreinstallCampaign` -  [Add the pre-install campaign analytics](https://help.branch.io/developers-hub/docs/pre-install-analytics)
     - `setPreinstallPartner` -  [Add the pre-install campaign analytics](https://help.branch.io/developers-hub/docs/pre-install-analytics)
+* Updated Native `iOS` SDK:
+	* iOS Native SDK Update 1.45.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+	 
+	 > Note: _Requires Xcode 14+_
 
 ## 6.3.0
 * New Method `handleDeepLink`

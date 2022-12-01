@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "6.3.0"
+let PLUGIN_VERSION = "6.4.0"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
