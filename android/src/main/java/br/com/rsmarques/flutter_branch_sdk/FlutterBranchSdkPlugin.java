@@ -93,7 +93,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     activity.getApplication().registerActivityLifecycleCallbacks(this);
 
     if (this.activity != null && FlutterFragmentActivity.class.isAssignableFrom(activity.getClass())) {
-      Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+      Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
     }
   }
 
@@ -176,7 +176,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
   @Override
   public void onActivityStarted(Activity activity) {
     LogUtils.debug(DEBUG_NAME, "onActivityStarted call");
-    Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+    Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
   }
 
   @Override
@@ -212,17 +212,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
   @Override
   public boolean onNewIntent(Intent intent) {
     LogUtils.debug(DEBUG_NAME, "onNewIntent call");
-    if (this.activity != null) {
-      this.activity.setIntent(intent);
-
-      if (intent != null &&
-              intent.hasExtra("branch_force_new_session") &&
-              intent.getBooleanExtra("branch_force_new_session", false)) {
-        Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
-      }
-      return true;
+    if (this.activity == null) {
+      return false;
     }
-    return false;
+    if (intent == null) {
+      return false;
+    }
+    Intent newIntent = intent;
+    if (!intent.hasExtra("branch_force_new_session")) {
+      newIntent.putExtra("branch_force_new_session",true);
+    }
+    this.activity.setIntent(newIntent);
+    Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
+    return true;
   }
 
   /**
@@ -301,6 +303,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       case "handleDeepLink":
         handleDeepLink(call);
         break;
+      case "addFacebookPartnerParameter":
+        addFacebookPartnerParameter(call);
+        break;
+      case "clearPartnerParameters" :
+        clearPartnerParameters();
+        break;
+      case "setPreinstallCampaign" :
+        setPreinstallCampaign(call);
+        break;
+      case "setPreinstallPartner" :
+        setPreinstallPartner(call);
+        break;
       default:
         result.notImplemented();
         break;
@@ -330,6 +344,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 }
               } else {
                 if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED || error.getErrorCode() == BranchError.ERR_IMPROPER_REINITIALIZATION) {
+                  LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - warning: " + error);
                   return;
                 }
                 LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
@@ -754,6 +769,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         result.success(response);
       }
     }
+
   private void handleDeepLink(final MethodCall call) {
 
     LogUtils.debug(DEBUG_NAME, "handleDeepLink call");
@@ -770,6 +786,64 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     activity.startActivity(intent);
   }
 
+  private void addFacebookPartnerParameter(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "addFacebookPartnerParameter call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+    final String key = call.argument("key");
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value);
+      }
+    });
+  }
+
+  private void clearPartnerParameters() {
+    LogUtils.debug(DEBUG_NAME, "clearPartnerParameters call");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).clearPartnerParameters();
+      }
+    });
+  }
+
+  private void setPreinstallCampaign(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "setPreinstallCampaign call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).setPreinstallCampaign(value);
+      }
+    });
+  }
+
+  private void setPreinstallPartner(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "setPreinstallPartner call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).setPreinstallPartner(value);
+      }
+    });
+  }
 }
 
 

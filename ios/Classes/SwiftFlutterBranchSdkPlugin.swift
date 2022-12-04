@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "6.3.0"
+let PLUGIN_VERSION = "6.4.0"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
@@ -226,11 +226,23 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "getQRCode":
             getQRCode(call: call, result: result)
             break
-        case"shareWithLPLinkMetadata":
+        case "shareWithLPLinkMetadata":
             shareWithLPLinkMetadata(call: call, result: result)
             break
-        case"handleDeepLink":
+        case "handleDeepLink":
             handleDeepLink(call: call)
+            break
+        case "addFacebookPartnerParameter" :
+            addFacebookPartnerParameter(call: call)
+            break
+        case  "clearPartnerParameters" :
+            Branch.getInstance().clearPartnerParameters()
+            break
+        case "setPreinstallCampaign" :
+            setPreinstallPartner(call: call)
+            break
+        case "setPreinstallPartner" :
+            setPreinstallPartner(call: call)
             break
         default:
             result(FlutterMethodNotImplemented)
@@ -569,6 +581,23 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let url = args["url"] as! String
         Branch.getInstance().handleDeepLink(withNewSession: URL(string: url))
     }
+    
+    private func addFacebookPartnerParameter(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let key = args["key"] as! String
+        let value = args["value"] as! String
+        
+        DispatchQueue.main.async {
+            Branch.getInstance().addFacebookPartnerParameter(withName: key, value:value)
+        }
+    }
+    
+    private func setPreinstallCampaign(call: FlutterMethodCall) {
+    }
+    
+    private func setPreinstallPartner(call: FlutterMethodCall) {
+    }
+    
     
     /*
      https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager

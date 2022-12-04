@@ -210,6 +210,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError('getQRCodeAsImage has not been implemented');
   }
 
+  ///Showing a Share Sheet with LPLinkMetadata in iOS
   void shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
@@ -222,5 +223,28 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   void handleDeepLink(String url) async {
     throw UnimplementedError('handleDeepLink has not been implemented');
+  }
+
+  /// Add the pre-install campaign analytics
+  void setPreinstallCampaign(String value) {
+    throw UnimplementedError('setPreinstallCampaign has not been implemented');
+  }
+
+  /// Add the pre-install campaign analytics
+  void setPreinstallPartner(String value) {
+    throw UnimplementedError('setPreinstallPartner has not been implemented');
+  }
+
+  /// Add a Partner Parameter for Facebook.
+  /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  /// See Facebook's documentation for details on valid parameters
+  void addFacebookPartnerParameter(String key, String value) {
+    throw UnimplementedError(
+        'addFacebookPartnerParameter has not been implemented');
+  }
+
+  ///Clears all Partner Parameters
+  void clearPartnerParameters() {
+    throw UnimplementedError('clearPartnerParameters has not been implemented');
   }
 }
