@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +8,14 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'custom_button.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
   FlutterBranchSdk.addFacebookPartnerParameter(
       'em', '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   //FlutterBranchSdk.clearPartnerParameters();
-
+  await FlutterBranchSdk.init(useTestKey: false, enableLogging: false);
   runApp(const MyApp());
 }
 
@@ -224,14 +225,10 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    /*
     FlutterBranchSdk.validateSDKIntegration();
     if (Platform.isAndroid) {
       showSnackBar(message: 'Check messages in run log or logcat');
     }
-     */
-    FlutterBranchSdk.handleDeepLink(
-        'https://flutterbranchsdk.test-app.link/sxz79EtAPub');
   }
 
   void enableTracking() {
