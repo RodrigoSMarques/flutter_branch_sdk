@@ -44,6 +44,7 @@ import io.flutter.plugin.common.PluginRegistry.NewIntentListener;
 
 public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler, StreamHandler, NewIntentListener, ActivityAware,
         Application.ActivityLifecycleCallbacks {
+
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
@@ -824,6 +825,64 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         activity.startActivity(intent);
     }
 
+  private void addFacebookPartnerParameter(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "addFacebookPartnerParameter call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+    final String key = call.argument("key");
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value);
+      }
+    });
+  }
+
+  private void clearPartnerParameters() {
+    LogUtils.debug(DEBUG_NAME, "clearPartnerParameters call");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).clearPartnerParameters();
+      }
+    });
+  }
+
+  private void setPreinstallCampaign(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "setPreinstallCampaign call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).setPreinstallCampaign(value);
+      }
+    });
+  }
+
+  private void setPreinstallPartner(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "setPreinstallPartner call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).setPreinstallPartner(value);
+      }
+    });
+  }
 }
 
 
