@@ -94,14 +94,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "setActivity call");
         this.activity = activity;
         activity.getApplication().registerActivityLifecycleCallbacks(this);
-
-        if (!isInitialized) {
-            return;
-        }
-        //if (this.activity != null && FlutterFragmentActivity.class.isAssignableFrom(activity.getClass())) {
-        //    Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
-        //}
-
     }
 
     private void teardownChannels() {
@@ -186,7 +178,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (!isInitialized) {
             return;
         }
-        Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+        Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
     }
 
     @Override
@@ -223,20 +215,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public boolean onNewIntent(Intent intent) {
         LogUtils.debug(DEBUG_NAME, "onNewIntent call");
 
-        if (this.activity == null) {
-            return false;
-        }
-
-        this.activity.setIntent(intent);
-
         if (!isInitialized) {
             return false;
         }
-        if (intent != null &&
-                intent.hasExtra("branch_force_new_session") &&
-                intent.getBooleanExtra("branch_force_new_session", false)) {
-            Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
+
+        if (this.activity == null || intent == null) {
+            return false;
         }
+
+        Intent newIntent = intent;
+        if (!intent.hasExtra("branch_force_new_session")) {
+            newIntent.putExtra("branch_force_new_session",true);
+        }
+        this.activity.setIntent(newIntent);
+        Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
         return true;
     }
 
@@ -364,6 +356,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             };
 
     private void setupBranch(MethodCall call, final Result result) {
+        LogUtils.debug(DEBUG_NAME, "setupBranch call");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -383,7 +376,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
 
         Branch.registerPlugin(PLUGIN_NAME, (String) argsMap.get("version"));
-        branch = Branch.getAutoInstance(context);
+        branch = Branch.getAutoInstance(this.context);
 
         if ((Boolean) argsMap.get("disableTracking")) {
             branch.disableTracking(true);
@@ -392,7 +385,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if ((Boolean) argsMap.get("enableFacebookLinkCheck")) {
             branch.enableFacebookAppLinkCheck();
         }
-        Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent() != null ? activity.getIntent().getData() : null).init();
+        Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(null).init();
+        //this.context.startActivity(this.activity.getIntent());
+        onNewIntent(this.activity.getIntent());
 
         result.success(Boolean.TRUE);
     }
@@ -815,7 +810,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
-        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
         final String url = call.argument("url");
 
