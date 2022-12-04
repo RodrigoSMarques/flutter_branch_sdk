@@ -447,8 +447,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    //throw UnsupportedError(
-    //    'shareWithLPLinkMetadata() Not available in Branch JS SDK');
     showShareSheet(
         buo: buo, linkProperties: linkProperties, messageText: title);
   }
@@ -457,6 +455,36 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void handleDeepLink(String url) {
     js.context.callMethod('open', [url, '_self']);
+  }
+
+  /// Add a Partner Parameter for Facebook.
+  /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  /// See Facebook's documentation for details on valid parameters
+  @override
+  void addFacebookPartnerParameter(String key, String value) {
+    throw UnsupportedError(
+        'addFacebookPartnerParameter() Not available in Branch JS SDK');
+  }
+
+  /// Clears all Partner Parameters
+  @override
+  void clearPartnerParameters() {
+    throw UnsupportedError(
+        'clearPartnerParameters() Not available in Branch JS SDK');
+  }
+
+  /// Add the pre-install campaign analytics
+  @override
+  void setPreinstallCampaign(String value) {
+    throw UnsupportedError(
+        'setPreinstallCampaign() Not available in Branch JS SDK');
+  }
+
+  /// Add the pre-install campaign analytics
+  @override
+  void setPreinstallPartner(String value) {
+    throw UnsupportedError(
+        'setPreinstallPartner() Not available in Branch JS SDK');
   }
 
   void close() {
