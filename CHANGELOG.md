@@ -1,13 +1,15 @@
 ## 6.4.0
+* Fix issue #193: `Flutter app won't get notified about the quick link event if the app is at foreground on Android devices`
+
 * New Methods:
     - `addFacebookPartnerParameter` - See [documentation](https://help.branch.io/developers-hub/docs/pass-hashed-information-for-facebook-advanced-matching) on partner parameters for details.
     - `clearPartnerParameter` - Clears all Partner Parameters
     - `setPreinstallCampaign` -  [Add the pre-install campaign analytics](https://help.branch.io/developers-hub/docs/pre-install-analytics)
     - `setPreinstallPartner` -  [Add the pre-install campaign analytics](https://help.branch.io/developers-hub/docs/pre-install-analytics)
 * Updated Native `iOS` SDK:
-	* iOS Native SDK Update 1.45.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+    * iOS Native SDK Update 1.45.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 	 
-	 > Note: _Requires Xcode 14+_
+     > Note: _Requires Xcode 14+_
 
 ## 6.3.0
 * New Method `handleDeepLink`
