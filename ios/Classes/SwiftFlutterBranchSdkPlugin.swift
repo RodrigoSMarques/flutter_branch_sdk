@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-import Branch
+import BranchSDK
 import AppTrackingTransparency
 import AdSupport
 
