@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -223,14 +224,10 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    /*
     FlutterBranchSdk.validateSDKIntegration();
     if (Platform.isAndroid) {
       showSnackBar(message: 'Check messages in run log or logcat');
     }
-     */
-    FlutterBranchSdk.handleDeepLink(
-        'https://flutterbranchsdk.test-app.link/sxz79EtAPub');
   }
 
   void enableTracking() {

@@ -1,3 +1,7 @@
+## 6.5.0
+* Updated Native `iOS` SDK:
+    * iOS Native SDK Update 2.0.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ## 6.4.0
 * Fix issue #193: `Flutter app won't get notified about the quick link event if the app is at foreground on Android devices`
 
