@@ -231,4 +231,11 @@ class FlutterBranchSdk {
   static void setPreinstallPartner(String value) {
     FlutterBranchSdkPlatform.instance.setPreinstallPartner(value);
   }
+
+  ///Add a Partner Parameter for Snap.
+  ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  static void addSnapPartnerParameter(String key, String value) {
+    FlutterBranchSdkPlatform.instance.addSnapPartnerParameter(key, value);
+  }
+
 }

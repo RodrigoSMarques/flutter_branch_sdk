@@ -370,4 +370,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   void setPreinstallPartner(String value) {
     messageChannel.invokeMethod('setPreinstallPartner', {'value': value});
   }
+
+  ///Add a Partner Parameter for Snap.
+  ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  @override
+  void addSnapPartnerParameter(String key, String value) {
+    messageChannel.invokeMethod(
+        'addSnapPartnerParameter', {'key': key, 'value': value});
+
+  }
 }

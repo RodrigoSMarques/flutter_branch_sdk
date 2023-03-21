@@ -487,6 +487,15 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         'setPreinstallPartner() Not available in Branch JS SDK');
   }
 
+  ///Add a Partner Parameter for Snap.
+  ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  @override
+  void addSnapPartnerParameter(String key, String value) {
+    throw UnsupportedError(
+        'addSnapPartnerParameter() Not available in Branch JS SDK');
+  }
+
+
   void close() {
     _initSessionStream.close();
   }

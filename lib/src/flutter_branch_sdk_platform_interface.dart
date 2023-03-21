@@ -247,4 +247,12 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   void clearPartnerParameters() {
     throw UnimplementedError('clearPartnerParameters has not been implemented');
   }
+
+  ///Add a Partner Parameter for Snap.
+  ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  void addSnapPartnerParameter  (String key, String value) {
+    throw UnimplementedError(
+        'addSnapPartnerParameter has not been implemented');
+  }
+
 }
