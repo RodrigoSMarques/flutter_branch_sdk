@@ -213,8 +213,10 @@ class FlutterBranchSdk {
   /// Add a Partner Parameter for Facebook.
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
-  static void addFacebookPartnerParameter({required String key, required String value}) {
-    FlutterBranchSdkPlatform.instance.addFacebookPartnerParameter(key: key, value: value);
+  static void addFacebookPartnerParameter(
+      {required String key, required String value}) {
+    FlutterBranchSdkPlatform.instance
+        .addFacebookPartnerParameter(key: key, value: value);
   }
 
   /// Clears all Partner Parameters
@@ -234,8 +236,9 @@ class FlutterBranchSdk {
 
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
-  static void addSnapPartnerParameter({required String key, required String value}) {
-    FlutterBranchSdkPlatform.instance.addSnapPartnerParameter(key: key, value: value);
+  static void addSnapPartnerParameter(
+      {required String key, required String value}) {
+    FlutterBranchSdkPlatform.instance
+        .addSnapPartnerParameter(key: key, value: value);
   }
-
 }

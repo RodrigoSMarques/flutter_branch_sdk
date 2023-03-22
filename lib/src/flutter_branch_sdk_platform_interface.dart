@@ -238,7 +238,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// Add a Partner Parameter for Facebook.
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
-  void addFacebookPartnerParameter({required String key, required String value}) {
+  void addFacebookPartnerParameter(
+      {required String key, required String value}) {
     throw UnimplementedError(
         'addFacebookPartnerParameter has not been implemented');
   }
@@ -250,9 +251,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
-  void addSnapPartnerParameter  ({required String key, required String value}) {
+  void addSnapPartnerParameter({required String key, required String value}) {
     throw UnimplementedError(
         'addSnapPartnerParameter has not been implemented');
   }
-
 }
