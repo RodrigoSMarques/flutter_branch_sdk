@@ -244,6 +244,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "setPreinstallPartner" :
             setPreinstallPartner(call: call)
             break
+        case "addSnapPartnerParameter" :
+            addSnapPartnerParameter(call: call)
+            break
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -591,7 +594,17 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             Branch.getInstance().addFacebookPartnerParameter(withName: key, value:value)
         }
     }
-    
+
+    private func addSnapPartnerParameter(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let key = args["key"] as! String
+        let value = args["value"] as! String
+        
+        DispatchQueue.main.async {
+            Branch.getInstance().addSnapPartnerParameter(withName: key, value:value)
+        }
+    }
+
     private func setPreinstallCampaign(call: FlutterMethodCall) {
     }
     

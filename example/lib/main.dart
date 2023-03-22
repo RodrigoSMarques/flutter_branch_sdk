@@ -12,8 +12,16 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
-  //FlutterBranchSdk.addFacebookPartnerParameter('em', '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+
+  //FlutterBranchSdk.addFacebookPartnerParameter(
+  //    key: 'em',
+  //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   //FlutterBranchSdk.clearPartnerParameters();
+
+  //FlutterBranchSdk.addSnapPartnerParameter(
+  //    key: 'hashed_email_address',
+  //    value:
+  //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
 
   runApp(const MyApp());
 }
@@ -45,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   BranchContentMetaData metadata = BranchContentMetaData();
   BranchUniversalObject? buo;
   BranchLinkProperties lp = BranchLinkProperties();
-  BranchEvent? eventStandart;
+  BranchEvent? eventStandard;
   BranchEvent? eventCustom;
 
   StreamSubscription<Map>? streamSubscription;
@@ -183,7 +191,7 @@ class _HomePageState extends State<HomePage> {
       ..addControlParam('\$android_redirect_timeout', 750)
       ..addControlParam('referring_user_id', 'user_id');
 
-    eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
+    eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
       ..transactionID = '12344555'
       ..currency = BranchCurrencyType.BRL
@@ -256,11 +264,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void trackContent() {
-    FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventStandart!);
+    FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventStandard!);
 
     FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventCustom!);
 
-    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandart!);
+    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
 
     FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
 
