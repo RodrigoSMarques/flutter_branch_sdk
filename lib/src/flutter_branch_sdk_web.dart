@@ -461,7 +461,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
   @override
-  void addFacebookPartnerParameter(String key, String value) {
+  void addFacebookPartnerParameter({required String key, required String value}) {
     throw UnsupportedError(
         'addFacebookPartnerParameter() Not available in Branch JS SDK');
   }
@@ -490,7 +490,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   @override
-  void addSnapPartnerParameter(String key, String value) {
+  void addSnapPartnerParameter({required String key, required String value}) {
     throw UnsupportedError(
         'addSnapPartnerParameter() Not available in Branch JS SDK');
   }

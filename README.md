@@ -429,8 +429,8 @@ The `BranchEvent` interface provides an interface to add contents represented by
 Analytics about your app's BranchEvents can be found on the Branch dashboard, and BranchEvents also provide tight integration with many third party analytics providers.
 
 ```dart
-BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
-FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandart);
+BranchEvent eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
+FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandard);
 ```
 You can use your own custom event names too:
 
@@ -441,21 +441,19 @@ FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventCustom);
 Extra event specific data can be tracked with the event as well:
 
 ```dart
-    eventStandart.transactionID = '12344555';
-    eventStandart.currency = BranchCurrencyType.BRL;
-    eventStandart.revenue = 1.5;
-    eventStandart.shipping = 10.2;
-    eventStandart.tax = 12.3;
-    eventStandart.coupon = 'test_coupon';
-    eventStandart.affiliation = 'test_affiliation';
-    eventStandart.eventDescription = 'Event_description';
-    eventStandart.searchQuery = 'item 123';
-    eventStandart.adType = BranchEventAdType.BANNER;
-    eventStandart.addCustomData(
-        'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
-    eventStandart.addCustomData(
-        'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
-    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandart);
+    eventStandard.transactionID = '12344555';
+    eventStandard.currency = BranchCurrencyType.BRL;
+    eventStandard.revenue = 1.5;
+    eventStandard.shipping = 10.2;
+    eventStandard.tax = 12.3;
+    eventStandard.coupon = 'test_coupon';
+    eventStandard.affiliation = 'test_affiliation';
+    eventStandard.eventDescription = 'Event_description';
+    eventStandard.searchQuery = 'item 123';
+    eventStandard.adType = BranchEventAdType.BANNER;
+    eventStandard.addCustomData('Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
+    eventStandard.addCustomData('Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
+    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandard);
 ```
 
 `trackContent` accepts a list of Branch Universal Object.
