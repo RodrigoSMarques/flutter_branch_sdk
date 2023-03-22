@@ -12,11 +12,12 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
+
   //FlutterBranchSdk.addFacebookPartnerParameter(
   //    key: 'em',
-  //    value:
-  //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   //FlutterBranchSdk.clearPartnerParameters();
+
   //FlutterBranchSdk.addSnapPartnerParameter(
   //    key: 'hashed_email_address',
   //    value:
