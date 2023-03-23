@@ -315,6 +315,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       case "setPreinstallPartner" :
         setPreinstallPartner(call);
         break;
+      case "addSnapPartnerParameter" :
+        addSnapPartnerParameter(call);
+        break;
+
       default:
         result.notImplemented();
         break;
@@ -841,6 +845,21 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       @Override
       public void run() {
         Branch.getAutoInstance(context).setPreinstallPartner(value);
+      }
+    });
+  }
+  private void addSnapPartnerParameter(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "addSnapPartnerParameter call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+    final String key = call.argument("key");
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value);
       }
     });
   }

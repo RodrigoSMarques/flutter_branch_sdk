@@ -68,5 +68,7 @@
 	<true/>
 	<key>branch_key</key>
 	<string>key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>
