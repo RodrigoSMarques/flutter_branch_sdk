@@ -473,6 +473,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     if (!(call.arguments instanceof Map)) {
       throw new IllegalArgumentException("Map argument expected");
     }
+    LogUtils.debug(DEBUG_NAME, "listOnSearch removed from Branch SDK");
+    result.success(Boolean.TRUE);
+    /*
     HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
     BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
     if (argsMap.containsKey("lp")) {
@@ -482,6 +485,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       buo.listOnGoogleSearch(context);
     }
     result.success(Boolean.TRUE);
+    */
   }
 
   private void removeFromSearch(MethodCall call, Result result) {
@@ -489,15 +493,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     if (!(call.arguments instanceof Map)) {
       throw new IllegalArgumentException("Map argument expected");
     }
+    LogUtils.debug(DEBUG_NAME, "removeFromSearch removed from Branch SDK");
+    result.success(Boolean.TRUE);
+    /*
     HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
     BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
     if (argsMap.containsKey("lp")) {
       LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-      buo.removeFromLocalIndexing(context, linkProperties);
+      //buo.removeFromLocalIndexing(context, linkProperties);
     } else {
-      buo.removeFromLocalIndexing(context);
+      //buo.removeFromLocalIndexing(context);
     }
     result.success(Boolean.TRUE);
+     */
   }
 
   private void trackContent(MethodCall call) {
