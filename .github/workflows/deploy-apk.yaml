@@ -23,8 +23,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3.12.0
         with:
-          java-version: "17.x"
-          distribution: "oracle"
+          java-version: "12.x"
+          distribution: "zulu"
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
