@@ -8,8 +8,9 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'custom_button.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterBranchSdk.init(useTestKey: false, enableLogging: false);
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
 
@@ -17,12 +18,10 @@ void main() {
   //    key: 'em',
   //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   //FlutterBranchSdk.clearPartnerParameters();
-
   //FlutterBranchSdk.addSnapPartnerParameter(
   //    key: 'hashed_email_address',
   //    value:
   //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-
   runApp(const MyApp());
 }
 
