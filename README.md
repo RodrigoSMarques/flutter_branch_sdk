@@ -401,7 +401,7 @@ Replace *"https://flutterbranchsdk.test-app.link/sxz79EtAPub"* with your own lin
 
 ### List content on Search
 * For iOs list BUO links in Spotlight
-* For Android no action will be taken (
+* For Android no action will be taken
 * For WEB not supported
 
 
