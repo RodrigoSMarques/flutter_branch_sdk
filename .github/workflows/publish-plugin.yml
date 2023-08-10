@@ -24,7 +24,7 @@ jobs:
           cache: true
       - name: Install dependencies
         run: dart pub get
-      - name: Generate documenti
+      - name: Generate documentation
         run: dart doc
       - name: Publish flutter package
         run: flutter pub pub publish --dry-run
