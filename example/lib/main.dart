@@ -10,7 +10,7 @@ import 'custom_button.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterBranchSdk.init(useTestKey: false, enableLogging: false);
+  await FlutterBranchSdk.init(useTestKey: true, enableLogging: true);
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
 

@@ -173,9 +173,11 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "isUserIdentified":
             isUserIdentified(result: result)
             break
+        /*
         case "setSKAdNetworkMaxTime" :
             setSKAdNetworkMaxTime(call: call)
             break
+         */
         case "requestTrackingAuthorization" :
             requestTrackingAuthorization(result: result)
             break
@@ -260,10 +262,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         // enable pasteboard check for iOS 15+ only
         if #available(iOS 15, *) {
             branch!.checkPasteboardOnInstall()
-        }
-        
-        if args["delayInitToCheckForSearchAds"] as! Bool == true {
-            branch!.delayInitToCheckForSearchAds()
         }
         
         if args["enableFacebookLinkCheck"] as! Bool == true {
@@ -550,7 +548,8 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
-    
+
+    /*
     private func setSKAdNetworkMaxTime(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
@@ -558,6 +557,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             self.branch!.setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
         }
     }
+    */
     
     private func isUserIdentified(result: @escaping FlutterResult) {
         DispatchQueue.main.async {

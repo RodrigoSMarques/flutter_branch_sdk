@@ -25,21 +25,18 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Initialize Branch SDK
   /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
-  /// [delayInitToCheckForSearchAds] - Sets `true` to enable Apple Search Ads Check (only iOS)
   /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   @override
   Future<void> init(
       {bool useTestKey = false,
       bool enableLogging = false,
-      bool delayInitToCheckForSearchAds = false,
       bool enableFacebookLinkCheck = false,
       bool disableTracking = false}) async {
     await messageChannel.invokeMethod('init', {
       'version': PLUGIN_VERSION,
       'useTestKey': useTestKey,
       'enableLogging': enableLogging,
-      'delayInitToCheckForSearchAds': delayInitToCheckForSearchAds,
       'enableFacebookLinkCheck': enableFacebookLinkCheck,
       'disableTracking': disableTracking
     });
@@ -204,13 +201,17 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
   ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
+  @Deprecated('This is no longer supported for iOS 16.1+')
   @override
   void setIOSSKAdNetworkMaxTime(int hours) {
+    /*
     if (!Platform.isIOS) {
       return;
     }
     messageChannel
         .invokeMethod('setSKAdNetworkMaxTime', {'maxTimeInterval': hours});
+     */
+    return;
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.

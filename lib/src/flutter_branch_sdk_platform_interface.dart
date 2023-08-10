@@ -30,13 +30,11 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///Initialize Branch SDK
   /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
-  /// [delayInitToCheckForSearchAds] - Sets `true` to enable Apple Search Ads Check (only iOS)
   /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   Future<void> init(
       {bool useTestKey = false,
       bool enableLogging = false,
-      bool delayInitToCheckForSearchAds = false,
       bool enableFacebookLinkCheck = false,
       bool disableTracking = false}) async {
     throw UnimplementedError('init has not been implemented');
@@ -140,6 +138,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
   ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
+  @Deprecated('This is no longer supported for iOS 16.1+')
   void setIOSSKAdNetworkMaxTime(int hours) {
     throw UnimplementedError(
         'setIOSSKAdNetworkMaxTime has not been implemented');

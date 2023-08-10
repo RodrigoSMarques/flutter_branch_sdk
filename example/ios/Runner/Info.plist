@@ -74,5 +74,7 @@
                 <string>flutterbranchsdk-alternate.test-app.link</string>
                 <string>flutterbranchsdk.test-app.link</string>
             </array>
-    </dict>
+    	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+</dict>
 </plist>
