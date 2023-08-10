@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
 
   static const imageURL =
       'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg';
+
   @override
   void initState() {
     super.initState();
@@ -337,7 +338,9 @@ class _HomePageState extends State<HomePage> {
     BranchResponse response =
         await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp);
     if (response.success) {
-      showGeneratedLink(this.context, response.result);
+      if (context.mounted) {
+        showGeneratedLink(context, response.result);
+      }
     } else {
       showSnackBar(
           message: 'Error : ${response.errorCode} - ${response.errorMessage}');
@@ -376,7 +379,9 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 imageFormat: BranchImageFormat.PNG));
     if (responseQrCodeImage.success) {
-      showQrCode(this.context, responseQrCodeImage.result);
+      if (context.mounted) {
+        showQrCode(context, responseQrCodeImage.result);
+      }
     } else {
       showSnackBar(
           message:
@@ -413,7 +418,9 @@ class _HomePageState extends State<HomePage> {
                   child: CustomButton(
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: url));
-                        Navigator.pop(this.context);
+                        if (context.mounted) {
+                          Navigator.pop(this.context);
+                        }
                       },
                       child: const Center(child: Text('Copy link'))),
                 ),

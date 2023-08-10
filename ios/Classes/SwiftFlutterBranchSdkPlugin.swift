@@ -48,16 +48,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             Branch.getInstance().enableLogging()
         }
 #endif
-        
-        let enableAppleADS = Bundle.infoPlistValue(forKey: "branch_check_apple_ads") as? Bool ?? false
-        
-        print("Branch Check Apple ADS active: \(String(describing:enableAppleADS))");
-        
-        if enableAppleADS {
-            // This will usually add less than 1 second on first time startup.  Up to 3.5 seconds if Apple Search Ads fails to respond.
-            Branch.getInstance().delayInitToCheckForSearchAds()
-        }
-        
+                
         let enableFacebookAds = Bundle.infoPlistValue(forKey: "branch_enable_facebook_ads") as? Bool ?? false
         print("Branch Check Facebook Link: \(String(describing:enableFacebookAds))");
         
