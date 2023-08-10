@@ -25,4 +25,5 @@ jobs:
       - name: Generate documentation
         run: dart doc
       - name: Publish flutter package
-        run: dart pub publish --dry-run
+        #run: dart pub publish --dry-run
+        run: dart pub publish --force
