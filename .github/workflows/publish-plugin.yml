@@ -15,13 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
-        #with: 
-        #  environment: release
-      #- name: Setup Flutter
-      #  uses: subosito/flutter-action@v2
-      #  with:
-      #    channel: "stable"
-      #    cache: true
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
       - name: Install dependencies
         run: dart pub get
       - name: Generate documentation
