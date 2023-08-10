@@ -25,7 +25,7 @@ jobs:
         with:
           cache: true
       - name: Lint
-        run: flutter format --output=none --set-exit-if-changed lib/
+        run: dart format --output=none --set-exit-if-changed lib/
   check-code-analysis-flutter:
     name: Code analysis (flutter)
     timeout-minutes: 5

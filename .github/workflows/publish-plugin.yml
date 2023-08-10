@@ -2,34 +2,28 @@ name: Publish plugin - pub.dev
 
 on:
   push:
-#    branches:
-#      - "dev"      
     tags:
       - 'v*'
   workflow_dispatch:
   
 jobs:
-  release:
+  publish:
+    permissions:
+      id-token: write # Required for authentication using OIDC
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      - uses: dart-lang/setup-dart@v1
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
           cache: true
-      
+      - name: Install dependencies
+        run: dart pub get
+      - name: Generate documentation
+        run: dart doc
       - name: Publish flutter package
-        uses: k-paxian/dart-package-publisher@v1.4
-#        uses: RodrigoSMarques/dart-package-publisher@master
-        with:
-          accessToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_ACCESS_TOKEN  }}
-          refreshToken: ${{ secrets.PUBDEV_GOOGLE_ACCOUNT_REFRESH_TOKEN }}
-          flutter: true
-          format: true
-          skipTests: true
-          dryRunOnly: true
-#          docs: true
-          
+        #run: dart pub publish --dry-run
+        run: dart pub publish --force
