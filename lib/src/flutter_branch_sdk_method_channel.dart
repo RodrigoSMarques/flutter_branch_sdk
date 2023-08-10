@@ -373,7 +373,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
   @override
-  void addFacebookPartnerParameter(String key, String value) {
+  void addFacebookPartnerParameter(
+      {required String key, required String value}) {
     messageChannel.invokeMethod(
         'addFacebookPartnerParameter', {'key': key, 'value': value});
   }
@@ -394,5 +395,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @override
   void setPreinstallPartner(String value) {
     messageChannel.invokeMethod('setPreinstallPartner', {'value': value});
+  }
+
+  ///Add a Partner Parameter for Snap.
+  ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
+  @override
+  void addSnapPartnerParameter({required String key, required String value}) {
+    messageChannel
+        .invokeMethod('addSnapPartnerParameter', {'key': key, 'value': value});
   }
 }

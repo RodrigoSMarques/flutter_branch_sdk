@@ -10,12 +10,18 @@ import 'custom_button.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
-  FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
-  FlutterBranchSdk.addFacebookPartnerParameter(
-      'em', '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  //FlutterBranchSdk.clearPartnerParameters();
   await FlutterBranchSdk.init(useTestKey: false, enableLogging: false);
+  //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
+  //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
+
+  //FlutterBranchSdk.addFacebookPartnerParameter(
+  //    key: 'em',
+  //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  //FlutterBranchSdk.clearPartnerParameters();
+  //FlutterBranchSdk.addSnapPartnerParameter(
+  //    key: 'hashed_email_address',
+  //    value:
+  //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   runApp(const MyApp());
 }
 
@@ -46,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   BranchContentMetaData metadata = BranchContentMetaData();
   BranchUniversalObject? buo;
   BranchLinkProperties lp = BranchLinkProperties();
-  BranchEvent? eventStandart;
+  BranchEvent? eventStandard;
   BranchEvent? eventCustom;
 
   StreamSubscription<Map>? streamSubscription;
@@ -55,6 +61,7 @@ class _HomePageState extends State<HomePage> {
 
   static const imageURL =
       'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg';
+
   @override
   void initState() {
     super.initState();
@@ -184,7 +191,7 @@ class _HomePageState extends State<HomePage> {
       ..addControlParam('\$android_redirect_timeout', 750)
       ..addControlParam('referring_user_id', 'user_id');
 
-    eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
+    eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
       ..transactionID = '12344555'
       ..currency = BranchCurrencyType.BRL
@@ -257,11 +264,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void trackContent() {
-    FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventStandart!);
+    FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventStandard!);
 
     FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventCustom!);
 
-    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandart!);
+    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
 
     FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
 
@@ -330,7 +337,9 @@ class _HomePageState extends State<HomePage> {
     BranchResponse response =
         await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp);
     if (response.success) {
-      showGeneratedLink(this.context, response.result);
+      if (context.mounted) {
+        showGeneratedLink(context, response.result);
+      }
     } else {
       showSnackBar(
           message: 'Error : ${response.errorCode} - ${response.errorMessage}');
@@ -369,7 +378,9 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 imageFormat: BranchImageFormat.PNG));
     if (responseQrCodeImage.success) {
-      showQrCode(this.context, responseQrCodeImage.result);
+      if (context.mounted) {
+        showQrCode(context, responseQrCodeImage.result);
+      }
     } else {
       showSnackBar(
           message:
@@ -406,7 +417,9 @@ class _HomePageState extends State<HomePage> {
                   child: CustomButton(
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: url));
-                        Navigator.pop(this.context);
+                        if (context.mounted) {
+                          Navigator.pop(this.context);
+                        }
                       },
                       child: const Center(child: Text('Copy link'))),
                 ),

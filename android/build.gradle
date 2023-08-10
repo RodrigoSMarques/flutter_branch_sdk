@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.3.0'
     }
 }
 
@@ -29,28 +29,27 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    defaultConfig {
+        minSdkVersion 21
+        compileSdk 31
+        buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
+    }
+
     buildFeatures {
         buildConfig = true
     }
-    compileSdkVersion 31
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    defaultConfig {
-        minSdkVersion 21
-
-        buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
-    }
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:5.2.+'
-    implementation 'com.google.firebase:firebase-appindexing:19.0.0'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1+'
-    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'io.branch.sdk.android:library:5.6.+'
+    //implementation 'com.google.firebase:firebase-appindexing:19.0.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+    implementation 'androidx.browser:browser:1.5.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.5.1'
-    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'androidx.browser:browser:1.5.0'
 }

@@ -8,8 +8,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.2.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 1.45.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.6.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 2.2.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -21,7 +21,7 @@ Enable / Disable User Tracking | X | X | X
 Get First and Last Parameters | X | X | X
 Generate Deep Link for Branch Universal Object (BUO)| X | X | X
 Show Share Sheet for Branch Universal Object (BUO)| X | X | X
-List BUO on Search / Remove BUO from Search| X | X | Not supported
+List BUO on Search / Remove BUO from Search|  | X | 
 Register view| X | X | X
 Track User Actions and Events| X | X | X
 Init Branch Session and Deep Link| X | X | X
@@ -400,8 +400,10 @@ Replace *"https://flutterbranchsdk.test-app.link/sxz79EtAPub"* with your own lin
 > Handling a new deep link in your app will clear the current session data and a new referred "open" will be attributed.
 
 ### List content on Search
-* For Android list BUO links in Google Search with Firebase App Indexing API and locally  in Google In Apps search
 * For iOs list BUO links in Spotlight
+* For Android no action will be taken
+* For WEB not supported
+
 
 ```dart
     bool success = await FlutterBranchSdk.listOnSearch(buo: buo);
@@ -429,8 +431,8 @@ The `BranchEvent` interface provides an interface to add contents represented by
 Analytics about your app's BranchEvents can be found on the Branch dashboard, and BranchEvents also provide tight integration with many third party analytics providers.
 
 ```dart
-BranchEvent eventStandart = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
-FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandart);
+BranchEvent eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
+FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandard);
 ```
 You can use your own custom event names too:
 
@@ -441,21 +443,19 @@ FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventCustom);
 Extra event specific data can be tracked with the event as well:
 
 ```dart
-    eventStandart.transactionID = '12344555';
-    eventStandart.currency = BranchCurrencyType.BRL;
-    eventStandart.revenue = 1.5;
-    eventStandart.shipping = 10.2;
-    eventStandart.tax = 12.3;
-    eventStandart.coupon = 'test_coupon';
-    eventStandart.affiliation = 'test_affiliation';
-    eventStandart.eventDescription = 'Event_description';
-    eventStandart.searchQuery = 'item 123';
-    eventStandart.adType = BranchEventAdType.BANNER;
-    eventStandart.addCustomData(
-        'Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
-    eventStandart.addCustomData(
-        'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
-    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandart);
+    eventStandard.transactionID = '12344555';
+    eventStandard.currency = BranchCurrencyType.BRL;
+    eventStandard.revenue = 1.5;
+    eventStandard.shipping = 10.2;
+    eventStandard.tax = 12.3;
+    eventStandard.coupon = 'test_coupon';
+    eventStandard.affiliation = 'test_affiliation';
+    eventStandard.eventDescription = 'Event_description';
+    eventStandard.searchQuery = 'item 123';
+    eventStandard.adType = BranchEventAdType.BANNER;
+    eventStandard.addCustomData('Custom_Event_Property_Key1', 'Custom_Event_Property_val1');
+    eventStandard.addCustomData('Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
+    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandard);
 ```
 
 `trackContent` accepts a list of Branch Universal Object.
@@ -515,18 +515,6 @@ By default, Branch limits calls to SKAdNetwork to within 72 hours after first in
 
 ```dart
 FlutterBranchSdk.setIOSSKAdNetworkMaxTime(24);
-```
-
-### Apple Search Ads
-Branch can help track your Apple Search Ad campaigns by fetching the search ad attribution from Apple at app install.
-
-Add KEY ```branch_check_apple_ads``` in INFO.PLIST to enable checking for Apple Search Ads before Branch initialization.
-
-In `ios/Runner/Info.plist`, you should have something like:
-
-```xml
- 	<key>branch_check_apple_ads</key>
-	<true/>
 ```
 
 ### iOS 14+ App Tracking Transparency

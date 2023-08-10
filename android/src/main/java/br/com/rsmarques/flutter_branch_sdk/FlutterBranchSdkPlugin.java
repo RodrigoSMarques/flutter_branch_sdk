@@ -222,7 +222,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (this.activity == null || intent == null) {
             return false;
         }
-
+      
         Intent newIntent = intent;
         if (!intent.hasExtra("branch_force_new_session")) {
             newIntent.putExtra("branch_force_new_session",true);
@@ -230,93 +230,106 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         this.activity.setIntent(newIntent);
         Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
         return true;
-    }
+    }      
 
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * MethodCallHandler Interface Methods
-     * --------------------------------------------------------------------------------------------
-     **/
-    @Override
-    public void onMethodCall(@NonNull MethodCall call, @NonNull Result rawResult) {
-        Result result = new MethodResultWrapper(rawResult);
-        switch (call.method) {
-            case "init":
-                setupBranch(call, result);
-                break;
-            case "getShortUrl":
-                getShortUrl(call, result);
-                break;
-            case "shareWithLPLinkMetadata":
-            case "showShareSheet":
-                showShareSheet(call, result);
-                break;
-            case "registerView":
-                registerView(call);
-                break;
-            case "listOnSearch":
-                listOnSearch(call, result);
-                break;
-            case "removeFromSearch":
-                removeFromSearch(call, result);
-                break;
-            case "trackContent":
-                trackContent(call);
-                break;
-            case "trackContentWithoutBuo":
-                trackContentWithoutBuo(call);
-                break;
-            case "setIdentity":
-                setIdentity(call);
-                break;
-            case "setRequestMetadata":
-                setRequestMetadata(call);
-                break;
-            case "logout":
-                logout();
-                break;
-            case "getLatestReferringParams":
-                getLatestReferringParams(result);
-                break;
-            case "getFirstReferringParams":
-                getFirstReferringParams(result);
-                break;
-            case "setTrackingDisabled":
-                setTrackingDisabled(call);
-                break;
-            case "validateSDKIntegration":
-                validateSDKIntegration();
-                break;
-            case "isUserIdentified":
-                isUserIdentified(result);
-                break;
-            case "setConnectTimeout":
-                setConnectTimeout(call);
-                break;
-            case "setTimeout":
-                setTimeout(call);
-                break;
-            case "setRetryCount":
-                setRetryCount(call);
-                break;
-            case "setRetryInterval":
-                setRetryInterval(call);
-                break;
-            case "getLastAttributedTouchData":
-                getLastAttributedTouchData(call, result);
-                break;
-            case "getQRCode":
-                getQRCode(call, result);
-                break;
-            case "handleDeepLink":
-                handleDeepLink(call);
-            case "enableTestMode":
-                Branch.enableTestMode();
-                break;
-            default:
-                result.notImplemented();
-                break;
-        }
+  /**
+   * ---------------------------------------------------------------------------------------------
+   * MethodCallHandler Interface Methods
+   * --------------------------------------------------------------------------------------------
+   **/
+  @Override
+  public void onMethodCall(@NonNull MethodCall call, @NonNull Result rawResult) {
+    Result result = new MethodResultWrapper(rawResult);
+    switch (call.method) {
+      case "init":
+          setupBranch(call, result);
+          break;
+        
+      case "getShortUrl":
+        getShortUrl(call, result);
+        break;
+      case "shareWithLPLinkMetadata":
+      case "showShareSheet":
+        showShareSheet(call, result);
+        break;
+      case "registerView":
+        registerView(call);
+        break;
+      case "listOnSearch":
+        listOnSearch(call, result);
+        break;
+      case "removeFromSearch":
+        removeFromSearch(call, result);
+        break;
+      case "trackContent":
+        trackContent(call);
+        break;
+      case "trackContentWithoutBuo":
+        trackContentWithoutBuo(call);
+        break;
+      case "setIdentity":
+        setIdentity(call);
+        break;
+      case "setRequestMetadata":
+        setRequestMetadata(call);
+        break;
+      case "logout":
+        logout();
+        break;
+      case "getLatestReferringParams":
+        getLatestReferringParams(result);
+        break;
+      case "getFirstReferringParams":
+        getFirstReferringParams(result);
+        break;
+      case "setTrackingDisabled":
+        setTrackingDisabled(call);
+        break;
+      case "validateSDKIntegration":
+        validateSDKIntegration();
+        break;
+      case "isUserIdentified":
+        isUserIdentified(result);
+        break;
+      case "setConnectTimeout":
+        setConnectTimeout(call);
+        break;
+      case "setTimeout":
+        setTimeout(call);
+        break;
+      case "setRetryCount":
+        setRetryCount(call);
+        break;
+      case "setRetryInterval":
+        setRetryInterval(call);
+        break;
+      case "getLastAttributedTouchData":
+        getLastAttributedTouchData(call, result);
+        break;
+      case "getQRCode":
+        getQRCode(call, result);
+        break;
+      case "handleDeepLink":
+        handleDeepLink(call);
+        break;
+      case "addFacebookPartnerParameter":
+        addFacebookPartnerParameter(call);
+        break;
+      case "clearPartnerParameters" :
+        clearPartnerParameters();
+        break;
+      case "setPreinstallCampaign" :
+        setPreinstallCampaign(call);
+        break;
+      case "setPreinstallPartner" :
+        setPreinstallPartner(call);
+        break;
+      case "addSnapPartnerParameter" :
+        addSnapPartnerParameter(call);
+        break;
+      default:
+        result.notImplemented();
+        break;
     }
 
     /**
@@ -874,6 +887,21 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
       @Override
       public void run() {
         Branch.getAutoInstance(context).setPreinstallPartner(value);
+      }
+    });
+  }
+  private void addSnapPartnerParameter(MethodCall call) {
+    LogUtils.debug(DEBUG_NAME, "addSnapPartnerParameter call");
+    if (!(call.arguments instanceof Map)) {
+      throw new IllegalArgumentException("Map argument expected");
+    }
+    final String key = call.argument("key");
+    final String value = call.argument("value");
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value);
       }
     });
   }
