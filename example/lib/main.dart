@@ -13,7 +13,6 @@ void main() async {
   await FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
-
   //FlutterBranchSdk.addFacebookPartnerParameter(
   //    key: 'em',
   //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
@@ -30,10 +29,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "Flutter Branch SDK Example",
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: const HomePage(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: false,
+      ),
     );
   }
 }

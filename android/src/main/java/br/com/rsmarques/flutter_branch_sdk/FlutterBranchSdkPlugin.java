@@ -61,8 +61,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private boolean isInitialized = false;
 
     private final JSONObject requestMetadata = new JSONObject();
-    private final JSONObject installMetadata = new JSONObject();
-
+    //private final JSONObject installMetadata = new JSONObject();
+    private final JSONObject facebookParameters = new JSONObject();
+    private  Intent initialIntent = null;
     /**
      * ---------------------------------------------------------------------------------------------
      * Plugin registry
@@ -178,6 +179,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onActivityStarted(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "onActivityStarted call");
         if (!isInitialized) {
+            initialIntent = activity.getIntent();
             return;
         }
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
@@ -408,6 +410,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 }
             }
 
+            if (facebookParameters != null) {
+                Iterator keys = facebookParameters.keys();
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    try {
+                        Branch.getInstance().addFacebookPartnerParameterWithName(key, requestMetadata.getString(key));
+                    } catch (JSONException e) {
+                        // no-op
+                    }
+                }
+            }
+
+
             if ((Boolean) argsMap.get("disableTracking")) {
                 Branch.getInstance().disableTracking(true);
             }
@@ -415,7 +430,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             if ((Boolean) argsMap.get("enableFacebookLinkCheck")) {
                 Branch.getInstance().enableFacebookAppLinkCheck();
             }
-            this.context.startActivity(this.activity.getIntent());
+            //this.context.startActivity(this.activity.getIntent());
+            this.context.startActivity(initialIntent);
             result.success(Boolean.TRUE);
         }
 
@@ -858,7 +874,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             activity.startActivity(intent);
         }
 
-        private void addFacebookPartnerParameter (MethodCall call){
+        private void addFacebookPartnerParameter (MethodCall call) {
             LogUtils.debug(DEBUG_NAME, "addFacebookPartnerParameter call");
             if (!(call.arguments instanceof Map)) {
                 throw new IllegalArgumentException("Map argument expected");
@@ -866,14 +882,26 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             final String key = call.argument("key");
             final String value = call.argument("value");
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value);
+            if (!isInitialized) {
+                if (facebookParameters.has(key) && value.isEmpty()) {
+                    facebookParameters.remove(key);
+                } else {
+                    try {
+                        facebookParameters.put(key, value);
+                    } catch (JSONException error) {
+                    }
                 }
-            });
-        }
+                return;
+            } else {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value);
+                    }
+                });
 
+            }
+        }
         private void clearPartnerParameters () {
             LogUtils.debug(DEBUG_NAME, "clearPartnerParameters call");
 
