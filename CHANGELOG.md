@@ -1,3 +1,6 @@
+## 6.7.1
+* Fix issue #237: `Pass long URL when try creating Short URL in Offline`
+* 
 ## 6.7.0
 * Updated Native `Android` and `iOS` SDKs:
     * Android Native SDK Update 5.6.+ - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
