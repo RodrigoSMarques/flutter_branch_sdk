@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "6.4.0"
+let PLUGIN_VERSION = "6.7.1"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
@@ -256,7 +256,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         let response : NSMutableDictionary! = [:]
         buo?.getShortUrl(with: lp!) { (url, error) in
-            if (error == nil) {
+            if ((error == nil) || (error != nil && url != nil)) {
                 NSLog("getShortUrl: %@", url!)
                 response["success"] = NSNumber(value: true)
                 response["url"] = url!
