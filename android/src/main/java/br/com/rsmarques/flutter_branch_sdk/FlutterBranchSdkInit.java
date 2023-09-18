@@ -8,7 +8,7 @@ import io.branch.referral.Branch;
 public class FlutterBranchSdkInit {
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String PLUGIN_NAME = "Flutter";
-    private static final String PLUGIN_VERSION = "6.7.1";
+    private static final String PLUGIN_VERSION = "6.8.0";
 
     public static void init(Context context) {
         ApplicationInfoHelper applicationInfoHelper = new ApplicationInfoHelper(context);
@@ -18,10 +18,6 @@ public class FlutterBranchSdkInit {
             Branch.enableLogging();
         } else  {
             Log.i(DEBUG_NAME, "Branch SDK with out log");
-        }
-
-        if (applicationInfoHelper.getEnableFacebookAds()) {
-            Branch.getAutoInstance(context).enableFacebookAppLinkCheck();
         }
 
         // Branch object initialization
