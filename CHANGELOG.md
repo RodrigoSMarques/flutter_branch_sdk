@@ -1,13 +1,15 @@
 ## 7.0.0
 ### BREAKING CHANGE
-It is necessary to call the `FlutterBranchSdk.init` method to initialize the SDK.
+Call the `FlutterBranchSdk.init` method to initialize the SDK.
 Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
 
 The `init` method has optional parameters that allow you:
+
 - change from test to live mode
 - enable logging
 - disable tracking to comply with GDPR.
-- 
+
+ 
 ### Enhancement
 * Updated compile & target SDK to Android API 33.
 * Updated example app Android compileSdkVersion to 33.

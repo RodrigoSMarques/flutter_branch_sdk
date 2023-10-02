@@ -8,7 +8,7 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.6.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.7.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * iOS - Branch SDK Version >= 2.2.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
@@ -44,18 +44,15 @@ For details see:
 ### Android Integration
 
 Follow the steps on the page [https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app), session _**Configure app**_:
+
 * Add Branch to your `AndroidManifest.xml`
 
 ### iOS Integration
 Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier), from session ```Configure bundle identifier```:
+
 * Configure bundle identifier
 * Configure associated domains
-* Configure entitlements
 * Configure Info.plist
-* Confirm app prefix
-
-> Note:  In `Info.plist`  not add `branch_key` `live` and `test` at the same time.<br />
-Use only `branch_key` and update as needed.
 
 ### Web Integration
 
@@ -64,7 +61,7 @@ You need add Branch Javascript in your `web\index.html` at the top of your `<bod
 ```javascript
   <script>
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
-    branch.init('key_live_YOUR_KEY_GOES_HERE');
+    branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
   </script>
 ```
 Change `key_live_YOUR_KEY_GOES_HERE` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
@@ -130,6 +127,29 @@ Full example `index.html`:
 To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://pub.dev/packages/flutter_branch_sdk/install).
 
 ## How to use
+
+### Initializing
+
+To initialize Branch:
+
+```dart
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+
+BranchSdk.init(); 
+///options:
+/// [useTestKey] - Sets `true` to use the test `key_test_...
+/// [enableLogging] - Sets `true` turn on debug logging
+/// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+/// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation  
+```
+
+Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
+
+To guarantee the success of this function, ensure you've called the below in the app's main function
+
+```dart
+WidgetsFlutterBinding.ensureInitialized();
+```
 
 ### Test Branch Integration
 Test your Branch Integration by calling:
@@ -620,28 +640,12 @@ To enable:
         android:value="true" />
 ```
 
-### Enabled Clipboard Deferred Deep Linking in iOS
-> Enabled by default starting with **iOS 15+ Only**
-
-Use iOS pasteboard to enable deferred deep linking.
-
-To enable Clipboard Deferred Deep Linking update `INFO.PLIST` on `iOS`
-
-Add to `INFO.PLIST`:
-
-```swift
-	<key>branch_check_pasteboard</key>
-	<true/>
-```
-
 ### Facebook App Install Ads
 
 Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
 
 Follow the instructions on the link
 <a href="https://help.branch.io/using-branch/docs/facebook-app-install-ads" target="_blank">https://help.branch.io/using-branch/docs/facebook-app-install-ads</a>.
-
-
 
 To read Facebook App Install deep links update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on `Android` as in the example:
 
@@ -651,7 +655,7 @@ For `iOS` add to `INFO.PLIST`:
 	<key>branch_enable_facebook_ads</key>
 	<true/>
 ```
-
+** Deprecated on version 6.8.0 **
 For `Android` add to `AndroidManifest.xml`:
 
 ```java
