@@ -390,8 +390,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 Branch.enableTestMode();
             }
 
-            if ((Boolean) argsMap.get("enableLogging")) {
-                Branch.enableLogging();
+            if (BuildConfig.DEBUG) {
+                if ((Boolean) argsMap.get("enableLogging")) {
+                    Branch.enableLogging();
+                }
             }
 
             Branch.registerPlugin(PLUGIN_NAME, (String) argsMap.get("version"));
@@ -422,15 +424,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 }
             }
 
-
             if ((Boolean) argsMap.get("disableTracking")) {
                 Branch.getInstance().disableTracking(true);
             }
 
-            if ((Boolean) argsMap.get("enableFacebookLinkCheck")) {
-                Branch.getInstance().enableFacebookAppLinkCheck();
-            }
-            //this.context.startActivity(this.activity.getIntent());
             this.context.startActivity(initialIntent);
             result.success(Boolean.TRUE);
         }
