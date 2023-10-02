@@ -1,3 +1,17 @@
+## 7.0.0
+### BREAKING CHANGE
+It is necessary to call the `FlutterBranchSdk.init` method to initialize the SDK.
+Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
+
+The `init` method has optional parameters that allow you:
+- change from test to live mode
+- enable logging
+- disable tracking to comply with GDPR.
+- 
+### Enhancement
+* Updated compile & target SDK to Android API 33.
+* Updated example app Android compileSdkVersion to 33.
+
 ## 6.8.0
 * Updated Native `Android` SDKs:
     * Android Native SDK Update 5.7.+ - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
@@ -114,9 +128,7 @@
  ------------
  
 * Updated Native `Android` and `iOS` SDKs:
-
 	* Android Native SDK Update 5.1.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-	
 	* iOS Native SDK Update 1.41.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 ## 4.0.0

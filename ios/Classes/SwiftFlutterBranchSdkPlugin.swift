@@ -254,10 +254,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         branch = Branch.getInstance()
         
         branch!.registerPluginName(PLUGIN_NAME, version:  args["version"] as! String)
-        
+                
+#if DEBUG
         if args["enableLogging"] as! Bool == true {
             branch!.enableLogging()
         }
+#endif
         
         // enable pasteboard check for iOS 15+ only
         if #available(iOS 15, *) {
