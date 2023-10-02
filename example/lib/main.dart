@@ -98,9 +98,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void listenDynamicLinks() async {
-    streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+    streamSubscription = FlutterBranchSdk.listSession().listen((data) {
       print('listenDynamicLinks - DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
+
+      if (data.containsKey('+is_first_session') &&
+          data['+is_first_session'] == true) {
+        getFirstParameters();
+      }
+
       if (data.containsKey('+clicked_branch_link') &&
           data['+clicked_branch_link'] == true) {
         print(
@@ -116,7 +122,7 @@ class _HomePageState extends State<HomePage> {
             duration: 10);
       }
     }, onError: (error) {
-      print('InitSesseion error: ${error.toString()}');
+      print('listSesseion error: ${error.toString()}');
     });
   }
 

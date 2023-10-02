@@ -50,10 +50,25 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   static bool _userIdentified = false;
   static bool isInitialized = false;
 
-  ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
+  @Deprecated('Use `listSession')
   @override
   Stream<Map<dynamic, dynamic>> initSession() {
+    getLatestReferringParams().then((data) {
+      if (data.isNotEmpty) {
+        _initSessionStream.sink
+            .add(data.map((key, value) => MapEntry('$key', value)));
+      } else {
+        _initSessionStream.sink.add({});
+      }
+    });
+
+    return _initSessionStream.stream;
+  }
+
+  ///Listen click em Branch Deeplinks
+  @override
+  Stream<Map<dynamic, dynamic>> listSession() {
     getLatestReferringParams().then((data) {
       if (data.isNotEmpty) {
         _initSessionStream.sink

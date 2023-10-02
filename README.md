@@ -202,14 +202,14 @@ Make sure to comment out or remove `validateSDKIntegration` in your production b
 To listen to the clicks on the deep link and retrieve the data it is necessary to add the code below:
 
 ```dart
-    StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+    StreamSubscription<Map> streamSubscription = FlutterBranchSdk.listSession().listen((data) {
       if (data.containsKey("+clicked_branch_link") &&
           data["+clicked_branch_link"] == true) {
          //Link clicked. Add logic to get link data
          print('Custom string: ${data["custom_string"]}');
       }
     }, onError: (error) {
-		print('InitSesseion error: ${error.toString()}');
+		print('listSesseion error: ${error.toString()}');
     });
 ```
 

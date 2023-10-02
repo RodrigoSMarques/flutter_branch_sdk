@@ -49,9 +49,14 @@ class FlutterBranchSdk {
     return FlutterBranchSdkPlatform.instance.disableTracking(value);
   }
 
-  ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
+  @Deprecated('Use `listSession')
   static Stream<Map<dynamic, dynamic>> initSession() {
+    return FlutterBranchSdkPlatform.instance.initSession();
+  }
+
+  ///Listen click em Branch Deeplinks
+  static Stream<Map<dynamic, dynamic>> listSession() {
     return FlutterBranchSdkPlatform.instance.initSession();
   }
 
