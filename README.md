@@ -209,7 +209,7 @@ To listen to the clicks on the deep link and retrieve the data it is necessary t
          print('Custom string: ${data["custom_string"]}');
       }
     }, onError: (error) {
-		print('listSesseion error: ${error.toString()}');
+		print('listSession error: ${error.toString()}');
     });
 ```
 
