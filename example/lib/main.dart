@@ -10,17 +10,18 @@ import 'custom_button.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
+  //FlutterBranchSdk.clearPartnerParameters();
   //FlutterBranchSdk.addFacebookPartnerParameter(
   //    key: 'em',
   //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  //FlutterBranchSdk.clearPartnerParameters();
   //FlutterBranchSdk.addSnapPartnerParameter(
   //    key: 'hashed_email_address',
   //    value:
   //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  await FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
+  //await FlutterBranchSdk.requestTrackingAuthorization();
   runApp(const MyApp());
 }
 
@@ -411,7 +412,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(url),
+                Text(url,
+                    maxLines: 1,
+                    style: const TextStyle(overflow: TextOverflow.ellipsis)),
                 const SizedBox(
                   height: 10,
                 ),

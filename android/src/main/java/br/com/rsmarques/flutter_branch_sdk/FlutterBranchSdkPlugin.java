@@ -455,7 +455,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 @Override
                 public void onLinkCreate(String url, BranchError error) {
 
-                    if (error == null) {
+                    if ((error == null) || (error != null && url != null)) {
                         LogUtils.debug(DEBUG_NAME, "Branch link to share: " + url);
                         response.put("success", true);
                         response.put("url", url);
