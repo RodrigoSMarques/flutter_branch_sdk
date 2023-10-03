@@ -546,13 +546,6 @@ Add key value pairs to all requests
 FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
 ```
 
-### Set time window (in Hours) for SKAdNetwork callouts (iOS only)
-By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
-
-```dart
-FlutterBranchSdk.setIOSSKAdNetworkMaxTime(24);
-```
-
 ### iOS 14+ App Tracking Transparency
 Starting with iOS 14.5, iPadOS 14.5, and tvOS 14.5, you’ll need to receive the user’s permission through the AppTrackingTransparency framework to track them or access their device’s advertising identifier. Tracking refers to the act of linking user or device data collected from your app with user or device data collected from other companies’ apps, websites, or offline properties for targeted advertising or advertising measurement purposes. Tracking also refers to sharing user or device data with data brokers.
 
@@ -615,33 +608,6 @@ print(status);
 ```
 
 See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
-
-
-### Facebook App Install Ads
-
-Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
-
-Follow the instructions on the link
-<a href="https://help.branch.io/using-branch/docs/facebook-app-install-ads" target="_blank">https://help.branch.io/using-branch/docs/facebook-app-install-ads</a>.
-
-To read Facebook App Install deep links, when initializing the SDK, in the `FlutterBranchSdk.init()` method, enter the parameter `enableFacebookLinkCheck` = true.
-
-```dart
-await FlutterBranchSdk.init(enableFacebookLinkCheck: true);
-```
-
-
-Follow the instructions to  install Facebook Android / iOS SDK:
-
-- `iOS`: 
-
-<a href="https://developers.facebook.com/docs/ios/use-cocoapods" target="_blank">https://developers.facebook.com/docs/ios/use-cocoapods</a>
-
-- `Android`: (**Deprecated on version 6.8.0**)
-
-<a href="https://developers.facebook.com/docs/android/getting-started" target="_blank">https://developers.facebook.com/docs/android/getting-started</a>
-
-
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.

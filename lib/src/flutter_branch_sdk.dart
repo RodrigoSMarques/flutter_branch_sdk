@@ -4,17 +4,14 @@ class FlutterBranchSdk {
   ///Initialize Branch SDK
   /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
-  /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   static Future<void> init(
       {bool useTestKey = false,
       bool enableLogging = false,
-      bool enableFacebookLinkCheck = false,
       bool disableTracking = false}) async {
     await FlutterBranchSdkPlatform.instance.init(
         useTestKey: useTestKey,
         enableLogging: enableLogging,
-        enableFacebookLinkCheck: enableFacebookLinkCheck,
         disableTracking: disableTracking);
   }
 
@@ -125,12 +122,6 @@ class FlutterBranchSdk {
       BranchLinkProperties? linkProperties}) async {
     return FlutterBranchSdkPlatform.instance
         .removeFromSearch(buo: buo, linkProperties: linkProperties);
-  }
-
-  ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
-  ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
-  static void setIOSSKAdNetworkMaxTime(int hours) {
-    return FlutterBranchSdkPlatform.instance.setIOSSKAdNetworkMaxTime(hours);
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.

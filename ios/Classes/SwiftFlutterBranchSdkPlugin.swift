@@ -264,19 +264,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         if #available(iOS 15, *) {
             branch!.checkPasteboardOnInstall()
         }
-        
-        if args["enableFacebookLinkCheck"] as! Bool == true {
-            //Facebook App Install Ads
-            //https://help.branch.io/using-branch/docs/facebook-app-install-ads#configure-your-app-to-read-facebook-app-install-deep-links
-            
-            let FBSDKAppLinkUtility: AnyClass? = NSClassFromString("FBSDKAppLinkUtility")
-            if let FBSDKAppLinkUtility = FBSDKAppLinkUtility {
-                branch!.registerFacebookDeepLinkingClass(FBSDKAppLinkUtility)
-            } else {
-                NSLog("FBSDKAppLinkUtility not found but branch_enable_facebook_ads set to true. Please be sure you have integrated the Facebook SDK.")
-            }
-        }
-        
+                
         if (!requestMetadata.isEmpty) {
             for param in requestMetadata {
                 Branch.getInstance().setRequestMetadataKey(param.key, value: param.value)

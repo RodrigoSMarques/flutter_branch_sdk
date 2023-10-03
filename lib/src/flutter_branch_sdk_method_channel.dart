@@ -29,7 +29,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<void> init(
       {bool useTestKey = false,
       bool enableLogging = false,
-      bool enableFacebookLinkCheck = false,
       bool disableTracking = false}) async {
     if (isInitialized) {
       return;
@@ -38,7 +37,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       'version': PLUGIN_VERSION,
       'useTestKey': useTestKey,
       'enableLogging': enableLogging,
-      'enableFacebookLinkCheck': enableFacebookLinkCheck,
       'disableTracking': disableTracking
     });
     isInitialized = true;
@@ -240,14 +238,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       params['lp'] = linkProperties.toMap();
     }
     return await messageChannel.invokeMethod('removeFromSearch', params);
-  }
-
-  ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
-  ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
-  @Deprecated('This is no longer supported for iOS 16.1+')
-  @override
-  void setIOSSKAdNetworkMaxTime(int hours) {
-    return;
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.

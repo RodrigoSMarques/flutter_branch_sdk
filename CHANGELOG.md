@@ -1,6 +1,6 @@
 ## 7.0.0
 ### BREAKING CHANGE
-1. Call the `FlutterBranchSdk.init()` method to initialize the SDK. 
+* Call the `FlutterBranchSdk.init()` method to initialize the SDK. 
 
 	Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
 
@@ -10,8 +10,12 @@
 	- enable logging
 	- disable tracking to comply with GDPR.
 
-2.`initSession` deprecated. Use `listSession`
- 
+* `initSession` deprecated. Use `listSession`.
+
+* Removed deprecated methods:
+    * `setIOSSKAdNetworkMaxTime` method
+    * Facebook App Install Ads on iOS
+
 ### Enhancement
 * Updated compile & target SDK to Android API 33.
 * Updated example app Android compileSdkVersion to 33.
