@@ -13,14 +13,19 @@ void main() async {
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
   //FlutterBranchSdk.clearPartnerParameters();
-  //FlutterBranchSdk.addFacebookPartnerParameter(
-  //    key: 'em',
-  //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  //FlutterBranchSdk.addSnapPartnerParameter(
-  //    key: 'hashed_email_address',
-  //    value:
-  //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  await FlutterBranchSdk.init(useTestKey: true, enableLogging: false);
+  /*
+  FlutterBranchSdk.addFacebookPartnerParameter(
+      key: 'em',
+      value:
+          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  FlutterBranchSdk.addSnapPartnerParameter(
+      key: 'hashed_email_address',
+      value:
+          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  FlutterBranchSdk.setRequestMetadata('key1', 'value1');
+  FlutterBranchSdk.setRequestMetadata('key2', 'value2');
+  */
+  await FlutterBranchSdk.init();
   //await FlutterBranchSdk.requestTrackingAuthorization();
   runApp(const MyApp());
 }
@@ -98,14 +103,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   void listenDynamicLinks() async {
-    streamSubscription = FlutterBranchSdk.listSession().listen((data) {
+    streamSubscription = FlutterBranchSdk.listSession().listen((data) async {
       print('listenDynamicLinks - DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
 
+      /*
       if (data.containsKey('+is_first_session') &&
           data['+is_first_session'] == true) {
-        getFirstParameters();
+        // wait 3 seconds to obtain installation data
+        await Future.delayed(const Duration(seconds: 3));
+        Map<dynamic, dynamic> params =
+            await FlutterBranchSdk.getFirstReferringParams();
+        controllerData.sink.add(params.toString());
+        return;
       }
+       */
 
       if (data.containsKey('+clicked_branch_link') &&
           data['+clicked_branch_link'] == true) {

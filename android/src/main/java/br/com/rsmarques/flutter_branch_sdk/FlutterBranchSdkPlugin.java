@@ -61,9 +61,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private boolean isInitialized = false;
 
     private final JSONObject requestMetadata = new JSONObject();
-    //private final JSONObject installMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
-    private  Intent initialIntent = null;
+    private final JSONObject snapParameters = new JSONObject();
+    private final ArrayList<String> preInstallParameters = new ArrayList<String>();
+    private final ArrayList<String> campaingParameters = new ArrayList<String>();
+    private Intent initialIntent = null;
+
     /**
      * ---------------------------------------------------------------------------------------------
      * Plugin registry
@@ -336,172 +339,443 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
-        /**
-         * ---------------------------------------------------------------------------------------------
-         * Branch SDK Call Methods
-         * --------------------------------------------------------------------------------------------
-         **/
-        private final Branch.BranchReferralInitListener branchReferralInitListener = new
-                Branch.BranchReferralInitListener() {
-                    @Override
-                    public void onInitFinished(JSONObject params, BranchError error) {
-                        LogUtils.debug(DEBUG_NAME, "onInitFinished - call");
-                        if (error == null) {
-                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
-                            try {
-                                sessionParams = branchSdkHelper.paramsToMap(params);
-                            } catch (JSONException e) {
-                                LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
-                                return;
-                            }
-                            if (eventSink != null) {
-                                eventSink.success(sessionParams);
-                                sessionParams = null;
-                            }
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * Branch SDK Call Methods
+     * --------------------------------------------------------------------------------------------
+     **/
+    private final Branch.BranchReferralInitListener branchReferralInitListener = new
+            Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject params, BranchError error) {
+                    LogUtils.debug(DEBUG_NAME, "onInitFinished - call");
+                    if (error == null) {
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
+                        try {
+                            sessionParams = branchSdkHelper.paramsToMap(params);
+                        } catch (JSONException e) {
+                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
+                            return;
+                        }
+                        if (eventSink != null) {
+                            eventSink.success(sessionParams);
+                            sessionParams = null;
+                        }
+                    } else {
+                        //if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED || error.getErrorCode() == BranchError.ERR_IMPROPER_REINITIALIZATION) {
+                        //    LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: ERR_BRANCH_ALREADY_INITIALIZED");
+                        //    return;
+                        //}
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
+                        if (eventSink != null) {
+                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
+                            initialError = null;
                         } else {
-                            //if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED || error.getErrorCode() == BranchError.ERR_IMPROPER_REINITIALIZATION) {
-                            //    LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: ERR_BRANCH_ALREADY_INITIALIZED");
-                            //    return;
-                            //}
-                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
-                            if (eventSink != null) {
-                                eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
-                                initialError = null;
-                            } else {
-                                initialError = error;
-                            }
+                            initialError = error;
                         }
                     }
-                };
-
-        private void setupBranch (MethodCall call,final Result result){
-            LogUtils.debug(DEBUG_NAME, "setupBranch call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-
-            if (isInitialized) {
-                result.success(Boolean.TRUE);
-            }
-
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-
-            if ((Boolean) argsMap.get("useTestKey")) {
-                Branch.enableTestMode();
-            }
-
-            if (BuildConfig.DEBUG) {
-                if ((Boolean) argsMap.get("enableLogging")) {
-                    Branch.enableLogging();
                 }
-            }
+            };
 
-            Branch.registerPlugin(PLUGIN_NAME, (String) argsMap.get("version"));
-            Branch.getAutoInstance(this.context);
-            isInitialized = true;
-
-            if (requestMetadata != null) {
-                Iterator keys = requestMetadata.keys();
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    try {
-                        Branch.getInstance().setRequestMetadata(key, requestMetadata.getString(key));
-                    } catch (JSONException e) {
-                        // no-op
-                    }
-                }
-            }
-
-            if (facebookParameters != null) {
-                Iterator keys = facebookParameters.keys();
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    try {
-                        Branch.getInstance().addFacebookPartnerParameterWithName(key, requestMetadata.getString(key));
-                    } catch (JSONException e) {
-                        // no-op
-                    }
-                }
-            }
-
-            if ((Boolean) argsMap.get("disableTracking")) {
-                Branch.getInstance().disableTracking(true);
-            }
-
-            this.context.startActivity(initialIntent);
+    private void setupBranch(MethodCall call, final Result result) {
+        LogUtils.debug(DEBUG_NAME, "setupBranch call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        if (isInitialized) {
             result.success(Boolean.TRUE);
         }
-
-        private void validateSDKIntegration () {
-            IntegrationValidator.validate(activity);
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        if ((Boolean) argsMap.get("useTestKey")) {
+            Branch.enableTestMode();
         }
-
-        private void getShortUrl (MethodCall call,final Result result){
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
+        if (BuildConfig.DEBUG) {
+            if ((Boolean) argsMap.get("enableLogging")) {
+                Branch.enableLogging();
             }
+        }
+        Branch.registerPlugin(PLUGIN_NAME, (String) argsMap.get("version"));
+        Branch.getAutoInstance(this.context);
+        isInitialized = true;
 
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-            BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-
-            LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-
-            final Map<String, Object> response = new HashMap<>();
-
-            buo.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
-                @Override
-                public void onLinkCreate(String url, BranchError error) {
-
-                    if ((error == null) || (error != null && url != null)) {
-                        LogUtils.debug(DEBUG_NAME, "Branch link to share: " + url);
-                        response.put("success", true);
-                        response.put("url", url);
-                    } else {
-                        response.put("success", false);
-                        response.put("errorCode", String.valueOf(error.getErrorCode()));
-                        response.put("errorMessage", error.getMessage());
-                    }
-                    result.success(response);
+        if (requestMetadata.length() > 0) {
+            Iterator keys = requestMetadata.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                try {
+                    Branch.getInstance().setRequestMetadata(key, requestMetadata.getString(key));
+                } catch (JSONException e) {
+                    // no-op
                 }
-            });
-        }
-
-        private void showShareSheet (MethodCall call,final Result result){
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
             }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-            BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        }
+        if (facebookParameters.length() > 0) {
+            Iterator keys = facebookParameters.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                try {
+                    Branch.getInstance().addFacebookPartnerParameterWithName(key, facebookParameters.getString(key));
+                } catch (JSONException e) {
+                    // no-op
+                }
+            }
+        }
+        if (snapParameters.length() > 0) {
+            Iterator keys = snapParameters.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                try {
+                    Branch.getInstance().addSnapPartnerParameterWithName(key, snapParameters.getString(key));
+                } catch (JSONException e) {
+                    // no-op
+                }
+            }
+        }
+        if (!preInstallParameters.isEmpty()) {
+            for (int i = 0; i < preInstallParameters.size(); i++) {
+                Branch.getAutoInstance(context).setPreinstallPartner(preInstallParameters.get(i));
+            }
+        }
+        if (!campaingParameters.isEmpty()) {
+            for (int i = 0; i < campaingParameters.size(); i++) {
+                Branch.getAutoInstance(context).setPreinstallCampaign(campaingParameters.get(i));
+            }
+        }
+        if ((Boolean) argsMap.get("disableTracking")) {
+            Branch.getInstance().disableTracking(true);
+        }
+        this.context.startActivity(initialIntent);
+        result.success(Boolean.TRUE);
+    }
 
+    private void validateSDKIntegration() {
+        IntegrationValidator.validate(activity);
+    }
+
+    private void getShortUrl(MethodCall call, final Result result) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
+        final Map<String, Object> response = new HashMap<>();
+        buo.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+
+                if ((error == null) || (error != null && url != null)) {
+                    LogUtils.debug(DEBUG_NAME, "Branch link to share: " + url);
+                    response.put("success", true);
+                    response.put("url", url);
+                } else {
+                    response.put("success", false);
+                    response.put("errorCode", String.valueOf(error.getErrorCode()));
+                    response.put("errorMessage", error.getMessage());
+                }
+                result.success(response);
+            }
+        });
+    }
+
+    private void showShareSheet(MethodCall call, final Result result) {
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
+        String messageText = (String) argsMap.get("messageText");
+        String messageTitle = (String) argsMap.get("messageTitle");
+        String sharingTitle = (String) argsMap.get("sharingTitle");
+        final Map<String, Object> response = new HashMap<>();
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(activity, messageTitle, messageText)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle(sharingTitle);
+        buo.showShareSheet(activity,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.ExtendedBranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+                        if (error == null) {
+                            LogUtils.debug(DEBUG_NAME, "Branch link share: " + sharedLink);
+                            response.put("success", Boolean.TRUE);
+                            response.put("url", sharedLink);
+                        } else {
+                            response.put("success", Boolean.FALSE);
+                            response.put("errorCode", String.valueOf(error.getErrorCode()));
+                            response.put("errorMessage", error.getMessage());
+                        }
+                        result.success(response);
+                    }
+
+                    @Override
+                    public void onChannelSelected(String channelName) {
+
+                    }
+
+                    @Override
+                    public boolean onChannelSelected(String channelName, BranchUniversalObject buo, LinkProperties linkProperties) {
+                        return false;
+                    }
+                });
+    }
+
+    private void registerView(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "registerView call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                buo.registerView();
+            }
+        });
+    }
+
+    private void listOnSearch(MethodCall call, Result result) {
+        LogUtils.debug(DEBUG_NAME, "listOnSearch call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        if (argsMap.containsKey("lp")) {
             LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-            String messageText = (String) argsMap.get("messageText");
-            String messageTitle = (String) argsMap.get("messageTitle");
-            String sharingTitle = (String) argsMap.get("sharingTitle");
+            //buo.listOnGoogleSearch(context, linkProperties);
+        } else {
+            //buo.listOnGoogleSearch(context);
+        }
+        result.success(Boolean.TRUE);
+    }
 
-            final Map<String, Object> response = new HashMap<>();
+    private void removeFromSearch(MethodCall call, Result result) {
+        LogUtils.debug(DEBUG_NAME, "removeFromSearch call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        if (argsMap.containsKey("lp")) {
+            LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
+            //buo.removeFromLocalIndexing(context, linkProperties);
+        } else {
+            //buo.removeFromLocalIndexing(context);
+        }
+        result.success(Boolean.TRUE);
+    }
 
-            ShareSheetStyle shareSheetStyle = new ShareSheetStyle(activity, messageTitle, messageText)
-                    .setAsFullWidthStyle(true)
-                    .setSharingTitle(sharingTitle);
+    private void trackContent(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "trackContent call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        final List<BranchUniversalObject> buo = new ArrayList();
+        for (HashMap<String, Object> b : (List<HashMap<String, Object>>) argsMap.get("buo")) {
+            buo.add(branchSdkHelper.convertToBUO(b));
+        }
+        final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                event.addContentItems(buo).logEvent(context);
+            }
+        });
+    }
 
-            buo.showShareSheet(activity,
-                    linkProperties,
-                    shareSheetStyle,
-                    new Branch.ExtendedBranchLinkShareListener() {
+    private void trackContentWithoutBuo(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "trackContentWithoutBuo call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                event.logEvent(context);
+            }
+        });
+    }
+
+    private void setIdentity(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setIdentity call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String userId = call.argument("userId");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().setIdentity(userId);
+            }
+        });
+    }
+
+    private void setRequestMetadata(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setRequestMetadata call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String key = call.argument("key");
+        final String value = call.argument("value");
+        if (!isInitialized) {
+            if (requestMetadata.has(key) && value.isEmpty()) {
+                requestMetadata.remove(key);
+            } else {
+                try {
+                    requestMetadata.put(key, value);
+                } catch (JSONException error) {
+                }
+            }
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().setRequestMetadata(key, value);
+            }
+        });
+    }
+
+    private void logout() {
+        LogUtils.debug(DEBUG_NAME, "logout call");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().logout();
+            }
+        });
+    }
+
+    private void getLatestReferringParams(Result result) {
+        LogUtils.debug(DEBUG_NAME, "getLatestReferringParams call");
+        JSONObject sessionParams = Branch.getInstance().getLatestReferringParams();
+        try {
+            result.success(branchSdkHelper.paramsToMap(sessionParams));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.error(DEBUG_NAME, e.getMessage(), null);
+        }
+    }
+
+    private void getFirstReferringParams(Result result) {
+        LogUtils.debug(DEBUG_NAME, "getFirstReferringParams call");
+        JSONObject sessionParams = Branch.getInstance().getFirstReferringParams();
+        try {
+            result.success(branchSdkHelper.paramsToMap(sessionParams));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.error(DEBUG_NAME, e.getMessage(), null);
+        }
+    }
+
+    private void setTrackingDisabled(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setTrackingDisabled call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final boolean value = call.argument("disable");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().disableTracking(value);
+            }
+        });
+    }
+
+    private void isUserIdentified(Result result) {
+        LogUtils.debug(DEBUG_NAME, "isUserIdentified call");
+        result.success(Branch.getInstance().isUserIdentified());
+    }
+
+    private void setConnectTimeout(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("connectTimeout");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().setNetworkConnectTimeout(value);
+            }
+        });
+    }
+
+    private void setTimeout(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("timeout");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().setNetworkTimeout(value);
+            }
+        });
+    }
+
+    private void setRetryCount(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setRetryCount call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("retryCount");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().setRetryCount(value);
+            }
+        });
+    }
+
+    private void setRetryInterval(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setRetryInterval call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final int value = call.argument("retryInterval");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getInstance().setRetryInterval(value);
+            }
+        });
+    }
+
+    private void getLastAttributedTouchData(final MethodCall call, final Result result) {
+        LogUtils.debug(DEBUG_NAME, "getLastAttributedTouchData call");
+        final Map<String, Object> response = new HashMap<>();
+        if (call.hasArgument("attributionWindow")) {
+            final int attributionWindow = call.argument("attributionWindow");
+            Branch.getInstance().getLastAttributedTouchData(
+                    new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
                         @Override
-                        public void onShareLinkDialogLaunched() {
-                        }
-
-                        @Override
-                        public void onShareLinkDialogDismissed() {
-                        }
-
-                        @Override
-                        public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+                        public void onDataFetched(JSONObject jsonObject, BranchError error) {
                             if (error == null) {
-                                LogUtils.debug(DEBUG_NAME, "Branch link share: " + sharedLink);
                                 response.put("success", Boolean.TRUE);
-                                response.put("url", sharedLink);
+                                JSONObject jo = new JSONObject();
+                                try {
+                                    jo.put("latd", jsonObject);
+                                    response.put("data", branchSdkHelper.paramsToMap(jo));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             } else {
                                 response.put("success", Boolean.FALSE);
                                 response.put("errorCode", String.valueOf(error.getErrorCode()));
@@ -509,453 +783,178 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             }
                             result.success(response);
                         }
+                    }, attributionWindow);
 
+        } else {
+            Branch.getInstance().getLastAttributedTouchData(
+                    new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
                         @Override
-                        public void onChannelSelected(String channelName) {
-
-                        }
-
-                        @Override
-                        public boolean onChannelSelected(String channelName, BranchUniversalObject buo, LinkProperties linkProperties) {
-                            return false;
+                        public void onDataFetched(JSONObject jsonObject, BranchError error) {
+                            if (error == null) {
+                                response.put("success", Boolean.TRUE);
+                                JSONObject jo = new JSONObject();
+                                try {
+                                    jo.put("latd", jsonObject);
+                                    response.put("data", branchSdkHelper.paramsToMap(jo));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                response.put("success", Boolean.FALSE);
+                                response.put("errorCode", String.valueOf(error.getErrorCode()));
+                                response.put("errorMessage", error.getMessage());
+                            }
+                            result.success(response);
                         }
                     });
         }
+    }
 
-        private void registerView (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "registerView call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-            final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+    private void getQRCode(final MethodCall call, final Result result) {
+        LogUtils.debug(DEBUG_NAME, "getQRCodeAsData call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
+        final LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
+        final BranchQRCode branchQRCode = branchSdkHelper.convertToQRCode((HashMap<String, Object>) argsMap.get("qrCodeSettings"));
+        final Map<String, Object> response = new HashMap<>();
+        try {
+            branchQRCode.getQRCodeAsData(context, buo, linkProperties, new BranchQRCode.BranchQRCodeDataHandler() {
                 @Override
-                public void run() {
-                    buo.registerView();
+                public void onSuccess(byte[] qrCodeData) {
+
+                    response.put("success", Boolean.TRUE);
+                    response.put("result", qrCodeData);
+                    result.success(response);
+                }
+
+                @Override
+                public void onFailure(Exception error) {
+                    response.put("success", Boolean.FALSE);
+                    response.put("errorCode", "-1");
+                    response.put("errorMessage", error.getMessage());
+                    result.success(response);
                 }
             });
-        }
-
-        private void listOnSearch (MethodCall call, Result result){
-            LogUtils.debug(DEBUG_NAME, "listOnSearch call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-            BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-            if (argsMap.containsKey("lp")) {
-                LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-                //buo.listOnGoogleSearch(context, linkProperties);
-            } else {
-                //buo.listOnGoogleSearch(context);
-            }
-            result.success(Boolean.TRUE);
-        }
-
-        private void removeFromSearch (MethodCall call, Result result){
-            LogUtils.debug(DEBUG_NAME, "removeFromSearch call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-            BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-            if (argsMap.containsKey("lp")) {
-                LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-                //buo.removeFromLocalIndexing(context, linkProperties);
-            } else {
-                //buo.removeFromLocalIndexing(context);
-            }
-            result.success(Boolean.TRUE);
-        }
-
-        private void trackContent (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "trackContent call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-
-            final List<BranchUniversalObject> buo = new ArrayList();
-            for (HashMap<String, Object> b : (List<HashMap<String, Object>>) argsMap.get("buo")) {
-                buo.add(branchSdkHelper.convertToBUO(b));
-            }
-            final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    event.addContentItems(buo).logEvent(context);
-                }
-            });
-        }
-
-        private void trackContentWithoutBuo (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "trackContentWithoutBuo call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-            final BranchEvent event = branchSdkHelper.convertToEvent((HashMap<String, Object>) argsMap.get("event"));
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    event.logEvent(context);
-                }
-            });
-        }
-
-        private void setIdentity (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setIdentity call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final String userId = call.argument("userId");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().setIdentity(userId);
-                }
-            });
-        }
-
-        private void setRequestMetadata (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setRequestMetadata call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final String key = call.argument("key");
-            final String value = call.argument("value");
-
-            if (!isInitialized) {
-                if (requestMetadata.has(key) && value.isEmpty()) {
-                    requestMetadata.remove(key);
-                } else {
-                    try {
-                        requestMetadata.put(key, value);
-                    } catch (JSONException error) {
-                    }
-                }
-                return;
-            }
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().setRequestMetadata(key, value);
-                }
-            });        }
-
-        private void logout () {
-            LogUtils.debug(DEBUG_NAME, "logout call");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().logout();
-                }
-            });
-        }
-
-        private void getLatestReferringParams (Result result){
-            LogUtils.debug(DEBUG_NAME, "getLatestReferringParams call");
-            JSONObject sessionParams = Branch.getInstance().getLatestReferringParams();
-            try {
-                result.success(branchSdkHelper.paramsToMap(sessionParams));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                result.error(DEBUG_NAME, e.getMessage(), null);
-            }
-        }
-
-        private void getFirstReferringParams (Result result){
-            LogUtils.debug(DEBUG_NAME, "getFirstReferringParams call");
-            JSONObject sessionParams = Branch.getInstance().getFirstReferringParams();
-            try {
-                result.success(branchSdkHelper.paramsToMap(sessionParams));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                result.error(DEBUG_NAME, e.getMessage(), null);
-            }
-        }
-
-        private void setTrackingDisabled (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setTrackingDisabled call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final boolean value = call.argument("disable");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().disableTracking(value);
-                }
-            });
-        }
-
-        private void isUserIdentified (Result result){
-            LogUtils.debug(DEBUG_NAME, "isUserIdentified call");
-            result.success(Branch.getInstance().isUserIdentified());
-        }
-
-        private void setConnectTimeout ( final MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final int value = call.argument("connectTimeout");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().setNetworkConnectTimeout(value);
-                }
-            });
-        }
-
-        private void setTimeout ( final MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final int value = call.argument("timeout");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().setNetworkTimeout(value);
-                }
-            });
-        }
-
-        private void setRetryCount ( final MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setRetryCount call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final int value = call.argument("retryCount");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().setRetryCount(value);
-                }
-            });
-        }
-
-        private void setRetryInterval ( final MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setRetryInterval call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final int value = call.argument("retryInterval");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getInstance().setRetryInterval(value);
-                }
-            });
-        }
-
-        private void getLastAttributedTouchData ( final MethodCall call, final Result result){
-            LogUtils.debug(DEBUG_NAME, "getLastAttributedTouchData call");
-
-            final Map<String, Object> response = new HashMap<>();
-
-            if (call.hasArgument("attributionWindow")) {
-                final int attributionWindow = call.argument("attributionWindow");
-                Branch.getInstance().getLastAttributedTouchData(
-                        new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
-                            @Override
-                            public void onDataFetched(JSONObject jsonObject, BranchError error) {
-                                if (error == null) {
-                                    response.put("success", Boolean.TRUE);
-                                    JSONObject jo = new JSONObject();
-                                    try {
-                                        jo.put("latd", jsonObject);
-                                        response.put("data", branchSdkHelper.paramsToMap(jo));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    response.put("success", Boolean.FALSE);
-                                    response.put("errorCode", String.valueOf(error.getErrorCode()));
-                                    response.put("errorMessage", error.getMessage());
-                                }
-                                result.success(response);
-                            }
-                        }, attributionWindow);
-
-            } else {
-                Branch.getInstance().getLastAttributedTouchData(
-                        new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
-                            @Override
-                            public void onDataFetched(JSONObject jsonObject, BranchError error) {
-                                if (error == null) {
-                                    response.put("success", Boolean.TRUE);
-                                    JSONObject jo = new JSONObject();
-                                    try {
-                                        jo.put("latd", jsonObject);
-                                        response.put("data", branchSdkHelper.paramsToMap(jo));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    response.put("success", Boolean.FALSE);
-                                    response.put("errorCode", String.valueOf(error.getErrorCode()));
-                                    response.put("errorMessage", error.getMessage());
-                                }
-                                result.success(response);
-                            }
-                        });
-            }
-        }
-
-        private void getQRCode ( final MethodCall call, final Result result){
-
-            LogUtils.debug(DEBUG_NAME, "getQRCodeAsData call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-
-            final BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-            final LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-            final BranchQRCode branchQRCode = branchSdkHelper.convertToQRCode((HashMap<String, Object>) argsMap.get("qrCodeSettings"));
-            final Map<String, Object> response = new HashMap<>();
-
-
-            try {
-                branchQRCode.getQRCodeAsData(context, buo, linkProperties, new BranchQRCode.BranchQRCodeDataHandler() {
-                    @Override
-                    public void onSuccess(byte[] qrCodeData) {
-
-                        response.put("success", Boolean.TRUE);
-                        response.put("result", qrCodeData);
-                        result.success(response);
-                    }
-
-                    @Override
-                    public void onFailure(Exception error) {
-                        response.put("success", Boolean.FALSE);
-                        response.put("errorCode", "-1");
-                        response.put("errorMessage", error.getMessage());
-                        result.success(response);
-                    }
-                });
-            } catch (IOException e) {
-                response.put("success", Boolean.FALSE);
-                response.put("errorCode", "-1");
-                response.put("errorMessage", e.getMessage());
-                result.success(response);
-            }
-        }
-
-        private void handleDeepLink ( final MethodCall call){
-
-            LogUtils.debug(DEBUG_NAME, "handleDeepLink call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-
-            final String url = call.argument("url");
-
-            Intent intent = new Intent(context, activity.getClass());
-            intent.putExtra("branch", url);
-            intent.putExtra("branch_force_new_session", true);
-            activity.startActivity(intent);
-        }
-
-        private void addFacebookPartnerParameter (MethodCall call) {
-            LogUtils.debug(DEBUG_NAME, "addFacebookPartnerParameter call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final String key = call.argument("key");
-            final String value = call.argument("value");
-
-            if (!isInitialized) {
-                if (facebookParameters.has(key) && value.isEmpty()) {
-                    facebookParameters.remove(key);
-                } else {
-                    try {
-                        facebookParameters.put(key, value);
-                    } catch (JSONException error) {
-                    }
-                }
-                return;
-            } else {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value);
-                    }
-                });
-
-            }
-        }
-        private void clearPartnerParameters () {
-            LogUtils.debug(DEBUG_NAME, "clearPartnerParameters call");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getAutoInstance(context).clearPartnerParameters();
-                }
-            });
-        }
-
-        private void setPreinstallCampaign (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setPreinstallCampaign call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-
-            final String value = call.argument("value");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getAutoInstance(context).setPreinstallCampaign(value);
-                }
-            });
-        }
-
-        private void setPreinstallPartner (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "setPreinstallPartner call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-
-            final String value = call.argument("value");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getAutoInstance(context).setPreinstallPartner(value);
-                }
-            });
-        }
-        private void addSnapPartnerParameter (MethodCall call){
-            LogUtils.debug(DEBUG_NAME, "addSnapPartnerParameter call");
-            if (!(call.arguments instanceof Map)) {
-                throw new IllegalArgumentException("Map argument expected");
-            }
-            final String key = call.argument("key");
-            final String value = call.argument("value");
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value);
-                }
-            });
+        } catch (IOException e) {
+            response.put("success", Boolean.FALSE);
+            response.put("errorCode", "-1");
+            response.put("errorMessage", e.getMessage());
+            result.success(response);
         }
     }
+
+    private void handleDeepLink(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "handleDeepLink call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String url = call.argument("url");
+        Intent intent = new Intent(context, activity.getClass());
+        intent.putExtra("branch", url);
+        intent.putExtra("branch_force_new_session", true);
+        activity.startActivity(intent);
+    }
+
+    private void addFacebookPartnerParameter(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "addFacebookPartnerParameter call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String key = call.argument("key");
+        final String value = call.argument("value");
+        if (!isInitialized) {
+            if (facebookParameters.has(key) && value.isEmpty()) {
+                facebookParameters.remove(key);
+            } else {
+                try {
+                    facebookParameters.put(key, value);
+                } catch (JSONException error) {
+                }
+            }
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value);
+            }
+        });
+    }
+
+    private void clearPartnerParameters() {
+        LogUtils.debug(DEBUG_NAME, "clearPartnerParameters call");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).clearPartnerParameters();
+            }
+        });
+    }
+
+    private void setPreinstallCampaign(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setPreinstallCampaign call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String value = call.argument("value");
+        if (!isInitialized) {
+            campaingParameters.add(value);
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setPreinstallCampaign(value);
+            }
+        });
+    }
+
+    private void setPreinstallPartner(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "setPreinstallPartner call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String value = call.argument("value");
+        if (!isInitialized) {
+            preInstallParameters.add(value);
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).setPreinstallPartner(value);
+            }
+        });
+    }
+
+    private void addSnapPartnerParameter(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "addSnapPartnerParameter call");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String key = call.argument("key");
+        final String value = call.argument("value");
+        if (!isInitialized) {
+            if (snapParameters.has(key) && value.isEmpty()) {
+                snapParameters.remove(key);
+            } else {
+                try {
+                    snapParameters.put(key, value);
+                } catch (JSONException error) {
+                }
+            }
+            return;
+        }
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value);
+            }
+        });
+    }
+}
 
 

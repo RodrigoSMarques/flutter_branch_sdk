@@ -33,6 +33,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     var isInitialized = false
     var branch : Branch?
     
+    var requestMetadata : [String: String] = [:]
+    var facebookParameters : [String: String] = [:]
+    var snapParameters : [String: String] = [:]
+        
     //---------------------------------------------------------------------------------------------
     // Plugin registry
     // --------------------------------------------------------------------------------------------
@@ -173,11 +177,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "isUserIdentified":
             isUserIdentified(result: result)
             break
-        /*
-        case "setSKAdNetworkMaxTime" :
-            setSKAdNetworkMaxTime(call: call)
-            break
-         */
         case "requestTrackingAuthorization" :
             requestTrackingAuthorization(result: result)
             break
@@ -278,6 +277,22 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
         
+        if (!requestMetadata.isEmpty) {
+            for param in requestMetadata {
+                Branch.getInstance().setRequestMetadataKey(param.key, value: param.value)
+            }
+        }
+        if (!snapParameters.isEmpty) {
+            for param in snapParameters {
+                Branch.getInstance().addSnapPartnerParameter(withName: param.key, value: param.value)
+            }
+        }
+        if (!facebookParameters.isEmpty) {
+            for param in facebookParameters {
+                Branch.getInstance().addFacebookPartnerParameter(withName: param.key, value: param.value)
+            }
+        }
+
         branch!.initSession(launchOptions: initialLaunchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
@@ -299,7 +314,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
         
-        //
         //application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool
         if let _ = initialApplication , let _ = intitalURL , let _ = initialOptions {
             branch!.application(initialApplication, open: intitalURL, options: initialOptions)
@@ -487,6 +501,15 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
+        if (!isInitialized) {
+            if (requestMetadata.keys.contains(key) && value.isEmpty) {
+                requestMetadata.removeValue(forKey: key)
+            } else {
+                requestMetadata[key] = value;
+            }
+            return;
+        }
+
         DispatchQueue.main.async {
             self.branch!.setRequestMetadataKey(key, value: value)
         }
@@ -551,16 +574,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         }
     }
 
-    /*
-    private func setSKAdNetworkMaxTime(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
-        DispatchQueue.main.async {
-            self.branch!.setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
-        }
-    }
-    */
-    
     private func isUserIdentified(result: @escaping FlutterResult) {
         DispatchQueue.main.async {
             result(self.branch!.isUserIdentified())
@@ -660,6 +673,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
+        if (!isInitialized) {
+            if (facebookParameters.keys.contains(key) && value.isEmpty) {
+                facebookParameters.removeValue(forKey: key)
+            } else {
+                facebookParameters[key] = value;
+            }
+            return;
+        }
         DispatchQueue.main.async {
             Branch.getInstance().addFacebookPartnerParameter(withName: key, value:value)
         }
@@ -670,6 +691,15 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
+        if (!isInitialized) {
+            if (snapParameters.keys.contains(key) && value.isEmpty) {
+                snapParameters.removeValue(forKey: key)
+            } else {
+                snapParameters[key] = value;
+            }
+            return;
+        }
+
         DispatchQueue.main.async {
             Branch.getInstance().addSnapPartnerParameter(withName: key, value:value)
         }

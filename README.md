@@ -47,12 +47,23 @@ Follow the steps on the page [https://help.branch.io/developers-hub/docs/android
 
 * Add Branch to your `AndroidManifest.xml`
 
+--
+
 ### iOS Integration
 Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier), from session ```Configure bundle identifier```:
 
 * Configure bundle identifier
 * Configure associated domains
 * Configure Info.plist
+
+#### NativeLink™ Deferred Deep Linking
+Use iOS pasteboard to enable deferred deep linking via Branch NativeLink™, which enables 100% matching on iOS through Installs.
+
+Follow the steps on the [page](https://help.branch.io/developers-hub/docs/ios-advanced-features#nativelink-deferred-deep-linking), session _**NativeLink™ Deferred Deep Linking**_,
+
+Note: Code implementation in Swift is not necessary. The plugin already implements the code, requiring only configuration on the Dashboard.
+
+--
 
 ### Web Integration
 
@@ -64,7 +75,7 @@ You need add Branch Javascript in your `web\index.html` at the top of your `<bod
     branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
   </script>
 ```
-Change `key_live_YOUR_KEY_GOES_HERE` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
+Change `key_live_or_test_YOUR_KEY_GOES_HERE ` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
 
 If `branch.init()` fails, all subsequent Branch methods will fail.
 
@@ -105,7 +116,7 @@ Full example `index.html`:
 <body>
   <script>
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
-    branch.init('key_live_YOUR_KEY_GOES_HERE');
+    branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
   </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -137,10 +148,12 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 BranchSdk.init(); 
 ///options:
+/// default false for all options
 /// [useTestKey] - Sets `true` to use the test `key_test_...
 /// [enableLogging] - Sets `true` turn on debug logging
 /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
 /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation  
+
 ```
 
 Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
@@ -202,7 +215,7 @@ Make sure to comment out or remove `validateSDKIntegration` in your production b
 To listen to the clicks on the deep link and retrieve the data it is necessary to add the code below:
 
 ```dart
-    StreamSubscription<Map> streamSubscription = FlutterBranchSdk.listSession().listen((data) {
+    StreamSubscription<Map> streamSubscription = FlutterBranchSdk.listSession().listen((data)  {
       if (data.containsKey("+clicked_branch_link") &&
           data["+clicked_branch_link"] == true) {
          //Link clicked. Add logic to get link data
@@ -222,7 +235,10 @@ If you ever want to access the original session params (the parameters passed in
     Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
 ```
 
+*Note: You must call this method on `iOS` to obtain installation data if the return of the `FlutterBranchSdk.listSession()` function is {+is_first_session: true, +clicked_branch_link: false}*
+
 ### Retrieve session (install or open) parameters
+
 These session parameters will be available at any point later on with this command. If no parameters are available then Branch will return an empty dictionary. This refreshes with every new session (app installs AND app opens).
 
 ```dart
@@ -601,45 +617,6 @@ print(status);
 See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
 
 
-### Enable Logging
-Use the Branch test key instead of the live key.
-
-Logging is enabled by default in debug mode and disabled in release mode.
-
-To enable/disable logging update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on Android:
-
-For `iOS` add to `INFO.PLIST`:
-
-To disable:
-
-```swift
-	<key>branch_enable_log</key>
-	<false/>
-```
-
-To enable:
-
-```swift
-	<key>branch_enable_log</key>
-	<true/>
-```
-
-For `Android` add to `AndroidManifest.xml`:
-
-To disable:
-
-```java
-    <meta-data android:name="branch_enable_log"
-        android:value="false" />
-```
-
-To enable:
-
-```java
-    <meta-data android:name="branch_enable_log"
-        android:value="true" />
-```
-
 ### Facebook App Install Ads
 
 Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
@@ -647,29 +624,20 @@ Branch links can be used together with Facebook App Install Campaign ads, allowi
 Follow the instructions on the link
 <a href="https://help.branch.io/using-branch/docs/facebook-app-install-ads" target="_blank">https://help.branch.io/using-branch/docs/facebook-app-install-ads</a>.
 
-To read Facebook App Install deep links update `INFO.PLIST` on `iOS` or `AndroidManifest.xml` on `Android` as in the example:
+To read Facebook App Install deep links, when initializing the SDK, in the `FlutterBranchSdk.init()` method, enter the parameter `enableFacebookLinkCheck` = true.
 
-For `iOS` add to `INFO.PLIST`:
-
-```swift
-	<key>branch_enable_facebook_ads</key>
-	<true/>
+```dart
+await FlutterBranchSdk.init(enableFacebookLinkCheck: true);
 ```
-** Deprecated on version 6.8.0 **
-For `Android` add to `AndroidManifest.xml`:
 
-```java
-    <meta-data android:name="branch_enable_facebook_ads"
-        android:value="true" />
-```
 
 Follow the instructions to  install Facebook Android / iOS SDK:
 
-`iOS`: 
+- `iOS`: 
 
 <a href="https://developers.facebook.com/docs/ios/use-cocoapods" target="_blank">https://developers.facebook.com/docs/ios/use-cocoapods</a>
 
-`Android`: 
+- `Android`: (**Deprecated on version 6.8.0**)
 
 <a href="https://developers.facebook.com/docs/android/getting-started" target="_blank">https://developers.facebook.com/docs/android/getting-started</a>
 
