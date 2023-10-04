@@ -152,8 +152,6 @@ BranchSdk.init();
 /// [useTestKey] - Sets `true` to use the test `key_test_...
 /// [enableLogging] - Sets `true` turn on debug logging
 /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
-/// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation  
-
 ```
 
 Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
