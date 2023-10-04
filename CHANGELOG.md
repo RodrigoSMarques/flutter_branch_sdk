@@ -14,7 +14,7 @@
 
 * Removed deprecated methods:
     * `setIOSSKAdNetworkMaxTime` method
-    * Facebook App Install Ads on iOS
+* Removed Facebook App Install Ads on iOS
 
 ### Enhancement
 * Updated compile & target SDK to Android API 33.
