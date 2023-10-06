@@ -176,7 +176,9 @@ public class FlutterBranchSdkHelper {
         } else {
             event = new BranchEvent((String) eventMap.get("eventName"));
         }
-
+        if (eventMap.containsKey("alias")) {
+            event.setCustomerEventAlias((String) eventMap.get("alias"));
+        }
         if (eventMap.containsKey("transactionID"))
             event.setTransactionID((String) eventMap.get("transactionID"));
         if (eventMap.containsKey("currency"))

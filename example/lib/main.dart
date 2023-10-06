@@ -25,7 +25,7 @@ void main() async {
   FlutterBranchSdk.setRequestMetadata('key1', 'value1');
   FlutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
-  await FlutterBranchSdk.init(useTestKey: true);
+  await FlutterBranchSdk.init(useTestKey: true, enableLogging: true);
   //await FlutterBranchSdk.requestTrackingAuthorization();
   runApp(const MyApp());
 }
@@ -216,6 +216,7 @@ class _HomePageState extends State<HomePage> {
     eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
       ..transactionID = '12344555'
+      ..alias = 'StandardEventAlias'
       ..currency = BranchCurrencyType.BRL
       ..revenue = 1.5
       ..shipping = 10.2
@@ -231,6 +232,7 @@ class _HomePageState extends State<HomePage> {
           'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
 
     eventCustom = BranchEvent.customEvent('Custom_event')
+      ..alias = 'CustomEventAlias'
       ..addCustomData(
           'Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
       ..addCustomData(
@@ -290,9 +292,9 @@ class _HomePageState extends State<HomePage> {
 
     FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventCustom!);
 
-    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
+    //FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
 
-    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
+    //FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
 
     showSnackBar(message: 'Tracked content');
   }
