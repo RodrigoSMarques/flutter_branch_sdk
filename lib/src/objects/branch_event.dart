@@ -58,9 +58,9 @@ class BranchEvent {
   String affiliation = '';
   String eventDescription = '';
   String searchQuery = '';
-  String alias = '';
   BranchEventAdType? adType;
   final Map<String, String> _customData = {};
+  String alias = '';
 
   BranchEvent.standardEvent(BranchStandardEvent branchStandardEvent) {
     _eventName = getBranchStandardEventString(branchStandardEvent);

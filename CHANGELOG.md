@@ -17,6 +17,7 @@
 * Removed Facebook App Install Ads on iOS
 
 ### Enhancement
+* Issue #244 - Support for setting customer_event_alias for BranchEvent
 * Updated compile & target SDK to Android API 33.
 * Updated example app Android compileSdkVersion to 33.
 
