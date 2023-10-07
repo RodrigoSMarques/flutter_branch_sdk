@@ -1,8 +1,6 @@
 @JS()
 library branchjs;
 
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js';
 import 'dart:typed_data';
 
 import 'package:js/js.dart';
@@ -757,7 +755,7 @@ class BranchJS {
   @JS('logEvent')
   external static void logEvent(String event,
       [Object eventDataAndCustomData,
-      JsArray contentItems,
+      Object contentItems,
       String customerEventAlias,
       Function callback]);
 

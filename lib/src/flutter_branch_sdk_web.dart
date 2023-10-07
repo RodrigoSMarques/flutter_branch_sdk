@@ -204,15 +204,23 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void trackContent(
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
-    js.JsArray<Object> contentItems = js.JsArray();
+    List<Object> contentItems = [];
 
     for (var element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMap()));
     }
 
     try {
-      BranchJS.logEvent(branchEvent.eventName,
-          _dartObjectToJsObject(branchEvent.toMap()), contentItems);
+      if (branchEvent.alias.isNotEmpty) {
+        BranchJS.logEvent(
+            branchEvent.eventName,
+            _dartObjectToJsObject(branchEvent.toMap()),
+            contentItems,
+            branchEvent.alias);
+      } else {
+        BranchJS.logEvent(branchEvent.eventName,
+            _dartObjectToJsObject(branchEvent.toMap()), contentItems);
+      }
     } catch (e) {
       debugPrint('trackContent() error: ${e.toString()}');
     }
