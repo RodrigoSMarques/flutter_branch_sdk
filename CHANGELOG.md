@@ -1,3 +1,7 @@
+## 6.9.0
+### Enhancement
+* Issue #244 - Support for setting customer_event_alias for BranchEvent
+
 ## 6.8.0
 * Updated Native `Android` SDKs:
     * Android Native SDK Update 5.7.+ - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
