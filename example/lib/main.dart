@@ -409,7 +409,11 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(url),
+                Text(
+                  url,
+                  maxLines: 1,
+                  style: const TextStyle(overflow: TextOverflow.ellipsis),
+                ),
                 const SizedBox(
                   height: 10,
                 ),

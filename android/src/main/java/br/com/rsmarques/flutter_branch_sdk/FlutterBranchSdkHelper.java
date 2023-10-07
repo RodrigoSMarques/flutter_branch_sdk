@@ -176,7 +176,6 @@ public class FlutterBranchSdkHelper {
         } else {
             event = new BranchEvent((String) eventMap.get("eventName"));
         }
-
         if (eventMap.containsKey("transactionID"))
             event.setTransactionID((String) eventMap.get("transactionID"));
         if (eventMap.containsKey("currency"))
@@ -201,6 +200,9 @@ public class FlutterBranchSdkHelper {
             for (Map.Entry<String, String> customData : ((HashMap<String, String>) eventMap.get("customData")).entrySet()) {
                 event.addCustomDataProperty(customData.getKey(), customData.getValue());
             }
+        }
+        if (eventMap.containsKey("alias")) {
+            event.setCustomerEventAlias((String) eventMap.get("alias"));
         }
         return event;
     }

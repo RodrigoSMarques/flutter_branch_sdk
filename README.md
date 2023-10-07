@@ -8,7 +8,7 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.6.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.7.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * iOS - Branch SDK Version >= 2.2.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
@@ -620,20 +620,6 @@ To enable:
         android:value="true" />
 ```
 
-### Enabled Clipboard Deferred Deep Linking in iOS
-> Enabled by default starting with **iOS 15+ Only**
-
-Use iOS pasteboard to enable deferred deep linking.
-
-To enable Clipboard Deferred Deep Linking update `INFO.PLIST` on `iOS`
-
-Add to `INFO.PLIST`:
-
-```swift
-	<key>branch_check_pasteboard</key>
-	<true/>
-```
-
 ### Facebook App Install Ads
 
 Branch links can be used together with Facebook App Install Campaign ads, allowing you to track ad-driven installs on the Branch dashboard and deep link those new users directly to content the first time they open your app.
@@ -651,7 +637,7 @@ For `iOS` add to `INFO.PLIST`:
 	<key>branch_enable_facebook_ads</key>
 	<true/>
 ```
-
+** Deprecated on version 6.8.0 **
 For `Android` add to `AndroidManifest.xml`:
 
 ```java
