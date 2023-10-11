@@ -25,8 +25,9 @@ void main() async {
   FlutterBranchSdk.setRequestMetadata('key1', 'value1');
   FlutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
-  await FlutterBranchSdk.init(useTestKey: true, enableLogging: true);
   //await FlutterBranchSdk.requestTrackingAuthorization();
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
   runApp(const MyApp());
 }
 

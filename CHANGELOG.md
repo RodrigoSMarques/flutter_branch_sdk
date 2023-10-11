@@ -1,25 +1,120 @@
-## 7.0.0
+## 7.0.0-beta.3
+⚠️ This is a major release which contains breaking API changes.
 ### BREAKING CHANGE
-* Call the `FlutterBranchSdk.init()` method to initialize the SDK. 
+-
+* Minimum required Dart SDK version to 2.18 (Flutter 3.3.0)
+* Xcode 15 is the min version
+* iOS 12 is the min version
 
-	Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
+#### SDK Initialization Required
+* Use `FlutterBranchSdk.init()` method to initialize the SDK.
 
-	The `init` method has optional parameters that allow you:
+Initialization must be called from `main` or at any time (for example after getting consent for GPDR).
 
-	- change from test to live mode
-	- enable logging
-	- disable tracking to comply with GDPR.
+```dart
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
+```
 
-* `initSession` deprecated. Use `listSession`.
+Check additional instructions in the README
 
-* Removed deprecated methods:
-    * `setIOSSKAdNetworkMaxTime` method
+#### Deprecated / Removed
+-
+* `FlutterBranchSdk.initSession()`. Use `FlutterBranchSdk.listSession()`.
+* Removed `setIOSSKAdNetworkMaxTime` method 
 * Removed Facebook App Install Ads on iOS
 
-### Enhancement
+### Features
+-
 * Issue #244 - Support for setting customer_event_alias for BranchEvent
 * Updated compile & target SDK to Android API 33.
 * Updated example app Android compileSdkVersion to 33.
+
+### Native SDK Updates
+-
+* Updated included iOS SDK to 3.0.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+## 7.0.0-beta.2
+⚠️ This is a major release which contains breaking API changes.
+### BREAKING CHANGE
+-
+#### SDK Initialization Required
+* Use `FlutterBranchSdk.init()` method to initialize the SDK.
+
+Initialization must be called from `main` or at any time (for example after getting consent for GPDR).
+
+```dart
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
+```
+
+Check additional instructions in the README
+
+#### Deprecated / Removed
+-
+* `FlutterBranchSdk.initSession()`. Use `FlutterBranchSdk.listSession()`.
+* Removed `setIOSSKAdNetworkMaxTime` method 
+* Removed Facebook App Install Ads on iOS
+
+### Features
+-
+* Issue #244 - Support for setting customer_event_alias for BranchEvent
+* Updated compile & target SDK to Android API 33.
+* Updated example app Android compileSdkVersion to 33.
+
+## 7.0.0-beta.1
+⚠️ This is a major release which contains breaking API changes.
+### BREAKING CHANGE
+-
+#### SDK Initialization Required
+* Use `FlutterBranchSdk.init()` method to initialize the SDK.
+
+Initialization must be called from `main` or at any time (for example after getting consent for GPDR).
+
+```dart
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
+```
+
+Check additional instructions in the README
+
+#### Deprecated / Removed
+-
+* `FlutterBranchSdk.initSession()`. Use `FlutterBranchSdk.listSession()`.
+* Removed `setIOSSKAdNetworkMaxTime` method 
+* Removed Facebook App Install Ads on iOS
+
+### Features
+-
+* Updated compile & target SDK to Android API 33.
+* Updated example app Android compileSdkVersion to 33.
+
+## 7.0.0-beta.0
+⚠️ This is a major release which contains breaking API changes.
+### BREAKING CHANGE
+-
+#### SDK Initialization Required
+* Use `FlutterBranchSdk.init()` method to initialize the SDK.
+
+Initialization must be called from `main` or at any time (for example after getting consent for GPDR).
+
+```dart
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
+```
+
+Check additional instructions in the README
+
+#### Deprecated / Removed
+-
+* `FlutterBranchSdk.initSession()`. Use `FlutterBranchSdk.listSession()`.
+* Removed `setIOSSKAdNetworkMaxTime` method 
+
+### Features
+-
+* Updated compile & target SDK to Android API 33.
+* Updated example app Android compileSdkVersion to 33.
+
 
 ## 6.8.0
 * Updated Native `Android` SDKs:

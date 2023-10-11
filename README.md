@@ -146,13 +146,15 @@ To initialize Branch:
 ```dart
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-BranchSdk.init(); 
-///options:
-/// default false for all options
-/// [useTestKey] - Sets `true` to use the test `key_test_...
-/// [enableLogging] - Sets `true` turn on debug logging
-/// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
 ```
+
+The optional parameters are:
+
+- *useTestKey* : Sets `true` to use the test `key_test_....` .Default value: false
+- *enableLogging* : Sets `true` turn on debug logging. Default value: false
+- *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false
 
 Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
 
