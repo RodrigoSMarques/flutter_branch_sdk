@@ -9,7 +9,7 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 Supports Android, iOS and Web.
 
 * Android - Branch SDK Version >= 5.7.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 2.2.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 3.0.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -47,7 +47,7 @@ Follow the steps on the page [https://help.branch.io/developers-hub/docs/android
 
 * Add Branch to your `AndroidManifest.xml`
 
---
+-
 
 ### iOS Integration
 Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier), from session ```Configure bundle identifier```:
@@ -63,7 +63,7 @@ Follow the steps on the [page](https://help.branch.io/developers-hub/docs/ios-ad
 
 Note: Code implementation in Swift is not necessary. The plugin already implements the code, requiring only configuration on the Dashboard.
 
---
+-
 
 ### Web Integration
 
