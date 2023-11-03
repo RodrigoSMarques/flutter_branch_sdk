@@ -34,6 +34,10 @@ Check additional instructions in the README
 
 * Updated included iOS SDK to 3.0.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
+## 6.9.0
+### Enhancement
+* Issue #244 - Support for setting customer_event_alias for BranchEvent
+
 ## 6.8.0
 * Updated Native `Android` SDKs:
     * Android Native SDK Update 5.7.+ - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
@@ -41,11 +45,13 @@ Check additional instructions in the README
 * Removed:
     - Facebook App Install Ads on Android (parameter `branch_enable_facebook_ads`)
 
+## 6.7.1
+* Fix issue #237: `Pass long URL when try creating Short URL in Offline`
+
 ## 6.7.0
 * Updated Native `Android` and `iOS` SDKs:
     * Android Native SDK Update 5.6.+ - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
     * iOS Native SDK Update 2.2.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-
 * Removed:
 	- Firebase App Indexing in Android (`listOnSearch` and `removeFromSearch` return `success` but do not perform any action)
 	- Old Apple Search Ads APIs (parameter `branch_check_apple_ads`)
