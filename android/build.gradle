@@ -1,6 +1,13 @@
 group 'br.com.rsmarques.flutter_branch_sdk'
 version '1.0'
 
+def getPackageVersion() {
+    def props = new Properties()
+    file('../pubspec.yaml').withInputStream { props.load(it) }
+    println props.getProperty("version")
+    props.getProperty("version")
+}
+
 buildscript {
     repositories {
         google()
@@ -22,10 +29,14 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    //compileSdkVersion 31
     defaultConfig {
         minSdkVersion 21
-        compileSdk 31
+        compileSdk 33
+        buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {

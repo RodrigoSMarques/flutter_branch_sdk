@@ -1,3 +1,39 @@
+## 7.0.0
+⚠️ This is a major release which contains breaking API changes.
+### BREAKING CHANGE
+
+* Minimum required Dart SDK version to 2.18 (Flutter 3.3.0)
+* Xcode 15 is the min version
+* iOS 12 is the min version
+
+#### SDK Initialization Required
+* Use `FlutterBranchSdk.init()` method to initialize the SDK.
+
+Initialization must be called from `main` or at any time (for example after getting consent for GPDR).
+
+```dart
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
+```
+
+Check additional instructions in the README
+
+#### Deprecated / Removed
+
+* `FlutterBranchSdk.initSession()`. Use `FlutterBranchSdk.listSession()`.
+* Removed `setIOSSKAdNetworkMaxTime` method
+* Removed Facebook App Install Ads on iOS
+
+### Features
+
+* Issue #244 - Support for setting customer_event_alias for BranchEvent
+* Updated compile & target SDK to Android API 33.
+* Updated example app Android compileSdkVersion to 33.
+
+### Native SDK Updates
+
+* Updated included iOS SDK to 3.0.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ## 6.9.0
 ### Enhancement
 * Issue #244 - Support for setting customer_event_alias for BranchEvent
@@ -120,9 +156,7 @@
  ------------
  
 * Updated Native `Android` and `iOS` SDKs:
-
 	* Android Native SDK Update 5.1.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-	
 	* iOS Native SDK Update 1.41.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 ## 4.0.0
