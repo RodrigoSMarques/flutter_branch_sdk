@@ -12,7 +12,6 @@ let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
 let PLUGIN_VERSION = "7.0.0"
 
-
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil

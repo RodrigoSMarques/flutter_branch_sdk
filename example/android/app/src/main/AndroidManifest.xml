@@ -2,7 +2,7 @@
     package="br.com.rsmarques.flutter_branch_sdk_example">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="flutter_branch_sdk_example"
+        android:label="Flutter Branch SDK Example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
