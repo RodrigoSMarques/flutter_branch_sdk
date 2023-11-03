@@ -23,7 +23,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Initialize Branch SDK
   /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
-  /// [enableFacebookLinkCheck] - Sets `true` to enable Facebook app link check operation during Branch initialisation
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   @override
   Future<void> init(
