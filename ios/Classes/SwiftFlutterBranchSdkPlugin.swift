@@ -10,13 +10,32 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "6.9.0"
+let PLUGIN_VERSION = "7.0.0"
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
+    var initialLaunchOptions: [AnyHashable: Any] =  [:]
     
+    var initialApplication : UIApplication?
+    var intitalURL : URL?
+    var initialOptions : [UIApplication.OpenURLOptionsKey : Any]?
+    
+    var initialSourceApplication : String?
+    var initialAnnotation : Any?
+    
+    var initialUserActivity : NSUserActivity?
+    
+    var initialUserInfo: [AnyHashable : Any]?
+    
+    var isInitialized = false
+    var branch : Branch?
+    
+    var requestMetadata : [String: String] = [:]
+    var facebookParameters : [String: String] = [:]
+    var snapParameters : [String: String] = [:]
+        
     //---------------------------------------------------------------------------------------------
     // Plugin registry
     // --------------------------------------------------------------------------------------------
@@ -33,76 +52,48 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
-        
-        
-        Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION);
-        
-#if DEBUG
-        let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? true
-        if enableLog {
-            Branch.getInstance().enableLogging()
-        }
-#else
-        let enableLog = Bundle.infoPlistValue(forKey: "branch_enable_log") as? Bool ?? false
-        if enableLog {
-            Branch.getInstance().enableLogging()
-        }
-#endif
-                
-        let enableFacebookAds = Bundle.infoPlistValue(forKey: "branch_enable_facebook_ads") as? Bool ?? false
-        print("Branch Check Facebook Link: \(String(describing:enableFacebookAds))");
-        
-        if enableFacebookAds {
-            //Facebook App Install Ads
-            //https://help.branch.io/using-branch/docs/facebook-app-install-ads#configure-your-app-to-read-facebook-app-install-deep-links
-            
-            let FBSDKAppLinkUtility: AnyClass? = NSClassFromString("FBSDKAppLinkUtility")
-            if let FBSDKAppLinkUtility = FBSDKAppLinkUtility {
-                Branch.getInstance().registerFacebookDeepLinkingClass(FBSDKAppLinkUtility)
-            } else {
-                NSLog("FBSDKAppLinkUtility not found but branch_enable_facebook_ads set to true. Please be sure you have integrated the Facebook SDK.")
-            }
-        }
-        
-        if #available(iOS 15.0, *) {
-            Branch.getInstance().checkPasteboardOnInstall()
-        }
-
-        Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
-            if error == nil {
-                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
-                guard let _ = self.eventSink else {
-                    self.initialParams = params as? [String: Any]
-                    return
-                }
-                self.eventSink!(params as? [String: Any])
-            } else {
-                let err = (error! as NSError)
-                print("Branch InitSession error: \(err.localizedDescription)")
-                guard let _ = self.eventSink else {
-                    self.initialError = err
-                    return
-                }
-                self.eventSink!(FlutterError(code: String(err.code),
-                                             message: err.localizedDescription,
-                                             details: nil))
-            }
-        }
+        initialLaunchOptions = launchOptions
         return true
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        let branchHandled = Branch.getInstance().application(app, open: url, options: options)
+        if (!isInitialized) {
+            initialApplication = app
+            intitalURL = url
+            initialOptions = options
+            return true
+        }
+        let branchHandled = branch!.application(app, open: url, options: options)
+        return branchHandled
+    }
+    
+    public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
+        if (!isInitialized) {
+            initialApplication = app
+            intitalURL = url
+            initialSourceApplication = sourceApplication
+            initialAnnotation = annotation
+            return true
+        }
+        let branchHandled = branch!.application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
         return branchHandled
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        let handledByBranch = Branch.getInstance().continue(userActivity)
+        if (!isInitialized) {
+            initialUserActivity = userActivity
+            return true
+        }
+        let handledByBranch = branch!.continue(userActivity)
         return handledByBranch
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        Branch.getInstance().handlePushNotification(userInfo)
+        if (!isInitialized) {
+            initialUserInfo = userInfo
+            return
+        }
+        branch!.handlePushNotification(userInfo)
     }
     
     //---------------------------------------------------------------------------------------------
@@ -137,6 +128,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     // --------------------------------------------------------------------------------------------
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch (call.method) {
+        case "init":
+            setupBranch(call: call, result: result)
+            break
         case "getShortUrl":
             getShortUrl(call: call, result: result)
             break
@@ -181,9 +175,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             break
         case "isUserIdentified":
             isUserIdentified(result: result)
-            break
-        case "setSKAdNetworkMaxTime" :
-            setSKAdNetworkMaxTime(call: call)
             break
         case "requestTrackingAuthorization" :
             requestTrackingAuthorization(result: result)
@@ -242,6 +233,98 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     //---------------------------------------------------------------------------------------------
     // Branch SDK Call Methods
     // --------------------------------------------------------------------------------------------
+    private func setupBranch(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        
+        if let _ = branch {
+            result(true)
+        }
+        
+        let args = call.arguments as! [String: Any?]
+        
+        if args["useTestKey"] as! Bool == true {
+            Branch.setUseTestBranchKey(true)
+        }
+        
+        if args["disableTracking"] as! Bool == true {
+            Branch.setTrackingDisabled(true)
+        }
+        
+        branch = Branch.getInstance()
+        
+        branch!.registerPluginName(PLUGIN_NAME, version:  args["version"] as! String)
+                
+#if DEBUG
+        if args["enableLogging"] as! Bool == true {
+            branch!.enableLogging()
+        }
+#endif
+        
+        // enable pasteboard check for iOS 15+ only
+        if #available(iOS 15, *) {
+            branch!.checkPasteboardOnInstall()
+        }
+                
+        if (!requestMetadata.isEmpty) {
+            for param in requestMetadata {
+                Branch.getInstance().setRequestMetadataKey(param.key, value: param.value)
+            }
+        }
+        if (!snapParameters.isEmpty) {
+            for param in snapParameters {
+                Branch.getInstance().addSnapPartnerParameter(withName: param.key, value: param.value)
+            }
+        }
+        if (!facebookParameters.isEmpty) {
+            for param in facebookParameters {
+                Branch.getInstance().addFacebookPartnerParameter(withName: param.key, value: param.value)
+            }
+        }
+
+        branch!.initSession(launchOptions: initialLaunchOptions) { (params, error) in
+            if error == nil {
+                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
+                guard let _ = self.eventSink else {
+                    self.initialParams = params as? [String: Any]
+                    return
+                }
+                self.eventSink!(params as? [String: Any])
+            } else {
+                let err = (error! as NSError)
+                print("Branch InitSession error: \(err.localizedDescription)")
+                guard let _ = self.eventSink else {
+                    self.initialError = err
+                    return
+                }
+                self.eventSink!(FlutterError(code: String(err.code),
+                                             message: err.localizedDescription,
+                                             details: nil))
+            }
+        }
+        
+        //application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool
+        if let _ = initialApplication , let _ = intitalURL , let _ = initialOptions {
+            branch!.application(initialApplication, open: intitalURL, options: initialOptions)
+        }
+        
+        //application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool
+        if let _ = initialApplication , let _ = intitalURL , let _ = initialSourceApplication, let _ = initialAnnotation  {
+            branch!.application(initialApplication, open: intitalURL, sourceApplication: initialSourceApplication, annotation: initialAnnotation)
+        }
+        
+        //application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void)
+        if let _ = initialUserActivity {
+            branch!.continue(initialUserActivity)
+        }
+        
+        //application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any])
+        if let _ = initialUserInfo {
+            branch!.handlePushNotification(initialUserInfo)
+        }
+        
+        isInitialized = true
+        result(true)
+    }
+    
     private func getShortUrl(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as! [String: Any?]
         let buoDict = args["buo"] as! [String: Any?]
@@ -299,7 +382,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     private func validateSDKIntegration() {
         DispatchQueue.main.async {
-            Branch.getInstance().validateSDKIntegration()
+            self.branch!.validateSDKIntegration()
         }
     }
     
@@ -396,7 +479,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let userId = args["userId"] as! String
         
         DispatchQueue.main.async {
-            Branch.getInstance().setIdentity(userId)
+            self.branch!.setIdentity(userId)
         }
     }
     
@@ -405,26 +488,35 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
+        if (!isInitialized) {
+            if (requestMetadata.keys.contains(key) && value.isEmpty) {
+                requestMetadata.removeValue(forKey: key)
+            } else {
+                requestMetadata[key] = value;
+            }
+            return;
+        }
+
         DispatchQueue.main.async {
-            Branch.getInstance().setRequestMetadataKey(key, value: value)
+            self.branch!.setRequestMetadataKey(key, value: value)
         }
     }
     
     private func logout() {
         DispatchQueue.main.async {
-            Branch.getInstance().logout()
+            self.branch!.logout()
         }
     }
     
     private func getLatestReferringParams(result: @escaping FlutterResult) {
-        let latestParams = Branch.getInstance().getLatestReferringParams()
+        let latestParams = branch!.getLatestReferringParams()
         DispatchQueue.main.async {
             result(latestParams)
         }
     }
     
     private func getFirstReferringParams(result: @escaping FlutterResult) {
-        let firstParams = Branch.getInstance().getFirstReferringParams()
+        let firstParams = branch!.getFirstReferringParams()
         DispatchQueue.main.async {
             result(firstParams)
         }
@@ -446,7 +538,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let data : NSMutableDictionary! = [:]
         let attributionWindow = args["attributionWindow"] as? Int ?? 0
         
-        Branch.getInstance().lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
+        branch!.lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
             if error == nil {
                 if latd != nil {
                     data["latd"] = ["attibution_window": latd!.attributionWindow,
@@ -468,18 +560,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             }
         }
     }
-    
-    private func setSKAdNetworkMaxTime(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let maxTimeInterval = args["maxTimeInterval"] as? Int ?? 0
-        DispatchQueue.main.async {
-            Branch.getInstance().setSKAdNetworkCalloutMaxTimeSinceInstall(TimeInterval(maxTimeInterval * 3600))
-        }
-    }
-    
+
     private func isUserIdentified(result: @escaping FlutterResult) {
         DispatchQueue.main.async {
-            result(Branch.getInstance().isUserIdentified())
+            result(self.branch!.isUserIdentified())
         }
     }
     
@@ -492,7 +576,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let connectTimeout = args["connectTimeout"] as? Int ?? 0
         DispatchQueue.main.async {
-            Branch.getInstance().setNetworkTimeout(TimeInterval(connectTimeout))
+            self.branch!.setNetworkTimeout(TimeInterval(connectTimeout))
         }
     }
     
@@ -505,7 +589,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let retryInterval = args["retryInterval"] as? Int ?? 0
         DispatchQueue.main.async {
-            Branch.getInstance().setRetryInterval(TimeInterval(retryInterval))
+            self.branch!.setRetryInterval(TimeInterval(retryInterval))
         }
     }
     
@@ -568,7 +652,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func handleDeepLink(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let url = args["url"] as! String
-        Branch.getInstance().handleDeepLink(withNewSession: URL(string: url))
+        branch!.handleDeepLink(withNewSession: URL(string: url))
     }
     
     private func addFacebookPartnerParameter(call: FlutterMethodCall) {
@@ -576,6 +660,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
+        if (!isInitialized) {
+            if (facebookParameters.keys.contains(key) && value.isEmpty) {
+                facebookParameters.removeValue(forKey: key)
+            } else {
+                facebookParameters[key] = value;
+            }
+            return;
+        }
         DispatchQueue.main.async {
             Branch.getInstance().addFacebookPartnerParameter(withName: key, value:value)
         }
@@ -586,6 +678,15 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
+        if (!isInitialized) {
+            if (snapParameters.keys.contains(key) && value.isEmpty) {
+                snapParameters.removeValue(forKey: key)
+            } else {
+                snapParameters[key] = value;
+            }
+            return;
+        }
+
         DispatchQueue.main.async {
             Branch.getInstance().addSnapPartnerParameter(withName: key, value:value)
         }
@@ -611,7 +712,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func requestTrackingAuthorization(result: @escaping FlutterResult) {
         if #available(iOS 14, *) {
             ATTrackingManager.requestTrackingAuthorization { (status) in
-                Branch.getInstance().handleATTAuthorizationStatus(status.rawValue)
+                self.branch!.handleATTAuthorizationStatus(status.rawValue)
                 
                 DispatchQueue.main.async {
                     result(Int(status.rawValue))

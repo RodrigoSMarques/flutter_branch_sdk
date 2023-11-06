@@ -8,21 +8,26 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'custom_button.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
-
-  //FlutterBranchSdk.addFacebookPartnerParameter(
-  //    key: 'em',
-  //    value: '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   //FlutterBranchSdk.clearPartnerParameters();
-
-  //FlutterBranchSdk.addSnapPartnerParameter(
-  //    key: 'hashed_email_address',
-  //    value:
-  //        '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-
+  /*
+  FlutterBranchSdk.addFacebookPartnerParameter(
+      key: 'em',
+      value:
+          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  FlutterBranchSdk.addSnapPartnerParameter(
+      key: 'hashed_email_address',
+      value:
+          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+  FlutterBranchSdk.setRequestMetadata('key1', 'value1');
+  FlutterBranchSdk.setRequestMetadata('key2', 'value2');
+  */
+  //await FlutterBranchSdk.requestTrackingAuthorization();
+  await FlutterBranchSdk.init(
+      useTestKey: false, enableLogging: false, disableTracking: false);
   runApp(const MyApp());
 }
 
@@ -31,10 +36,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "Flutter Branch SDK Example",
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: const HomePage(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: false,
+      ),
     );
   }
 }
@@ -95,9 +104,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   void listenDynamicLinks() async {
-    streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+    streamSubscription = FlutterBranchSdk.listSession().listen((data) async {
       print('listenDynamicLinks - DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
+
+      /*
+      if (data.containsKey('+is_first_session') &&
+          data['+is_first_session'] == true) {
+        // wait 3 seconds to obtain installation data
+        await Future.delayed(const Duration(seconds: 3));
+        Map<dynamic, dynamic> params =
+            await FlutterBranchSdk.getFirstReferringParams();
+        controllerData.sink.add(params.toString());
+        return;
+      }
+       */
+
       if (data.containsKey('+clicked_branch_link') &&
           data['+clicked_branch_link'] == true) {
         print(
@@ -113,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             duration: 10);
       }
     }, onError: (error) {
-      print('InitSesseion error: ${error.toString()}');
+      print('listSesseion error: ${error.toString()}');
     });
   }
 
@@ -195,6 +217,7 @@ class _HomePageState extends State<HomePage> {
     eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
       ..transactionID = '12344555'
+      ..alias = 'StandardEventAlias'
       ..currency = BranchCurrencyType.BRL
       ..revenue = 1.5
       ..shipping = 10.2
@@ -210,6 +233,7 @@ class _HomePageState extends State<HomePage> {
           'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
 
     eventCustom = BranchEvent.customEvent('Custom_event')
+      ..alias = 'CustomEventAlias'
       ..addCustomData(
           'Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
       ..addCustomData(
@@ -269,9 +293,9 @@ class _HomePageState extends State<HomePage> {
 
     FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventCustom!);
 
-    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
+    //FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
 
-    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
+    //FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
 
     showSnackBar(message: 'Tracked content');
   }
@@ -409,11 +433,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  url,
-                  maxLines: 1,
-                  style: const TextStyle(overflow: TextOverflow.ellipsis),
-                ),
+                Text(url,
+                    maxLines: 1,
+                    style: const TextStyle(overflow: TextOverflow.ellipsis)),
                 const SizedBox(
                   height: 10,
                 ),

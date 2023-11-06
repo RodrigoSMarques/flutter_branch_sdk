@@ -1,6 +1,20 @@
 part of flutter_branch_sdk;
 
 class FlutterBranchSdk {
+  ///Initialize Branch SDK
+  /// [useTestKey] - Sets `true` to use the test `key_test_...
+  /// [enableLogging] - Sets `true` turn on debug logging
+  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  static Future<void> init(
+      {bool useTestKey = false,
+      bool enableLogging = false,
+      bool disableTracking = false}) async {
+    await FlutterBranchSdkPlatform.instance.init(
+        useTestKey: useTestKey,
+        enableLogging: enableLogging,
+        disableTracking: disableTracking);
+  }
+
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   static void setIdentity(String userId) {
     FlutterBranchSdkPlatform.instance.setIdentity(userId);
@@ -32,9 +46,14 @@ class FlutterBranchSdk {
     return FlutterBranchSdkPlatform.instance.disableTracking(value);
   }
 
-  ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
+  @Deprecated('Use `listSession')
   static Stream<Map<dynamic, dynamic>> initSession() {
+    return FlutterBranchSdkPlatform.instance.initSession();
+  }
+
+  ///Listen click em Branch Deeplinks
+  static Stream<Map<dynamic, dynamic>> listSession() {
     return FlutterBranchSdkPlatform.instance.initSession();
   }
 
@@ -103,12 +122,6 @@ class FlutterBranchSdk {
       BranchLinkProperties? linkProperties}) async {
     return FlutterBranchSdkPlatform.instance
         .removeFromSearch(buo: buo, linkProperties: linkProperties);
-  }
-
-  ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
-  ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
-  static void setIOSSKAdNetworkMaxTime(int hours) {
-    return FlutterBranchSdkPlatform.instance.setIOSSKAdNetworkMaxTime(hours);
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.

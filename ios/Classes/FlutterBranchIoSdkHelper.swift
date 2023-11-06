@@ -157,7 +157,7 @@ func convertToEvent(dict: [String: Any?]) -> BranchEvent? {
     if (isStandardEvent) {
         event = BranchEvent.init(name: eventName)
     } else {
-        event =    BranchEvent.customEvent(withName: eventName)
+        event = BranchEvent.customEvent(withName: eventName)
     }
     if let transactionID = dict["transactionID"] as? String {
         event.transactionID = transactionID
