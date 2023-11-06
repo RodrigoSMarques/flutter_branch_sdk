@@ -1,7 +1,5 @@
 import 'dart:io';
 
-//import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,6 +9,7 @@ import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
 class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
+  static const PLUGIN_VERSION = "7.0.0";
   static const MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
   static const EVENT_CHANNEL = 'flutter_branch_sdk/event';
 
@@ -19,16 +18,42 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   final eventChannel = const EventChannel(EVENT_CHANNEL);
 
   static Stream<Map<dynamic, dynamic>>? _initSessionStream;
+  static bool isInitialized = false;
+
+  ///Initialize Branch SDK
+  /// [useTestKey] - Sets `true` to use the test `key_test_...
+  /// [enableLogging] - Sets `true` turn on debug logging
+  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  @override
+  Future<void> init(
+      {bool useTestKey = false,
+      bool enableLogging = false,
+      bool disableTracking = false}) async {
+    if (isInitialized) {
+      return;
+    }
+    await messageChannel.invokeMethod('init', {
+      'version': PLUGIN_VERSION,
+      'useTestKey': useTestKey,
+      'enableLogging': enableLogging,
+      'disableTracking': disableTracking
+    });
+    isInitialized = true;
+  }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   @override
   void setIdentity(String userId) {
+    assert(isInitialized,
+        'Call `setIdentity` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setIdentity', {'userId': userId});
   }
 
   ///Add key value pairs to all requests
   @override
   void setRequestMetadata(String key, String value) {
+    assert(!isInitialized,
+        'Call `setRequestMetadata` before `FlutterBranchSdk.init()` method');
     messageChannel
         .invokeMethod('setRequestMetadata', {'key': key, 'value': value});
   }
@@ -36,18 +61,24 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///This method should be called if you know that a different person is about to use the app
   @override
   void logout() {
+    assert(
+        isInitialized, 'Call `logout` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('logout');
   }
 
   ///Returns the last parameters associated with the link that referred the user
   @override
   Future<Map<dynamic, dynamic>> getLatestReferringParams() async {
+    assert(isInitialized,
+        'Call `getLatestReferringParams` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('getLatestReferringParams');
   }
 
   ///Returns the first parameters associated with the link that referred the user
   @override
   Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
+    assert(isInitialized,
+        'Call `getFirstReferringParams` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('getFirstReferringParams');
   }
 
@@ -55,13 +86,29 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///SDK will not send any network calls except for deep linking when tracking is disabled
   @override
   void disableTracking(bool value) async {
+    assert(isInitialized,
+        'Call `disableTracking` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setTrackingDisabled', {'disable': value});
   }
 
   ///Initialises a session with the Branch API
   ///Listen click em Branch Deeplinks
+  @Deprecated('Use `listSession')
   @override
   Stream<Map<dynamic, dynamic>> initSession() {
+    assert(isInitialized,
+        'Call `initSession` after `FlutterBranchSdk.init()` method');
+    _initSessionStream ??=
+        eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
+
+    return _initSessionStream!;
+  }
+
+  ///Listen click em Branch Deeplinks
+  @override
+  Stream<Map<dynamic, dynamic>> listSession() {
+    assert(isInitialized,
+        'Call `listSession` after `FlutterBranchSdk.init()` method');
     _initSessionStream ??=
         eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
 
@@ -72,6 +119,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///handle deep links correctly when you first integrate Branch into your app.
   @override
   void validateSDKIntegration() {
+    assert(isInitialized,
+        'Call `validateSDKIntegration` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('validateSDKIntegration');
   }
 
@@ -80,6 +129,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties}) async {
+    assert(isInitialized,
+        'Call `getShortUrl` after `FlutterBranchSdk.init()` method');
     Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
         'getShortUrl', {'buo': buo.toMap(), 'lp': linkProperties.toMap()});
 
@@ -100,6 +151,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
+    assert(isInitialized,
+        'Call `showShareSheet` after `FlutterBranchSdk.init()` method');
     Map<dynamic, dynamic> response =
         await messageChannel.invokeMethod('showShareSheet', {
       'buo': buo.toMap(),
@@ -123,8 +176,9 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   void trackContent(
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
+    assert(isInitialized,
+        'Call `trackContent` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
-
     params['buo'] = buo.map((b) => b.toMap()).toList();
     if (branchEvent.toMap().isNotEmpty) {
       params['event'] = branchEvent.toMap();
@@ -135,6 +189,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
   void trackContentWithoutBuo({required BranchEvent branchEvent}) {
+    assert(isInitialized,
+        'Call `trackContentWithoutBuo` after `FlutterBranchSdk.init()` method');
     if (branchEvent.toMap().isEmpty) {
       throw ArgumentError('branchEvent is required');
     }
@@ -145,6 +201,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
   @override
   void registerView({required BranchUniversalObject buo}) {
+    assert(isInitialized,
+        'Call `registerView` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('registerView', {'buo': buo.toMap()});
   }
 
@@ -154,6 +212,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<bool> listOnSearch(
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
+    assert(isInitialized,
+        'Call `listOnSearch` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
@@ -169,6 +229,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<bool> removeFromSearch(
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
+    assert(isInitialized,
+        'Call `removeFromSearch` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
@@ -177,22 +239,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     return await messageChannel.invokeMethod('removeFromSearch', params);
   }
 
-  ///Set time window for SKAdNetwork callouts in Hours (Only iOS)
-  ///By default, Branch limits calls to SKAdNetwork to within 72 hours after first install.
-  @override
-  void setIOSSKAdNetworkMaxTime(int hours) {
-    if (!Platform.isIOS) {
-      return;
-    }
-    messageChannel
-        .invokeMethod('setSKAdNetworkMaxTime', {'maxTimeInterval': hours});
-  }
-
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
   ///If you call setIdentity, this device will have that identity associated with this user until logout is called.
   ///This includes persisting through uninstalls, as we track device id.
   @override
   Future<bool> isUserIdentified() async {
+    assert(isInitialized,
+        'Call `isUserIdentified` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('isUserIdentified');
   }
 
@@ -200,6 +253,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// on Android returns notSupported
   @override
   Future<AppTrackingStatus> requestTrackingAuthorization() async {
+    assert(isInitialized,
+        'Call `requestTrackingAuthorization` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
       return AppTrackingStatus.notSupported;
     }
@@ -212,6 +267,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// on Android returns notSupported
   @override
   Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
+    assert(isInitialized,
+        'Call `getTrackingAuthorizationStatus` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
       return AppTrackingStatus.notSupported;
     }
@@ -224,6 +281,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// on Android returns empty string
   @override
   Future<String> getAdvertisingIdentifier() async {
+    assert(isInitialized,
+        'Call `getAdvertisingIdentifier` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
       return "";
     }
@@ -234,38 +293,45 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   @override
   void setConnectTimeout(int connectTimeout) {
+    assert(isInitialized,
+        'Call `setConnectTimeout` after `FlutterBranchSdk.init()` method');
     messageChannel
         .invokeMethod('setConnectTimeout', {'connectTimeout': connectTimeout});
   }
 
   @override
   void setRetryCount(int retryCount) {
+    assert(isInitialized,
+        'Call `setRetryCount` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setRetryCount', {'retryCount': retryCount});
   }
 
   @override
   void setRetryInterval(int retryInterval) {
+    assert(isInitialized,
+        'Call `setRetryInterval` after `FlutterBranchSdk.init()` method');
     messageChannel
         .invokeMethod('setRetryInterval', {'retryInterval': retryInterval});
   }
 
   @override
   void setTimeout(int timeout) {
+    assert(isInitialized,
+        'Call `setTimeout` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setTimeout', {'timeout': timeout});
   }
 
   @override
   Future<BranchResponse> getLastAttributedTouchData(
       {int? attributionWindow}) async {
+    assert(isInitialized,
+        'Call `getLastAttributedTouchData` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
-
     if (attributionWindow != null) {
       params['attributionWindow'] = attributionWindow;
     }
-
     Map<dynamic, dynamic> response =
         await messageChannel.invokeMethod('getLastAttributedTouchData', params);
-
     if (response['success']) {
       return BranchResponse.success(result: response['data']['latd']);
     } else {
@@ -281,6 +347,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
+    assert(isInitialized,
+        'Call `getQRCodeAsData` after `FlutterBranchSdk.init()` method');
     Map<dynamic, dynamic> response =
         await messageChannel.invokeMethod('getQRCode', {
       'buo': buo.toMap(),
@@ -303,6 +371,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
+    assert(isInitialized,
+        'Call `getQRCodeAsImage` after `FlutterBranchSdk.init()` method');
     Map<dynamic, dynamic> response =
         await messageChannel.invokeMethod('getQRCode', {
       'buo': buo.toMap(),
@@ -326,6 +396,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) async {
+    assert(isInitialized,
+        'Call `shareWithLPLinkMetadata` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
@@ -338,6 +410,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
   void handleDeepLink(String url) {
+    assert(isInitialized,
+        'Call `handleDeepLink` after `FlutterBranchSdk.init()` method');
     if (url.isEmpty) {
       throw ArgumentError('url is required');
     }
