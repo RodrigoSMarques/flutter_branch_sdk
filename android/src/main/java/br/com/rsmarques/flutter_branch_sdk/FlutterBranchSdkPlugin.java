@@ -29,6 +29,7 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 import io.branch.referral.validators.IntegrationValidator;
+import io.flutter.BuildConfig;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -99,6 +100,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private void setActivity(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "setActivity call");
         this.activity = activity;
+        initialIntent = activity.getIntent();
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
 
@@ -182,7 +184,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onActivityStarted(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "onActivityStarted call");
         if (!isInitialized) {
-            initialIntent = activity.getIntent();
             return;
         }
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
@@ -445,6 +446,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance().disableTracking(true);
         }
         this.context.startActivity(initialIntent);
+
         result.success(Boolean.TRUE);
     }
 

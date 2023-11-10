@@ -1,3 +1,6 @@
+## 7.0.1
+* Fix issue #255: `Attempt to invoke virtual method 'int android.content.Intent.getFlags()' on a null object reference`
+
 ## 7.0.0
 ⚠️ This is a major release which contains breaking API changes.
 ### BREAKING CHANGE
