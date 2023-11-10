@@ -27,7 +27,7 @@ void main() async {
   */
   //await FlutterBranchSdk.requestTrackingAuthorization();
   await FlutterBranchSdk.init(
-      useTestKey: true, enableLogging: true, disableTracking: false);
+      useTestKey: false, enableLogging: false, disableTracking: false);
   runApp(const MyApp());
 }
 
