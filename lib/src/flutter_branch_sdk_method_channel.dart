@@ -9,7 +9,7 @@ import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
 class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
-  static const PLUGIN_VERSION = "7.0.0";
+  static const PLUGIN_VERSION = "7.0.1";
   static const MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
   static const EVENT_CHANNEL = 'flutter_branch_sdk/event';
 
