@@ -99,6 +99,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private void setActivity(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "setActivity call");
         this.activity = activity;
+        initialIntent = activity.getIntent();
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
 
@@ -182,7 +183,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onActivityStarted(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "onActivityStarted call");
         if (!isInitialized) {
-            initialIntent = activity.getIntent();
             return;
         }
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
