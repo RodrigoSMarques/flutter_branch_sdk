@@ -1,5 +1,6 @@
 ## 7.0.1
 * Fix issue #255: `Attempt to invoke virtual method 'int android.content.Intent.getFlags()' on a null object reference` when using FlutterFragmentActivity
+* Fix issue #256: `A problem occurred configuring project ':flutter_branch_sdk'.` - Add compatibility with AGP 8 (Android Gradle Plugin)
 
 ## 7.0.0
 ⚠️ This is a major release which contains breaking API changes.
