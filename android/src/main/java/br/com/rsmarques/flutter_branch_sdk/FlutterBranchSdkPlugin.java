@@ -869,7 +869,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             throw new IllegalArgumentException("Map argument expected");
         }
         final String url = call.argument("url");
-        deeplink = url;
+        if (!url.contains("skip")) deeplink = url;
         Intent intent = new Intent(context, activity.getClass());
         intent.putExtra("branch", url);
         intent.putExtra("branch_force_new_session", true);
