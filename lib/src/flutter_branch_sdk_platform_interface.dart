@@ -94,6 +94,10 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError('getShortUrl has not been implemented');
   }
 
+  Future<BranchResponse> getDeeplinkOnError() async {
+    throw UnimplementedError('getDeeplinkOnError has not been implemented');
+  }
+
   ///Showing a Share Sheet
   Future<BranchResponse> showShareSheet(
       {required BranchUniversalObject buo,

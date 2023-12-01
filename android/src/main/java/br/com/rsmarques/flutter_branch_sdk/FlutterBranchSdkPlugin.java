@@ -67,6 +67,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private final ArrayList<String> campaingParameters = new ArrayList<String>();
     private Intent initialIntent = null;
 
+    private static String deeplink = "";
+
     /**
      * ---------------------------------------------------------------------------------------------
      * Plugin registry
@@ -99,6 +101,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private void setActivity(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "setActivity call");
         this.activity = activity;
+        if (activity.getIntent() != null && activity.getIntent().getData() != null ) {
+           deeplink =  activity.getIntent().getData().toString();
+        }
         initialIntent = activity.getIntent();
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
@@ -231,6 +236,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
 
         Intent newIntent = intent;
+
+        deeplink = newIntent.getData() != null ? newIntent.getData().toString() : deeplink;
+
         if (!intent.hasExtra("branch_force_new_session")) {
             newIntent.putExtra("branch_force_new_session", true);
         }
@@ -254,6 +262,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "getShortUrl":
                 getShortUrl(call, result);
                 break;
+            case "getDeeplinkOnError":
+                getDeeplinkOnError(call, result);
+                break;  
             case "shareWithLPLinkMetadata":
             case "showShareSheet":
                 showShareSheet(call, result);
@@ -476,6 +487,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 result.success(response);
             }
         });
+    }
+
+    private void getDeeplinkOnError(MethodCall call, final Result result) {
+        String deeplinkTemp = deeplink;
+        deeplink = "";
+        result.success(deeplinkTemp);
     }
 
     private void showShareSheet(MethodCall call, final Result result) {
@@ -852,6 +869,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             throw new IllegalArgumentException("Map argument expected");
         }
         final String url = call.argument("url");
+        deeplink = url;
         Intent intent = new Intent(context, activity.getClass());
         intent.putExtra("branch", url);
         intent.putExtra("branch_force_new_session", true);
