@@ -27,7 +27,7 @@ void main() async {
   */
   //await FlutterBranchSdk.requestTrackingAuthorization();
   await FlutterBranchSdk.init(
-      useTestKey: true, enableLogging: true, disableTracking: false);
+      useTestKey: true, enableLogging: false, disableTracking: false);
   runApp(const MyApp());
 }
 
@@ -60,10 +60,10 @@ class _HomePageState extends State<HomePage> {
       GlobalKey<ScaffoldMessengerState>();
 
   BranchContentMetaData metadata = BranchContentMetaData();
-  BranchUniversalObject? buo;
   BranchLinkProperties lp = BranchLinkProperties();
-  BranchEvent? eventStandard;
-  BranchEvent? eventCustom;
+  late BranchUniversalObject buo;
+  late BranchEvent eventStandard;
+  late BranchEvent eventCustom;
 
   StreamSubscription<Map>? streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
@@ -284,18 +284,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   void registerView() {
-    FlutterBranchSdk.registerView(buo: buo!);
+    FlutterBranchSdk.registerView(buo: buo);
     showSnackBar(message: 'Event Registered');
   }
 
   void trackContent() {
-    FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventStandard!);
+    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandard);
 
-    FlutterBranchSdk.trackContent(buo: [buo!], branchEvent: eventCustom!);
+    FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventCustom);
 
-    //FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
+    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard!);
 
-    //FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
+    FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventCustom!);
 
     showSnackBar(message: 'Tracked content');
   }
@@ -334,11 +334,10 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     //Buo without Link Properties
-    bool success = await FlutterBranchSdk.listOnSearch(buo: buo!);
+    bool success = await FlutterBranchSdk.listOnSearch(buo: buo);
 
     //Buo with Link Properties
-    success =
-        await FlutterBranchSdk.listOnSearch(buo: buo!, linkProperties: lp);
+    success = await FlutterBranchSdk.listOnSearch(buo: buo, linkProperties: lp);
 
     if (success) {
       showSnackBar(message: 'Listed on Search');
@@ -350,9 +349,9 @@ class _HomePageState extends State<HomePage> {
       showSnackBar(message: 'removeFromSearch() not available in Flutter Web');
       return;
     }
-    bool success = await FlutterBranchSdk.removeFromSearch(buo: buo!);
+    bool success = await FlutterBranchSdk.removeFromSearch(buo: buo);
     success =
-        await FlutterBranchSdk.removeFromSearch(buo: buo!, linkProperties: lp);
+        await FlutterBranchSdk.removeFromSearch(buo: buo, linkProperties: lp);
     if (success) {
       showSnackBar(message: 'Removed from Search');
     }
@@ -360,7 +359,7 @@ class _HomePageState extends State<HomePage> {
 
   void generateLink(BuildContext context) async {
     BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp);
+        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
     if (response.success) {
       if (context.mounted) {
         showGeneratedLink(context, response.result);
@@ -394,7 +393,7 @@ class _HomePageState extends State<HomePage> {
      */
     BranchResponse responseQrCodeImage =
         await FlutterBranchSdk.getQRCodeAsImage(
-            buo: buo!,
+            buo: buo,
             linkProperties: lp,
             qrCode: BranchQrCode(
                 primaryColor: Colors.black,
@@ -507,7 +506,7 @@ class _HomePageState extends State<HomePage> {
 
   void shareLink() async {
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
-        buo: buo!,
+        buo: buo,
         linkProperties: lp,
         messageText: 'My Share text',
         androidMessageTitle: 'My Message Title',
@@ -542,7 +541,7 @@ class _HomePageState extends State<HomePage> {
     */
 
     FlutterBranchSdk.shareWithLPLinkMetadata(
-        buo: buo!,
+        buo: buo,
         linkProperties: lp,
         title: "Share With LPLinkMetadata",
         icon: iconData);
