@@ -300,7 +300,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     return
                 }
                 self.eventSink!(FlutterError(code: String(err.code),
-                                             message: err.localizedDescription,
+                                             message: "Branch InitSession error: \(err.localizedDescription)",
                                              details: nil))
             }
         }

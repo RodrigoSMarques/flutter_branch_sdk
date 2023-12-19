@@ -2,7 +2,11 @@
 * Fix issue #261 / #266 / #268: Calling startActivity() from outside of an Activity
 * Fix issue #265: New release 7.0.0+ not getting a deeplink data on first launch, when app is on resume
 * Fix issue #264: Android (PlayStore) : Branch SDK Params empty on background state
-* Removing unused code
+* Fix issue #270: Indicate when error is thrown in init
+
+### Native SDK Updates
+
+* Updated included Android SDK to 5.8.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 
 ## 7.0.1
 * Fix issue #255: `Attempt to invoke virtual method 'int android.content.Intent.getFlags()' on a null object reference` when using FlutterFragmentActivity
