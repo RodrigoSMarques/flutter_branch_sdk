@@ -433,6 +433,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance().disableTracking(true);
         }
         isInitialized = true;
+        if (initialIntent == null) {
+            initialIntent = new Intent(this.context, this.activity.getClass());
+            initialIntent.setAction(Intent.ACTION_MAIN);
+            initialIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        }
         initialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         initialIntent.putExtra("branch_force_new_session", true);
         this.context.startActivity(initialIntent);
