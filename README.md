@@ -2,6 +2,8 @@
 
 [![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.png?raw=true)](https://branch.io)
 
+[![Plugin code analysis](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml)
+
 This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
