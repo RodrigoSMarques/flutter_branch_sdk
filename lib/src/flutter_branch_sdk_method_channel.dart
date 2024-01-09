@@ -143,6 +143,14 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     }
   }
 
+  @override
+  Future<BranchResponse> getDeeplinkOnError() async {
+    String response =
+        await messageChannel.invokeMethod('getDeeplinkOnError', {});
+
+    return BranchResponse.success(result: {'deeplink': response});
+  }
+
   ///Showing a Share Sheet
   @override
   Future<BranchResponse> showShareSheet(
