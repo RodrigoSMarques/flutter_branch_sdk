@@ -238,9 +238,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         if let _ = branch {
             result(true)
         }
-        
+
         let args = call.arguments as! [String: Any?]
-        
+
+#if DEBUG
+        NSLog("setupBranch args: %@", args)
+#endif
+
         if args["useTestKey"] as! Bool == true {
             Branch.setUseTestBranchKey(true)
         }
@@ -296,7 +300,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                     return
                 }
                 self.eventSink!(FlutterError(code: String(err.code),
-                                             message: err.localizedDescription,
+                                             message: "Branch InitSession error: \(err.localizedDescription)",
                                              details: nil))
             }
         }

@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "master"
+      - "dev"
+      - "bugfix"
     paths-ignore:
       - "**/README.md"
       - "docs/**"
@@ -11,6 +13,7 @@ on:
     branches:
       - "master"
       - "dev"
+      - "bugfix"
 
 jobs:
   check-lint-flutter:
