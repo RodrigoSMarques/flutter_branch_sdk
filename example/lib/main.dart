@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             duration: 10);
       }
     }, onError: (error) {
-      print('listSesseion error: ${error.toString()}');
+      print('listSession error: ${error.toString()}');
     });
   }
 
@@ -206,7 +206,6 @@ class _HomePageState extends State<HomePage> {
         expirationDateInMilliSec: DateTime.now()
             .add(const Duration(days: 365))
             .millisecondsSinceEpoch);
-    var id = 2;
     lp = BranchLinkProperties(
         channel: 'share',
         feature: 'sharing',
