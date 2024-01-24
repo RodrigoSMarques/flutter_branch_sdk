@@ -124,14 +124,17 @@ class _HomePageState extends State<HomePage> {
           data['+clicked_branch_link'] == true) {
         print(
             '------------------------------------Link clicked----------------------------------------------');
+        print('Title: ${data['\$og_title']}');
         print('Custom string: ${data['custom_string']}');
         print('Custom number: ${data['custom_number']}');
         print('Custom bool: ${data['custom_bool']}');
+        print('Custom date: ${data['custom_date_created']}');
         print('Custom list number: ${data['custom_list_number']}');
         print(
             '------------------------------------------------------------------------------------------------');
         showSnackBar(
-            message: 'Link clicked: Custom string - ${data['custom_string']}',
+            message:
+                'Link clicked: Custom string - ${data['custom_string']} - Date: ${data['custom_date_created'] ?? ''}',
             duration: 10);
       }
     }, onError: (error) {
@@ -140,13 +143,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initDeepLinkData() {
+    final DateTime today = DateTime.now();
+    String dateString =
+        '${today.year}-${today.month}-${today.day} ${today.hour}:${today.minute}:${today.second}';
+    String dateKey =
+        '${today.year}${today.month}${today.day}_${today.hour}${today.minute}${today.second}';
+
     metadata = BranchContentMetaData()
       ..addCustomMetadata('custom_string', 'abcd')
       ..addCustomMetadata('custom_number', 12345)
       ..addCustomMetadata('custom_bool', true)
       ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
       ..addCustomMetadata('custom_list_string', ['a', 'b', 'c'])
-      //--optional Custom Metadata
+      ..addCustomMetadata('custom_date_created', dateString);
+    //--optional Custom Metadata
+    /*
       ..contentSchema = BranchContentSchema.COMMERCE_PRODUCT
       ..price = 50.99
       ..currencyType = BranchCurrencyType.BRL
@@ -168,18 +179,18 @@ class _HomePageState extends State<HomePage> {
           country: 'Brazil',
           postalCode: '99999-987')
       ..setLocation(31.4521685, -114.7352207);
-
+      */
     buo = BranchUniversalObject(
-        canonicalIdentifier: 'flutter/branch',
+        canonicalIdentifier: 'flutter/branch_$dateKey',
         //parameter canonicalUrl
         //If your content lives both on the web and in the app, make sure you set its canonical URL
         // (i.e. the URL of this piece of content on the web) when building any BUO.
         // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
         // even if the user goes to the app instead of your website! This will help your SEO efforts.
         canonicalUrl: 'https://flutter.dev',
-        title: 'Flutter Branch Plugin',
+        title: 'Flutter Branch Plugin - $dateString',
         imageUrl: imageURL,
-        contentDescription: 'Flutter Branch Description',
+        contentDescription: 'Flutter Branch Description - $dateString',
         /*
         contentMetadata: BranchContentMetaData()
           ..addCustomMetadata('custom_string', 'abc')
@@ -195,15 +206,16 @@ class _HomePageState extends State<HomePage> {
         expirationDateInMilliSec: DateTime.now()
             .add(const Duration(days: 365))
             .millisecondsSinceEpoch);
-
+    var id = 2;
     lp = BranchLinkProperties(
-        channel: 'facebook',
+        channel: 'share',
         feature: 'sharing',
         //parameter alias
         //Instead of our standard encoded short url, you can specify the vanity alias.
         // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
         // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
         //alias: 'https://branch.io' //define link url,
+        //alias: 'p/$id', //define link url,
         stage: 'new share',
         campaign: 'campaign',
         tags: ['one', 'two', 'three'])
@@ -212,7 +224,10 @@ class _HomePageState extends State<HomePage> {
       ..addControlParam('\$match_duration', 7200)
       ..addControlParam('\$always_deeplink', true)
       ..addControlParam('\$android_redirect_timeout', 750)
-      ..addControlParam('referring_user_id', 'user_id');
+      ..addControlParam('referring_user_id', 'user_id') //;
+      ..addControlParam('\$ios_url', 'https://flutter-branch-sdk.netlify.app/')
+      ..addControlParam(
+          '\$android_url', 'https://flutter-branch-sdk.netlify.app/');
 
     eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
@@ -358,6 +373,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void generateLink(BuildContext context) async {
+    initDeepLinkData();
     BranchResponse response =
         await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
     if (response.success) {
@@ -389,8 +405,8 @@ class _HomePageState extends State<HomePage> {
       print(
           'Error : ${responseQrCodeData.errorCode} - ${responseQrCodeData.errorMessage}');
     }
-
      */
+    initDeepLinkData();
     BranchResponse responseQrCodeImage =
         await FlutterBranchSdk.getQRCodeAsImage(
             buo: buo,
@@ -413,6 +429,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void showGeneratedLink(BuildContext context, String url) async {
+    initDeepLinkData();
     showModalBottomSheet(
         isDismissible: true,
         isScrollControlled: true,
@@ -505,6 +522,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void shareLink() async {
+    initDeepLinkData();
     BranchResponse response = await FlutterBranchSdk.showShareSheet(
         buo: buo,
         linkProperties: lp,
@@ -539,7 +557,7 @@ class _HomePageState extends State<HomePage> {
             .buffer
             .asUint8List();
     */
-
+    initDeepLinkData();
     FlutterBranchSdk.shareWithLPLinkMetadata(
         buo: buo,
         linkProperties: lp,
