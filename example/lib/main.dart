@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:uuid/uuid.dart';
 
 import 'custom_button.dart';
 
@@ -80,8 +81,6 @@ class _HomePageState extends State<HomePage> {
 
     initDeepLinkData();
 
-    FlutterBranchSdk.setIdentity('branch_user_test');
-
     //requestATTTracking();
   }
 
@@ -146,8 +145,6 @@ class _HomePageState extends State<HomePage> {
     final DateTime today = DateTime.now();
     String dateString =
         '${today.year}-${today.month}-${today.day} ${today.hour}:${today.minute}:${today.second}';
-    String dateKey =
-        '${today.year}${today.month}${today.day}_${today.hour}${today.minute}${today.second}';
 
     metadata = BranchContentMetaData()
       ..addCustomMetadata('custom_string', 'abcd')
@@ -180,25 +177,19 @@ class _HomePageState extends State<HomePage> {
           postalCode: '99999-987')
       ..setLocation(31.4521685, -114.7352207);
       */
+
+    final canonicalIdentifier = const Uuid().v4();
     buo = BranchUniversalObject(
-        canonicalIdentifier: 'flutter/branch_$dateKey',
+        canonicalIdentifier: 'flutter/branch_$canonicalIdentifier',
         //parameter canonicalUrl
         //If your content lives both on the web and in the app, make sure you set its canonical URL
         // (i.e. the URL of this piece of content on the web) when building any BUO.
         // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
         // even if the user goes to the app instead of your website! This will help your SEO efforts.
-        canonicalUrl: 'https://flutter.dev',
+        //canonicalUrl: 'https://flutter.dev',
         title: 'Flutter Branch Plugin - $dateString',
         imageUrl: imageURL,
         contentDescription: 'Flutter Branch Description - $dateString',
-        /*
-        contentMetadata: BranchContentMetaData()
-          ..addCustomMetadata('custom_string', 'abc')
-          ..addCustomMetadata('custom_number', 12345)
-          ..addCustomMetadata('custom_bool', true)
-          ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
-          ..addCustomMetadata('custom_list_string', ['a', 'b', 'c']),
-         */
         contentMetadata: metadata,
         keywords: ['Plugin', 'Branch', 'Flutter'],
         publiclyIndex: true,
@@ -254,7 +245,7 @@ class _HomePageState extends State<HomePage> {
           'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
   }
 
-  void showSnackBar({required String message, int duration = 1}) {
+  void showSnackBar({required String message, int duration = 2}) {
     scaffoldMessengerKey.currentState!.removeCurrentSnackBar();
     scaffoldMessengerKey.currentState!.showSnackBar(
       SnackBar(
@@ -287,14 +278,25 @@ class _HomePageState extends State<HomePage> {
     showSnackBar(message: 'Tracking disabled');
   }
 
-  void identifyUser() {
-    FlutterBranchSdk.setIdentity('branch_user_test');
-    showSnackBar(message: 'User branch_user_test identfied');
+  void identifyUser() async {
+    final isUserIdentified = await FlutterBranchSdk.isUserIdentified();
+    if (isUserIdentified) {
+      showSnackBar(message: 'User logged in');
+      return;
+    }
+    final userId = const Uuid().v4();
+    FlutterBranchSdk.setIdentity(userId);
+    showSnackBar(message: 'User identified: $userId');
   }
 
-  void userLogout() {
+  void userLogout() async {
+    final isUserIdentified = await FlutterBranchSdk.isUserIdentified();
+    if (!isUserIdentified) {
+      showSnackBar(message: 'No users logged in');
+      return;
+    }
     FlutterBranchSdk.logout();
-    showSnackBar(message: 'User branch_user_test logout');
+    showSnackBar(message: 'User logout');
   }
 
   void registerView() {

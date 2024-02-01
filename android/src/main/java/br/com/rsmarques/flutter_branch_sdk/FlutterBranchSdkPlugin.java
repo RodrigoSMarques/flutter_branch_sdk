@@ -179,6 +179,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onActivityStarted(@NonNull Activity activity) {
         LogUtils.debug(DEBUG_NAME, "triggered onActivityStarted");
         if (!isInitialized) {
+            // Delay session initialization
+            Branch.expectDelayedSessionInitialization(true);
             return;
         }
         LogUtils.debug(DEBUG_NAME, "triggered SessionBuilder init");
@@ -374,6 +376,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (isInitialized) {
             result.success(Boolean.TRUE);
         }
+
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
         if ((Boolean) argsMap.get("useTestKey")) {
             Branch.enableTestMode();
@@ -433,6 +436,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance().disableTracking(true);
         }
         isInitialized = true;
+
+        if (this.activity == null) {
+            initialIntent = null;
+            result.success(Boolean.TRUE);
+            return;
+        }
+
         if (initialIntent == null) {
             initialIntent = new Intent(this.context, this.activity.getClass());
             initialIntent.setAction(Intent.ACTION_MAIN);
