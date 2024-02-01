@@ -1,3 +1,29 @@
+## 7.0.3
+### Issues
+
+* Fix issue #277 : PlatformException - NullPointerException
+
+### Features
+* PR #286 : fix: export platform_interface
+* Updated configuration steps in README.MD
+* Sample app - code review
+
+## 7.0.2
+### Issues
+
+* Fix issue #261 / #266 / #268: Calling startActivity() from outside of an Activity
+* Fix issue #264: Android (PlayStore) : Branch SDK Params empty on background state 
+* Fix issue #265: New release 7.0.0+ not getting a deeplink data on first launch, when app is on resume
+* Fix issue #270: Indicate when error is thrown in init
+
+### Native SDK Updates
+
+* Updated included Android SDK to 5.8.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
+## 7.0.1
+* Fix issue #255: `Attempt to invoke virtual method 'int android.content.Intent.getFlags()' on a null object reference` when using FlutterFragmentActivity
+* Fix issue #256: `A problem occurred configuring project ':flutter_branch_sdk'.` - Add compatibility with AGP 8 (Android Gradle Plugin)
+
 ## 7.0.0
 ⚠️ This is a major release which contains breaking API changes.
 ### BREAKING CHANGE

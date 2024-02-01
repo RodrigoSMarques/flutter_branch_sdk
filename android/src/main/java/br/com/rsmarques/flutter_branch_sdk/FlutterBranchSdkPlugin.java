@@ -23,6 +23,7 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.branch.referral.BuildConfig;
 import io.branch.referral.QRCode.BranchQRCode;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.BranchEvent;
@@ -44,22 +45,18 @@ import io.flutter.plugin.common.PluginRegistry.NewIntentListener;
 
 public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler, StreamHandler, NewIntentListener, ActivityAware,
         Application.ActivityLifecycleCallbacks {
-
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private static final String PLUGIN_NAME = "Flutter";
-
     private Activity activity;
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
-
     private EventSink eventSink = null;
     private Map<String, Object> sessionParams = null;
     private BranchError initialError = null;
     private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
     private boolean isInitialized = false;
-
     private final JSONObject requestMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
     private final JSONObject snapParameters = new JSONObject();
@@ -72,21 +69,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      * Plugin registry
      * --------------------------------------------------------------------------------------------
      **/
-
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        LogUtils.debug(DEBUG_NAME, "onAttachedToEngine call");
+        LogUtils.debug(DEBUG_NAME, "triggered onAttachedToEngine");
         setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext());
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        LogUtils.debug(DEBUG_NAME, "onDetachedFromEngine call");
+        LogUtils.debug(DEBUG_NAME, "triggered onDetachedFromEngine");
         teardownChannels();
     }
 
     private void setupChannels(BinaryMessenger messenger, Context context) {
-        LogUtils.debug(DEBUG_NAME, "setupChannels call");
+        LogUtils.debug(DEBUG_NAME, "triggered setupChannels");
         this.context = context;
 
         MethodChannel methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
@@ -97,13 +93,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setActivity(Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "setActivity call");
+        LogUtils.debug(DEBUG_NAME, "triggered setActivity");
         this.activity = activity;
+        initialIntent = activity.getIntent();
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
 
     private void teardownChannels() {
-        LogUtils.debug(DEBUG_NAME, "teardownChannels call");
+        LogUtils.debug(DEBUG_NAME, "triggered teardownChannels");
         this.activityPluginBinding = null;
         this.activity = null;
         this.context = null;
@@ -116,7 +113,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      **/
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
-        LogUtils.debug(DEBUG_NAME, "onAttachedToActivity call");
+        LogUtils.debug(DEBUG_NAME, "triggered onAttachedToActivity");
         this.activityPluginBinding = activityPluginBinding;
         setActivity(activityPluginBinding.getActivity());
         activityPluginBinding.addOnNewIntentListener(this);
@@ -124,20 +121,20 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onDetachedFromActivity() {
-        LogUtils.debug(DEBUG_NAME, "onDetachedFromActivity call");
+        LogUtils.debug(DEBUG_NAME, "triggered onDetachedFromActivity");
         activityPluginBinding.removeOnNewIntentListener(this);
         this.activity = null;
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-        LogUtils.debug(DEBUG_NAME, "onDetachedFromActivityForConfigChanges call");
+        LogUtils.debug(DEBUG_NAME, "triggered onDetachedFromActivityForConfigChanges");
         onDetachedFromActivity();
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
-        LogUtils.debug(DEBUG_NAME, "onReattachedToActivityForConfigChanges call");
+        LogUtils.debug(DEBUG_NAME, "triggered onReattachedToActivityForConfigChanges");
         onAttachedToActivity(activityPluginBinding);
     }
 
@@ -148,7 +145,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      **/
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
-        LogUtils.debug(DEBUG_NAME, "onListen call");
+        LogUtils.debug(DEBUG_NAME, "triggered onListen");
         this.eventSink = new MainThreadEventSink(eventSink);
         if (sessionParams != null) {
             eventSink.success(sessionParams);
@@ -163,7 +160,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onCancel(Object o) {
-        LogUtils.debug(DEBUG_NAME, "onCancel call");
+        LogUtils.debug(DEBUG_NAME, "triggered onCancel");
         this.eventSink = new MainThreadEventSink(null);
         initialError = null;
         sessionParams = null;
@@ -175,39 +172,41 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      * --------------------------------------------------------------------------------------------
      **/
     @Override
-    public void onActivityCreated(Activity activity, Bundle bundle) {
+    public void onActivityCreated(@NonNull Activity activity, Bundle bundle) {
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "onActivityStarted call");
+    public void onActivityStarted(@NonNull Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityStarted");
         if (!isInitialized) {
-            initialIntent = activity.getIntent();
+            // Delay session initialization
+            Branch.expectDelayedSessionInitialization(true);
             return;
         }
+        LogUtils.debug(DEBUG_NAME, "triggered SessionBuilder init");
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {
+    public void onActivityResumed(@NonNull Activity activity) {
     }
 
     @Override
-    public void onActivityPaused(Activity activity) {
+    public void onActivityPaused(@NonNull Activity activity) {
     }
 
     @Override
-    public void onActivityStopped(Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "onActivityStopped call");
+    public void onActivityStopped(@NonNull Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityStopped");
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
     }
 
     @Override
-    public void onActivityDestroyed(Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "onActivityDestroyed call");
+    public void onActivityDestroyed(@NonNull Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityDestroyed");
         if (this.activity == activity) {
             activity.getApplication().unregisterActivityLifecycleCallbacks(this);
         }
@@ -219,23 +218,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      * --------------------------------------------------------------------------------------------
      **/
     @Override
-    public boolean onNewIntent(Intent intent) {
-        LogUtils.debug(DEBUG_NAME, "onNewIntent call");
-
+    public boolean onNewIntent(@NonNull Intent intent) {
+        LogUtils.debug(DEBUG_NAME, "triggered onNewIntent");
         if (!isInitialized) {
             return false;
         }
-
-        if (this.activity == null || intent == null) {
+        if (this.activity == null) {
             return false;
         }
-
-        Intent newIntent = intent;
-        if (!intent.hasExtra("branch_force_new_session")) {
-            newIntent.putExtra("branch_force_new_session", true);
+        this.activity.setIntent(intent);
+        if (intent.hasExtra("branch_force_new_session") && intent.getBooleanExtra("branch_force_new_session",false)) {
+            Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
+            LogUtils.debug(DEBUG_NAME, "triggered SessionBuilder reInit");
         }
-        this.activity.setIntent(newIntent);
-        Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
         return true;
     }
 
@@ -348,7 +343,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject params, BranchError error) {
-                    LogUtils.debug(DEBUG_NAME, "onInitFinished - call");
+                    LogUtils.debug(DEBUG_NAME, "triggered onInitFinished");
                     if (error == null) {
                         LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
                         try {
@@ -362,10 +357,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             sessionParams = null;
                         }
                     } else {
-                        //if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED || error.getErrorCode() == BranchError.ERR_IMPROPER_REINITIALIZATION) {
-                        //    LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: ERR_BRANCH_ALREADY_INITIALIZED");
-                        //    return;
-                        //}
                         LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
                         if (eventSink != null) {
                             eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
@@ -378,13 +369,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             };
 
     private void setupBranch(MethodCall call, final Result result) {
-        LogUtils.debug(DEBUG_NAME, "setupBranch call");
+        LogUtils.debug(DEBUG_NAME, "triggered setupBranch");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
         if (isInitialized) {
             result.success(Boolean.TRUE);
         }
+
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
         if ((Boolean) argsMap.get("useTestKey")) {
             Branch.enableTestMode();
@@ -396,7 +388,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         Branch.registerPlugin(PLUGIN_NAME, (String) argsMap.get("version"));
         Branch.getAutoInstance(this.context);
-        isInitialized = true;
 
         if (requestMetadata.length() > 0) {
             Iterator keys = requestMetadata.keys();
@@ -444,7 +435,23 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if ((Boolean) argsMap.get("disableTracking")) {
             Branch.getInstance().disableTracking(true);
         }
+        isInitialized = true;
+
+        if (this.activity == null) {
+            initialIntent = null;
+            result.success(Boolean.TRUE);
+            return;
+        }
+
+        if (initialIntent == null) {
+            initialIntent = new Intent(this.context, this.activity.getClass());
+            initialIntent.setAction(Intent.ACTION_MAIN);
+            initialIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        }
+        initialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        initialIntent.putExtra("branch_force_new_session", true);
         this.context.startActivity(initialIntent);
+        initialIntent = null;
         result.success(Boolean.TRUE);
     }
 
@@ -531,7 +538,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void registerView(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "registerView call");
+        LogUtils.debug(DEBUG_NAME, "triggered registerView");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -546,7 +553,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void listOnSearch(MethodCall call, Result result) {
-        LogUtils.debug(DEBUG_NAME, "listOnSearch call");
+        LogUtils.debug(DEBUG_NAME, "triggered listOnSearch");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -562,7 +569,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void removeFromSearch(MethodCall call, Result result) {
-        LogUtils.debug(DEBUG_NAME, "removeFromSearch call");
+        LogUtils.debug(DEBUG_NAME, "triggered removeFromSearch");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -578,7 +585,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void trackContent(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "trackContent call");
+        LogUtils.debug(DEBUG_NAME, "triggered trackContent");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -597,7 +604,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void trackContentWithoutBuo(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "trackContentWithoutBuo call");
+        LogUtils.debug(DEBUG_NAME, "triggered trackContentWithoutBuo");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -612,7 +619,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setIdentity(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setIdentity call");
+        LogUtils.debug(DEBUG_NAME, "triggered setIdentity");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -626,7 +633,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setRequestMetadata(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setRequestMetadata call");
+        LogUtils.debug(DEBUG_NAME, "triggered setRequestMetadata");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -652,7 +659,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void logout() {
-        LogUtils.debug(DEBUG_NAME, "logout call");
+        LogUtils.debug(DEBUG_NAME, "triggered logout");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -662,7 +669,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void getLatestReferringParams(Result result) {
-        LogUtils.debug(DEBUG_NAME, "getLatestReferringParams call");
+        LogUtils.debug(DEBUG_NAME, "triggered getLatestReferringParams");
         JSONObject sessionParams = Branch.getInstance().getLatestReferringParams();
         try {
             result.success(branchSdkHelper.paramsToMap(sessionParams));
@@ -673,7 +680,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void getFirstReferringParams(Result result) {
-        LogUtils.debug(DEBUG_NAME, "getFirstReferringParams call");
+        LogUtils.debug(DEBUG_NAME, "triggered getFirstReferringParams");
         JSONObject sessionParams = Branch.getInstance().getFirstReferringParams();
         try {
             result.success(branchSdkHelper.paramsToMap(sessionParams));
@@ -684,7 +691,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setTrackingDisabled(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setTrackingDisabled call");
+        LogUtils.debug(DEBUG_NAME, "triggered setTrackingDisabled");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -698,12 +705,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void isUserIdentified(Result result) {
-        LogUtils.debug(DEBUG_NAME, "isUserIdentified call");
+        LogUtils.debug(DEBUG_NAME, "triggered isUserIdentified");
         result.success(Branch.getInstance().isUserIdentified());
     }
 
     private void setConnectTimeout(final MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
+        LogUtils.debug(DEBUG_NAME, "triggered setConnectTimeout");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -717,7 +724,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setTimeout(final MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setConnectTimeout call");
+        LogUtils.debug(DEBUG_NAME, "triggered setConnectTimeout");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -731,7 +738,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setRetryCount(final MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setRetryCount call");
+        LogUtils.debug(DEBUG_NAME, "triggered setRetryCount");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -745,7 +752,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setRetryInterval(final MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setRetryInterval call");
+        LogUtils.debug(DEBUG_NAME, "triggered setRetryInterval");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -759,7 +766,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void getLastAttributedTouchData(final MethodCall call, final Result result) {
-        LogUtils.debug(DEBUG_NAME, "getLastAttributedTouchData call");
+        LogUtils.debug(DEBUG_NAME, "triggered getLastAttributedTouchData");
         final Map<String, Object> response = new HashMap<>();
         if (call.hasArgument("attributionWindow")) {
             final int attributionWindow = call.argument("attributionWindow");
@@ -811,7 +818,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void getQRCode(final MethodCall call, final Result result) {
-        LogUtils.debug(DEBUG_NAME, "getQRCodeAsData call");
+        LogUtils.debug(DEBUG_NAME, "triggered getQRCodeAsData");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -847,7 +854,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void handleDeepLink(final MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "handleDeepLink call");
+        LogUtils.debug(DEBUG_NAME, "triggered handleDeepLink");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -859,7 +866,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void addFacebookPartnerParameter(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "addFacebookPartnerParameter call");
+        LogUtils.debug(DEBUG_NAME, "triggered addFacebookPartnerParameter");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -885,7 +892,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void clearPartnerParameters() {
-        LogUtils.debug(DEBUG_NAME, "clearPartnerParameters call");
+        LogUtils.debug(DEBUG_NAME, "triggered clearPartnerParameters");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -895,7 +902,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setPreinstallCampaign(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setPreinstallCampaign call");
+        LogUtils.debug(DEBUG_NAME, "triggered setPreinstallCampaign");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -913,7 +920,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setPreinstallPartner(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "setPreinstallPartner call");
+        LogUtils.debug(DEBUG_NAME, "triggered setPreinstallPartner");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
@@ -931,7 +938,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void addSnapPartnerParameter(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "addSnapPartnerParameter call");
+        LogUtils.debug(DEBUG_NAME, "triggered addSnapPartnerParameter");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }

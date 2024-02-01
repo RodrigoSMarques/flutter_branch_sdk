@@ -2,13 +2,15 @@
 
 [![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.png?raw=true)](https://branch.io)
 
+[![Plugin code analysis](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml)
+
 This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.7.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.8.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * iOS - Branch SDK Version >= 3.0.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
@@ -33,28 +35,29 @@ Handle Links in Your Own App| X | X | X
 ## Getting Started
 ### Configure Branch Dashboard
 * Register Your App
-* Complete the Basic integration in [Branch Dashboard](https://dashboard.branch.io/login)
+* Configure Branch Dashboard [Branch Dashboard](https://dashboard.branch.io/login)
 
 For details see:
 
-* [iOS - only section: **Configure Branch**](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-branch)
-* [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-branch-dashboard)
+* [iOS: only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/ios-basic-integration#1-configure-branch-dashboard)
+* [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#1-configure-branch-dashboard)
 
 ## Configure Platform Project
 ### Android Integration
 
-Follow the steps on the page [https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app](https://help.branch.io/developers-hub/docs/android-basic-integration#configure-app), session _**Configure app**_:
+Follow the steps:
 
-* Add Branch to your `AndroidManifest.xml`
+* [Configure App](https://help.branch.io/developers-hub/docs/android-basic-integration#4-configure-app)
+* [Configure ProGuard](https://help.branch.io/developers-hub/docs/android-basic-integration#7-configure-proguard)
 
 -
 
 ### iOS Integration
-Follow the steps on the page [https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#configure-bundle-identifier), from session ```Configure bundle identifier```:
+Follow the steps:
 
-* Configure bundle identifier
-* Configure associated domains
-* Configure Info.plist
+* [Configure bundle identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#2-configure-bundle-identifier)
+* [Configure associated domains](https://help.branch.io/developers-hub/docs/ios-basic-integration#3-configure-associated-domains)
+* [Configure Info.plist](https://help.branch.io/developers-hub/docs/ios-basic-integration#4-configure-infoplist)
 
 #### NativeLink™ Deferred Deep Linking
 Use iOS pasteboard to enable deferred deep linking via Branch NativeLink™, which enables 100% matching on iOS through Installs.
