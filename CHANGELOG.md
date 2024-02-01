@@ -1,3 +1,13 @@
+## 7.0.3
+### Issues
+
+* Fix issue #277 : PlatformException - NullPointerException
+
+### Features
+* PR #286 : fix: export platform_interface
+* Updated configuration steps in README.MD
+* Sample app - code review
+
 ## 7.0.2
 ### Issues
 

@@ -11,6 +11,7 @@ import 'src/flutter_branch_sdk_platform_interface.dart';
 import 'src/objects/app_tracking_transparency.dart';
 import 'src/objects/branch_universal_object.dart';
 
+export 'src/flutter_branch_sdk_platform_interface.dart';
 export 'src/objects/app_tracking_transparency.dart';
 export 'src/objects/branch_universal_object.dart';
 
