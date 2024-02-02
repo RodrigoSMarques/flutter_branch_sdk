@@ -1,3 +1,8 @@
+## 7.0.4
+### Issues
+
+* Fix issue #289 : reverts `js` dependency update from version 0.6.3 to 0.7.0
+
 ## 7.0.3
 ### Issues
 
