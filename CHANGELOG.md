@@ -1,11 +1,8 @@
 ## 7.1.0
 ### Features
 * New Methods:
-    - `setDMAParamsForEEA` - In response to the European Union's enactment of the Digital Markets Act (DMA), this new method  help pass consent information from your user to Google.
-    See documentation for details:
-    - [iOS](https://help.branch.io/developers-hub/docs/ios-advanced-features#user-data)
-    - [Android] (https://help.branch.io/developers-hub/docs/android-advanced-features#user-data)
-    - [Web](https://help.branch.io/developers-hub/docs/web-full-reference#setdmaparamsforeea)
+    - `setDMAParamsForEEA` - In response to the European Union's enactment of the Digital Markets Act (DMA), this new method  help pass consent information from your user to Google. 
+    See [documentation](https://github.com/RodrigoSMarques/flutter_branch_sdk?tab=readme-ov-file#user-data) for details
 
 ### Issues
 
