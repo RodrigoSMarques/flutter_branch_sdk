@@ -624,6 +624,10 @@ In response to the European Union's enactment of the Digital Markets Act (DMA), 
 
 The `setDMAParamsForEEA` method takes 3 parameters:
 
+```dart
+    FlutterBranchSdk.setDMAParamsForEEA(eeaRegion: true, adPersonalizationConsent: false, adUserDataUsageConsent: false);
+```
+
 Parameter Name | Type | Description | When `true`| When `false` 
 |---|---|---|---|---|
 eeaRegion | Boolean | Whether European regulations, including the DMA, apply to this user and conversion | User is `included` in European Union regulations. For example, if the user is located within the EEA, they are within the scope of DMA | User is considered `excluded` from European Union regulations

@@ -470,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: url));
                         if (context.mounted) {
-                          Navigator.pop(this.context);
+                          Navigator.pop(context);
                         }
                       },
                       child: const Center(child: Text('Copy link'))),
