@@ -10,8 +10,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.8.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.0.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.9.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 3.3.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -74,7 +74,9 @@ You need add Branch Javascript in your `web\index.html` at the top of your `<bod
 
 ```javascript
   <script>
-    (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
+    // load Branch
+    (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener banner closeBanner closeJourney data deepview deepviewCta first init link logout removeListener setBranchViewData setIdentity track trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData setAPIResponseCallback qrCode setRequestMetaData setAPIUrl getAPIUrl setDMAParamsForEEA".split(" "), 0);
+    // init Branch
     branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
   </script>
 ```
@@ -118,7 +120,9 @@ Full example `index.html`:
 </head>
 <body>
   <script>
-    (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking".split(" "), 0);
+    // load Branch
+    (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener banner closeBanner closeJourney data deepview deepviewCta first init link logout removeListener setBranchViewData setIdentity track trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData setAPIResponseCallback qrCode setRequestMetaData setAPIUrl getAPIUrl setDMAParamsForEEA".split(" "), 0);
+    // init Branch
     branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
   </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
@@ -611,6 +615,23 @@ print(status);
 ```
 
 See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
+
+
+### User Data
+#### Google DMA Compliance
+
+In response to the European Union's enactment of the Digital Markets Act (DMA), the Branch Android SDK includes the `setDMAParamsForEEA` method to help you pass consent information from your user to Google.
+
+The `setDMAParamsForEEA` method takes 3 parameters:
+
+Parameter Name | Type | Description | When `true`| When `false` 
+|---|---|---|---|---|
+eeaRegion | Boolean | Whether European regulations, including the DMA, apply to this user and conversion | User is `included` in European Union regulations. For example, if the user is located within the EEA, they are within the scope of DMA | User is considered `excluded` from European Union regulations
+adPersonalizationConsent | Boolean | Whether end user has `granted` or denied ads personalization | User has `granted`  consent for ads personalization. | User has denied consent for ads personalization.
+adUserDataUsageConsent | Boolean | Whether end user has granted or denied consent for 3P transmission of user level data for ads. | User has `granted` consent for 3P transmission of user-level data for ads. | User has `denied`  consent for 3P transmission of user-level data for ads.
+
+When parameters are successfully set using `setDMAParamsForEEA`, they will be sent along with every future request to the following Branch endpoint.
+
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.

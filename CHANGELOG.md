@@ -1,3 +1,21 @@
+## 7.1.0
+### Features
+* New Methods:
+    - `setDMAParamsForEEA` - In response to the European Union's enactment of the Digital Markets Act (DMA), this new method  help pass consent information from your user to Google.
+    See documentation for details:
+    - [iOS](https://help.branch.io/developers-hub/docs/ios-advanced-features#user-data)
+    - [Android] (https://help.branch.io/developers-hub/docs/android-advanced-features#user-data)
+    - [Web](https://help.branch.io/developers-hub/docs/web-full-reference#setdmaparamsforeea)
+
+### Issues
+
+* Fix issue #297: Allow Call setRequestMetadata after FlutterBranchSdk.init() method
+
+### Native SDK Updates
+
+* Updated included Branch Android SDK to 5.9.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Updated included Branch iOS SDK to 3.3.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ## 7.0.4
 ### Issues
 
