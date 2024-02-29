@@ -263,4 +263,15 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError(
         'addSnapPartnerParameter has not been implemented');
   }
+
+  /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
+  /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
+  /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
+  /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
+  void setDMAParamsForEEA(
+      {required bool eeaRegion,
+      required bool adPersonalizationConsent,
+      required bool adUserDataUsageConsent}) {
+    throw UnimplementedError('setDMAParamsForEEA has not been implemented');
+  }
 }

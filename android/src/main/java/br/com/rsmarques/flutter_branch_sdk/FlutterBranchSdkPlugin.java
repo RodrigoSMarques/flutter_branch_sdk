@@ -328,6 +328,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "addSnapPartnerParameter":
                 addSnapPartnerParameter(call);
                 break;
+            case "setDMAParamsForEEA":
+                setDMAParamsForEEA(call);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -961,6 +964,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value);
             }
         });
+    }
+
+    private void setDMAParamsForEEA(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "triggered setDMAParamsForEEA");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final boolean eeaRegion = Boolean.TRUE.equals(call.argument("eeaRegion"));
+        final boolean adPersonalizationConsent = Boolean.TRUE.equals(call.argument("adPersonalizationConsent"));
+        final boolean adUserDataUsageConsent = Boolean.TRUE.equals(call.argument("adUserDataUsageConsent"));
+
+        Branch.getInstance().setDMAParamsForEEA(eeaRegion,adPersonalizationConsent,adUserDataUsageConsent);
     }
 }
 

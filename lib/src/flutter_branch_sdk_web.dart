@@ -20,7 +20,6 @@ import 'web/branch_js.dart';
 dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
 
 dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
-Map<String, String> _metaData = {};
 
 /// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
 class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
@@ -277,7 +276,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Add key value pairs to all requests
   @override
   void setRequestMetadata(String key, String value) {
-    _metaData[key] = value;
+    BranchJS.setRequestMetadata(key, value);
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
@@ -525,5 +524,18 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
 
   void close() {
     _initSessionStream.close();
+  }
+
+  /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
+  /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
+  /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
+  /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
+  @override
+  void setDMAParamsForEEA(
+      {required bool eeaRegion,
+      required bool adPersonalizationConsent,
+      required bool adUserDataUsageConsent}) {
+    BranchJS.setDMAParamsForEEA(
+        eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
   }
 }

@@ -254,4 +254,18 @@ class FlutterBranchSdk {
     FlutterBranchSdkPlatform.instance
         .addSnapPartnerParameter(key: key, value: value);
   }
+
+  /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
+  /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
+  /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
+  /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
+  static void setDMAParamsForEEA(
+      {required bool eeaRegion,
+      required bool adPersonalizationConsent,
+      required bool adUserDataUsageConsent}) {
+    FlutterBranchSdkPlatform.instance.setDMAParamsForEEA(
+        eeaRegion: eeaRegion,
+        adPersonalizationConsent: adPersonalizationConsent,
+        adUserDataUsageConsent: adUserDataUsageConsent);
+  }
 }

@@ -52,8 +52,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Add key value pairs to all requests
   @override
   void setRequestMetadata(String key, String value) {
-    assert(!isInitialized,
-        'Call `setRequestMetadata` before `FlutterBranchSdk.init()` method');
+    //assert(!isInitialized,
+    //    'Call `setRequestMetadata` before `FlutterBranchSdk.init()` method');
     messageChannel
         .invokeMethod('setRequestMetadata', {'key': key, 'value': value});
   }
@@ -452,5 +452,21 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   void addSnapPartnerParameter({required String key, required String value}) {
     messageChannel
         .invokeMethod('addSnapPartnerParameter', {'key': key, 'value': value});
+  }
+
+  /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
+  /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
+  /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
+  /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
+  @override
+  void setDMAParamsForEEA(
+      {required bool eeaRegion,
+      required bool adPersonalizationConsent,
+      required bool adUserDataUsageConsent}) {
+    messageChannel.invokeMethod('setDMAParamsForEEA', {
+      'eeaRegion': eeaRegion,
+      'adPersonalizationConsent': adPersonalizationConsent,
+      'adUserDataUsageConsent': adUserDataUsageConsent
+    });
   }
 }
