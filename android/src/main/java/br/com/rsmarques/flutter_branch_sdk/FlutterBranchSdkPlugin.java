@@ -184,6 +184,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.expectDelayedSessionInitialization(true);
             return;
         }
+        if (this.activity != activity) {
+            return;
+        }
         LogUtils.debug(DEBUG_NAME, "triggered SessionBuilder init");
         Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
     }
