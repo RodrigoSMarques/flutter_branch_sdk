@@ -347,7 +347,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       showSnackBar(
           message:
-              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
+              'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
   }
