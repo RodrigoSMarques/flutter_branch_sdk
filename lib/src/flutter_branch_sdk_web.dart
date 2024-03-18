@@ -47,7 +47,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   static bool _userIdentified = false;
   static bool isInitialized = false;
 
-  ///Listen click em Branch Deeplinks
+  ///Listen click em Branch DeepLinks
   @Deprecated('Use `listSession')
   @override
   Stream<Map<dynamic, dynamic>> initSession() {
