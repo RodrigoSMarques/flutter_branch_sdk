@@ -1,4 +1,4 @@
-part of flutter_branch_sdk_objects;
+part of 'branch_universal_object.dart';
 /*
 * Class for representing any additional information that is specific to the link.
 * Use this class to specify the properties of a deep link such as channel, feature etc and any control params associated with the link.

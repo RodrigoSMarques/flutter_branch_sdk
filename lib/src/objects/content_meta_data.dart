@@ -1,4 +1,4 @@
-part of flutter_branch_sdk_objects;
+part of 'branch_universal_object.dart';
 
 enum BranchCondition {
   OTHER,

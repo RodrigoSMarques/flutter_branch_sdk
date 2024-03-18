@@ -224,6 +224,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "addSnapPartnerParameter" :
             addSnapPartnerParameter(call: call)
             break
+        case "setDMAParamsForEEA":
+            setDMAParamsForEEA(call: call)
+            break;
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -700,6 +703,17 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     private func setPreinstallPartner(call: FlutterMethodCall) {
+    }
+    
+    private func setDMAParamsForEEA(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let eeaRegion = args["eeaRegion"] as! Bool
+        let adPersonalizationConsent = args["adPersonalizationConsent"]  as! Bool
+        let adUserDataUsageConsent = args["adUserDataUsageConsent"] as! Bool
+        
+        DispatchQueue.main.async {
+            Branch.setDMAParamsForEEA(eeaRegion,adPersonalizationConsent: adPersonalizationConsent, adUserDataUsageConsent: adUserDataUsageConsent)
+        }
     }
     
     
