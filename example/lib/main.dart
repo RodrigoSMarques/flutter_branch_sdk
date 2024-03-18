@@ -347,7 +347,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       showSnackBar(
           message:
-              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
+              'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
   }
@@ -470,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: url));
                         if (context.mounted) {
-                          Navigator.pop(this.context);
+                          Navigator.pop(context);
                         }
                       },
                       child: const Center(child: Text('Copy link'))),

@@ -1,3 +1,14 @@
+## 7.2.0
+### Features
+* `showShareSheet` method will now display the native Android share sheet.
+* Documentation review
+
+### Dependencies Update
+* Updated dependency `js`. From version 0.6.7 to 7.0.0
+
+### Native SDK Updates
+* Updated included Branch Android SDK to 5.10.1 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
 ## 7.1.0
 ### Features
 * New Methods:

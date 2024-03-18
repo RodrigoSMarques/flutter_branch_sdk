@@ -10,7 +10,7 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.9.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.10.1 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * iOS - Branch SDK Version >= 3.3.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
@@ -45,28 +45,28 @@ For details see:
 ## Configure Platform Project
 ### Android Integration
 
-Follow the steps:
+Follow only the steps:
 
 * [Configure App](https://help.branch.io/developers-hub/docs/android-basic-integration#4-configure-app)
 * [Configure ProGuard](https://help.branch.io/developers-hub/docs/android-basic-integration#7-configure-proguard)
 
--
+**Note**: It is not necessary to perform the Branch Android SDK installation steps. The plugin performs these steps.
 
 ### iOS Integration
-Follow the steps:
+Follow only the steps:
 
 * [Configure bundle identifier](https://help.branch.io/developers-hub/docs/ios-basic-integration#2-configure-bundle-identifier)
 * [Configure associated domains](https://help.branch.io/developers-hub/docs/ios-basic-integration#3-configure-associated-domains)
 * [Configure Info.plist](https://help.branch.io/developers-hub/docs/ios-basic-integration#4-configure-infoplist)
+
+**Note**: It is not necessary to perform the Branch iOS SDK installation steps. The plugin performs these steps.
 
 #### NativeLink™ Deferred Deep Linking
 Use iOS pasteboard to enable deferred deep linking via Branch NativeLink™, which enables 100% matching on iOS through Installs.
 
 Follow the steps on the [page](https://help.branch.io/developers-hub/docs/ios-advanced-features#nativelink-deferred-deep-linking), session _**NativeLink™ Deferred Deep Linking**_,
 
-Note: Code implementation in Swift is not necessary. The plugin already implements the code, requiring only configuration on the Dashboard.
-
--
+**Note**: Code implementation in Swift is not necessary. The plugin already implements the code, requiring only configuration on the Dashboard.
 
 ### Web Integration
 
@@ -623,6 +623,10 @@ See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/16
 In response to the European Union's enactment of the Digital Markets Act (DMA), the Branch Android SDK includes the `setDMAParamsForEEA` method to help you pass consent information from your user to Google.
 
 The `setDMAParamsForEEA` method takes 3 parameters:
+
+```dart
+    FlutterBranchSdk.setDMAParamsForEEA(eeaRegion: true, adPersonalizationConsent: false, adUserDataUsageConsent: false);
+```
 
 Parameter Name | Type | Description | When `true`| When `false` 
 |---|---|---|---|---|

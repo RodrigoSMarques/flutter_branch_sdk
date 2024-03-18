@@ -1,4 +1,4 @@
-part of flutter_branch_sdk;
+part of '../flutter_branch_sdk.dart';
 
 class FlutterBranchSdk {
   ///Initialize Branch SDK
