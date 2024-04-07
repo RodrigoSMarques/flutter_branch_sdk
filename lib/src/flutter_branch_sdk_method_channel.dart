@@ -87,7 +87,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   }
 
   ///Initialises a session with the Branch API
-  ///Listen click em Branch Deeplinks
+  ///Listen click em Branch DeepLinks
   @Deprecated('Use `listSession')
   @override
   Stream<Map<dynamic, dynamic>> initSession() {
@@ -99,7 +99,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     return _initSessionStream!;
   }
 
-  ///Listen click em Branch Deeplinks
+  ///Listen click em Branch DeepLinks
   @override
   Stream<Map<dynamic, dynamic>> listSession() {
     assert(isInitialized,

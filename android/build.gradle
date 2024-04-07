@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:5.10.+'
+    implementation 'io.branch.sdk.android:library:5.11.+'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
     implementation 'androidx.browser:browser:1.8.0'

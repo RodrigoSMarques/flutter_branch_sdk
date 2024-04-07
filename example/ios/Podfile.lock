@@ -1,8 +1,8 @@
 PODS:
-  - BranchSDK (3.3.0)
+  - BranchSDK (3.4.1)
   - Flutter (1.0.0)
-  - flutter_branch_sdk (7.2.0):
-    - BranchSDK (~> 3.3.0)
+  - flutter_branch_sdk (7.3.0):
+    - BranchSDK (~> 3.4.1)
     - Flutter
 
 DEPENDENCIES:
@@ -20,9 +20,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_branch_sdk/ios"
 
 SPEC CHECKSUMS:
-  BranchSDK: 262dbab56b767807f49f45191c8499cd9c4b4d76
+  BranchSDK: e674e6c93ae509e9f12472a0dd060be1db821cfe
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_branch_sdk: 5470831083cca70c70f337c47cd4f71d9d8d27e9
+  flutter_branch_sdk: 8e2844b17b6b99957e054215e1fb1074762aa16c
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 
