@@ -1,3 +1,9 @@
+## 7.3.0
+### Native SDK Updates
+
+* Updated included Branch Android SDK to 5.11.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Updated included Branch iOS SDK to 3.4.1 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
 ## 7.2.0
 ### Features
 * `showShareSheet` method will now display the native Android share sheet.
