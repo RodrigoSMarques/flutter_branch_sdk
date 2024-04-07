@@ -82,6 +82,12 @@ class _HomePageState extends State<HomePage> {
     initDeepLinkData();
 
     //requestATTTracking();
+    /*
+    FlutterBranchSdk.setDMAParamsForEEA(
+        eeaRegion: true,
+        adPersonalizationConsent: false,
+        adUserDataUsageConsent: false);
+     */
   }
 
   void requestATTTracking() async {
@@ -214,10 +220,12 @@ class _HomePageState extends State<HomePage> {
       ..addControlParam('\$match_duration', 7200)
       ..addControlParam('\$always_deeplink', true)
       ..addControlParam('\$android_redirect_timeout', 750)
-      ..addControlParam('referring_user_id', 'user_id') //;
-      ..addControlParam('\$ios_url', 'https://flutter-branch-sdk.netlify.app/')
-      ..addControlParam(
-          '\$android_url', 'https://flutter-branch-sdk.netlify.app/');
+      ..addControlParam('referring_user_id', 'user_id');
+    //..addControlParam(
+    //    '\$fallback_url', 'https://flutter-branch-sdk.netlify.app/');
+    //..addControlParam('\$ios_url', 'https://flutter-branch-sdk.netlify.app/')
+    //..addControlParam(
+    //    '\$android_url', 'https://flutter-branch-sdk.netlify.app/');
 
     eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
@@ -339,7 +347,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       showSnackBar(
           message:
-              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
+              'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}',
           duration: 5);
     }
   }
@@ -462,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: url));
                         if (context.mounted) {
-                          Navigator.pop(this.context);
+                          Navigator.pop(context);
                         }
                       },
                       child: const Center(child: Text('Copy link'))),
@@ -570,200 +578,205 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter Branch SDK Example'),
-        ),
-        body: Scrollbar(
-          thumbVisibility: true,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                StreamBuilder<String>(
-                  stream: controllerInitSession.stream,
-                  initialData: '',
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                      return Column(
-                        children: <Widget>[
-                          Center(
-                              child: Text(
-                            snapshot.data!,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red),
-                          ))
-                        ],
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-                CustomButton(
-                  onPressed: validSdkIntegration,
-                  child: const Text('Validate SDK Integration'),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: enableTracking,
-                        child: const Text('Enable tracking'),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: disableTracking,
-                        child: const Text('Disable tracking'),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: identifyUser,
-                        child: const Text('Identify user'),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: userLogout,
-                        child: const Text('User logout'),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: registerView,
-                        child: const Text('Register view'),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: trackContent,
-                        child: const Text('Track content'),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: getFirstParameters,
-                        child: const Text('Get First Parameters',
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: getLastParameters,
-                        child: const Text('Get Last Parameters',
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: getLastAttributed,
-                        child: const Text('Get Last Attributed',
-                            textAlign: TextAlign.center),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: listOnSearch,
-                        child: const Text('List on Search',
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: removeFromSearch,
-                        child: const Text('Remove from Search',
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: () => generateLink(context),
-                        child: const Text('Generate Link',
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                    Expanded(
-                      child: CustomButton(
-                        onPressed: () => generateQrCode(context),
-                        child: const Text('Generate QrCode',
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: (CustomButton(
-                      onPressed: shareLink,
-                      child:
-                          const Text('Share Link', textAlign: TextAlign.center),
-                    ))),
-                    Expanded(
-                        child: CustomButton(
-                      onPressed: shareWithLPLinkMetadata,
-                      child: const Text('Share Link with LPLinkMetadata',
-                          textAlign: TextAlign.center),
-                    ))
-                  ],
-                ),
-                const Divider(),
-                const Center(
-                  child: Text(
-                    'Data',
-                    style: TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
+      child: SafeArea(
+        bottom: true,
+        top: false,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Flutter Branch SDK Example'),
+          ),
+          body: Scrollbar(
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              primary: true,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  StreamBuilder<String>(
+                    stream: controllerInitSession.stream,
+                    initialData: '',
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                        return Column(
+                          children: <Widget>[
+                            Center(
+                                child: Text(
+                              snapshot.data!,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ))
+                          ],
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
                   ),
-                ),
-                const Divider(),
-                StreamBuilder<String>(
-                  stream: controllerData.stream,
-                  initialData: null,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                      return Column(
-                        children: [
-                          Center(child: Text(snapshot.data!)),
-                        ],
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ],
+                  CustomButton(
+                    onPressed: validSdkIntegration,
+                    child: const Text('Validate SDK Integration'),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: enableTracking,
+                          child: const Text('Enable tracking'),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: disableTracking,
+                          child: const Text('Disable tracking'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: identifyUser,
+                          child: const Text('Identify user'),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: userLogout,
+                          child: const Text('User logout'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: registerView,
+                          child: const Text('Register view'),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: trackContent,
+                          child: const Text('Track content'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: getFirstParameters,
+                          child: const Text('Get First Parameters',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: getLastParameters,
+                          child: const Text('Get Last Parameters',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: getLastAttributed,
+                          child: const Text('Get Last Attributed',
+                              textAlign: TextAlign.center),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: listOnSearch,
+                          child: const Text('List on Search',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: removeFromSearch,
+                          child: const Text('Remove from Search',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: () => generateLink(context),
+                          child: const Text('Generate Link',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: () => generateQrCode(context),
+                          child: const Text('Generate QrCode',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: (CustomButton(
+                        onPressed: shareLink,
+                        child: const Text('Share Link',
+                            textAlign: TextAlign.center),
+                      ))),
+                      Expanded(
+                          child: CustomButton(
+                        onPressed: shareWithLPLinkMetadata,
+                        child: const Text('Share Link with LPLinkMetadata',
+                            textAlign: TextAlign.center),
+                      ))
+                    ],
+                  ),
+                  const Divider(),
+                  const Center(
+                    child: Text(
+                      'Data',
+                      style: TextStyle(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const Divider(),
+                  StreamBuilder<String>(
+                    stream: controllerData.stream,
+                    initialData: null,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                        return Column(
+                          children: [
+                            Center(child: Text(snapshot.data!)),
+                          ],
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_branch_sdk/src/constants.dart';
 
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
@@ -9,13 +10,9 @@ import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
 class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
-  static const PLUGIN_VERSION = "7.0.4";
-  static const MESSAGE_CHANNEL = 'flutter_branch_sdk/message';
-  static const EVENT_CHANNEL = 'flutter_branch_sdk/event';
-
   /// The method channel used to interact with the native platform.
-  final messageChannel = const MethodChannel(MESSAGE_CHANNEL);
-  final eventChannel = const EventChannel(EVENT_CHANNEL);
+  final messageChannel = const MethodChannel(AppConstants.MESSAGE_CHANNEL);
+  final eventChannel = const EventChannel(AppConstants.EVENT_CHANNEL);
 
   static Stream<Map<dynamic, dynamic>>? _initSessionStream;
   static bool isInitialized = false;
@@ -33,7 +30,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       return;
     }
     await messageChannel.invokeMethod('init', {
-      'version': PLUGIN_VERSION,
+      'version': AppConstants.PLUGIN_VERSION,
       'useTestKey': useTestKey,
       'enableLogging': enableLogging,
       'disableTracking': disableTracking
@@ -52,8 +49,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Add key value pairs to all requests
   @override
   void setRequestMetadata(String key, String value) {
-    assert(!isInitialized,
-        'Call `setRequestMetadata` before `FlutterBranchSdk.init()` method');
     messageChannel
         .invokeMethod('setRequestMetadata', {'key': key, 'value': value});
   }
@@ -92,7 +87,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   }
 
   ///Initialises a session with the Branch API
-  ///Listen click em Branch Deeplinks
+  ///Listen click em Branch DeepLinks
   @Deprecated('Use `listSession')
   @override
   Stream<Map<dynamic, dynamic>> initSession() {
@@ -104,7 +99,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     return _initSessionStream!;
   }
 
-  ///Listen click em Branch Deeplinks
+  ///Listen click em Branch DeepLinks
   @override
   Stream<Map<dynamic, dynamic>> listSession() {
     assert(isInitialized,
@@ -452,5 +447,21 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   void addSnapPartnerParameter({required String key, required String value}) {
     messageChannel
         .invokeMethod('addSnapPartnerParameter', {'key': key, 'value': value});
+  }
+
+  /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
+  /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
+  /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
+  /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
+  @override
+  void setDMAParamsForEEA(
+      {required bool eeaRegion,
+      required bool adPersonalizationConsent,
+      required bool adUserDataUsageConsent}) {
+    messageChannel.invokeMethod('setDMAParamsForEEA', {
+      'eeaRegion': eeaRegion,
+      'adPersonalizationConsent': adPersonalizationConsent,
+      'adUserDataUsageConsent': adUserDataUsageConsent
+    });
   }
 }

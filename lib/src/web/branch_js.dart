@@ -896,4 +896,15 @@ class BranchJS {
   @JS('qrCode')
   external static void qrCode(Object qrCodeLinkData, Object qrCodeSettings,
       Function(String? err, QrCodeData? qrCode) callback);
+
+  /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
+  /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
+  /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
+  /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
+  @JS('setDMAParamsForEEA')
+  external static void setDMAParamsForEEA(bool eeaRegion,
+      bool adPersonalizationConsent, bool adUserDataUsageConsent);
+
+  @JS('setRequestMetadata')
+  external static void setRequestMetadata(String key, String value);
 }
