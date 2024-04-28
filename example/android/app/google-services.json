@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "20797875340",
+    "project_id": "branch-sdk-test",
+    "storage_bucket": "branch-sdk-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:20797875340:android:fe7ccaf361c89db09747a9",
+        "android_client_info": {
+          "package_name": "br.com.rsmarques.flutter_branch_sdk_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "20797875340-fd3f90h4uov872oreq95kbuqhv0t784g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8sHLp2QlTq_jwWUpADouE9FOEM2IX2Xk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "20797875340-fd3f90h4uov872oreq95kbuqhv0t784g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "20797875340-v4o2167pnbn6c23gfa0usj4ebo59g9cl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rodrigosmarques.branchSdkTest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

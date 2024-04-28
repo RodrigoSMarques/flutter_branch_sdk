@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
 import 'custom_button.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +33,24 @@ void main() async {
   //await FlutterBranchSdk.requestTrackingAuthorization();
   await FlutterBranchSdk.init(
       useTestKey: true, enableLogging: true, disableTracking: false);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
+}
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  print("Handling a background message: ${message.messageId}");
+  print("Handling a background message: ${message.data}");
 }
 
 class MyApp extends StatelessWidget {
@@ -69,7 +90,7 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription<Map>? streamSubscription;
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
-
+  String? fcmToken;
   static const imageURL =
       'https://raw.githubusercontent.com/RodrigoSMarques/flutter_branch_sdk/master/assets/branch_logo_qrcode.jpeg';
 
@@ -78,6 +99,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     listenDynamicLinks();
+
+    configureFCM();
 
     initDeepLinkData();
 
@@ -88,6 +111,63 @@ class _HomePageState extends State<HomePage> {
         adPersonalizationConsent: false,
         adUserDataUsageConsent: false);
      */
+  }
+
+  void configureFCM() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+    print(
+        '------------------------------------------------------------------------------------------------------------------------------------------------');
+    print('User granted permission: ${settings.authorizationStatus}');
+    fcmToken = await FirebaseMessaging.instance.getToken();
+    print('FCM token: $fcmToken');
+    print(
+        '------------------------------------------------------------------------------------------------------------------------------------------------');
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+      fcmToken = token;
+      print(
+          '------------------------------------------------------------------------------------------------------------------------------------------------');
+      print('FCM token: $fcmToken');
+      print(
+          '------------------------------------------------------------------------------------------------------------------------------------------------');
+    }).onError((err) {
+      // Error getting token.
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data['url_data']}');
+
+      if (message.data.isNotEmpty && message.data.containsKey('url_data')) {
+        FlutterBranchSdk.handleDeepLink(message.data['url_data']);
+      }
+    });
+
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      print(initialMessage.data['url_data']);
+      _handleMessage(initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    print(message.data['url_data']);
+    if (message.data.isNotEmpty && message.data.containsKey('url_data')) {
+      FlutterBranchSdk.handleDeepLink(message.data['url_data']);
+    }
   }
 
   void requestATTTracking() async {
@@ -619,6 +699,14 @@ class _HomePageState extends State<HomePage> {
                   CustomButton(
                     onPressed: validSdkIntegration,
                     child: const Text('Validate SDK Integration'),
+                  ),
+                  CustomButton(
+                    onPressed: () {
+                      if (fcmToken != null) {
+                        Share.share(fcmToken!, subject: 'FCM Token');
+                      }
+                    },
+                    child: const Text('Share FCM token'),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
