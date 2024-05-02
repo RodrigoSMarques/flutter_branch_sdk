@@ -5,9 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import 'custom_button.dart';
+
+configureOneSignal() async {
+  //Remove this method to stop OneSignal Debugging
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+
+  OneSignal.initialize("51ad0157-604d-43dd-9371-062939a1db2b");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +37,8 @@ void main() async {
   //await FlutterBranchSdk.requestTrackingAuthorization();
   await FlutterBranchSdk.init(
       useTestKey: true, enableLogging: true, disableTracking: false);
+  await configureOneSignal();
+
   runApp(const MyApp());
 }
 
@@ -81,6 +91,8 @@ class _HomePageState extends State<HomePage> {
 
     initDeepLinkData();
 
+    configureOneSignal();
+
     //requestATTTracking();
     /*
     FlutterBranchSdk.setDMAParamsForEEA(
@@ -88,6 +100,41 @@ class _HomePageState extends State<HomePage> {
         adPersonalizationConsent: false,
         adUserDataUsageConsent: false);
      */
+  }
+
+  void configureOneSignal() async {
+    // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+    OneSignal.Notifications.requestPermission(true);
+
+    OneSignal.Notifications.addClickListener((event) {
+      print('NOTIFICATION CLICK LISTENER CALLED WITH EVENT: $event');
+      if (event.notification.additionalData != null &&
+          event.notification.additionalData!.containsKey('url')) {
+        print(event.notification.additionalData.toString());
+        FlutterBranchSdk.handleDeepLink(
+            event.notification.additionalData!['url']);
+      }
+    });
+
+    OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+      print(
+          'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}');
+
+      if (event.notification.additionalData != null &&
+          event.notification.additionalData!.containsKey('url')) {
+        print(event.notification.additionalData.toString());
+        //FlutterBranchSdk.handleDeepLink(
+        //    event.notification.additionalData!['url']);
+      }
+
+      /// Display Notification, preventDefault to not display
+      event.preventDefault();
+
+      /// Do async work
+
+      /// notification.display() to display after preventing default
+      //event.notification.display();
+    });
   }
 
   void requestATTTracking() async {
