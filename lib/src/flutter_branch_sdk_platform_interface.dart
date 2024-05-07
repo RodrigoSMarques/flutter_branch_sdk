@@ -28,13 +28,10 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Initialize Branch SDK
-  /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   Future<void> init(
-      {bool useTestKey = false,
-      bool enableLogging = false,
-      bool disableTracking = false}) async {
+      {bool enableLogging = false, bool disableTracking = false}) async {
     throw UnimplementedError('init has not been implemented');
   }
 

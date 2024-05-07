@@ -33,14 +33,15 @@ android {
     if (project.android.hasProperty("namespace")) {
         namespace 'br.com.rsmarques.flutter_branch_sdk'
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdkVersion 21
         compileSdk 34
         buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 
     compileOptions {
@@ -50,7 +51,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:5.11.+'
+    implementation 'io.branch.sdk.android:library:5.12.+'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
     implementation 'androidx.browser:browser:1.8.0'

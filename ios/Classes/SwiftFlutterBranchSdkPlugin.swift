@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "7.0.0"
+let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
@@ -52,6 +52,11 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
+        if #available(iOS 15.0, *) {
+            // Call `checkPasteboardOnInstall()` before Branch initialization
+            Branch.getInstance().checkPasteboardOnInstall()
+        }
+
         initialLaunchOptions = launchOptions
         return true
     }
@@ -238,52 +243,47 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     // --------------------------------------------------------------------------------------------
     private func setupBranch(call: FlutterMethodCall, result: @escaping FlutterResult) {
         
-        if let _ = branch {
+        if (isInitialized) {
             result(true)
         }
         
+        var PLUGIN_VERSION : String = ""
+        if let version = Bundle(identifier: COCOA_POD_NAME)?.infoDictionary?["CFBundleShortVersionString"] as? String {
+            PLUGIN_VERSION = version;
+        }
+
         let args = call.arguments as! [String: Any?]
         
 #if DEBUG
         NSLog("setupBranch args: %@", args)
 #endif
         
-        if args["useTestKey"] as! Bool == true {
-            Branch.setUseTestBranchKey(true)
-        }
-        
         if args["disableTracking"] as! Bool == true {
-            Branch.setTrackingDisabled(true)
+            //Branch.setTrackingDisabled(true)
+        } else {
+            //Branch.setTrackingDisabled(false)
+        }
+
+        if args["enableLogging"] as! Bool == true {
+            //Branch.enableLogging()
         }
         
         branch = Branch.getInstance()
-        
-        branch!.registerPluginName(PLUGIN_NAME, version:  args["version"] as! String)
-        
-#if DEBUG
-        if args["enableLogging"] as! Bool == true {
-            branch!.enableLogging()
-        }
-#endif
-        
-        // enable pasteboard check for iOS 15+ only
-        if #available(iOS 15, *) {
-            branch!.checkPasteboardOnInstall()
-        }
+        branch!.registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
         
         if (!requestMetadata.isEmpty) {
             for param in requestMetadata {
-                Branch.getInstance().setRequestMetadataKey(param.key, value: param.value)
+                branch!.setRequestMetadataKey(param.key, value: param.value)
             }
         }
         if (!snapParameters.isEmpty) {
             for param in snapParameters {
-                Branch.getInstance().addSnapPartnerParameter(withName: param.key, value: param.value)
+                branch!.addSnapPartnerParameter(withName: param.key, value: param.value)
             }
         }
         if (!facebookParameters.isEmpty) {
             for param in facebookParameters {
-                Branch.getInstance().addFacebookPartnerParameter(withName: param.key, value: param.value)
+                branch!.addFacebookPartnerParameter(withName: param.key, value: param.value)
             }
         }
         
@@ -329,6 +329,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         }
         
         isInitialized = true
+        branch!.notifyNativeToInit()
         result(true)
     }
     

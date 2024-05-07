@@ -27,8 +27,7 @@ void main() async {
   FlutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
   //await FlutterBranchSdk.requestTrackingAuthorization();
-  await FlutterBranchSdk.init(
-      useTestKey: true, enableLogging: true, disableTracking: false);
+  await FlutterBranchSdk.init(enableLogging: true, disableTracking: false);
   runApp(const MyApp());
 }
 
@@ -221,9 +220,10 @@ class _HomePageState extends State<HomePage> {
       ..addControlParam('\$always_deeplink', true)
       ..addControlParam('\$android_redirect_timeout', 750)
       ..addControlParam('referring_user_id', 'user_id');
+    //..addControlParam('\$fallback_url', 'http')
     //..addControlParam(
     //    '\$fallback_url', 'https://flutter-branch-sdk.netlify.app/');
-    //..addControlParam('\$ios_url', 'https://flutter-branch-sdk.netlify.app/')
+    //..addControlParam('\$ios_url', 'http');
     //..addControlParam(
     //    '\$android_url', 'https://flutter-branch-sdk.netlify.app/');
 

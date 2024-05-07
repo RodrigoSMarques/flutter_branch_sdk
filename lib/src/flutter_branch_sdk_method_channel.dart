@@ -18,23 +18,16 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   static bool isInitialized = false;
 
   ///Initialize Branch SDK
-  /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   @override
   Future<void> init(
-      {bool useTestKey = false,
-      bool enableLogging = false,
-      bool disableTracking = false}) async {
+      {bool enableLogging = false, bool disableTracking = false}) async {
     if (isInitialized) {
       return;
     }
-    await messageChannel.invokeMethod('init', {
-      'version': AppConstants.PLUGIN_VERSION,
-      'useTestKey': useTestKey,
-      'enableLogging': enableLogging,
-      'disableTracking': disableTracking
-    });
+    await messageChannel.invokeMethod('init',
+        {'enableLogging': enableLogging, 'disableTracking': disableTracking});
     isInitialized = true;
   }
 

@@ -10,8 +10,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.10.1 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.3.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.12.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 3.4.3 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -153,13 +153,11 @@ To initialize Branch:
 ```dart
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-await FlutterBranchSdk.init(
-      useTestKey: false, enableLogging: false, disableTracking: false);
+await FlutterBranchSdk.init(enableLogging: false, disableTracking: false);
 ```
 
 The optional parameters are:
 
-- *useTestKey* : Sets `true` to use the test `key_test_....` .Default value: false
 - *enableLogging* : Sets `true` turn on debug logging. Default value: false
 - *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false
 

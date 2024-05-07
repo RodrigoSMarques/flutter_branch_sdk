@@ -24,7 +24,6 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
-import io.branch.referral.BuildConfig;
 import io.branch.referral.QRCode.BranchQRCode;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.BranchEvent;
@@ -49,7 +48,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
-    private static final String PLUGIN_NAME = "Flutter";
     private Activity activity;
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
@@ -57,13 +55,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private Map<String, Object> sessionParams = null;
     private BranchError initialError = null;
     private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
-    private boolean isInitialized = false;
     private final JSONObject requestMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
     private final JSONObject snapParameters = new JSONObject();
     private final ArrayList<String> preInstallParameters = new ArrayList<String>();
     private final ArrayList<String> campaingParameters = new ArrayList<String>();
-    private Intent initialIntent = null;
+    private boolean isInitialized = false;
 
     /**
      * ---------------------------------------------------------------------------------------------
@@ -75,7 +72,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "triggered onAttachedToEngine");
         setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext());
     }
-
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         LogUtils.debug(DEBUG_NAME, "triggered onDetachedFromEngine");
@@ -91,12 +87,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         methodChannel.setMethodCallHandler(this);
         eventChannel.setStreamHandler(this);
+
+        FlutterBranchSdkInit.init(context);
     }
 
     private void setActivity(Activity activity) {
         LogUtils.debug(DEBUG_NAME, "triggered setActivity");
+
         this.activity = activity;
-        initialIntent = activity.getIntent();
         activity.getApplication().registerActivityLifecycleCallbacks(this);
     }
 
@@ -174,16 +172,12 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      **/
     @Override
     public void onActivityCreated(@NonNull Activity activity, Bundle bundle) {
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityCreated: " + activity.getClass().getName());
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "triggered onActivityStarted");
-        if (!isInitialized) {
-            // Delay session initialization
-            Branch.expectDelayedSessionInitialization(true);
-            return;
-        }
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityStarted: " + activity.getClass().getName());
         if (this.activity != activity) {
             return;
         }
@@ -193,15 +187,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityResumed: " + activity.getClass().getName());
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityPaused: " + activity.getClass().getName());
+        // Delay session initialization
+        Branch.expectDelayedSessionInitialization(true);
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "triggered onActivityStopped");
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityStopped: " + activity.getClass().getName());
     }
 
     @Override
@@ -210,7 +208,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-        LogUtils.debug(DEBUG_NAME, "triggered onActivityDestroyed");
+        LogUtils.debug(DEBUG_NAME, "triggered onActivityDestroyed: " + activity.getClass().getName());
         if (this.activity == activity) {
             activity.getApplication().unregisterActivityLifecycleCallbacks(this);
         }
@@ -224,9 +222,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public boolean onNewIntent(@NonNull Intent intent) {
         LogUtils.debug(DEBUG_NAME, "triggered onNewIntent");
-        if (!isInitialized) {
-            return false;
-        }
         if (this.activity == null) {
             return false;
         }
@@ -380,21 +375,24 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
         }
+
         if (isInitialized) {
             result.success(Boolean.TRUE);
         }
 
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+
         if ((Boolean) argsMap.get("useTestKey")) {
             Branch.enableTestMode();
+        } else {
+            Branch.disableTestMode();
         }
-        if (BuildConfig.DEBUG) {
-            if ((Boolean) argsMap.get("enableLogging")) {
-                Branch.enableLogging();
-            }
+
+        if ((Boolean) argsMap.get("enableLogging")) {
+            Branch.enableLogging();
+        } else {
+            Branch.disableLogging();
         }
-        Branch.registerPlugin(PLUGIN_NAME, (String) argsMap.get("version"));
-        Branch.getAutoInstance(this.context);
 
         if (requestMetadata.length() > 0) {
             Iterator keys = requestMetadata.keys();
@@ -442,23 +440,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if ((Boolean) argsMap.get("disableTracking")) {
             Branch.getInstance().disableTracking(true);
         }
+
+        LogUtils.debug(DEBUG_NAME, "notifyNativeToInit()");
+        Branch.notifyNativeToInit();
         isInitialized = true;
-
-        if (this.activity == null) {
-            initialIntent = null;
-            result.success(Boolean.TRUE);
-            return;
-        }
-
-        if (initialIntent == null) {
-            initialIntent = new Intent(this.context, this.activity.getClass());
-            initialIntent.setAction(Intent.ACTION_MAIN);
-            initialIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        }
-        initialIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        initialIntent.putExtra("branch_force_new_session", true);
-        this.context.startActivity(initialIntent);
-        initialIntent = null;
         result.success(Boolean.TRUE);
     }
 
@@ -673,7 +658,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         final String key = call.argument("key");
         final String value = call.argument("value");
-        if (!isInitialized) {
+
             if (requestMetadata.has(key) && value.isEmpty()) {
                 requestMetadata.remove(key);
             } else {
@@ -681,8 +666,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     requestMetadata.put(key, value);
                 } catch (JSONException error) {
                 }
-            }
-            return;
+           return;
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -906,16 +890,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         final String key = call.argument("key");
         final String value = call.argument("value");
-        if (!isInitialized) {
-            if (facebookParameters.has(key) && value.isEmpty()) {
-                facebookParameters.remove(key);
-            } else {
-                try {
-                    facebookParameters.put(key, value);
-                } catch (JSONException error) {
-                }
+        if (facebookParameters.has(key) && value.isEmpty()) {
+            facebookParameters.remove(key);
+        } else {
+            try {
+                facebookParameters.put(key, value);
+            } catch (JSONException error) {
             }
-            return;
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -941,10 +922,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             throw new IllegalArgumentException("Map argument expected");
         }
         final String value = call.argument("value");
-        if (!isInitialized) {
-            campaingParameters.add(value);
-            return;
-        }
+        campaingParameters.add(value);
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -959,10 +938,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             throw new IllegalArgumentException("Map argument expected");
         }
         final String value = call.argument("value");
-        if (!isInitialized) {
-            preInstallParameters.add(value);
-            return;
-        }
+        preInstallParameters.add(value);
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -978,17 +955,15 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         final String key = call.argument("key");
         final String value = call.argument("value");
-        if (!isInitialized) {
-            if (snapParameters.has(key) && value.isEmpty()) {
-                snapParameters.remove(key);
-            } else {
-                try {
-                    snapParameters.put(key, value);
-                } catch (JSONException error) {
-                }
+        if (snapParameters.has(key) && value.isEmpty()) {
+            snapParameters.remove(key);
+        } else {
+            try {
+                snapParameters.put(key, value);
+            } catch (JSONException error) {
             }
-            return;
         }
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
