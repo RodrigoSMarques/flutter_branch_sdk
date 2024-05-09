@@ -16,22 +16,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
-    var initialLaunchOptions: [AnyHashable: Any] =  [:]
-    
-    var initialApplication : UIApplication?
-    var intitalURL : URL?
-    var initialOptions : [UIApplication.OpenURLOptionsKey : Any]?
-    
-    var initialSourceApplication : String?
-    var initialAnnotation : Any?
-    
-    var initialUserActivity : NSUserActivity?
-    
-    var initialUserInfo: [AnyHashable : Any]?
-    
-    var isInitialized = false
+
     var branch : Branch?
-    
+    var isInitialized = false
+
     var requestMetadata : [String: String] = [:]
     var facebookParameters : [String: String] = [:]
     var snapParameters : [String: String] = [:]
@@ -50,54 +38,61 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
     }
     
+    func getPluginVersion() -> String {
+        var pluginVersion : String = ""
+        if let version = Bundle(identifier: COCOA_POD_NAME)?.infoDictionary?["CFBundleShortVersionString"] as? String {
+            pluginVersion = version;
+        }
+        return pluginVersion
+    }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
-        if #available(iOS 15.0, *) {
-            // Call `checkPasteboardOnInstall()` before Branch initialization
-            Branch.getInstance().checkPasteboardOnInstall()
-        }
+        branch = Branch.getInstance();
+        branch?.registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
 
-        initialLaunchOptions = launchOptions
+        if #available(iOS 15.0, *) {
+            branch?.checkPasteboardOnInstall()
+        }
+        
+        branch?.initSession(launchOptions: launchOptions) { (params, error) in
+            if error == nil {
+                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
+                guard let _ = self.eventSink else {
+                    self.initialParams = params as? [String: Any]
+                    return
+                }
+                self.eventSink!(params as? [String: Any])
+            } else {
+                let err = (error! as NSError)
+                print("Branch InitSession error: \(err.localizedDescription)")
+                guard let _ = self.eventSink else {
+                    self.initialError = err
+                    return
+                }
+                self.eventSink!(FlutterError(code: String(err.code),
+                                             message: err.localizedDescription,
+                                             details: nil))
+            }
+        }
         return true
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        if (!isInitialized) {
-            initialApplication = app
-            intitalURL = url
-            initialOptions = options
-            return true
-        }
         let branchHandled = branch!.application(app, open: url, options: options)
         return branchHandled
     }
     
     public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
-        if (!isInitialized) {
-            initialApplication = app
-            intitalURL = url
-            initialSourceApplication = sourceApplication
-            initialAnnotation = annotation
-            return true
-        }
         let branchHandled = branch!.application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
         return branchHandled
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        if (!isInitialized) {
-            initialUserActivity = userActivity
-            return true
-        }
         let handledByBranch = branch!.continue(userActivity)
         return handledByBranch
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        if (!isInitialized) {
-            initialUserInfo = userInfo
-            return
-        }
         branch!.handlePushNotification(userInfo)
     }
     
@@ -246,12 +241,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         if (isInitialized) {
             result(true)
         }
-        
-        var PLUGIN_VERSION : String = ""
-        if let version = Bundle(identifier: COCOA_POD_NAME)?.infoDictionary?["CFBundleShortVersionString"] as? String {
-            PLUGIN_VERSION = version;
-        }
-
+        branch?.notifyNativeToInit()
         let args = call.arguments as! [String: Any?]
         
 #if DEBUG
@@ -259,77 +249,29 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
 #endif
         
         if args["disableTracking"] as! Bool == true {
-            //Branch.setTrackingDisabled(true)
-        } else {
-            //Branch.setTrackingDisabled(false)
+            Branch.setTrackingDisabled(true)
         }
-
+        
         if args["enableLogging"] as! Bool == true {
             //Branch.enableLogging()
         }
         
-        branch = Branch.getInstance()
-        branch!.registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
-        
         if (!requestMetadata.isEmpty) {
             for param in requestMetadata {
-                branch!.setRequestMetadataKey(param.key, value: param.value)
+                branch?.setRequestMetadataKey(param.key, value: param.value)
             }
         }
         if (!snapParameters.isEmpty) {
             for param in snapParameters {
-                branch!.addSnapPartnerParameter(withName: param.key, value: param.value)
+                branch?.addSnapPartnerParameter(withName: param.key, value: param.value)
             }
         }
         if (!facebookParameters.isEmpty) {
             for param in facebookParameters {
-                branch!.addFacebookPartnerParameter(withName: param.key, value: param.value)
+                branch?.addFacebookPartnerParameter(withName: param.key, value: param.value)
             }
         }
-        
-        branch!.initSession(launchOptions: initialLaunchOptions) { (params, error) in
-            if error == nil {
-                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
-                guard let _ = self.eventSink else {
-                    self.initialParams = params as? [String: Any]
-                    return
-                }
-                self.eventSink!(params as? [String: Any])
-            } else {
-                let err = (error! as NSError)
-                print("Branch InitSession error: \(err.localizedDescription)")
-                guard let _ = self.eventSink else {
-                    self.initialError = err
-                    return
-                }
-                self.eventSink!(FlutterError(code: String(err.code),
-                                             message: "Branch InitSession error: \(err.localizedDescription)",
-                                             details: nil))
-            }
-        }
-        
-        //application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool
-        if let _ = initialApplication , let _ = intitalURL , let _ = initialOptions {
-            branch!.application(initialApplication, open: intitalURL, options: initialOptions)
-        }
-        
-        //application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool
-        if let _ = initialApplication , let _ = intitalURL , let _ = initialSourceApplication, let _ = initialAnnotation  {
-            branch!.application(initialApplication, open: intitalURL, sourceApplication: initialSourceApplication, annotation: initialAnnotation)
-        }
-        
-        //application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void)
-        if let _ = initialUserActivity {
-            branch!.continue(initialUserActivity)
-        }
-        
-        //application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any])
-        if let _ = initialUserInfo {
-            branch!.handlePushNotification(initialUserInfo)
-        }
-        
         isInitialized = true
-        branch!.notifyNativeToInit()
         result(true)
     }
     
@@ -390,7 +332,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     private func validateSDKIntegration() {
         DispatchQueue.main.async {
-            self.branch!.validateSDKIntegration()
+            Branch.getInstance().validateSDKIntegration()
         }
     }
     
@@ -487,7 +429,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let userId = args["userId"] as! String
         
         DispatchQueue.main.async {
-            self.branch!.setIdentity(userId)
+            Branch.getInstance().setIdentity(userId)
         }
     }
     
@@ -496,35 +438,33 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
-        if (!isInitialized) {
-            if (requestMetadata.keys.contains(key) && value.isEmpty) {
-                requestMetadata.removeValue(forKey: key)
-            } else {
-                requestMetadata[key] = value;
-            }
-            return;
+        
+        if (requestMetadata.keys.contains(key) && value.isEmpty) {
+            requestMetadata.removeValue(forKey: key)
+        } else {
+            requestMetadata[key] = value;
         }
         
         DispatchQueue.main.async {
-            self.branch!.setRequestMetadataKey(key, value: value)
+            Branch.getInstance().setRequestMetadataKey(key, value: value)
         }
     }
     
     private func logout() {
         DispatchQueue.main.async {
-            self.branch!.logout()
+            Branch.getInstance().logout()
         }
     }
     
     private func getLatestReferringParams(result: @escaping FlutterResult) {
-        let latestParams = branch!.getLatestReferringParams()
+        let latestParams = Branch.getInstance().getLatestReferringParams()
         DispatchQueue.main.async {
             result(latestParams)
         }
     }
     
     private func getFirstReferringParams(result: @escaping FlutterResult) {
-        let firstParams = branch!.getFirstReferringParams()
+        let firstParams = Branch.getInstance().getFirstReferringParams()
         DispatchQueue.main.async {
             result(firstParams)
         }
@@ -546,7 +486,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let data : NSMutableDictionary! = [:]
         let attributionWindow = args["attributionWindow"] as? Int ?? 0
         
-        branch!.lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
+        Branch.getInstance().lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
             if error == nil {
                 if latd != nil {
                     data["latd"] = ["attibution_window": latd!.attributionWindow,
@@ -571,7 +511,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     private func isUserIdentified(result: @escaping FlutterResult) {
         DispatchQueue.main.async {
-            result(self.branch!.isUserIdentified())
+            result(Branch.getInstance().isUserIdentified())
         }
     }
     
@@ -584,7 +524,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let connectTimeout = args["connectTimeout"] as? Int ?? 0
         DispatchQueue.main.async {
-            self.branch!.setNetworkTimeout(TimeInterval(connectTimeout))
+            Branch.getInstance().setNetworkTimeout(TimeInterval(connectTimeout))
         }
     }
     
@@ -597,7 +537,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let args = call.arguments as! [String: Any?]
         let retryInterval = args["retryInterval"] as? Int ?? 0
         DispatchQueue.main.async {
-            self.branch!.setRetryInterval(TimeInterval(retryInterval))
+            Branch.getInstance().setRetryInterval(TimeInterval(retryInterval))
         }
     }
     
@@ -660,7 +600,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func handleDeepLink(call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let url = args["url"] as! String
-        branch!.handleDeepLink(withNewSession: URL(string: url))
+        Branch.getInstance().handleDeepLink(withNewSession: URL(string: url))
     }
     
     private func addFacebookPartnerParameter(call: FlutterMethodCall) {
@@ -668,14 +608,12 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
-        if (!isInitialized) {
-            if (facebookParameters.keys.contains(key) && value.isEmpty) {
-                facebookParameters.removeValue(forKey: key)
-            } else {
-                facebookParameters[key] = value;
-            }
-            return;
+        if (facebookParameters.keys.contains(key) && value.isEmpty) {
+            facebookParameters.removeValue(forKey: key)
+        } else {
+            facebookParameters[key] = value;
         }
+        
         DispatchQueue.main.async {
             Branch.getInstance().addFacebookPartnerParameter(withName: key, value:value)
         }
@@ -686,13 +624,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         let key = args["key"] as! String
         let value = args["value"] as! String
         
-        if (!isInitialized) {
-            if (snapParameters.keys.contains(key) && value.isEmpty) {
-                snapParameters.removeValue(forKey: key)
-            } else {
-                snapParameters[key] = value;
-            }
-            return;
+        if (snapParameters.keys.contains(key) && value.isEmpty) {
+            snapParameters.removeValue(forKey: key)
+        } else {
+            snapParameters[key] = value;
         }
         
         DispatchQueue.main.async {
@@ -731,7 +666,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     private func requestTrackingAuthorization(result: @escaping FlutterResult) {
         if #available(iOS 14, *) {
             ATTrackingManager.requestTrackingAuthorization { (status) in
-                self.branch!.handleATTAuthorizationStatus(status.rawValue)
+                Branch.getInstance().handleATTAuthorizationStatus(status.rawValue)
                 
                 DispatchQueue.main.async {
                     result(Int(status.rawValue))

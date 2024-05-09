@@ -382,12 +382,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
-        if ((Boolean) argsMap.get("useTestKey")) {
-            Branch.enableTestMode();
-        } else {
-            Branch.disableTestMode();
-        }
-
         if ((Boolean) argsMap.get("enableLogging")) {
             Branch.enableLogging();
         } else {

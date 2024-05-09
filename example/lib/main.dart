@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import 'custom_button.dart';
@@ -147,9 +148,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initDeepLinkData() {
-    final DateTime today = DateTime.now();
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+
     String dateString =
-        '${today.year}-${today.month}-${today.day} ${today.hour}:${today.minute}:${today.second}';
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     metadata = BranchContentMetaData()
       ..addCustomMetadata('custom_string', 'abcd')
