@@ -48,13 +48,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         branch = Branch.getInstance();
-        branch?.registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
+        branch!.registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
 
         if #available(iOS 15.0, *) {
-            branch?.checkPasteboardOnInstall()
+            branch!.checkPasteboardOnInstall()
         }
-        
-        branch?.initSession(launchOptions: launchOptions) { (params, error) in
+
+        branch!.initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
                 guard let _ = self.eventSink else {
@@ -241,7 +241,6 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         if (isInitialized) {
             result(true)
         }
-        branch?.notifyNativeToInit()
         let args = call.arguments as! [String: Any?]
         
 #if DEBUG
@@ -258,17 +257,17 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         if (!requestMetadata.isEmpty) {
             for param in requestMetadata {
-                branch?.setRequestMetadataKey(param.key, value: param.value)
+                branch!.setRequestMetadataKey(param.key, value: param.value)
             }
         }
         if (!snapParameters.isEmpty) {
             for param in snapParameters {
-                branch?.addSnapPartnerParameter(withName: param.key, value: param.value)
+                branch!.addSnapPartnerParameter(withName: param.key, value: param.value)
             }
         }
         if (!facebookParameters.isEmpty) {
             for param in facebookParameters {
-                branch?.addFacebookPartnerParameter(withName: param.key, value: param.value)
+                branch!.addFacebookPartnerParameter(withName: param.key, value: param.value)
             }
         }
         isInitialized = true
