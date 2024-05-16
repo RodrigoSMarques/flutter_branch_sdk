@@ -1,4 +1,3 @@
 {
-  "useTestInstance": true,
-  "enableLogging":true
+  "useTestInstance": true
 }
