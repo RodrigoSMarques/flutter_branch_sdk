@@ -640,12 +640,12 @@ When parameters are successfully set using `setDMAParamsForEEA`, they will be se
 Add or update the code below in `AndroidManifest.xml`:
 
 ```xml
-	   <!-- Set to `true` to use `BranchKey.test` -->
-       <meta-data 
-           android:name="io.branch.sdk.TestMode" android:value="true" />
+<!-- Set to `true` to use `BranchKey.test` -->
+<meta-data 
+   android:name="io.branch.sdk.TestMode" android:value="true" />
 ```
 
-*Note*: Remember to set the value to `false` before releasing to production.
+***Note***: Remember to set the value to `false` before releasing to production.
 
 ### iOS
 
@@ -660,13 +660,13 @@ Add or update the code below in `AndroidManifest.xml`:
 
 ```
 
-3) Add the file to your project using Xcode. Within your project, navigate to File → Add Files. 
+3) Add the file `branch.json` to your project using Xcode. Within your project, navigate to File → Add Files. 
 
 ![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch_json_add.png)
 
 4) Select the `branch.json` file and make sure every target in your project that uses Branch is selected.
 
-*Note*: Remember to set the value to `false` before releasing to production.
+**Note*:* Remember to set the value to `false` before releasing to production.
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
