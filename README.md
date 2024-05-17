@@ -10,8 +10,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.10.1 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.3.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.12.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 3.4.3 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -153,13 +153,11 @@ To initialize Branch:
 ```dart
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-await FlutterBranchSdk.init(
-      useTestKey: false, enableLogging: false, disableTracking: false);
+await FlutterBranchSdk.init(enableLogging: false, disableTracking: false);
 ```
 
 The optional parameters are:
 
-- *useTestKey* : Sets `true` to use the test `key_test_....` .Default value: false
 - *enableLogging* : Sets `true` turn on debug logging. Default value: false
 - *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false
 
@@ -636,6 +634,41 @@ adUserDataUsageConsent | Boolean | Whether end user has granted or denied consen
 
 When parameters are successfully set using `setDMAParamsForEEA`, they will be sent along with every future request to the following Branch endpoint.
 
+# Configuring the project to use Branch Test Key
+## Android
+
+Add or update the code below in `AndroidManifest.xml`:
+
+```xml
+<!-- Set to `true` to use `BranchKey.test` -->
+<meta-data 
+   android:name="io.branch.sdk.TestMode" android:value="true" />
+```
+
+***Note***: Remember to set the value to `false` before releasing to production.
+
+### iOS
+
+1) Create an empty file called `branch.json`.
+
+2) Paste the content below into the file or make download [here](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch.json):
+
+```json
+{
+  "useTestInstance": true
+}
+
+```
+
+3) Add the file `branch.json` to your project using Xcode. Within your project, navigate to File → Add Files. 
+
+4) Select the `branch.json` file and make sure every target in your project that uses Branch is selected.
+
+![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch_json_add.png)
+
+![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch_json_project.png)
+
+**Note*:* Remember to set the value to `false` before releasing to production.
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
