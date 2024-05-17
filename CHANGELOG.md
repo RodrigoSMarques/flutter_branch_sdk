@@ -14,7 +14,6 @@ This is a major release which contains breaking API changes.
 * Fix issue #314: Issue with Branch.io Integration on Apple 14 pro
 * Fix issue #316: Not getting link after fresh install
 
-
 ### 🔧 Native SDK Updates
 
 * Updated included iOS SDK to 3.4.3 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
