@@ -9,7 +9,6 @@ This is a major release which contains breaking API changes.
 ### 🐛 Bug Fixes
 * Fix issue #325: Android cannot get the opening link (onInitFinished called after clicking on deep link two times)
 
-
 ## 8.0.0
 ### ⚠️ BREAKING CHANGE
 This is a major release which contains breaking API changes.
