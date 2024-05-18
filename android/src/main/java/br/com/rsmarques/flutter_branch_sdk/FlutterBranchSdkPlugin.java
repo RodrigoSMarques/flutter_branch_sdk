@@ -30,6 +30,7 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 import io.branch.referral.validators.IntegrationValidator;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -96,6 +97,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         this.activity = activity;
         activity.getApplication().registerActivityLifecycleCallbacks(this);
+
+        if (this.activity != null && FlutterFragmentActivity.class.isAssignableFrom(activity.getClass())) {
+            Branch.sessionBuilder(activity).withCallback(branchReferralInitListener).withData(activity.getIntent().getData()).init();
+        }
     }
 
     private void teardownChannels() {
@@ -348,6 +353,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     LogUtils.debug(DEBUG_NAME, "triggered onInitFinished");
                     if (error == null) {
                         LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
+
                         try {
                             sessionParams = branchSdkHelper.paramsToMap(params);
                         } catch (JSONException e) {

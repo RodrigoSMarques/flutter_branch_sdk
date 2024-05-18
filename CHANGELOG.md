@@ -1,3 +1,15 @@
+## 8.0.1
+### ⚠️ BREAKING CHANGE
+This is a major release which contains breaking API changes.
+#### ⚠️ SDK Initialization Changed
+* `useTestKey` parameter is no longer supported at `FlutterBranchSdk.init()`.
+ 
+ Check the instructions in `README.MD` on how to activate the `key_test_`.
+
+### 🐛 Bug Fixes
+* Fix issue #325: Android cannot get the opening link (onInitFinished called after clicking on deep link two times)
+
+
 ## 8.0.0
 ### ⚠️ BREAKING CHANGE
 This is a major release which contains breaking API changes.
