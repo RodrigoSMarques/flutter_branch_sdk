@@ -435,8 +435,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             Branch.getInstance().disableTracking(true);
         }
 
-        LogUtils.debug(DEBUG_NAME, "notifyNativeToInit()");
-        Branch.notifyNativeToInit();
+        //LogUtils.debug(DEBUG_NAME, "notifyNativeToInit()");
+        //Branch.notifyNativeToInit();
         isInitialized = true;
         result.success(Boolean.TRUE);
     }
