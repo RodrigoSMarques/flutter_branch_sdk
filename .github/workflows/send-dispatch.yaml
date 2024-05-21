@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Repository Dispatch
         if: ${{ github.repository == 'RodrigoSMarques/flutter_branch_sdk' }}
-        uses: peter-evans/repository-dispatch@v2
+        uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.TOKEN_BRANCH_UPSTREAM}}
           repository: BranchMetrics/flutter_branch_sdk
