@@ -651,7 +651,7 @@ Add or update the code below in `AndroidManifest.xml`:
 
 1) Create an empty file called `branch.json`.
 
-2) Paste the content below into the file or make download [here](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch.json):
+2) Paste the content below into the file or make download [here](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.json):
 
 ```json
 {
@@ -664,9 +664,9 @@ Add or update the code below in `AndroidManifest.xml`:
 
 4) Select the `branch.json` file and make sure every target in your project that uses Branch is selected.
 
-![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch_json_add.png)
+![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_add.png)
 
-![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/dev/assets/branch_json_project.png)
+![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_project.png)
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 

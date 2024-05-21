@@ -249,10 +249,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         if args["disableTracking"] as! Bool == true {
             Branch.setTrackingDisabled(true)
+        } else {
+            Branch.setTrackingDisabled(false)
         }
         
+       
         if args["enableLogging"] as! Bool == true {
-            //Branch.enableLogging()
+            Branch.enableLogging()
         }
         
         if (!requestMetadata.isEmpty) {
