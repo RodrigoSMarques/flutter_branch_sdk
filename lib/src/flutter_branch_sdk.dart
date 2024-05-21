@@ -2,17 +2,12 @@ part of '../flutter_branch_sdk.dart';
 
 class FlutterBranchSdk {
   ///Initialize Branch SDK
-  /// [useTestKey] - Sets `true` to use the test `key_test_...
   /// [enableLogging] - Sets `true` turn on debug logging
   /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
   static Future<void> init(
-      {bool useTestKey = false,
-      bool enableLogging = false,
-      bool disableTracking = false}) async {
-    await FlutterBranchSdkPlatform.instance.init(
-        useTestKey: useTestKey,
-        enableLogging: enableLogging,
-        disableTracking: disableTracking);
+      {bool enableLogging = false, bool disableTracking = false}) async {
+    await FlutterBranchSdkPlatform.instance
+        .init(enableLogging: enableLogging, disableTracking: disableTracking);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value

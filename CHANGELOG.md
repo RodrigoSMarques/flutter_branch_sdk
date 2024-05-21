@@ -1,31 +1,76 @@
+## 8.0.2
+### ⚠️ BREAKING CHANGE
+This is a major release which contains breaking API changes.
+#### ⚠️ SDK Initialization Changed
+* `useTestKey` parameter is no longer supported at `FlutterBranchSdk.init()`.
+
+Check the instructions in `README.MD` on how to activate the `key_test_`.
+
+### 🐛 Bug Fixes
+* Fix Enable and Disable Tracking on `FlutterBranchSdk.init()` method
+
+## 8.0.1
+### ⚠️ BREAKING CHANGE
+This is a major release which contains breaking API changes.
+#### ⚠️ SDK Initialization Changed
+* `useTestKey` parameter is no longer supported at `FlutterBranchSdk.init()`.
+ 
+ Check the instructions in `README.MD` on how to activate the `key_test_`.
+
+### 🐛 Bug Fixes
+* Fix issue #325: Android cannot get the opening link (onInitFinished called after clicking on deep link two times)
+
+## 8.0.0
+### ⚠️ BREAKING CHANGE
+This is a major release which contains breaking API changes.
+#### ⚠️ SDK Initialization Changed
+* `useTestKey` parameter is no longer supported at `FlutterBranchSdk.init()`.
+ 
+ Check the instructions in `README.MD` on how to activate the `key_test_`.
+
+### 🐛 Bug Fixes
+* Fix issue #283: Android app not getting correct deeplink from Branch when app is opened
+* Fix issue #308: Android non branch deep link sometimes not available
+* Fix issue #309: Completion of await FlutterBranchSdk.init() doesn't mean native iOS plugin is ready?
+* Fix issue #311: Flutter SDK init falls into loop when race condition happens during the initialization.
+* Fix issue #314: Issue with Branch.io Integration on Apple 14 pro
+* Fix issue #316: Not getting link after fresh install
+
+### 🔧 Native SDK Updates
+
+* Updated included iOS SDK to 3.4.3 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+* Updated included Branch Android SDK to 5.12.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
+
 ## 7.3.0
-### Native SDK Updates
+### 🔧 Native SDK Updates
 
 * Updated included Branch Android SDK to 5.11.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * Updated included Branch iOS SDK to 3.4.1 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 ## 7.2.0
-### Features
+### 🎉 Features
 * `showShareSheet` method will now display the native Android share sheet.
 * Documentation review
 
-### Dependencies Update
+### 🔧 Dependencies Update
 * Updated dependency `js`. From version 0.6.7 to 7.0.0
 
-### Native SDK Updates
+### 🔧 Native SDK Updates
 * Updated included Branch Android SDK to 5.10.1 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 
 ## 7.1.0
-### Features
+### 🎉 Features
 * New Methods:
     - `setDMAParamsForEEA` - In response to the European Union's enactment of the Digital Markets Act (DMA), this new method  help pass consent information from your user to Google. 
     See [documentation](https://github.com/RodrigoSMarques/flutter_branch_sdk?tab=readme-ov-file#user-data) for details.
 
-### Issues
+### 🐛 Issues
 
 * Fix issue #297: Allow Call setRequestMetadata after FlutterBranchSdk.init() method
 
-### Native SDK Updates
+### 🔧 Native SDK Updates
 
 * Updated included Branch Android SDK to 5.9.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 * Updated included Branch iOS SDK to 3.3.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
