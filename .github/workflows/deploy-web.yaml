@@ -31,7 +31,7 @@ jobs:
         run: tool/build-web.sh
       - name: Deploy to Netlify
         if: ${{ github.repository == 'RodrigoSMarques/flutter_branch_sdk' }}
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: './example/build/web'
           production-branch: master
