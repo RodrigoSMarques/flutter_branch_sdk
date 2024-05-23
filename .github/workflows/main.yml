@@ -1,7 +1,7 @@
 name: Autocloser
 on: 
   issues:
-    types: [opened]
+    types: [opened, edited]
 jobs:
   autoclose:
     runs-on: ubuntu-latest
