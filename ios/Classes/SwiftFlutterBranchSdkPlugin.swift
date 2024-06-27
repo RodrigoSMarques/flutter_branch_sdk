@@ -255,7 +255,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
        
         if args["enableLogging"] as! Bool == true {
-            Branch.enableLogging()
+            Branch.enableLogging(at: BranchLogLevel.debug)
         }
         
         if (!requestMetadata.isEmpty) {
