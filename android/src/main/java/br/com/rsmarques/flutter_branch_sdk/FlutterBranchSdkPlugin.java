@@ -24,6 +24,7 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.branch.referral.BranchLogger;
 import io.branch.referral.QRCode.BranchQRCode;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.BranchEvent;
@@ -389,7 +390,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
         if ((Boolean) argsMap.get("enableLogging")) {
-            Branch.enableLogging();
+            Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
         } else {
             Branch.disableLogging();
         }

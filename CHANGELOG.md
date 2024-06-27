@@ -1,3 +1,14 @@
+## 8.0.3
+### ⚠️ BREAKING CHANGE
+This is a major release which contains breaking API changes.
+#### ⚠️ SDK Initialization Changed
+* `useTestKey` parameter is no longer supported at `FlutterBranchSdk.init()`.
+
+Check the instructions in `README.MD` on how to activate the `key_test_`.
+
+### 🐛 Bug Fixes
+* Fix issue #340: Logging not working in Android Studio Emulator
+
 ## 8.0.2
 ### ⚠️ BREAKING CHANGE
 This is a major release which contains breaking API changes.
