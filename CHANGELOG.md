@@ -1,3 +1,15 @@
+## 8.0.4
+### ⚠️ BREAKING CHANGE
+This is a major release which contains breaking API changes.
+#### ⚠️ SDK Initialization Changed
+* `useTestKey` parameter is no longer supported at `FlutterBranchSdk.init()`.
+
+Check the instructions in `README.MD` on how to activate the `key_test_`.
+
+### 🐛 Bug Fixes
+* Fix issue #347: ios plugin v8.0.3 crashes when no url is returned
+* Fix issue #338: Changing the return value in didFinishLaunchingWithOptions crashes the application from SDK version above 8.0.0
+
 ## 8.0.3
 ### ⚠️ BREAKING CHANGE
 This is a major release which contains breaking API changes.
