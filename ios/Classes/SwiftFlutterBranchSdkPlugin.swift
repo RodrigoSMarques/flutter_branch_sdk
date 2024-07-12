@@ -47,14 +47,13 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
-        branch = Branch.getInstance();
-        branch!.registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
+        Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
 
         if #available(iOS 15.0, *) {
-            branch!.checkPasteboardOnInstall()
+            Branch.getInstance().checkPasteboardOnInstall()
         }
 
-        branch!.initSession(launchOptions: launchOptions) { (params, error) in
+        Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
                 guard let _ = self.eventSink else {
@@ -78,22 +77,22 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        let branchHandled = branch!.application(app, open: url, options: options)
+        let branchHandled = Branch.getInstance().application(app, open: url, options: options)
         return branchHandled
     }
     
     public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
-        let branchHandled = branch!.application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
+        let branchHandled = Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
         return branchHandled
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        let handledByBranch = branch!.continue(userActivity)
+        let handledByBranch = Branch.getInstance().continue(userActivity)
         return handledByBranch
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        branch!.handlePushNotification(userInfo)
+        Branch.getInstance().handlePushNotification(userInfo)
     }
     
     //---------------------------------------------------------------------------------------------
@@ -260,17 +259,17 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         if (!requestMetadata.isEmpty) {
             for param in requestMetadata {
-                branch!.setRequestMetadataKey(param.key, value: param.value)
+                Branch.getInstance().setRequestMetadataKey(param.key, value: param.value)
             }
         }
         if (!snapParameters.isEmpty) {
             for param in snapParameters {
-                branch!.addSnapPartnerParameter(withName: param.key, value: param.value)
+                Branch.getInstance().addSnapPartnerParameter(withName: param.key, value: param.value)
             }
         }
         if (!facebookParameters.isEmpty) {
             for param in facebookParameters {
-                branch!.addFacebookPartnerParameter(withName: param.key, value: param.value)
+                Branch.getInstance().addFacebookPartnerParameter(withName: param.key, value: param.value)
             }
         }
         isInitialized = true
@@ -286,7 +285,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         let response : NSMutableDictionary! = [:]
         buo?.getShortUrl(with: lp!) { (url, error) in
-            if ((error == nil) || (error != nil && url != nil)) {
+            if ((error == nil && url != nil) || (error != nil && url != nil)) {
                 NSLog("getShortUrl: %@", url!)
                 response["success"] = NSNumber(value: true)
                 response["url"] = url!
