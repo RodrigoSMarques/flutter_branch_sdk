@@ -1,3 +1,10 @@
+## 8.1.0
+### 🔧 Native SDK Updates
+
+* Updated included iOS SDK to 3.6.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+* Updated included Branch Android SDK to 5.12.2 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
 ## 8.0.4
 ### ⚠️ BREAKING CHANGE
 This is a major release which contains breaking API changes.
