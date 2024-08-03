@@ -34,7 +34,7 @@ jobs:
         run: chmod +x tool/build-apk.sh
       - name: Install dependencies & Build apk
         run: tool/build-apk.sh
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: ./example/build/app/outputs/apk/release/app-release.apk
