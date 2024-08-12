@@ -4,8 +4,8 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js' as js;
-import 'dart:js_util';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe' as js;
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
@@ -84,7 +84,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     final Completer<Map<dynamic, dynamic>> response = Completer();
 
     try {
-      BranchJS.data(js.allowInterop((err, data) {
+      BranchJS.data((JSAny? err, JSAny? data) {
         if (err == null) {
           if (data != null) {
             var responseData =
@@ -96,7 +96,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         } else {
           response.completeError(err);
         }
-      }));
+      }.toJS);
     } catch (e) {
       debugPrint('getLatestReferringParams() error: ${e.toString()}');
       response.completeError(e);
@@ -111,7 +111,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         Completer<Map<dynamic, dynamic>>();
 
     try {
-      BranchJS.first(js.allowInterop((err, data) {
+      BranchJS.first((JSAny? err, JSAny? data) {
         if (err == null) {
           if (data != null) {
             var responseData =
@@ -123,7 +123,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         } else {
           response.completeError(err);
         }
-      }));
+      }.toJS);
     } catch (e) {
       debugPrint('getFirstReferringParams() error: ${e.toString()}');
       response.completeError(e);
@@ -135,11 +135,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void setIdentity(String userId) {
     try {
-      BranchJS.setIdentity(userId, js.allowInterop((error, data) {
-        if (error == null) {
-          _userIdentified = true;
-        }
-      }));
+      BranchJS.setIdentity(
+          userId,
+          (JSAny? error, JSAny? data) {
+            if (error == null) {
+              _userIdentified = true;
+            }
+          }.toJS);
     } catch (e) {
       debugPrint('setIdentity() error: ${e.toString()}');
     }
@@ -149,11 +151,11 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void logout() {
     try {
-      BranchJS.logout(js.allowInterop((error) {
+      BranchJS.logout((JSAny? error) {
         if (error == null) {
           _userIdentified = false;
         }
-      }));
+      }.toJS);
     } catch (e) {
       debugPrint('logout() error: ${e.toString()}');
     }
@@ -185,15 +187,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     Completer<BranchResponse> responseCompleter = Completer();
 
     try {
-      BranchJS.link(_dartObjectToJsObject(linkData),
-          js.allowInterop((err, url) {
-        if (err == null) {
-          responseCompleter.complete(BranchResponse.success(result: url));
-        } else {
-          responseCompleter.completeError(
-              BranchResponse.error(errorCode: '-1', errorMessage: err));
-        }
-      }));
+      BranchJS.link(
+          _dartObjectToJsObject(linkData),
+          (String? err, String url) {
+            if (err == null) {
+              responseCompleter.complete(BranchResponse.success(result: url));
+            } else {
+              responseCompleter.completeError(
+                  BranchResponse.error(errorCode: '-1', errorMessage: err));
+            }
+          }.toJS);
     } catch (e) {
       debugPrint('getShortUrl() error: ${e.toString()}');
       responseCompleter.completeError(BranchResponse.error(
@@ -214,11 +217,11 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         await getShortUrl(buo: buo, linkProperties: linkProperties);
     if (response.success) {
       try {
-        await promiseToFuture(navigatorShare(_dartObjectToJsObject({
+        await navigatorShare(_dartObjectToJsObject({
           "title": messageText,
           "text": buo.title,
           "url": response.result
-        })));
+        })).toDart;
       } catch (e) {
         browserPrompt(messageText, response.result);
       }
@@ -231,7 +234,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void trackContent(
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
-    List<Object> contentItems = [];
+    List<JSObject> contentItems = [];
     for (var element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMap()));
     }
@@ -241,11 +244,11 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         BranchJS.logEvent(
             branchEvent.eventName,
             _dartObjectToJsObject(branchEvent.toMap()),
-            contentItems,
+            contentItems.toJS,
             branchEvent.alias);
       } else {
         BranchJS.logEvent(branchEvent.eventName,
-            _dartObjectToJsObject(branchEvent.toMap()), contentItems);
+            _dartObjectToJsObject(branchEvent.toMap()), contentItems.toJS);
       }
     } catch (e) {
       debugPrint('trackContent() error: ${e.toString()}');
@@ -380,20 +383,21 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     Completer<BranchResponse> responseCompleter = Completer();
 
     try {
-      BranchJS.lastAttributedTouchData(attributionWindow,
-          js.allowInterop((err, data) {
-        if (err == null) {
-          if (data != null) {
-            responseCompleter.complete(
-                BranchResponse.success(result: _jsObjectToDartObject(data)));
-          } else {
-            responseCompleter.complete(BranchResponse.success(result: {}));
-          }
-        } else {
-          responseCompleter.complete(BranchResponse.error(
-              errorCode: '999', errorMessage: err.toString()));
-        }
-      }));
+      BranchJS.lastAttributedTouchData(
+          attributionWindow?.toJS,
+          (JSAny? err, JSAny? data) {
+            if (err == null) {
+              if (data != null) {
+                responseCompleter.complete(BranchResponse.success(
+                    result: _jsObjectToDartObject(data)));
+              } else {
+                responseCompleter.complete(BranchResponse.success(result: {}));
+              }
+            } else {
+              responseCompleter.complete(BranchResponse.error(
+                  errorCode: '999', errorMessage: err.toString()));
+            }
+          }.toJS);
     } catch (e) {
       debugPrint('getLastAttributedTouchData() error: ${e.toString()}');
       responseCompleter.complete(BranchResponse.error(
@@ -418,22 +422,23 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
 
     try {
-      BranchJS.qrCode(_dartObjectToJsObject(linkData),
+      BranchJS.qrCode(
+          _dartObjectToJsObject(linkData),
           _dartObjectToJsObject(qrCodeSettings.toMap()),
-          js.allowInterop((err, qrCode) {
-        if (err == null) {
-          if (qrCode != null) {
-            responseCompleter.complete(
-                BranchResponse.success(result: qrCode.rawBuffer.asUint8List()));
-          } else {
-            responseCompleter.complete(BranchResponse.error(
-                errorCode: '-1', errorMessage: 'Qrcode generate error'));
-          }
-        } else {
-          responseCompleter.complete(BranchResponse.error(
-              errorCode: '-1', errorMessage: err.toString()));
-        }
-      }));
+          (JSAny? err, QrCodeData? qrCode) {
+            if (err == null) {
+              if (qrCode != null) {
+                responseCompleter.complete(
+                    BranchResponse.success(result: qrCode.rawBuffer.toDart));
+              } else {
+                responseCompleter.complete(BranchResponse.error(
+                    errorCode: '-1', errorMessage: 'Qrcode generate error'));
+              }
+            } else {
+              responseCompleter.complete(BranchResponse.error(
+                  errorCode: '-1', errorMessage: err.toString()));
+            }
+          }.toJS);
     } catch (e) {
       responseCompleter.complete(BranchResponse.error(
           errorCode: '-1', errorMessage: 'qrCode generate error'));
@@ -480,7 +485,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
   void handleDeepLink(String url) {
-    js.context.callMethod('open', [url, '_self']);
+    globalContext.callMethodVarArgs('open'.toJS, [url.toJS, '_self'.toJS]);
   }
 
   /// Add a Partner Parameter for Facebook.
