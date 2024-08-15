@@ -19,7 +19,7 @@ import 'web/branch_js.dart';
 /// A workaround to deep-converting an object from JS to a Dart Object.
 dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
 
-dynamic _dartObjectToJsObject(data) => jsonParse(json.encode(data));
+JSAny _dartObjectToJsObject(data) => jsonParse(json.encode(data));
 
 /// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
 class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
@@ -234,7 +234,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void trackContent(
       {required List<BranchUniversalObject> buo,
       required BranchEvent branchEvent}) {
-    List<JSObject> contentItems = [];
+    List<JSAny> contentItems = [];
     for (var element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMap()));
     }

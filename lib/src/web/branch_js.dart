@@ -10,7 +10,7 @@ external String jsonStringify(JSAny obj);
 external JSAny jsonParse(String str);
 
 @JS('navigator.share')
-external JSPromise<JSAny> navigatorShare(JSAny data);
+external JSPromise<JSAny?> navigatorShare(JSAny data);
 
 @JS('prompt')
 external JSAny browserPrompt(String message, [String data]);
@@ -81,7 +81,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///
   /// branch.closeJourney(function(err) { console.log(err); });
   @JS('closeJourney')
-  external static void closeJourney(JSFunction callback);
+  external static void closeJourney([JSFunction callback]);
 
   /// data(callback)
   /// Parameters
@@ -96,7 +96,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// If the Branch session has already been initialized, the callback will return
   /// immediately, otherwise, it will return once Branch has been initialized.
   @JS('data')
-  external static void data(JSFunction callback);
+  external static void data([JSFunction callback]);
 
   /// deepview(data, options, callback)
   /// Parameters
@@ -211,7 +211,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Warning: For a referral program, you should not use unique awards for custom events and redeem
   /// pre-identify call. This can allow users to cheat the system.
   @JS('deepviewCta')
-  external static void deepviewCta(JSFunction errorCallback);
+  external static void deepviewCta([JSFunction errorCallback]);
 
   /// first(callback)
   /// Parameters
@@ -226,7 +226,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// If the Branch session has already been initialized, the callback will return
   /// immediately, otherwise, it will return once Branch has been initialized.
   @JS('first')
-  external static void first(JSFunction callback);
+  external static void first([JSFunction callback]);
 
   // No documentation on reference
   // @JS('getCode')
@@ -395,7 +395,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///      "Error message"
   /// );
   @JS('logout')
-  external static void logout(JSFunction callback);
+  external static void logout([JSFunction callback]);
 
   /// removeListener(listener)
   /// Parameters
