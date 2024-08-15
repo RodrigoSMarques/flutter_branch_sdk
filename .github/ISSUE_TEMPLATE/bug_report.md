@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+Keep the template and provide all requested information:
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
@@ -23,15 +25,15 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Smartphone (Please complete the following information. remove session if not platform):**
+**Mobile (Please complete the following information. remove session if not Mobile):**
  - Flutter: version: [e.g. 2.2.3]
- - Package version: [e.g. 3.3.0]
+ - flutter_branch_sdk version: [e.g. 3.3.0]
  - OS: [e.g. iOS16.0, Android 12]
  - Device: [e.g. iPhone14, Google Pixel]
  
-**Web (please complete the following information. remove session if not platform):**
+**Web (please complete the following information. remove session if not is Web:**
  - Flutter: version: [e.g. 2.2.3]
- - Package version: [e.g. 3.3.0]
+ - flutter_branch_sdk version: [e.g. 3.3.0]
  - OS: [e.g. Windows, Mac, Linux]
  - Browser [e.g. chrome, safari, edge]
  - Version [e.g. 22] 
