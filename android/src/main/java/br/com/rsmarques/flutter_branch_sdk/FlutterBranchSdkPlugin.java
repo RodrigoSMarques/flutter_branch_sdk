@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,18 +51,63 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
-    private Activity activity;
-    private Context context;
-    private ActivityPluginBinding activityPluginBinding;
-    private EventSink eventSink = null;
-    private Map<String, Object> sessionParams = null;
-    private BranchError initialError = null;
     private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
     private final JSONObject requestMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
     private final JSONObject snapParameters = new JSONObject();
     private final ArrayList<String> preInstallParameters = new ArrayList<String>();
     private final ArrayList<String> campaingParameters = new ArrayList<String>();
+    private Activity activity;
+    private Context context;
+    private ActivityPluginBinding activityPluginBinding;
+    private EventSink eventSink = null;
+    private Map<String, Object> sessionParams = null;
+    private BranchError initialError = null;
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * Branch SDK Call Methods
+     * --------------------------------------------------------------------------------------------
+     **/
+    private final Branch.BranchReferralInitListener branchReferralInitListener = new
+            Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject params, BranchError error) {
+                    LogUtils.debug(DEBUG_NAME, "triggered onInitFinished");
+                    if (error == null) {
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
+                        try {
+                            sessionParams = branchSdkHelper.paramsToMap(params);
+                        } catch (JSONException e) {
+                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
+                            return;
+                        }
+                        if (eventSink != null) {
+                            eventSink.success(sessionParams);
+                            sessionParams = null;
+                        }
+                    } else if (error.getErrorCode() == BranchError.ERR_BRANCH_ALREADY_INITIALIZED) {
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener : " + error.getMessage());
+                        try {
+                            sessionParams = branchSdkHelper.paramsToMap(Branch.getInstance().getLatestReferringParams());
+                        } catch (JSONException e) {
+                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
+                            return;
+                        }
+                        if (eventSink != null) {
+                            eventSink.success(sessionParams);
+                            sessionParams = null;
+                        }
+                    } else {
+                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
+                        if (eventSink != null) {
+                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
+                            initialError = null;
+                        } else {
+                            initialError = error;
+                        }
+                    }
+                }
+            };
     private boolean isInitialized = false;
 
     /**
@@ -74,6 +120,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "triggered onAttachedToEngine");
         setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext());
     }
+
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         LogUtils.debug(DEBUG_NAME, "triggered onDetachedFromEngine");
@@ -341,41 +388,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
         }
     }
-
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * Branch SDK Call Methods
-     * --------------------------------------------------------------------------------------------
-     **/
-    private final Branch.BranchReferralInitListener branchReferralInitListener = new
-            Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject params, BranchError error) {
-                    LogUtils.debug(DEBUG_NAME, "triggered onInitFinished");
-                    if (error == null) {
-                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - params: " + params.toString());
-
-                        try {
-                            sessionParams = branchSdkHelper.paramsToMap(params);
-                        } catch (JSONException e) {
-                            LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error to Map: " + e.getLocalizedMessage());
-                            return;
-                        }
-                        if (eventSink != null) {
-                            eventSink.success(sessionParams);
-                            sessionParams = null;
-                        }
-                    } else {
-                        LogUtils.debug(DEBUG_NAME, "BranchReferralInitListener - error: " + error);
-                        if (eventSink != null) {
-                            eventSink.error(String.valueOf(error.getErrorCode()), error.getMessage(), null);
-                            initialError = null;
-                        } else {
-                            initialError = error;
-                        }
-                    }
-                }
-            };
 
     private void setupBranch(MethodCall call, final Result result) {
         LogUtils.debug(DEBUG_NAME, "triggered setupBranch");
