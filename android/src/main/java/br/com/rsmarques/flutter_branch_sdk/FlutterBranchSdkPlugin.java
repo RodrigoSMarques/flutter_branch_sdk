@@ -674,14 +674,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         final String key = call.argument("key");
         final String value = call.argument("value");
 
-            if (requestMetadata.has(key) && value.isEmpty()) {
-                requestMetadata.remove(key);
-            } else {
-                try {
-                    requestMetadata.put(key, value);
-                } catch (JSONException error) {
-                }
-           return;
+        if (requestMetadata.has(key) && value.isEmpty()) {
+            requestMetadata.remove(key);
+        } else {
+            try {
+                requestMetadata.put(key, value);
+            } catch (JSONException error) {
+            }
+            return;
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
