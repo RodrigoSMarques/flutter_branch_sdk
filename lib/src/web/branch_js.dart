@@ -18,7 +18,7 @@ external JSAny browserPrompt(String message, [String data]);
 @JS()
 @anonymous
 extension type QrCodeData._(JSObject _) implements JSObject {
-  external JSUint8Array rawBuffer;
+  external JSArrayBuffer rawBuffer;
   external JSFunction base64();
 }
 

@@ -428,8 +428,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
           (JSAny? err, QrCodeData? qrCode) {
             if (err == null) {
               if (qrCode != null) {
-                responseCompleter.complete(
-                    BranchResponse.success(result: qrCode.rawBuffer.toDart));
+                responseCompleter.complete(BranchResponse.success(
+                    result: qrCode.rawBuffer.toDart.asUint8List()));
               } else {
                 responseCompleter.complete(BranchResponse.error(
                     errorCode: '-1', errorMessage: 'Qrcode generate error'));
