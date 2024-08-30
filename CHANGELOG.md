@@ -1,10 +1,16 @@
+## 8.2.0
+### ⚠️ BREAKING CHANGE
+* Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)
+
+### 🎉 Features
+* Issue #361: Migrate to dart:js_interop to support Webassamebly. Thanks @hnvn
+
 ## 8.1.1
 ### 🐛 Bug Fixes
 * Fix issue #368: "-118, Warning. Session initialization already happened" triggered in the listSession callback
 
 ## 8.1.0
 ### 🔧 Native SDK Updates
-
 * Updated included iOS SDK to 3.6.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 * Updated included Branch Android SDK to 5.12.2 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 
