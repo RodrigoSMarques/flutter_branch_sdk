@@ -294,6 +294,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 if let err = (error as NSError?) {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = ""
+                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
@@ -499,10 +502,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 response["data"] = data
             } else {
                 print("Failed to lastAttributedTouchData: \(String(describing: error))")
-                let err = (error! as NSError)
                 response["success"] = NSNumber(value: false)
-                response["errorCode"] = String(err.code)
-                response["errorMessage"] = err.localizedDescription
+                if let err = (error as NSError?) {
+                    response["errorCode"] = String(err.code)
+                    response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = ""
+                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
+                }
             }
             DispatchQueue.main.async {
                 result(response)
@@ -563,12 +570,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 if let err = (error as NSError?) {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = ""
+                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
                 result(response)
             }
-            
         })
     }
     
