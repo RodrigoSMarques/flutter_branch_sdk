@@ -166,7 +166,7 @@ The optional parameters are:
   	- `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   	- `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
 
-		Read Branch documentation for details: [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) and [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
+		Read Branch documentation for details: [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) and [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 
 *Note: The `disableTracking` parameter is deprecated and should no longer be used. Please use `branchAttributionLevel` to control tracking behavior.*
 
