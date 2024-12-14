@@ -1,5 +1,3 @@
-library flutter_branch_sdk_objects;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

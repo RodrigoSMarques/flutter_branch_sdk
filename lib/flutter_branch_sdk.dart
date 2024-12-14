@@ -1,10 +1,3 @@
-/// This is a Flutter plugin that implemented Branch SDK - https://branch.io/
-/// Branch.io helps mobile apps grow with deep links that power referral systems,
-/// sharing links and invites with full attribution and analytics.
-/// Supports Android, iOS and Web.
-
-library flutter_branch_sdk;
-
 import 'dart:typed_data';
 
 import 'src/flutter_branch_sdk_platform_interface.dart';
