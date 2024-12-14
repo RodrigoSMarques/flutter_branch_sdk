@@ -48,7 +48,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       branchAttributionLevelString = '';
     } else {
       branchAttributionLevelString =
-          getBranchAttributionLevelString(branchAttributionLevel!);
+          getBranchAttributionLevelString(branchAttributionLevel);
     }
     await messageChannel.invokeMethod('init', {
       'enableLogging': enableLogging,
