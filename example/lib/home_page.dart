@@ -542,7 +542,7 @@ class _HomePageState extends State<HomePage> {
     FlutterBranchSdk.shareWithLPLinkMetadata(
         buo: buo,
         linkProperties: lp,
-        title: "Share With LPLinkMetadata",
+        title: 'Share With LPLinkMetadata',
         icon: iconData);
   }
 

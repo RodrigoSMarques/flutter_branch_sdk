@@ -13,6 +13,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_attribution_level.dart';
 import 'objects/branch_universal_object.dart';
 import 'web/branch_js.dart';
 
@@ -30,15 +31,28 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     FlutterBranchSdkPlatform.instance = FlutterBranchSdkWeb();
   }
 
-  ///Initialize Branch SDK
-  /// [useTestKey] - Sets `true` to use the test `key_test_...
-  /// [enableLogging] - Sets `true` turn on debug logging
-  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  /// Initializes the Branch SDK.
+  ///
+  /// This function initializes the Branch SDK with the specified configuration options.
+  ///
+  /// **Parameters:**
+  ///
+  /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [branchAttributionLevel]: The level of attribution data to collect.
+  ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
+  ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
+  ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+  ///
+  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
+  /// Please use `branchAttributionLevel` to control tracking behavior.
+  ///
+
   @override
   Future<void> init(
-      {bool useTestKey = false,
-      bool enableLogging = false,
-      bool disableTracking = false}) async {
+      {bool enableLogging = false,
+      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
+      BranchAttributionLevel? branchAttributionLevel}) async {
     debugPrint('');
   }
 
@@ -542,5 +556,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required bool adUserDataUsageConsent}) {
     BranchJS.setDMAParamsForEEA(
         eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
+  }
+
+  /// Sets the consumer protection attribution level.
+  @override
+  void setConsumerProtectionAttributionLevel(
+      BranchAttributionLevel branchAttributionLevel) {
+    throw UnsupportedError(
+        'setConsumerProtectionAttributionLevel() Not available in Branch JS SDK');
   }
 }

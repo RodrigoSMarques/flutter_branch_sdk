@@ -226,6 +226,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "setDMAParamsForEEA":
             setDMAParamsForEEA(call: call)
             break;
+        case "setConsumerProtectionAttributionLevel" :
+            setConsumerProtectionAttributionLevel(call: call)
+            break;
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -252,6 +255,10 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             Branch.setTrackingDisabled(false)
         }
         
+        let branchAttributionLevel = args["branchAttributionLevel"] as! String
+        if (!branchAttributionLevel.isEmpty) {
+            Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
+        }
        
         if args["enableLogging"] as! Bool == true {
             Branch.enableLogging(at: BranchLogLevel.debug)
@@ -659,6 +666,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         DispatchQueue.main.async {
             Branch.setDMAParamsForEEA(eeaRegion,adPersonalizationConsent: adPersonalizationConsent, adUserDataUsageConsent: adUserDataUsageConsent)
+        }
+    }
+    
+    private func setConsumerProtectionAttributionLevel(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let branchAttributionLevel = args["branchAttributionLevel"] as! String
+        DispatchQueue.main.async {
+            Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
         }
     }
     

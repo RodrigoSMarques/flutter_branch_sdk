@@ -21,7 +21,11 @@ void main() async {
   FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
   //await FlutterBranchSdk.requestTrackingAuthorization();
-  await FlutterBranchSdk.init(enableLogging: true);
-
+  await FlutterBranchSdk.init(
+      enableLogging: true,
+      disableTracking: false,
+      branchAttributionLevel: BranchAttributionLevel.NONE);
+  FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+      BranchAttributionLevel.FULL);
   runApp(const MyApp());
 }

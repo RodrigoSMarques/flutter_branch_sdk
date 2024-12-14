@@ -4,6 +4,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_branch_sdk_method_channel.dart';
 import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_attribution_level.dart';
 import 'objects/branch_universal_object.dart';
 
 abstract class FlutterBranchSdkPlatform extends PlatformInterface {
@@ -27,11 +28,26 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  ///Initialize Branch SDK
-  /// [enableLogging] - Sets `true` turn on debug logging
-  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  /// Initializes the Branch SDK.
+  ///
+  /// This function initializes the Branch SDK with the specified configuration options.
+  ///
+  /// **Parameters:**
+  ///
+  /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [branchAttributionLevel]: The level of attribution data to collect.
+  ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
+  ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
+  ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+  ///
+  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
+  /// Please use `branchAttributionLevel` to control tracking behavior.
+  ///
   Future<void> init(
-      {bool enableLogging = false, bool disableTracking = false}) async {
+      {bool enableLogging = false,
+      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
+      BranchAttributionLevel? branchAttributionLevel}) async {
     throw UnimplementedError('init has not been implemented');
   }
 
@@ -64,6 +80,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
+  @Deprecated('Use [setConsumerProtectionAttributionLevel]')
   void disableTracking(bool value) async {
     throw UnimplementedError('disableTracking has not been implemented');
   }
@@ -270,5 +287,12 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       required bool adPersonalizationConsent,
       required bool adUserDataUsageConsent}) {
     throw UnimplementedError('setDMAParamsForEEA has not been implemented');
+  }
+
+  /// Sets the consumer protection attribution level.
+  void setConsumerProtectionAttributionLevel(
+      BranchAttributionLevel branchAttributionLevel) {
+    throw UnimplementedError(
+        'setConsumerProtectionAttributionLevel has not been implemented');
   }
 }

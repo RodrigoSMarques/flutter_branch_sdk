@@ -1,3 +1,22 @@
+## 8.3.0
+### ⚠️ BREAKING CHANGE
+* Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)
+
+### 🎉 Features
+* New Methods:
+    - `setConsumerProtectionAttributionLevel` - Sets the consumer protection attribution level. Read Branch documentation for details:
+    	* [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels)
+    	* [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
+
+#### Deprecated
+
+* `FlutterBranchSdk.disableTracking()`. Use `FlutterBranchSdk.setConsumerProtectionAttributionLevel()`.
+
+### Native SDK Updates
+### 🔧 Native SDK Updates
+* Updated included iOS SDK to 3.7.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Updated included Branch Android SDK to 5.15.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
 ## 8.2.0
 ### ⚠️ BREAKING CHANGE
 * Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)
@@ -78,7 +97,6 @@ This is a major release which contains breaking API changes.
 ### 🔧 Native SDK Updates
 
 * Updated included iOS SDK to 3.4.3 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-
 * Updated included Branch Android SDK to 5.12.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 
 
