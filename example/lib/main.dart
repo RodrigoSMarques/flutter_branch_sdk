@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
@@ -25,7 +26,9 @@ void main() async {
       enableLogging: true,
       disableTracking: false,
       branchAttributionLevel: BranchAttributionLevel.NONE);
-  FlutterBranchSdk.setConsumerProtectionAttributionLevel(
-      BranchAttributionLevel.FULL);
+  if (!kIsWeb) {
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+        BranchAttributionLevel.FULL);
+  }
   runApp(const MyApp());
 }

@@ -8,4 +8,4 @@ flutter pub get
 #flutter build web --source-maps
 #flutter build web --profile --source-maps --dart-define=Dart2jsOptimization=O0
 #flutter build web
-flutter build web --wasm
+flutter build web --wasm --source-maps
