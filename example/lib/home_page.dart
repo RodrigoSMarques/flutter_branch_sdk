@@ -248,14 +248,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void enableTracking() {
-    FlutterBranchSdk.disableTracking(false);
-    showSnackBar(message: 'Tracking enabled');
+  void setConsumerProtectionFull() {
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+        BranchAttributionLevel.FULL);
+    showSnackBar(message: 'Consumer Preference Levels: Full Attribution');
   }
 
-  void disableTracking() {
-    FlutterBranchSdk.disableTracking(true);
-    showSnackBar(message: 'Tracking disabled');
+  void setConsumerProtectionNome() {
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+        BranchAttributionLevel.NONE);
+    showSnackBar(
+        message:
+            'Consumer Preference Levels: No Attribution - No Analytics (GDPR, CCPA)');
   }
 
   void identifyUser() async {
@@ -597,14 +601,16 @@ class _HomePageState extends State<HomePage> {
                     children: <Widget>[
                       Expanded(
                         child: CustomButton(
-                          onPressed: enableTracking,
-                          child: const Text('Enable tracking'),
+                          onPressed: setConsumerProtectionFull,
+                          child: const Text('Consumer Protection FULL',
+                              textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
-                          onPressed: disableTracking,
-                          child: const Text('Disable tracking'),
+                          onPressed: setConsumerProtectionNome,
+                          child: const Text('Consumer Protection NOME',
+                              textAlign: TextAlign.center),
                         ),
                       ),
                     ],
