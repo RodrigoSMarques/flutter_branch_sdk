@@ -86,11 +86,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Listen click em Branch Deeplinks
-  Stream<Map<dynamic, dynamic>> initSession() {
-    throw UnimplementedError('initSession has not been implemented');
-  }
-
-  ///Listen click em Branch Deeplinks
   Stream<Map<dynamic, dynamic>> listSession() {
     throw UnimplementedError('initSession has not been implemented');
   }

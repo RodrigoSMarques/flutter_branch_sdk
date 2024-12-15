@@ -107,19 +107,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     messageChannel.invokeMethod('setTrackingDisabled', {'disable': value});
   }
 
-  ///Initialises a session with the Branch API
-  ///Listen click em Branch DeepLinks
-  @Deprecated('Use `listSession')
-  @override
-  Stream<Map<dynamic, dynamic>> initSession() {
-    assert(isInitialized,
-        'Call `initSession` after `FlutterBranchSdk.init()` method');
-    _initSessionStream ??=
-        eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
-
-    return _initSessionStream!;
-  }
-
   ///Listen click em Branch DeepLinks
   @override
   Stream<Map<dynamic, dynamic>> listSession() {

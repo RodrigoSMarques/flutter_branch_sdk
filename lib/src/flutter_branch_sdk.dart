@@ -59,14 +59,8 @@ class FlutterBranchSdk {
   }
 
   ///Listen click em Branch Deeplinks
-  @Deprecated('Use `listSession')
-  static Stream<Map<dynamic, dynamic>> initSession() {
-    return FlutterBranchSdkPlatform.instance.initSession();
-  }
-
-  ///Listen click em Branch Deeplinks
   static Stream<Map<dynamic, dynamic>> listSession() {
-    return FlutterBranchSdkPlatform.instance.initSession();
+    return FlutterBranchSdkPlatform.instance.listSession();
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and

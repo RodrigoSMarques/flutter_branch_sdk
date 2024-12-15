@@ -556,8 +556,6 @@ More information [here](https://help.branch.io/developers-hub/docs/honoring-opt-
 ### Consumer Preference Levels
 Sets the consumer protection attribution level:
 
-
-
 * `BranchAttributionLevel.FULL`: Full Attribution (Default)
 
 ```dart

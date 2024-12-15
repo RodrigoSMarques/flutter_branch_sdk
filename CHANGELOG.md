@@ -8,9 +8,10 @@
     	* [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels)
     	* [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 
-#### Deprecated
+#### Deprecated / Removed
 
 * `FlutterBranchSdk.disableTracking()`. Use `FlutterBranchSdk.setConsumerProtectionAttributionLevel()`.
+* Removed `initSession` method.
 
 ### Native SDK Updates
 ### 🔧 Native SDK Updates
