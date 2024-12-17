@@ -5,26 +5,23 @@ import PackageDescription
 /*
 import Foundation
 
+
 enum ConfigurationError: Error {
   case fileNotFound(String)
   case parsingError(String)
   case invalidFormat(String)
 }
 
-let branchDirectory = String(URL(string: #file)!.deletingLastPathComponent().absoluteString
-  .dropLast())
-
-print(branchDirectory);
+let branchDirectory = String(URL(string: #file)!.deletingLastPathComponent().absoluteString.dropLast())
 
 func loadPubspecVersions() throws -> String {
   let pubspecPath = NSString.path(withComponents: [branchDirectory,"..","..","pubspec.yaml"])
-    print(pubspecPath);
   do {
     let yamlString = try String(contentsOfFile: pubspecPath, encoding: .utf8)
-    let lines = yamlString.split(separator: "\n")
+    let lines = yamlString.split(separator: "\\\\r\\\\n")
 
     guard let packageVersionLine = lines.first(where: { $0.starts(with: "version:") }) else {
-      throw ConfigurationError.invalidFormat("No package version line found in pubspec.yaml")
+        throw ConfigurationError.invalidFormat("No package version line found in pubspec.yaml: \(lines.count)")
     }
     var packageVersion = packageVersionLine.split(separator: ":")[1]
       .trimmingCharacters(in: .whitespaces)
@@ -32,7 +29,7 @@ func loadPubspecVersions() throws -> String {
     packageVersion = packageVersion.replacingOccurrences(of: "^", with: "")
     return packageVersion
   } catch {
-    throw ConfigurationError.fileNotFound("Error loading or parsing pubspec.yaml: \(error)")
+    throw ConfigurationError.fileNotFound("Error loading or parsing pubspec.yaml \(pubspecPath) :\n Error: \(error)")
   }
 }
 
@@ -44,7 +41,6 @@ do {
   fatalError("Failed to load configuration: \(error)")
 }
 */
-
 
 let package = Package(
     name: "flutter_branch_sdk",
