@@ -115,18 +115,17 @@ class _HomePageState extends State<HomePage> {
         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     metadata = BranchContentMetaData()
-      //..addCustomMetadata('custom_string', 'abcd')
+      ..addCustomMetadata('custom_string', 'abcdefg')
       ..addCustomMetadata('custom_number', 12345)
       ..addCustomMetadata('custom_integer', 0)
       ..addCustomMetadata('custom_double', 0.0)
+      ..addCustomMetadata('custom_bool', true)
+      ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
+      ..addCustomMetadata('custom_list_string', ['a', 'b', 'c'])
+      ..addCustomMetadata('custom_date_created', dateString)
       ..addCustomMetadata('\$og_image_width', 237)
       ..addCustomMetadata('\$og_image_height', 355)
       ..addCustomMetadata('\$og_image_url', imageURL);
-
-    //..addCustomMetadata('custom_bool', true)
-    //..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
-    //..addCustomMetadata('custom_list_string', ['a', 'b', 'c'])
-    //..addCustomMetadata('custom_date_created', dateString);
     //--optional Custom Metadata
     /*
       ..contentSchema = BranchContentSchema.COMMERCE_PRODUCT
