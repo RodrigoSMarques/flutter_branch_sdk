@@ -38,15 +38,16 @@ android {
         buildConfig = true
     }
 
+    compileSdk 35
+
     defaultConfig {
         minSdkVersion 21
-        compileSdk 34
         buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
