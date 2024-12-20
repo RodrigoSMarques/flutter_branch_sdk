@@ -18,9 +18,9 @@ Flutter Plugin for create deep link using Brach SDK (https://branch.io). This pl
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Rodrigo S. Marques' => 'rodrigosmarques@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'flutter_branch_sdk/sources/flutter_branch_sdk/**/*.swift'
   s.dependency 'Flutter'
-  s.dependency 'BranchSDK', '~> 3.6.0'
+  s.dependency 'BranchSDK', '~> 3.7.0'
   s.platform = :ios, '12.0'
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

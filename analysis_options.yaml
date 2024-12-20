@@ -5,3 +5,5 @@ include: package:flutter_lints/flutter.yaml
 linter:
   rules:
     constant_identifier_names: false
+    # public_member_api_docs: true
+    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule

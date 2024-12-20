@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Flutter Branch SDK Example",
+      title: 'Flutter Branch SDK Example',
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       theme: ThemeData(

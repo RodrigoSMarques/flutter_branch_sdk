@@ -10,16 +10,17 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
+let PLUGIN_VERSION = "8.3.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
-
+    
     var branch : Branch?
     var isInitialized = false
-
+    
     var requestMetadata : [String: String] = [:]
     var facebookParameters : [String: String] = [:]
     var snapParameters : [String: String] = [:]
@@ -39,20 +40,30 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     }
     
     func getPluginVersion() -> String {
+
         var pluginVersion : String = ""
+#if SWIFT_PACKAGE
+        pluginVersion = PLUGIN_VERSION;
+#else
         if let version = Bundle(identifier: COCOA_POD_NAME)?.infoDictionary?["CFBundleShortVersionString"] as? String {
             pluginVersion = version;
         }
+#endif
+        
+#if DEBUG
+        print("Plugin: \(PLUGIN_NAME) - \(pluginVersion)")
+#endif
         return pluginVersion
     }
     
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
+        
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
-
+        
         if #available(iOS 15.0, *) {
             Branch.getInstance().checkPasteboardOnInstall()
         }
-
+        
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
@@ -226,6 +237,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         case "setDMAParamsForEEA":
             setDMAParamsForEEA(call: call)
             break;
+        case "setConsumerProtectionAttributionLevel" :
+            setConsumerProtectionAttributionLevel(call: call)
+            break;
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -252,7 +266,11 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
             Branch.setTrackingDisabled(false)
         }
         
-       
+        let branchAttributionLevel = args["branchAttributionLevel"] as! String
+        if (!branchAttributionLevel.isEmpty) {
+            Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
+        }
+        
         if args["enableLogging"] as! Bool == true {
             Branch.enableLogging(at: BranchLogLevel.debug)
         }
@@ -294,6 +312,9 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 if let err = (error as NSError?) {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = ""
+                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
@@ -499,10 +520,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 response["data"] = data
             } else {
                 print("Failed to lastAttributedTouchData: \(String(describing: error))")
-                let err = (error! as NSError)
                 response["success"] = NSNumber(value: false)
-                response["errorCode"] = String(err.code)
-                response["errorMessage"] = err.localizedDescription
+                if let err = (error as NSError?) {
+                    response["errorCode"] = String(err.code)
+                    response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = ""
+                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
+                }
             }
             DispatchQueue.main.async {
                 result(response)
@@ -563,12 +588,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
                 if let err = (error as NSError?) {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
+                } else {
+                    response["errorCode"] = ""
+                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
                 result(response)
             }
-            
         })
     }
     
@@ -650,6 +677,14 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         
         DispatchQueue.main.async {
             Branch.setDMAParamsForEEA(eeaRegion,adPersonalizationConsent: adPersonalizationConsent, adUserDataUsageConsent: adUserDataUsageConsent)
+        }
+    }
+    
+    private func setConsumerProtectionAttributionLevel(call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let branchAttributionLevel = args["branchAttributionLevel"] as! String
+        DispatchQueue.main.async {
+            Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
         }
     }
     

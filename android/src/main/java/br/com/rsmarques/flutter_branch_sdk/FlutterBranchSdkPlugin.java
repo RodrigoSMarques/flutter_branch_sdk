@@ -26,6 +26,7 @@ import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.BranchLogger;
+import io.branch.referral.Defines;
 import io.branch.referral.QRCode.BranchQRCode;
 import io.branch.referral.ServerRequestGetLATD;
 import io.branch.referral.util.BranchEvent;
@@ -279,7 +280,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             return false;
         }
         this.activity.setIntent(intent);
-        if (intent.hasExtra("branch_force_new_session") && intent.getBooleanExtra("branch_force_new_session",false)) {
+        if (intent.hasExtra("branch_force_new_session") && intent.getBooleanExtra("branch_force_new_session", false)) {
             Branch.sessionBuilder(this.activity).withCallback(branchReferralInitListener).reInit();
             LogUtils.debug(DEBUG_NAME, "triggered SessionBuilder reInit");
         }
@@ -383,6 +384,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "setDMAParamsForEEA":
                 setDMAParamsForEEA(call);
                 break;
+            case "setConsumerProtectionAttributionLevel":
+                setConsumerProtectionAttributionLevel(call);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -450,10 +454,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 Branch.getAutoInstance(context).setPreinstallCampaign(campaingParameters.get(i));
             }
         }
+
         if ((Boolean) argsMap.get("disableTracking")) {
             Branch.getInstance().disableTracking(true);
         } else {
             Branch.getInstance().disableTracking(false);
+        }
+
+        final String branchAttributionLevelString = call.argument("branchAttributionLevel");
+        if (branchAttributionLevelString != null && !branchAttributionLevelString.isEmpty()) {
+            Branch.getInstance().setConsumerProtectionAttributionLevel(Defines.BranchAttributionLevel.valueOf(branchAttributionLevelString));
         }
 
         LogUtils.debug(DEBUG_NAME, "notifyNativeToInit()");
@@ -463,7 +473,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void validateSDKIntegration() {
-        IntegrationValidator.validate(activity);
+        IntegrationValidator.validate(this.activity);
     }
 
     private void getShortUrl(MethodCall call, final Result result) {
@@ -520,6 +530,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                             }
                             result.success(response);
                         }
+
                         @Override
                         public void onChannelSelected(String channelName) {
                             LogUtils.debug(DEBUG_NAME, "Branch link share channel: " + channelName);
@@ -996,7 +1007,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         final boolean adPersonalizationConsent = Boolean.TRUE.equals(call.argument("adPersonalizationConsent"));
         final boolean adUserDataUsageConsent = Boolean.TRUE.equals(call.argument("adUserDataUsageConsent"));
 
-        Branch.getInstance().setDMAParamsForEEA(eeaRegion,adPersonalizationConsent,adUserDataUsageConsent);
+        Branch.getInstance().setDMAParamsForEEA(eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
+    }
+
+    private void setConsumerProtectionAttributionLevel(MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "triggered setConsumerProtectionAttributionLevel");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+        final String branchAttributionLevelString = call.argument("branchAttributionLevel");
+        Branch.getInstance().setConsumerProtectionAttributionLevel(Defines.BranchAttributionLevel.valueOf(branchAttributionLevelString));
     }
 }
 

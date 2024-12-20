@@ -10,8 +10,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.12.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.6.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.15.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 3.7.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -159,7 +159,16 @@ await FlutterBranchSdk.init(enableLogging: false, disableTracking: false);
 The optional parameters are:
 
 - *enableLogging* : Sets `true` turn on debug logging. Default value: false
-- *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false
+- *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false 
+- *branchAttributionLevel* : The level of attribution data to collect.
+	- `BranchAttributionLevel.FULL`: Full Attribution (Default)
+  	- `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  	- `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
+  	- `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+
+		Read Branch documentation for details: [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) and [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
+
+*Note: The `disableTracking` parameter is deprecated and should no longer be used. Please use `branchAttributionLevel` to control tracking behavior.*
 
 Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
 
@@ -531,7 +540,7 @@ FlutterBranchSdk.logout();
  bool isUserIdentified = await FlutterBranchSdk.isUserIdentified();
 ```
 
-### Enable or Disable User Tracking
+### Enable or Disable User Tracking (Deprecated. Read Consumer Preference Levels)
 If you need to comply with a user's request to not be tracked for GDPR purposes, or otherwise determine that a user should not be tracked, utilize this field to prevent Branch from sending network requests. This setting can also be enabled across all users for a particular link, or across your Branch links.
 
 ```dart
@@ -543,6 +552,35 @@ FlutterBranchSdk.disableTracking(true);
 You can choose to call this throughout the lifecycle of the app. Once called, network requests will not be sent from the SDKs. Link generation will continue to work, but will not contain identifying information about the user. In addition, deep linking will continue to work, but will not track analytics for the user.
 
 More information [here](https://help.branch.io/developers-hub/docs/honoring-opt-out-of-processing-requests)
+
+### Consumer Preference Levels
+Sets the consumer protection attribution level:
+
+* `BranchAttributionLevel.FULL`: Full Attribution (Default)
+
+```dart
+  FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
+```
+* `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+
+```dart
+  FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.REDUCED);
+```
+* `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics 
+
+```dart
+  FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.MINIMAL);
+```
+* `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+
+```dart
+  FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.NONE);
+```
+Read Branch documentation for details: 
+
+- [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) 
+- [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
+
 
 ### Set Request Meta data
 Add key value pairs to all requests
@@ -634,6 +672,7 @@ adUserDataUsageConsent | Boolean | Whether end user has granted or denied consen
 
 When parameters are successfully set using `setDMAParamsForEEA`, they will be sent along with every future request to the following Branch endpoint.
 
+
 # Configuring the project to use Branch Test Key
 ## Android
 
@@ -694,11 +733,29 @@ Practices to avoid:
 3. Don't wait to initialize the object until you conveniently need a link.
 4. Don't create many objects at once and register views in a for loop.
 
-# Deep links with Short Links
-More information [here](https://help.branch.io/using-branch/docs/creating-a-deep-link#short-links)
+# Create Deep Links
+* Deep links with [Short Links](https://help.branch.io/using-branch/docs/creating-a-deep-link#short-links)
+* Deep links with [Long links](https://help.branch.io/using-branch/docs/creating-a-deep-link#long-links)
 
-# Deep links with Long links
-More information [here](https://help.branch.io/using-branch/docs/creating-a-deep-link#long-links)
+# Data Privacy
+* [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) 
+* [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
+* [Answering the App Store Connect Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-app-store-connect-privacy-questions)
+* [Answering the Google Play Store Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-google-play-store-privacy-questions)
+
+
+
+# SDK FAQs
+* [Android SDK FAQs](https://help.branch.io/faq/docs/android-sdk)
+* [iOS SDK FAQs](https://help.branch.io/faq/docs/ios-sdk)
+
+# Testing
+* [Android Testing](https://help.branch.io/developers-hub/docs/android-testing)
+* [iOS Testing](https://help.branch.io/developers-hub/docs/ios-testing)
+
+# Troubleshooting
+* [Android Troubleshooting](https://help.branch.io/developers-hub/docs/android-troubleshooting)
+* [iOS Troubleshooting](https://help.branch.io/developers-hub/docs/ios-troubleshooting)
 
 # Branch Documentation
 Read the iOS or Android documentation for all Branch object parameters:
