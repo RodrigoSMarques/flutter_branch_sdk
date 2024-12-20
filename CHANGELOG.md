@@ -5,7 +5,7 @@
 ### 🎉 Features
 * New Methods:
     - `setConsumerProtectionAttributionLevel` - Sets the consumer protection attribution level. Read Branch documentation for details:
-    	* [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels)
+    	* [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels)
     	* [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 
 #### Deprecated / Removed
