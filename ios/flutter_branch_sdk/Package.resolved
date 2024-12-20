@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "ios-branch-sdk-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/BranchMetrics/ios-branch-sdk-spm",
+      "state" : {
+        "revision" : "67b02bff0c21e257a3baeb65c73c4fb0ae62f29b",
+        "version" : "3.7.0"
+      }
+    }
+  ],
+  "version" : 2
+}

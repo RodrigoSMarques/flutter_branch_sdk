@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.android.tools.build:gradle:8.1.4'
     }
 }
 
@@ -38,22 +38,23 @@ android {
         buildConfig = true
     }
 
+    compileSdk 35
+
     defaultConfig {
         minSdkVersion 21
-        compileSdk 34
         buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    implementation 'io.branch.sdk.android:library:5.12.+'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
+    implementation 'io.branch.sdk.android:library:5.15.+'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.8.7'
     implementation 'androidx.browser:browser:1.8.0'
     implementation "store.galaxy.samsung.installreferrer:samsung_galaxystore_install_referrer:4.0.0"
 }

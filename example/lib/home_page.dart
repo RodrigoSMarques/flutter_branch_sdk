@@ -94,6 +94,8 @@ class _HomePageState extends State<HomePage> {
         print('Custom string: ${data['custom_string']}');
         print('Custom number: ${data['custom_number']}');
         print('Custom bool: ${data['custom_bool']}');
+        print('Custom integer: ${data['custom_integer']}');
+        print('Custom double: ${data['custom_double']}');
         print('Custom date: ${data['custom_date_created']}');
         print('Custom list number: ${data['custom_list_number']}');
         print(
@@ -113,12 +115,17 @@ class _HomePageState extends State<HomePage> {
         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     metadata = BranchContentMetaData()
-      ..addCustomMetadata('custom_string', 'abcd')
+      ..addCustomMetadata('custom_string', 'abcdefg')
       ..addCustomMetadata('custom_number', 12345)
+      ..addCustomMetadata('custom_integer', 0)
+      ..addCustomMetadata('custom_double', 0.0)
       ..addCustomMetadata('custom_bool', true)
       ..addCustomMetadata('custom_list_number', [1, 2, 3, 4, 5])
       ..addCustomMetadata('custom_list_string', ['a', 'b', 'c'])
-      ..addCustomMetadata('custom_date_created', dateString);
+      ..addCustomMetadata('custom_date_created', dateString)
+      ..addCustomMetadata('\$og_image_width', 237)
+      ..addCustomMetadata('\$og_image_height', 355)
+      ..addCustomMetadata('\$og_image_url', imageURL);
     //--optional Custom Metadata
     /*
       ..contentSchema = BranchContentSchema.COMMERCE_PRODUCT
@@ -163,6 +170,9 @@ class _HomePageState extends State<HomePage> {
         expirationDateInMilliSec: DateTime.now()
             .add(const Duration(days: 365))
             .millisecondsSinceEpoch);
+
+    //id = 155;
+
     lp = BranchLinkProperties(
         channel: 'share',
         feature: 'sharing',
@@ -171,7 +181,7 @@ class _HomePageState extends State<HomePage> {
         // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
         // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
         //alias: 'https://branch.io' //define link url,
-        //alias: 'p/$id', //define link url,
+        //alias: 'p/$canonicalIdentifier', //define link url,
         stage: 'new share',
         campaign: 'campaign',
         tags: ['one', 'two', 'three'])
@@ -237,14 +247,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void enableTracking() {
-    FlutterBranchSdk.disableTracking(false);
-    showSnackBar(message: 'Tracking enabled');
+  void setConsumerProtectionFull() {
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+        BranchAttributionLevel.FULL);
+    showSnackBar(message: 'Consumer Preference Levels: Full Attribution');
   }
 
-  void disableTracking() {
-    FlutterBranchSdk.disableTracking(true);
-    showSnackBar(message: 'Tracking disabled');
+  void setConsumerProtectionNome() {
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
+        BranchAttributionLevel.NONE);
+    showSnackBar(
+        message:
+            'Consumer Preference Levels: No Attribution - No Analytics (GDPR, CCPA)');
   }
 
   void identifyUser() async {
@@ -531,7 +545,7 @@ class _HomePageState extends State<HomePage> {
     FlutterBranchSdk.shareWithLPLinkMetadata(
         buo: buo,
         linkProperties: lp,
-        title: "Share With LPLinkMetadata",
+        title: 'Share With LPLinkMetadata',
         icon: iconData);
   }
 
@@ -586,14 +600,16 @@ class _HomePageState extends State<HomePage> {
                     children: <Widget>[
                       Expanded(
                         child: CustomButton(
-                          onPressed: enableTracking,
-                          child: const Text('Enable tracking'),
+                          onPressed: setConsumerProtectionFull,
+                          child: const Text('Consumer Protection FULL',
+                              textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
-                          onPressed: disableTracking,
-                          child: const Text('Disable tracking'),
+                          onPressed: setConsumerProtectionNome,
+                          child: const Text('Consumer Protection NOME',
+                              textAlign: TextAlign.center),
                         ),
                       ),
                     ],

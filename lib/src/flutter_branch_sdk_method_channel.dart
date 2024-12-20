@@ -6,6 +6,7 @@ import 'package:flutter_branch_sdk/src/constants.dart';
 
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_attribution_level.dart';
 import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
@@ -17,17 +18,43 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   static Stream<Map<dynamic, dynamic>>? _initSessionStream;
   static bool isInitialized = false;
 
-  ///Initialize Branch SDK
-  /// [enableLogging] - Sets `true` turn on debug logging
-  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  /// Initializes the Branch SDK.
+  ///
+  /// This function initializes the Branch SDK with the specified configuration options.
+  ///
+  /// **Parameters:**
+  ///
+  /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [branchAttributionLevel]: The level of attribution data to collect.
+  ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
+  ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
+  ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+  ///
+  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
+  /// Please use `branchAttributionLevel` to control tracking behavior.
+  ///
   @override
   Future<void> init(
-      {bool enableLogging = false, bool disableTracking = false}) async {
+      {bool enableLogging = false,
+      @Deprecated('use BranchAttributionLevel') bool disableTracking = false,
+      BranchAttributionLevel? branchAttributionLevel}) async {
     if (isInitialized) {
       return;
     }
-    await messageChannel.invokeMethod('init',
-        {'enableLogging': enableLogging, 'disableTracking': disableTracking});
+    var branchAttributionLevelString = '';
+
+    if (branchAttributionLevel == null) {
+      branchAttributionLevelString = '';
+    } else {
+      branchAttributionLevelString =
+          getBranchAttributionLevelString(branchAttributionLevel);
+    }
+    await messageChannel.invokeMethod('init', {
+      'enableLogging': enableLogging,
+      'disableTracking': disableTracking,
+      'branchAttributionLevel': branchAttributionLevelString
+    });
     isInitialized = true;
   }
 
@@ -72,24 +99,12 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
   ///SDK will not send any network calls except for deep linking when tracking is disabled
+  @Deprecated('Use [setConsumerProtectionAttributionLevel]')
   @override
   void disableTracking(bool value) async {
     assert(isInitialized,
         'Call `disableTracking` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setTrackingDisabled', {'disable': value});
-  }
-
-  ///Initialises a session with the Branch API
-  ///Listen click em Branch DeepLinks
-  @Deprecated('Use `listSession')
-  @override
-  Stream<Map<dynamic, dynamic>> initSession() {
-    assert(isInitialized,
-        'Call `initSession` after `FlutterBranchSdk.init()` method');
-    _initSessionStream ??=
-        eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
-
-    return _initSessionStream!;
   }
 
   ///Listen click em Branch DeepLinks
@@ -455,6 +470,16 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       'eeaRegion': eeaRegion,
       'adPersonalizationConsent': adPersonalizationConsent,
       'adUserDataUsageConsent': adUserDataUsageConsent
+    });
+  }
+
+  /// Sets the consumer protection attribution level.
+  @override
+  void setConsumerProtectionAttributionLevel(
+      BranchAttributionLevel branchAttributionLevel) {
+    messageChannel.invokeMethod('setConsumerProtectionAttributionLevel', {
+      'branchAttributionLevel':
+          getBranchAttributionLevelString(branchAttributionLevel)
     });
   }
 }
