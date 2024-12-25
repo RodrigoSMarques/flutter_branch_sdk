@@ -1,10 +1,6 @@
 PODS:
   - Flutter (1.0.0)
 
-  - flutter_branch_sdk (8.3.0):
-    - BranchSDK (~> 3.7.0)
-    - Flutter
-
 DEPENDENCIES:
   - Flutter (from `Flutter`)
 
@@ -14,8 +10,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-
-  flutter_branch_sdk: 5a91002c028d3157155e34ee934c0b216bebef1d
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 

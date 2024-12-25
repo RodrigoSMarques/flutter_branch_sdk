@@ -68,6 +68,41 @@ Follow the steps on the [page](https://help.branch.io/developers-hub/docs/ios-ad
 
 **Note**: Code implementation in Swift is not necessary. The plugin already implements the code, requiring only configuration on the Dashboard.
 
+#### Disable NativeLink™ Deferred Deep Linking
+If you want to disable NativeLink™ Deferred Deep Linking, follow the instructions below:
+
+1. Navigate to **ios/Runner/Info.plist** file. 
+2. Add the following in `<dict>` chapter:
+
+```xml
+	<key>branch_disable_pasteboard_check</key>
+	<true/>
+```
+
+### Change Flutter Deep link flag (Android / iOS)
+
+**Flutter version 3.27** has a [_breaking change_](https://docs.google.com/document/d/1TUhaEhNdi2BUgKWQFEbOzJgmUAlLJwIAhnFfZraKgQs/edit?tab=t.0) that alters the behavior of the Deep link default flag.
+
+You must manually set the value to **FALSE** in the project, according to the instructions below.
+
+#### iOS
+
+1. Navigate to **ios/Runner/Info.plist** file. 
+2. Add the following in `<dict>` chapter:
+
+```xml
+<key>FlutterDeepLinkingEnabled</key>
+<false/>
+```
+#### Android
+
+1. Navigate to **android/app/src/main/AndroidManifest.xml** file.
+2. Add the following metadata tag and intent filter inside the tag with `.MainActivity`
+
+```xml
+<meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
+```
+
 ### Web Integration
 
 You need add Branch Javascript in your `web\index.html` at the top of your `<body>` tag, to be able to use this package.
@@ -742,7 +777,6 @@ Practices to avoid:
 * [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 * [Answering the App Store Connect Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-app-store-connect-privacy-questions)
 * [Answering the Google Play Store Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-google-play-store-privacy-questions)
-
 
 
 # SDK FAQs

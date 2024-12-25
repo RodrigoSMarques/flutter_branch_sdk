@@ -1,3 +1,11 @@
+## 8.3.1
+### ⚠️ BREAKING CHANGE
+* Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)
+
+### 🎉 Features
+* Revised documentation including section to change **Flutter Deep link flag**
+* New option in INFO.PLIST (`branch_disable_pasteboard_check`) that allows disable NativeLink™ Deferred Deep Linking
+
 ## 8.3.0
 ### ⚠️ BREAKING CHANGE
 * Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)
