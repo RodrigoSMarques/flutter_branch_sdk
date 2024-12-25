@@ -75,7 +75,7 @@ If you want to disable NativeLink™ Deferred Deep Linking, follow the instructi
 2. Add the following in `<dict>` chapter:
 
 ```xml
-	<key>branch_disable_pasteboard_check</key>
+	<key>branch_disable_nativelink</key>
 	<true/>
 ```
 

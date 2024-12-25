@@ -74,7 +74,7 @@
 		<string>flutterbranchsdk-alternate.test-app.link</string>
 		<string>flutterbranchsdk.test-app.link</string>
 	</array>
-	<key>branch_disable_pasteboard_check</key>
+	<key>branch_disable_nativelink</key>
 	<false/>
 	<key>FlutterDeepLinkingEnabled</key>
 	<false/>

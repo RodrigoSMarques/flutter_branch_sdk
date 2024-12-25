@@ -43,16 +43,16 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
         
-        let disable_pasteboard_check : Bool = {
-            guard let value = Bundle.main.object(forInfoDictionaryKey: "branch_disable_pasteboard_check") as? Bool else {
+        let disable_nativelink : Bool = {
+            guard let value = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool else {
                 return false
             }
             return value
         }()
 
-        print("Branch Disable Pasteboard Check: \(String(describing:disable_pasteboard_check))");
+        print("Branch Disable NativeLink: \(String(describing:disable_nativelink))");
         
-        if !disable_pasteboard_check {
+        if !disable_nativelink {
             if #available(iOS 15.0, *) {
                 Branch.getInstance().checkPasteboardOnInstall()
             }

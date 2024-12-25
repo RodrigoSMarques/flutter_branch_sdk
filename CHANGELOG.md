@@ -4,7 +4,7 @@
 
 ### 🎉 Features
 * Revised documentation including section to change **Flutter Deep link flag**
-* New option in INFO.PLIST (`branch_disable_pasteboard_check`) that allows disable NativeLink™ Deferred Deep Linking
+* New option in INFO.PLIST (`branch_disable_nativelink`) that allows disable NativeLink™ Deferred Deep Linking
 
 ## 8.3.0
 ### ⚠️ BREAKING CHANGE
