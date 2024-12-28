@@ -10,10 +10,10 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.3.0";
+let PLUGIN_VERSION = "8.3.1";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
-public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
+public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
@@ -29,7 +29,7 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
     // Plugin registry
     // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let instance = SwiftFlutterBranchSdkPlugin()
+        let instance = FlutterBranchSdkPlugin()
         
         methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: registrar.messenger())
@@ -38,30 +38,24 @@ public class SwiftFlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStream
         registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
     }
-    
-    func getPluginVersion() -> String {
-
-        var pluginVersion : String = ""
-#if SWIFT_PACKAGE
-        pluginVersion = PLUGIN_VERSION;
-#else
-        if let version = Bundle(identifier: COCOA_POD_NAME)?.infoDictionary?["CFBundleShortVersionString"] as? String {
-            pluginVersion = version;
-        }
-#endif
         
-#if DEBUG
-        print("Plugin: \(PLUGIN_NAME) - \(pluginVersion)")
-#endif
-        return pluginVersion
-    }
-    
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         
-        Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  getPluginVersion())
+        Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
         
-        if #available(iOS 15.0, *) {
-            Branch.getInstance().checkPasteboardOnInstall()
+        let disable_nativelink : Bool = {
+            guard let value = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool else {
+                return false
+            }
+            return value
+        }()
+
+        print("Branch Disable NativeLink: \(String(describing:disable_nativelink))");
+        
+        if !disable_nativelink {
+            if #available(iOS 15.0, *) {
+                Branch.getInstance().checkPasteboardOnInstall()
+            }
         }
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
