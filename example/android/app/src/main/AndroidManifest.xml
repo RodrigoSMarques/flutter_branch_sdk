@@ -41,6 +41,7 @@
                 <data android:scheme="https" android:host="flutterbranchsdk-alternate.test-app.link" />
                 <data android:scheme="https" android:host="flutterbranchsdk.test-app.link" />
             </intent-filter>
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

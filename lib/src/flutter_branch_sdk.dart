@@ -1,13 +1,30 @@
 part of '../flutter_branch_sdk.dart';
 
 class FlutterBranchSdk {
-  ///Initialize Branch SDK
-  /// [enableLogging] - Sets `true` turn on debug logging
-  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  /// Initializes the Branch SDK.
+  ///
+  /// This function initializes the Branch SDK with the specified configuration options.
+  ///
+  /// **Parameters:**
+  ///
+  /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [branchAttributionLevel]: The level of attribution data to collect.
+  ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
+  ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
+  ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+  ///
+  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
+  /// Please use `branchAttributionLevel` to control tracking behavior.
+  ///
   static Future<void> init(
-      {bool enableLogging = false, bool disableTracking = false}) async {
-    await FlutterBranchSdkPlatform.instance
-        .init(enableLogging: enableLogging, disableTracking: disableTracking);
+      {bool enableLogging = false,
+      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
+      BranchAttributionLevel? branchAttributionLevel}) async {
+    await FlutterBranchSdkPlatform.instance.init(
+        enableLogging: enableLogging,
+        disableTracking: disableTracking,
+        branchAttributionLevel: branchAttributionLevel);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -42,14 +59,8 @@ class FlutterBranchSdk {
   }
 
   ///Listen click em Branch Deeplinks
-  @Deprecated('Use `listSession')
-  static Stream<Map<dynamic, dynamic>> initSession() {
-    return FlutterBranchSdkPlatform.instance.initSession();
-  }
-
-  ///Listen click em Branch Deeplinks
   static Stream<Map<dynamic, dynamic>> listSession() {
-    return FlutterBranchSdkPlatform.instance.initSession();
+    return FlutterBranchSdkPlatform.instance.listSession();
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and
@@ -262,5 +273,12 @@ class FlutterBranchSdk {
         eeaRegion: eeaRegion,
         adPersonalizationConsent: adPersonalizationConsent,
         adUserDataUsageConsent: adUserDataUsageConsent);
+  }
+
+  /// Sets the consumer protection attribution level.
+  static void setConsumerProtectionAttributionLevel(
+      BranchAttributionLevel branchAttributionLevel) {
+    FlutterBranchSdkPlatform.instance
+        .setConsumerProtectionAttributionLevel(branchAttributionLevel);
   }
 }

@@ -1,6 +1,4 @@
 @JS()
-library branchjs;
-
 import 'dart:js_interop';
 
 @JS('JSON.stringify')
