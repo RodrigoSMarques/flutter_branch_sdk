@@ -44,3 +44,10 @@ flutter:
       web:
         pluginClass: FlutterBranchSdkWeb
         fileName: src/flutter_branch_sdk_web.dart
+
+  topics:
+    - deeplink
+    - app-links
+    - universal-links
+    - custom-url-schemes
+    - web-to-app
