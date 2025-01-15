@@ -13,6 +13,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
+import 'objects/branch_attribution_level.dart';
 import 'objects/branch_universal_object.dart';
 import 'web/branch_js.dart';
 
@@ -30,38 +31,35 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     FlutterBranchSdkPlatform.instance = FlutterBranchSdkWeb();
   }
 
-  ///Initialize Branch SDK
-  /// [useTestKey] - Sets `true` to use the test `key_test_...
-  /// [enableLogging] - Sets `true` turn on debug logging
-  /// [disableTracking] - Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. After having consent, sets `false`
+  /// Initializes the Branch SDK.
+  ///
+  /// This function initializes the Branch SDK with the specified configuration options.
+  ///
+  /// **Parameters:**
+  ///
+  /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [branchAttributionLevel]: The level of attribution data to collect.
+  ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
+  ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
+  ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
+  ///
+  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
+  /// Please use `branchAttributionLevel` to control tracking behavior.
+  ///
+
   @override
   Future<void> init(
-      {bool useTestKey = false,
-      bool enableLogging = false,
-      bool disableTracking = false}) async {
-    debugPrint('');
+      {bool enableLogging = false,
+      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
+      BranchAttributionLevel? branchAttributionLevel}) async {
+    debugPrint('For web, start the SDK in index.html');
   }
 
   static final StreamController<Map<String, dynamic>> _initSessionStream =
       StreamController<Map<String, dynamic>>();
   static bool _userIdentified = false;
   static bool isInitialized = false;
-
-  ///Listen click em Branch DeepLinks
-  @Deprecated('Use `listSession')
-  @override
-  Stream<Map<dynamic, dynamic>> initSession() {
-    getLatestReferringParams().then((data) {
-      if (data.isNotEmpty) {
-        _initSessionStream.sink
-            .add(data.map((key, value) => MapEntry('$key', value)));
-      } else {
-        _initSessionStream.sink.add({});
-      }
-    });
-
-    return _initSessionStream.stream;
-  }
 
   ///Listen click em Branch Deeplinks
   @override
@@ -183,7 +181,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     });
 
     Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
-
     Completer<BranchResponse> responseCompleter = Completer();
 
     try {
@@ -271,7 +268,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void registerView({required BranchUniversalObject buo}) {
     BranchEvent branchEvent =
         BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
-
     // This might not be exactly the same thing as BUO.registerView, but there's no clear implementation for web sdk
     trackContent(buo: [buo], branchEvent: branchEvent);
   }
@@ -288,7 +284,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   Future<bool> listOnSearch(
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
-    throw UnsupportedError('listOnSearch() Not supported by Branch JS SDK');
+    debugPrint('listOnSearch() Not supported by Branch JS SDK');
+    return true;
   }
 
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
@@ -298,7 +295,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   Future<bool> removeFromSearch(
       {required BranchUniversalObject buo,
       BranchLinkProperties? linkProperties}) async {
-    throw UnsupportedError('removeFromSearch() Not supported by Branch JS SDK');
+    debugPrint('removeFromSearch() Not supported by Branch JS SDK');
+    return true;
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
@@ -314,24 +312,25 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   /// on Android returns notSupported
   @override
   Future<AppTrackingStatus> requestTrackingAuthorization() async {
-    throw UnsupportedError(
-        'requestTrackingAuthorization() Not available in Branch JS SDK');
+    debugPrint('requestTrackingAuthorization() Not supported by Branch JS SDK');
+    return AppTrackingStatus.notSupported;
   }
 
   /// return AppTrackingStatus
   /// on Android returns notSupported
   @override
   Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
-    throw UnsupportedError(
-        'getTrackingAuthorizationStatus() Not available in Branch JS SDK');
+    debugPrint(
+        'getTrackingAuthorizationStatus() Not supported by Branch JS SDK');
+    return AppTrackingStatus.notSupported;
   }
 
   /// return advertising identifier (ie tracking data).
   /// on Android returns empty string
   @override
   Future<String> getAdvertisingIdentifier() async {
-    throw UnsupportedError(
-        'getAdvertisingIdentifier() Not available in Branch JS SDK');
+    debugPrint('getAdvertisingIdentifier() Not supported by Branch JS SDK');
+    return '';
   }
 
   ///Use the SDK integration validator to check that you've added the Branch SDK and
@@ -346,8 +345,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///a network * request.
   @override
   void setConnectTimeout(int connectTimeout) {
-    throw UnsupportedError(
-        'setConnectTimeout() Not available in Branch JS SDK');
+    debugPrint('setConnectTimeout() Not supported by Branch JS SDK');
   }
 
   ///Sets the duration in milliseconds that the system should wait for a response
@@ -356,7 +354,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///retries as set in setRetryCount(int).
   @override
   void setTimeout(int timeout) {
-    throw UnsupportedError('setTimeout() Not available in Branch JS SDK');
+    debugPrint('setTimeout() Not supported by Branch JS SDK');
   }
 
   ///Sets the max number of times to re-attempt a timed-out request to the Branch API, before
@@ -366,14 +364,14 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   /// determine if the max retry count will be attempted.
   @override
   void setRetryCount(int retryCount) {
-    throw UnsupportedError('setRetryCount() Not available in Branch JS SDK');
+    debugPrint('setRetryCount() Not supported by Branch JS SDK');
   }
 
   ///Sets the amount of time in milliseconds to wait before re-attempting a
   ///timed-out request to the Branch API. Default 1000 ms.
   @override
   void setRetryInterval(int retryInterval) {
-    throw UnsupportedError('setRetryInterval() Not available in Branch JS SDK');
+    debugPrint('setRetryInterval() Not supported by Branch JS SDK');
   }
 
   ///Gets the available last attributed touch data with a custom set attribution window.
@@ -494,37 +492,32 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void addFacebookPartnerParameter(
       {required String key, required String value}) {
-    throw UnsupportedError(
-        'addFacebookPartnerParameter() Not available in Branch JS SDK');
+    debugPrint('addFacebookPartnerParameter() Not supported by Branch JS SDK');
   }
 
   /// Clears all Partner Parameters
   @override
   void clearPartnerParameters() {
-    throw UnsupportedError(
-        'clearPartnerParameters() Not available in Branch JS SDK');
+    debugPrint('clearPartnerParameters() Not supported by Branch JS SDK');
   }
 
   /// Add the pre-install campaign analytics
   @override
   void setPreinstallCampaign(String value) {
-    throw UnsupportedError(
-        'setPreinstallCampaign() Not available in Branch JS SDK');
+    debugPrint('setPreinstallCampaign() Not supported by Branch JS SDK');
   }
 
   /// Add the pre-install campaign analytics
   @override
   void setPreinstallPartner(String value) {
-    throw UnsupportedError(
-        'setPreinstallPartner() Not available in Branch JS SDK');
+    debugPrint('setPreinstallPartner() Not supported by Branch JS SDK');
   }
 
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   @override
   void addSnapPartnerParameter({required String key, required String value}) {
-    throw UnsupportedError(
-        'addSnapPartnerParameter() Not available in Branch JS SDK');
+    debugPrint('addSnapPartnerParameter() Not supported by Branch JS SDK');
   }
 
   void close() {
@@ -542,5 +535,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required bool adUserDataUsageConsent}) {
     BranchJS.setDMAParamsForEEA(
         eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
+  }
+
+  /// Sets the consumer protection attribution level.
+  @override
+  void setConsumerProtectionAttributionLevel(
+      BranchAttributionLevel branchAttributionLevel) {
+    debugPrint(
+        'setConsumerProtectionAttributionLevel() Not supported by Branch JS SDK');
   }
 }

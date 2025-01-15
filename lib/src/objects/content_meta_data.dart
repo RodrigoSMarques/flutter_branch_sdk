@@ -341,8 +341,6 @@ class BranchContentMetaData {
         return "Toys & Games";
       case BranchProductCategory.VEHICLES_AND_PARTS:
         return "Vehicles & Parts";
-      default:
-        return "Home & Garden";
     }
   }
 
