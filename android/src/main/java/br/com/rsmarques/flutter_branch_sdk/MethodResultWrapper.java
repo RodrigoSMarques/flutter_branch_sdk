@@ -9,14 +9,26 @@ import io.flutter.plugin.common.MethodChannel;
 public class MethodResultWrapper implements MethodChannel.Result {
     private final MethodChannel.Result methodResult;
     private final Handler handler;
+    private boolean called;
 
     MethodResultWrapper(MethodChannel.Result result) {
         methodResult = result;
         handler = new Handler(Looper.getMainLooper());
     }
 
+    private synchronized boolean checkNotCalled() {
+        if (called) {
+            return false;
+        }
+        called = true;
+        return true;
+    }
+
     @Override
     public void success(final Object result) {
+        if (!checkNotCalled()) {
+            return;
+        }
         handler.post(
                 new Runnable() {
                     @Override
@@ -33,6 +45,9 @@ public class MethodResultWrapper implements MethodChannel.Result {
     @Override
     public void error(
             final String errorCode, final String errorMessage, final Object errorDetails) {
+        if (!checkNotCalled()) {
+            return;
+        }
         handler.post(
                 new Runnable() {
                     @Override
@@ -48,6 +63,9 @@ public class MethodResultWrapper implements MethodChannel.Result {
 
     @Override
     public void notImplemented() {
+        if (!checkNotCalled()) {
+            return;
+        }
         handler.post(
                 new Runnable() {
                     @Override
