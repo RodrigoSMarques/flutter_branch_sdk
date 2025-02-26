@@ -39,6 +39,25 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
     }
         
+    private func handleBranchParams(source: String, launchOptions: [AnyHashable: Any] = [:]) {
+        Branch.getInstance().initSession(launchOptions: launchOptions) { [weak self] params, error in
+            guard let self = self else { return }
+            
+            if let params = params as? [String: Any] {
+                print("\(source) params: \(params)")
+                self.eventSink?(params)
+            } else if let error = error {
+                let errorMessage = "\(source) error: \(error.localizedDescription)"
+                print(errorMessage)
+                self.eventSink?(FlutterError(
+                    code: "BRANCH_INIT_ERROR",
+                    message: errorMessage,
+                    details: nil
+                ))
+            }
+        }
+    } 
+
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
@@ -58,41 +77,25 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             }
         }
         
-        Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
-            if error == nil {
-                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
-                guard let _ = self.eventSink else {
-                    self.initialParams = params as? [String: Any]
-                    return
-                }
-                self.eventSink!(params as? [String: Any])
-            } else {
-                let err = (error! as NSError)
-                print("Branch InitSession error: \(err.localizedDescription)")
-                guard let _ = self.eventSink else {
-                    self.initialError = err
-                    return
-                }
-                self.eventSink!(FlutterError(code: String(err.code),
-                                             message: err.localizedDescription,
-                                             details: nil))
-            }
-        }
+        handleBranchParams(source: "App Launch", launchOptions: launchOptions)
         return true
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         let branchHandled = Branch.getInstance().application(app, open: url, options: options)
+        handleBranchParams(source: "URI Scheme")
         return branchHandled
     }
     
     public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
         let branchHandled = Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
+        handleBranchParams(source: "URI Scheme (legacy)")
         return branchHandled
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
         let handledByBranch = Branch.getInstance().continue(userActivity)
+        handleBranchParams(source: "Universal Link")
         return handledByBranch
     }
     
