@@ -1,13 +1,13 @@
 {
-  "originHash" : "3721a649d3303e6d819fcb614b49ef1fc7f6da8948adb5762b841d04f2d81b5c",
+  "originHash" : "5d76efac60f24ab19e3242c4ab5e2221c42909bca3cd8f4f737ce4a88473446e",
   "pins" : [
     {
       "identity" : "ios-branch-sdk-spm",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/BranchMetrics/ios-branch-sdk-spm",
       "state" : {
-        "revision" : "67b02bff0c21e257a3baeb65c73c4fb0ae62f29b",
-        "version" : "3.7.0"
+        "revision" : "7844316a29ede07c58c026c97c18566f7aa31c39",
+        "version" : "3.9.1"
       }
     }
   ],
