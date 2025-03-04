@@ -2,6 +2,10 @@ include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+formatter:
+  page_width: 123
+
 linter:
   rules:
     constant_identifier_names: false

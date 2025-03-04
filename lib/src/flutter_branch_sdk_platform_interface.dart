@@ -68,14 +68,12 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///Returns the last parameters associated with the link that referred the user
   Future<Map<dynamic, dynamic>> getLatestReferringParams() async {
-    throw UnimplementedError(
-        'getLatestReferringParams has not been implemented');
+    throw UnimplementedError('getLatestReferringParams has not been implemented');
   }
 
   ///Returns the first parameters associated with the link that referred the user
   Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
-    throw UnimplementedError(
-        'getFirstReferringParams has not been implemented');
+    throw UnimplementedError('getFirstReferringParams has not been implemented');
   }
 
   ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
@@ -98,8 +96,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///Creates a short url for the BUO
   Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties}) async {
+      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
     throw UnimplementedError('getShortUrl has not been implemented');
   }
 
@@ -114,9 +111,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
-  void trackContent(
-      {required List<BranchUniversalObject> buo,
-      required BranchEvent branchEvent}) {
+  void trackContent({required List<BranchUniversalObject> buo, required BranchEvent branchEvent}) {
     throw UnimplementedError('trackContent has not been implemented');
   }
 
@@ -132,18 +127,14 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
   ///For iOS:     List items on Spotlight
-  Future<bool> listOnSearch(
-      {required BranchUniversalObject buo,
-      BranchLinkProperties? linkProperties}) async {
+  Future<bool> listOnSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
     throw UnimplementedError('listOnSearch has not been implemented');
   }
 
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
   ///             This will remove the content from Google(Firebase) and other supported Indexing services
   ///For iOS:     Remove Branch Universal Object from Spotlight if privately indexed
-  Future<bool> removeFromSearch(
-      {required BranchUniversalObject buo,
-      BranchLinkProperties? linkProperties}) async {
+  Future<bool> removeFromSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
     throw UnimplementedError('removeFromSearch has not been implemented');
   }
 
@@ -157,22 +148,19 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// request AppTracking Autorization and return AppTrackingStatus
   /// on Android returns notSupported
   Future<AppTrackingStatus> requestTrackingAuthorization() async {
-    throw UnimplementedError(
-        'requestTrackingAuthorization has not been implemented');
+    throw UnimplementedError('requestTrackingAuthorization has not been implemented');
   }
 
   /// return AppTrackingStatus
   /// on Android returns notSupported
   Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
-    throw UnimplementedError(
-        'getTrackingAuthorizationStatus has not been implemented');
+    throw UnimplementedError('getTrackingAuthorizationStatus has not been implemented');
   }
 
   /// return advertising identifier (ie tracking data).
   /// on Android returns empty string
   Future<String> getAdvertisingIdentifier() async {
-    throw UnimplementedError(
-        'getAdvertisingIdentifier has not been implemented');
+    throw UnimplementedError('getAdvertisingIdentifier has not been implemented');
   }
 
   ///Sets the duration in milliseconds that the system should wait for initializing
@@ -205,10 +193,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Gets the available last attributed touch data with a custom set attribution window.
-  Future<BranchResponse> getLastAttributedTouchData(
-      {int? attributionWindow}) async {
-    throw UnimplementedError(
-        'getLastAttributedTouchData has not been implemented');
+  Future<BranchResponse> getLastAttributedTouchData({int? attributionWindow}) async {
+    throw UnimplementedError('getLastAttributedTouchData has not been implemented');
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
@@ -233,8 +219,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    throw UnimplementedError(
-        'shareWithLPLinkMetadata has not been implemented');
+    throw UnimplementedError('shareWithLPLinkMetadata has not been implemented');
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
@@ -255,10 +240,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// Add a Partner Parameter for Facebook.
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
-  void addFacebookPartnerParameter(
-      {required String key, required String value}) {
-    throw UnimplementedError(
-        'addFacebookPartnerParameter has not been implemented');
+  void addFacebookPartnerParameter({required String key, required String value}) {
+    throw UnimplementedError('addFacebookPartnerParameter has not been implemented');
   }
 
   ///Clears all Partner Parameters
@@ -269,8 +252,7 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   void addSnapPartnerParameter({required String key, required String value}) {
-    throw UnimplementedError(
-        'addSnapPartnerParameter has not been implemented');
+    throw UnimplementedError('addSnapPartnerParameter has not been implemented');
   }
 
   /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
@@ -278,16 +260,12 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
   void setDMAParamsForEEA(
-      {required bool eeaRegion,
-      required bool adPersonalizationConsent,
-      required bool adUserDataUsageConsent}) {
+      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
     throw UnimplementedError('setDMAParamsForEEA has not been implemented');
   }
 
   /// Sets the consumer protection attribution level.
-  void setConsumerProtectionAttributionLevel(
-      BranchAttributionLevel branchAttributionLevel) {
-    throw UnimplementedError(
-        'setConsumerProtectionAttributionLevel has not been implemented');
+  void setConsumerProtectionAttributionLevel(BranchAttributionLevel branchAttributionLevel) {
+    throw UnimplementedError('setConsumerProtectionAttributionLevel has not been implemented');
   }
 }

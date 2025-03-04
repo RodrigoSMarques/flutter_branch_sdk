@@ -135,9 +135,7 @@ class BranchUniversalObject {
       ret["\$locally_indexable"] = locallyIndex;
       ret["\$publicly_indexable"] = publiclyIndex;
 
-      Map<String, dynamic> contentMetadata = {
-        if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()
-      };
+      Map<String, dynamic> contentMetadata = {if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()};
 
       if (contentMetadata.containsKey('customMetadata')) {
         var customMetadata = contentMetadata['customMetadata'];

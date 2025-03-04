@@ -18,8 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   BranchContentMetaData metadata = BranchContentMetaData();
   BranchLinkProperties lp = BranchLinkProperties();
@@ -86,10 +85,8 @@ class _HomePageState extends State<HomePage> {
       }
        */
 
-      if (data.containsKey('+clicked_branch_link') &&
-          data['+clicked_branch_link'] == true) {
-        print(
-            '------------------------------------Link clicked----------------------------------------------');
+      if (data.containsKey('+clicked_branch_link') && data['+clicked_branch_link'] == true) {
+        print('------------------------------------Link clicked----------------------------------------------');
         print('Title: ${data['\$og_title']}');
         print('Custom string: ${data['custom_string']}');
         print('Custom number: ${data['custom_number']}');
@@ -98,11 +95,9 @@ class _HomePageState extends State<HomePage> {
         print('Custom double: ${data['custom_double']}');
         print('Custom date: ${data['custom_date_created']}');
         print('Custom list number: ${data['custom_list_number']}');
-        print(
-            '------------------------------------------------------------------------------------------------');
+        print('------------------------------------------------------------------------------------------------');
         showSnackBar(
-            message:
-                'Link clicked: Custom string - ${data['custom_string']} - Date: ${data['custom_date_created'] ?? ''}',
+            message: 'Link clicked: Custom string - ${data['custom_string']} - Date: ${data['custom_date_created'] ?? ''}',
             duration: 10);
       }
     }, onError: (error) {
@@ -111,8 +106,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initDeepLinkData() {
-    String dateString =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    String dateString = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     metadata = BranchContentMetaData()
       ..addCustomMetadata('custom_string', 'abcdefg')
@@ -167,9 +161,7 @@ class _HomePageState extends State<HomePage> {
         keywords: ['Plugin', 'Branch', 'Flutter'],
         publiclyIndex: true,
         locallyIndex: true,
-        expirationDateInMilliSec: DateTime.now()
-            .add(const Duration(days: 365))
-            .millisecondsSinceEpoch);
+        expirationDateInMilliSec: DateTime.now().add(const Duration(days: 365)).millisecondsSinceEpoch);
 
     //id = 155;
 
@@ -211,17 +203,13 @@ class _HomePageState extends State<HomePage> {
       ..eventDescription = 'Event_description'
       ..searchQuery = 'item 123'
       ..adType = BranchEventAdType.BANNER
-      ..addCustomData(
-          'Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
-      ..addCustomData(
-          'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
+      ..addCustomData('Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
+      ..addCustomData('Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
 
     eventCustom = BranchEvent.customEvent('Custom_event')
       ..alias = 'CustomEventAlias'
-      ..addCustomData(
-          'Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
-      ..addCustomData(
-          'Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
+      ..addCustomData('Custom_Event_Property_Key1', 'Custom_Event_Property_val1')
+      ..addCustomData('Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
   }
 
   void showSnackBar({required String message, int duration = 2}) {
@@ -236,8 +224,7 @@ class _HomePageState extends State<HomePage> {
 
   void validSdkIntegration() {
     if (kIsWeb) {
-      showSnackBar(
-          message: 'validateSDKIntegration() not available in Flutter Web');
+      showSnackBar(message: 'validateSDKIntegration() not available in Flutter Web');
       return;
     }
 
@@ -248,17 +235,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void setConsumerProtectionFull() {
-    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
-        BranchAttributionLevel.FULL);
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
     showSnackBar(message: 'Consumer Preference Levels: Full Attribution');
   }
 
   void setConsumerProtectionNome() {
-    FlutterBranchSdk.setConsumerProtectionAttributionLevel(
-        BranchAttributionLevel.NONE);
-    showSnackBar(
-        message:
-            'Consumer Preference Levels: No Attribution - No Analytics (GDPR, CCPA)');
+    FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.NONE);
+    showSnackBar(message: 'Consumer Preference Levels: No Attribution - No Analytics (GDPR, CCPA)');
   }
 
   void identifyUser() async {
@@ -300,30 +283,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getFirstParameters() async {
-    Map<dynamic, dynamic> params =
-        await FlutterBranchSdk.getFirstReferringParams();
+    Map<dynamic, dynamic> params = await FlutterBranchSdk.getFirstReferringParams();
     controllerData.sink.add(params.toString());
     showSnackBar(message: 'First Parameters recovered');
   }
 
   void getLastParameters() async {
-    Map<dynamic, dynamic> params =
-        await FlutterBranchSdk.getLatestReferringParams();
+    Map<dynamic, dynamic> params = await FlutterBranchSdk.getLatestReferringParams();
     controllerData.sink.add(params.toString());
     showSnackBar(message: 'Last Parameters recovered');
   }
 
   void getLastAttributed() async {
-    BranchResponse response =
-        await FlutterBranchSdk.getLastAttributedTouchData();
+    BranchResponse response = await FlutterBranchSdk.getLastAttributedTouchData();
     if (response.success) {
       controllerData.sink.add(response.result.toString());
       showSnackBar(message: 'Last Attributed TouchData recovered');
     } else {
-      showSnackBar(
-          message:
-              'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}',
-          duration: 5);
+      showSnackBar(message: 'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}', duration: 5);
     }
   }
 
@@ -349,8 +326,7 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     bool success = await FlutterBranchSdk.removeFromSearch(buo: buo);
-    success =
-        await FlutterBranchSdk.removeFromSearch(buo: buo, linkProperties: lp);
+    success = await FlutterBranchSdk.removeFromSearch(buo: buo, linkProperties: lp);
     if (success) {
       showSnackBar(message: 'Removed from Search');
     }
@@ -358,15 +334,13 @@ class _HomePageState extends State<HomePage> {
 
   void generateLink(BuildContext context) async {
     initDeepLinkData();
-    BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+    BranchResponse response = await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
     if (response.success) {
       if (context.mounted) {
         showGeneratedLink(context, response.result);
       }
     } else {
-      showSnackBar(
-          message: 'Error : ${response.errorCode} - ${response.errorMessage}');
+      showSnackBar(message: 'Error : ${response.errorCode} - ${response.errorMessage}');
     }
   }
 
@@ -391,24 +365,21 @@ class _HomePageState extends State<HomePage> {
     }
      */
     initDeepLinkData();
-    BranchResponse responseQrCodeImage =
-        await FlutterBranchSdk.getQRCodeAsImage(
-            buo: buo,
-            linkProperties: lp,
-            qrCode: BranchQrCode(
-                primaryColor: Colors.black,
-                //primaryColor: const Color(0xff443a49), //Hex colors
-                centerLogoUrl: imageURL,
-                backgroundColor: Colors.white,
-                imageFormat: BranchImageFormat.PNG));
+    BranchResponse responseQrCodeImage = await FlutterBranchSdk.getQRCodeAsImage(
+        buo: buo,
+        linkProperties: lp,
+        qrCode: BranchQrCode(
+            primaryColor: Colors.black,
+            //primaryColor: const Color(0xff443a49), //Hex colors
+            centerLogoUrl: imageURL,
+            backgroundColor: Colors.white,
+            imageFormat: BranchImageFormat.PNG));
     if (responseQrCodeImage.success) {
       if (context.mounted) {
         showQrCode(context, responseQrCodeImage.result);
       }
     } else {
-      showSnackBar(
-          message:
-              'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
+      showSnackBar(message: 'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
     }
   }
 
@@ -427,15 +398,12 @@ class _HomePageState extends State<HomePage> {
                 const Center(
                     child: Text(
                   'Link created',
-                  style: TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                 )),
                 const SizedBox(
                   height: 10,
                 ),
-                Text(url,
-                    maxLines: 1,
-                    style: const TextStyle(overflow: TextOverflow.ellipsis)),
+                Text(url, maxLines: 1, style: const TextStyle(overflow: TextOverflow.ellipsis)),
                 const SizedBox(
                   height: 10,
                 ),
@@ -482,8 +450,7 @@ class _HomePageState extends State<HomePage> {
                 const Center(
                     child: Text(
                   'Qr Code',
-                  style: TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                 )),
                 const SizedBox(
                   height: 10,
@@ -496,8 +463,7 @@ class _HomePageState extends State<HomePage> {
                 IntrinsicWidth(
                   stepWidth: 300,
                   child: CustomButton(
-                      onPressed: () => Navigator.pop(this.context),
-                      child: const Center(child: Text('Close'))),
+                      onPressed: () => Navigator.pop(this.context), child: const Center(child: Text('Close'))),
                 ),
               ],
             ),
@@ -517,10 +483,7 @@ class _HomePageState extends State<HomePage> {
     if (response.success) {
       showSnackBar(message: 'showShareSheet Success', duration: 5);
     } else {
-      showSnackBar(
-          message:
-              'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}',
-          duration: 5);
+      showSnackBar(message: 'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}', duration: 5);
     }
   }
 
@@ -530,9 +493,7 @@ class _HomePageState extends State<HomePage> {
     ///Present the BranchShareLink's Share Sheet.
 
     ///Load icon from Assets
-    final iconData = (await rootBundle.load('assets/images/branch_logo.jpeg'))
-        .buffer
-        .asUint8List();
+    final iconData = (await rootBundle.load('assets/images/branch_logo.jpeg')).buffer.asUint8List();
 
     /*
     ///Load icon from Web
@@ -543,10 +504,7 @@ class _HomePageState extends State<HomePage> {
     */
     initDeepLinkData();
     FlutterBranchSdk.shareWithLPLinkMetadata(
-        buo: buo,
-        linkProperties: lp,
-        title: 'Share With LPLinkMetadata',
-        icon: iconData);
+        buo: buo, linkProperties: lp, title: 'Share With LPLinkMetadata', icon: iconData);
   }
 
   @override
@@ -579,10 +537,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Text(
                               snapshot.data!,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
                             ))
                           ],
                         );
@@ -601,15 +556,13 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: CustomButton(
                           onPressed: setConsumerProtectionFull,
-                          child: const Text('Consumer Protection FULL',
-                              textAlign: TextAlign.center),
+                          child: const Text('Consumer Protection FULL', textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
                           onPressed: setConsumerProtectionNome,
-                          child: const Text('Consumer Protection NOME',
-                              textAlign: TextAlign.center),
+                          child: const Text('Consumer Protection NOME', textAlign: TextAlign.center),
                         ),
                       ),
                     ],
@@ -654,22 +607,19 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: CustomButton(
                           onPressed: getFirstParameters,
-                          child: const Text('Get First Parameters',
-                              textAlign: TextAlign.center),
+                          child: const Text('Get First Parameters', textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
                           onPressed: getLastParameters,
-                          child: const Text('Get Last Parameters',
-                              textAlign: TextAlign.center),
+                          child: const Text('Get Last Parameters', textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
                           onPressed: getLastAttributed,
-                          child: const Text('Get Last Attributed',
-                              textAlign: TextAlign.center),
+                          child: const Text('Get Last Attributed', textAlign: TextAlign.center),
                         ),
                       )
                     ],
@@ -680,15 +630,13 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: CustomButton(
                           onPressed: listOnSearch,
-                          child: const Text('List on Search',
-                              textAlign: TextAlign.center),
+                          child: const Text('List on Search', textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
                           onPressed: removeFromSearch,
-                          child: const Text('Remove from Search',
-                              textAlign: TextAlign.center),
+                          child: const Text('Remove from Search', textAlign: TextAlign.center),
                         ),
                       ),
                     ],
@@ -699,15 +647,13 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: CustomButton(
                           onPressed: () => generateLink(context),
-                          child: const Text('Generate Link',
-                              textAlign: TextAlign.center),
+                          child: const Text('Generate Link', textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
                         child: CustomButton(
                           onPressed: () => generateQrCode(context),
-                          child: const Text('Generate QrCode',
-                              textAlign: TextAlign.center),
+                          child: const Text('Generate QrCode', textAlign: TextAlign.center),
                         ),
                       ),
                     ],
@@ -717,14 +663,12 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                           child: (CustomButton(
                         onPressed: shareLink,
-                        child: const Text('Share Link',
-                            textAlign: TextAlign.center),
+                        child: const Text('Share Link', textAlign: TextAlign.center),
                       ))),
                       Expanded(
                           child: CustomButton(
                         onPressed: shareWithLPLinkMetadata,
-                        child: const Text('Share Link with LPLinkMetadata',
-                            textAlign: TextAlign.center),
+                        child: const Text('Share Link with LPLinkMetadata', textAlign: TextAlign.center),
                       ))
                     ],
                   ),
@@ -732,8 +676,7 @@ class _HomePageState extends State<HomePage> {
                   const Center(
                     child: Text(
                       'Data',
-                      style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const Divider(),

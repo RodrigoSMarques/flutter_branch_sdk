@@ -72,3 +72,4 @@
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /ios/flutter_branch_sdk/.build
+/example/android/app/.cxx
