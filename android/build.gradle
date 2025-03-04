@@ -1,5 +1,5 @@
-group 'br.com.rsmarques.flutter_branch_sdk'
-version '1.0'
+group = 'br.com.rsmarques.flutter_branch_sdk'
+version = '1.0'
 
 def getPackageVersion() {
     def props = new Properties()
@@ -15,7 +15,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4'
+        classpath("com.android.tools.build:gradle:8.2.2")
     }
 }
 
@@ -34,27 +34,27 @@ android {
         namespace 'br.com.rsmarques.flutter_branch_sdk'
     }
 
-    buildFeatures {
-        buildConfig = true
-    }
-
     compileSdk 35
-
-    defaultConfig {
-        minSdkVersion 21
-        buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+    defaultConfig {
+        minSdkVersion 21
+        buildConfigField("String", "FBRANCH_VERSION", "\"${getPackageVersion()}\"")
+    }
+
+    dependencies {
+        implementation 'io.branch.sdk.android:library:5.15.+'
+        implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
+        implementation 'androidx.lifecycle:lifecycle-runtime:2.8.7'
+        implementation 'androidx.browser:browser:1.8.0'
+        implementation "store.galaxy.samsung.installreferrer:samsung_galaxystore_install_referrer:4.0.0"
+    }
 }
 
-dependencies {
-    implementation 'io.branch.sdk.android:library:5.15.+'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.8.7'
-    implementation 'androidx.browser:browser:1.8.0'
-    implementation "store.galaxy.samsung.installreferrer:samsung_galaxystore_install_referrer:4.0.0"
-}

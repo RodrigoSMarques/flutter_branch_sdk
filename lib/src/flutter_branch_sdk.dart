@@ -22,9 +22,7 @@ class FlutterBranchSdk {
       @Deprecated('use branchAttributionLevel') bool disableTracking = false,
       BranchAttributionLevel? branchAttributionLevel}) async {
     await FlutterBranchSdkPlatform.instance.init(
-        enableLogging: enableLogging,
-        disableTracking: disableTracking,
-        branchAttributionLevel: branchAttributionLevel);
+        enableLogging: enableLogging, disableTracking: disableTracking, branchAttributionLevel: branchAttributionLevel);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -71,10 +69,8 @@ class FlutterBranchSdk {
 
   ///Creates a short url for the BUO
   static Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties}) async {
-    return FlutterBranchSdkPlatform.instance
-        .getShortUrl(buo: buo, linkProperties: linkProperties);
+      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
+    return FlutterBranchSdkPlatform.instance.getShortUrl(buo: buo, linkProperties: linkProperties);
   }
 
   ///Showing a Share Sheet
@@ -93,17 +89,13 @@ class FlutterBranchSdk {
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
-  static void trackContent(
-      {required List<BranchUniversalObject> buo,
-      required BranchEvent branchEvent}) {
-    return FlutterBranchSdkPlatform.instance
-        .trackContent(buo: buo, branchEvent: branchEvent);
+  static void trackContent({required List<BranchUniversalObject> buo, required BranchEvent branchEvent}) {
+    return FlutterBranchSdkPlatform.instance.trackContent(buo: buo, branchEvent: branchEvent);
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   static void trackContentWithoutBuo({required BranchEvent branchEvent}) {
-    return FlutterBranchSdkPlatform.instance
-        .trackContentWithoutBuo(branchEvent: branchEvent);
+    return FlutterBranchSdkPlatform.instance.trackContentWithoutBuo(branchEvent: branchEvent);
   }
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
@@ -113,21 +105,15 @@ class FlutterBranchSdk {
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
   ///For iOS:     List items on Spotlight
-  static Future<bool> listOnSearch(
-      {required BranchUniversalObject buo,
-      BranchLinkProperties? linkProperties}) async {
-    return FlutterBranchSdkPlatform.instance
-        .listOnSearch(buo: buo, linkProperties: linkProperties);
+  static Future<bool> listOnSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
+    return FlutterBranchSdkPlatform.instance.listOnSearch(buo: buo, linkProperties: linkProperties);
   }
 
   ///For Android: Remove the BUO from the local indexing if it is added to the local indexing already
   ///             This will remove the content from Google(Firebase) and other supported Indexing services
   ///For iOS:     Remove Branch Universal Object from Spotlight if privately indexed
-  static Future<bool> removeFromSearch(
-      {required BranchUniversalObject buo,
-      BranchLinkProperties? linkProperties}) async {
-    return FlutterBranchSdkPlatform.instance
-        .removeFromSearch(buo: buo, linkProperties: linkProperties);
+  static Future<bool> removeFromSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
+    return FlutterBranchSdkPlatform.instance.removeFromSearch(buo: buo, linkProperties: linkProperties);
   }
 
   ///Indicates whether or not this user has a custom identity specified for them. Note that this is independent of installs.
@@ -185,10 +171,8 @@ class FlutterBranchSdk {
   }
 
   ///Gets the available last attributed touch data with a custom set attribution window.
-  static Future<BranchResponse> getLastAttributedTouchData(
-      {int? attributionWindow}) async {
-    return FlutterBranchSdkPlatform.instance
-        .getLastAttributedTouchData(attributionWindow: attributionWindow);
+  static Future<BranchResponse> getLastAttributedTouchData({int? attributionWindow}) async {
+    return FlutterBranchSdkPlatform.instance.getLastAttributedTouchData(attributionWindow: attributionWindow);
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
@@ -196,8 +180,8 @@ class FlutterBranchSdk {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCode}) async {
-    return FlutterBranchSdkPlatform.instance.getQRCodeAsData(
-        buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
+    return FlutterBranchSdkPlatform.instance
+        .getQRCodeAsData(buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as a Image.
@@ -205,8 +189,8 @@ class FlutterBranchSdk {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCode}) async {
-    return FlutterBranchSdkPlatform.instance.getQRCodeAsImage(
-        buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
+    return FlutterBranchSdkPlatform.instance
+        .getQRCodeAsImage(buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
   }
 
   ///Share with LPLinkMetadata on iOS
@@ -220,8 +204,8 @@ class FlutterBranchSdk {
     params['lp'] = linkProperties.toMap();
     params['title'] = title;
 
-    FlutterBranchSdkPlatform.instance.shareWithLPLinkMetadata(
-        buo: buo, linkProperties: linkProperties, icon: icon, title: title);
+    FlutterBranchSdkPlatform.instance
+        .shareWithLPLinkMetadata(buo: buo, linkProperties: linkProperties, icon: icon, title: title);
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
@@ -232,10 +216,8 @@ class FlutterBranchSdk {
   /// Add a Partner Parameter for Facebook.
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
-  static void addFacebookPartnerParameter(
-      {required String key, required String value}) {
-    FlutterBranchSdkPlatform.instance
-        .addFacebookPartnerParameter(key: key, value: value);
+  static void addFacebookPartnerParameter({required String key, required String value}) {
+    FlutterBranchSdkPlatform.instance.addFacebookPartnerParameter(key: key, value: value);
   }
 
   /// Clears all Partner Parameters
@@ -255,10 +237,8 @@ class FlutterBranchSdk {
 
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
-  static void addSnapPartnerParameter(
-      {required String key, required String value}) {
-    FlutterBranchSdkPlatform.instance
-        .addSnapPartnerParameter(key: key, value: value);
+  static void addSnapPartnerParameter({required String key, required String value}) {
+    FlutterBranchSdkPlatform.instance.addSnapPartnerParameter(key: key, value: value);
   }
 
   /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
@@ -266,9 +246,7 @@ class FlutterBranchSdk {
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
   static void setDMAParamsForEEA(
-      {required bool eeaRegion,
-      required bool adPersonalizationConsent,
-      required bool adUserDataUsageConsent}) {
+      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
     FlutterBranchSdkPlatform.instance.setDMAParamsForEEA(
         eeaRegion: eeaRegion,
         adPersonalizationConsent: adPersonalizationConsent,
@@ -276,9 +254,7 @@ class FlutterBranchSdk {
   }
 
   /// Sets the consumer protection attribution level.
-  static void setConsumerProtectionAttributionLevel(
-      BranchAttributionLevel branchAttributionLevel) {
-    FlutterBranchSdkPlatform.instance
-        .setConsumerProtectionAttributionLevel(branchAttributionLevel);
+  static void setConsumerProtectionAttributionLevel(BranchAttributionLevel branchAttributionLevel) {
+    FlutterBranchSdkPlatform.instance.setConsumerProtectionAttributionLevel(branchAttributionLevel);
   }
 }

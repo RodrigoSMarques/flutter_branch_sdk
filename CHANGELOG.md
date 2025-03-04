@@ -1,3 +1,18 @@
+## 8.4.0
+### Native SDK Updates
+### 🔧 Native SDK Updates
+* Updated included iOS SDK to 3.9.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+## 8.3.2
+### ⚠️ BREAKING CHANGE
+* Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)
+
+### 🐛 Bug Fixes
+* Fix issue #410: "reply already sent and a possible ANR". Tks @Junglee-Faisal
+
+### 🎉 Features
+* Migrated Gradle to declarative plugins block
+
 ## 8.3.1
 ### ⚠️ BREAKING CHANGE
 * Minimum required Dart SDK version 3.3.0 (Flutter 3.19.0 - 15/02/2024)

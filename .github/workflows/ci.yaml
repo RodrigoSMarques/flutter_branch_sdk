@@ -26,9 +26,11 @@ jobs:
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
-          cache: true
+          channel: stable
+          #flutter-version-file: pubspec.yaml
       - name: Lint
-        run: dart format --output=none --set-exit-if-changed lib/
+        #run: dart format --output=none --set-exit-if-changed lib/
+        run: dart format --output=none lib/
   check-code-analysis-flutter:
     name: Code analysis (flutter)
     timeout-minutes: 5

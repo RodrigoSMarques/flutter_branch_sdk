@@ -33,7 +33,6 @@ enum BranchAttributionLevel {
   NONE
 }
 
-String getBranchAttributionLevelString(
-    BranchAttributionLevel branchAttributionLevel) {
+String getBranchAttributionLevelString(BranchAttributionLevel branchAttributionLevel) {
   return branchAttributionLevel.toString().split('.').last;
 }
