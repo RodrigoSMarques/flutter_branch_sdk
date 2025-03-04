@@ -153,8 +153,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///     "Error message"
   /// );
   @JS('deepview')
-  external static void deepview(JSAny data,
-      [JSAny options, JSFunction callback]);
+  external static void deepview(JSAny data, [JSAny options, JSFunction callback]);
 
   /// deepviewCta()
   /// Perform the branch deepview CTA (call to action) on mobile after branch.deepview() call is
@@ -290,8 +289,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// );
   /// Note: Branch.init must be called prior to calling any other Branch functions.
   @JS('init')
-  external static void init(String branchKey,
-      [JSAny? options, JSFunction? callback]);
+  external static void init(String branchKey, [JSAny? options, JSFunction? callback]);
 
   /// link(data, callback)
   /// Parameters
@@ -482,8 +480,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///
   /// callback("Error message");
   @JS('sendSMS')
-  external static void sendSMS(String phone, JSAny linkData,
-      [JSAny options, JSFunction callback]);
+  external static void sendSMS(String phone, JSAny linkData, [JSAny options, JSFunction callback]);
 
   /// setBranchViewData(data)
   /// Parameters
@@ -572,8 +569,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///
   /// callback("Error message");
   @JS('track')
-  external static void track(String event,
-      [JSAny metadata, JSFunction callback]);
+  external static void track(String event, [JSAny metadata, JSFunction callback]);
 
   /// trackCommerceEvent(event, commerce_data, metadata, callback)
   /// Parameters
@@ -625,8 +621,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///     }
   /// });
   @JS('trackCommerceEvent')
-  external static void trackCommerceEvent(String name, JSAny commerceData,
-      [JSAny metadata, JSFunction callback]);
+  external static void trackCommerceEvent(String name, JSAny commerceData, [JSAny metadata, JSFunction callback]);
 
   /// logEvent(event, event_data_and_custom_data, content_items, customer_event_alias, callback)
   /// Parameters
@@ -750,10 +745,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
 
   @JS('logEvent')
   external static void logEvent(String event,
-      [JSAny eventDataAndCustomData,
-      JSArray contentItems,
-      String customerEventAlias,
-      JSFunction callback]);
+      [JSAny eventDataAndCustomData, JSArray contentItems, String customerEventAlias, JSFunction callback]);
 
   /// disableTracking(disableTracking)
   /// Parameters
@@ -805,8 +797,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///     '{}'
   /// );
   @JS('lastAttributedTouchData')
-  external static void lastAttributedTouchData(JSAny? attributionWindow,
-      [JSFunction callback]);
+  external static void lastAttributedTouchData(JSAny? attributionWindow, [JSFunction callback]);
 
   /// qrcode(data, callback)
   /// Parameters
@@ -890,16 +881,14 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// );
 
   @JS('qrCode')
-  external static void qrCode(
-      JSAny qrCodeLinkData, JSAny qrCodeSettings, JSFunction callback);
+  external static void qrCode(JSAny qrCodeLinkData, JSAny qrCodeSettings, JSFunction callback);
 
   /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
   /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
   @JS('setDMAParamsForEEA')
-  external static void setDMAParamsForEEA(bool eeaRegion,
-      bool adPersonalizationConsent, bool adUserDataUsageConsent);
+  external static void setDMAParamsForEEA(bool eeaRegion, bool adPersonalizationConsent, bool adUserDataUsageConsent);
 
   @JS('setRequestMetadata')
   external static void setRequestMetadata(String key, String value);

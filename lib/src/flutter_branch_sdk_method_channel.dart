@@ -47,8 +47,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     if (branchAttributionLevel == null) {
       branchAttributionLevelString = '';
     } else {
-      branchAttributionLevelString =
-          getBranchAttributionLevelString(branchAttributionLevel);
+      branchAttributionLevelString = getBranchAttributionLevelString(branchAttributionLevel);
     }
     await messageChannel.invokeMethod('init', {
       'enableLogging': enableLogging,
@@ -61,39 +60,34 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
   @override
   void setIdentity(String userId) {
-    assert(isInitialized,
-        'Call `setIdentity` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `setIdentity` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setIdentity', {'userId': userId});
   }
 
   ///Add key value pairs to all requests
   @override
   void setRequestMetadata(String key, String value) {
-    messageChannel
-        .invokeMethod('setRequestMetadata', {'key': key, 'value': value});
+    messageChannel.invokeMethod('setRequestMetadata', {'key': key, 'value': value});
   }
 
   ///This method should be called if you know that a different person is about to use the app
   @override
   void logout() {
-    assert(
-        isInitialized, 'Call `logout` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `logout` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('logout');
   }
 
   ///Returns the last parameters associated with the link that referred the user
   @override
   Future<Map<dynamic, dynamic>> getLatestReferringParams() async {
-    assert(isInitialized,
-        'Call `getLatestReferringParams` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `getLatestReferringParams` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('getLatestReferringParams');
   }
 
   ///Returns the first parameters associated with the link that referred the user
   @override
   Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
-    assert(isInitialized,
-        'Call `getFirstReferringParams` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `getFirstReferringParams` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('getFirstReferringParams');
   }
 
@@ -102,18 +96,15 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @Deprecated('Use [setConsumerProtectionAttributionLevel]')
   @override
   void disableTracking(bool value) async {
-    assert(isInitialized,
-        'Call `disableTracking` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `disableTracking` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setTrackingDisabled', {'disable': value});
   }
 
   ///Listen click em Branch DeepLinks
   @override
   Stream<Map<dynamic, dynamic>> listSession() {
-    assert(isInitialized,
-        'Call `listSession` after `FlutterBranchSdk.init()` method');
-    _initSessionStream ??=
-        eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
+    assert(isInitialized, 'Call `listSession` after `FlutterBranchSdk.init()` method');
+    _initSessionStream ??= eventChannel.receiveBroadcastStream().cast<Map<dynamic, dynamic>>();
 
     return _initSessionStream!;
   }
@@ -122,27 +113,22 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///handle deep links correctly when you first integrate Branch into your app.
   @override
   void validateSDKIntegration() {
-    assert(isInitialized,
-        'Call `validateSDKIntegration` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `validateSDKIntegration` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('validateSDKIntegration');
   }
 
   ///Creates a short url for the BUO
   @override
   Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties}) async {
-    assert(isInitialized,
-        'Call `getShortUrl` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
-        'getShortUrl', {'buo': buo.toMap(), 'lp': linkProperties.toMap()});
+      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
+    assert(isInitialized, 'Call `getShortUrl` after `FlutterBranchSdk.init()` method');
+    Map<dynamic, dynamic> response =
+        await messageChannel.invokeMethod('getShortUrl', {'buo': buo.toMap(), 'lp': linkProperties.toMap()});
 
     if (response['success']) {
       return BranchResponse.success(result: response['url']);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
     }
   }
 
@@ -154,10 +140,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
-    assert(isInitialized,
-        'Call `showShareSheet` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('showShareSheet', {
+    assert(isInitialized, 'Call `showShareSheet` after `FlutterBranchSdk.init()` method');
+    Map<dynamic, dynamic> response = await messageChannel.invokeMethod('showShareSheet', {
       'buo': buo.toMap(),
       'lp': linkProperties.toMap(),
       'messageText': messageText,
@@ -168,19 +152,14 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     if (response['success']) {
       return BranchResponse.success(result: response['url']);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
     }
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
-  void trackContent(
-      {required List<BranchUniversalObject> buo,
-      required BranchEvent branchEvent}) {
-    assert(isInitialized,
-        'Call `trackContent` after `FlutterBranchSdk.init()` method');
+  void trackContent({required List<BranchUniversalObject> buo, required BranchEvent branchEvent}) {
+    assert(isInitialized, 'Call `trackContent` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.map((b) => b.toMap()).toList();
     if (branchEvent.toMap().isNotEmpty) {
@@ -192,31 +171,25 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
   void trackContentWithoutBuo({required BranchEvent branchEvent}) {
-    assert(isInitialized,
-        'Call `trackContentWithoutBuo` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `trackContentWithoutBuo` after `FlutterBranchSdk.init()` method');
     if (branchEvent.toMap().isEmpty) {
       throw ArgumentError('branchEvent is required');
     }
-    messageChannel
-        .invokeMethod('trackContentWithoutBuo', {'event': branchEvent.toMap()});
+    messageChannel.invokeMethod('trackContentWithoutBuo', {'event': branchEvent.toMap()});
   }
 
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
   @override
   void registerView({required BranchUniversalObject buo}) {
-    assert(isInitialized,
-        'Call `registerView` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `registerView` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('registerView', {'buo': buo.toMap()});
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
   ///For iOS:     List items on Spotlight
   @override
-  Future<bool> listOnSearch(
-      {required BranchUniversalObject buo,
-      BranchLinkProperties? linkProperties}) async {
-    assert(isInitialized,
-        'Call `listOnSearch` after `FlutterBranchSdk.init()` method');
+  Future<bool> listOnSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
+    assert(isInitialized, 'Call `listOnSearch` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
@@ -229,11 +202,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///             This will remove the content from Google(Firebase) and other supported Indexing services
   ///For iOS:     Remove Branch Universal Object from Spotlight if privately indexed
   @override
-  Future<bool> removeFromSearch(
-      {required BranchUniversalObject buo,
-      BranchLinkProperties? linkProperties}) async {
-    assert(isInitialized,
-        'Call `removeFromSearch` after `FlutterBranchSdk.init()` method');
+  Future<bool> removeFromSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
+    assert(isInitialized, 'Call `removeFromSearch` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
@@ -247,8 +217,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///This includes persisting through uninstalls, as we track device id.
   @override
   Future<bool> isUserIdentified() async {
-    assert(isInitialized,
-        'Call `isUserIdentified` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `isUserIdentified` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('isUserIdentified');
   }
 
@@ -256,13 +225,11 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// on Android returns notSupported
   @override
   Future<AppTrackingStatus> requestTrackingAuthorization() async {
-    assert(isInitialized,
-        'Call `requestTrackingAuthorization` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `requestTrackingAuthorization` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
       return AppTrackingStatus.notSupported;
     }
-    final int status = (await messageChannel
-        .invokeMethod<int>('requestTrackingAuthorization'))!;
+    final int status = (await messageChannel.invokeMethod<int>('requestTrackingAuthorization'))!;
     return AppTrackingStatus.values[status];
   }
 
@@ -270,13 +237,11 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// on Android returns notSupported
   @override
   Future<AppTrackingStatus> getTrackingAuthorizationStatus() async {
-    assert(isInitialized,
-        'Call `getTrackingAuthorizationStatus` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `getTrackingAuthorizationStatus` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
       return AppTrackingStatus.notSupported;
     }
-    final int status = (await messageChannel
-        .invokeMethod<int>('getTrackingAuthorizationStatus'))!;
+    final int status = (await messageChannel.invokeMethod<int>('getTrackingAuthorizationStatus'))!;
     return AppTrackingStatus.values[status];
   }
 
@@ -284,63 +249,50 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// on Android returns empty string
   @override
   Future<String> getAdvertisingIdentifier() async {
-    assert(isInitialized,
-        'Call `getAdvertisingIdentifier` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `getAdvertisingIdentifier` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
       return "";
     }
-    final String uuid = (await messageChannel
-        .invokeMethod<String>('getAdvertisingIdentifier'))!;
+    final String uuid = (await messageChannel.invokeMethod<String>('getAdvertisingIdentifier'))!;
     return uuid;
   }
 
   @override
   void setConnectTimeout(int connectTimeout) {
-    assert(isInitialized,
-        'Call `setConnectTimeout` after `FlutterBranchSdk.init()` method');
-    messageChannel
-        .invokeMethod('setConnectTimeout', {'connectTimeout': connectTimeout});
+    assert(isInitialized, 'Call `setConnectTimeout` after `FlutterBranchSdk.init()` method');
+    messageChannel.invokeMethod('setConnectTimeout', {'connectTimeout': connectTimeout});
   }
 
   @override
   void setRetryCount(int retryCount) {
-    assert(isInitialized,
-        'Call `setRetryCount` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `setRetryCount` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setRetryCount', {'retryCount': retryCount});
   }
 
   @override
   void setRetryInterval(int retryInterval) {
-    assert(isInitialized,
-        'Call `setRetryInterval` after `FlutterBranchSdk.init()` method');
-    messageChannel
-        .invokeMethod('setRetryInterval', {'retryInterval': retryInterval});
+    assert(isInitialized, 'Call `setRetryInterval` after `FlutterBranchSdk.init()` method');
+    messageChannel.invokeMethod('setRetryInterval', {'retryInterval': retryInterval});
   }
 
   @override
   void setTimeout(int timeout) {
-    assert(isInitialized,
-        'Call `setTimeout` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `setTimeout` after `FlutterBranchSdk.init()` method');
     messageChannel.invokeMethod('setTimeout', {'timeout': timeout});
   }
 
   @override
-  Future<BranchResponse> getLastAttributedTouchData(
-      {int? attributionWindow}) async {
-    assert(isInitialized,
-        'Call `getLastAttributedTouchData` after `FlutterBranchSdk.init()` method');
+  Future<BranchResponse> getLastAttributedTouchData({int? attributionWindow}) async {
+    assert(isInitialized, 'Call `getLastAttributedTouchData` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     if (attributionWindow != null) {
       params['attributionWindow'] = attributionWindow;
     }
-    Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('getLastAttributedTouchData', params);
+    Map<dynamic, dynamic> response = await messageChannel.invokeMethod('getLastAttributedTouchData', params);
     if (response['success']) {
       return BranchResponse.success(result: response['data']['latd']);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
     }
   }
 
@@ -350,21 +302,14 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    assert(isInitialized,
-        'Call `getQRCodeAsData` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('getQRCode', {
-      'buo': buo.toMap(),
-      'lp': linkProperties.toMap(),
-      'qrCodeSettings': qrCodeSettings.toMap()
-    });
+    assert(isInitialized, 'Call `getQRCodeAsData` after `FlutterBranchSdk.init()` method');
+    Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
+        'getQRCode', {'buo': buo.toMap(), 'lp': linkProperties.toMap(), 'qrCodeSettings': qrCodeSettings.toMap()});
 
     if (response['success']) {
       return BranchResponse.success(result: response['result']);
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
     }
   }
 
@@ -374,21 +319,14 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    assert(isInitialized,
-        'Call `getQRCodeAsImage` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response =
-        await messageChannel.invokeMethod('getQRCode', {
-      'buo': buo.toMap(),
-      'lp': linkProperties.toMap(),
-      'qrCodeSettings': qrCodeSettings.toMap()
-    });
+    assert(isInitialized, 'Call `getQRCodeAsImage` after `FlutterBranchSdk.init()` method');
+    Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
+        'getQRCode', {'buo': buo.toMap(), 'lp': linkProperties.toMap(), 'qrCodeSettings': qrCodeSettings.toMap()});
 
     if (response['success']) {
       return BranchResponse.success(result: Image.memory(response['result']));
     } else {
-      return BranchResponse.error(
-          errorCode: response['errorCode'],
-          errorMessage: response['errorMessage']);
+      return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
     }
   }
 
@@ -399,8 +337,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) async {
-    assert(isInitialized,
-        'Call `shareWithLPLinkMetadata` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `shareWithLPLinkMetadata` after `FlutterBranchSdk.init()` method');
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
@@ -413,8 +350,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
   void handleDeepLink(String url) {
-    assert(isInitialized,
-        'Call `handleDeepLink` after `FlutterBranchSdk.init()` method');
+    assert(isInitialized, 'Call `handleDeepLink` after `FlutterBranchSdk.init()` method');
     if (url.isEmpty) {
       throw ArgumentError('url is required');
     }
@@ -425,10 +361,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters
   @override
-  void addFacebookPartnerParameter(
-      {required String key, required String value}) {
-    messageChannel.invokeMethod(
-        'addFacebookPartnerParameter', {'key': key, 'value': value});
+  void addFacebookPartnerParameter({required String key, required String value}) {
+    messageChannel.invokeMethod('addFacebookPartnerParameter', {'key': key, 'value': value});
   }
 
   /// Clears all Partner Parameters
@@ -453,8 +387,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   @override
   void addSnapPartnerParameter({required String key, required String value}) {
-    messageChannel
-        .invokeMethod('addSnapPartnerParameter', {'key': key, 'value': value});
+    messageChannel.invokeMethod('addSnapPartnerParameter', {'key': key, 'value': value});
   }
 
   /// Sets the value of parameters required by Google Conversion APIs for DMA Compliance in EEA region.
@@ -463,9 +396,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
   @override
   void setDMAParamsForEEA(
-      {required bool eeaRegion,
-      required bool adPersonalizationConsent,
-      required bool adUserDataUsageConsent}) {
+      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
     messageChannel.invokeMethod('setDMAParamsForEEA', {
       'eeaRegion': eeaRegion,
       'adPersonalizationConsent': adPersonalizationConsent,
@@ -475,11 +406,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   /// Sets the consumer protection attribution level.
   @override
-  void setConsumerProtectionAttributionLevel(
-      BranchAttributionLevel branchAttributionLevel) {
-    messageChannel.invokeMethod('setConsumerProtectionAttributionLevel', {
-      'branchAttributionLevel':
-          getBranchAttributionLevelString(branchAttributionLevel)
-    });
+  void setConsumerProtectionAttributionLevel(BranchAttributionLevel branchAttributionLevel) {
+    messageChannel.invokeMethod('setConsumerProtectionAttributionLevel',
+        {'branchAttributionLevel': getBranchAttributionLevelString(branchAttributionLevel)});
   }
 }
