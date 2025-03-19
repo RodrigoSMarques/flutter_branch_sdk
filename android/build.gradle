@@ -4,7 +4,7 @@ version = '1.0'
 def getPackageVersion() {
     def props = new Properties()
     file('../pubspec.yaml').withInputStream { props.load(it) }
-    println props.getProperty("version")
+    // println props.getProperty("version")
     props.getProperty("version")
 }
 
