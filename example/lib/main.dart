@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show PlatformDispatcher;
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
@@ -5,6 +6,15 @@ import 'app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrintStack(stackTrace: stack);
+    return true;
+  };
+
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
   //FlutterBranchSdk.clearPartnerParameters();
@@ -21,6 +31,7 @@ void main() async {
   FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
   //await FlutterBranchSdk.requestTrackingAuthorization();
+
   await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
   runApp(const MyApp());

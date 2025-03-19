@@ -691,8 +691,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             try {
                 requestMetadata.put(key, value);
             } catch (JSONException error) {
+                return;
             }
-            return;
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override

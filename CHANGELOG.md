@@ -1,3 +1,7 @@
+## 8.4.1
+### 🐛 Bug Fixes
+* Fix issue #423: setRequestMetadata doesn't populate the key value pairs in the event request as expected
+
 ## 8.4.0
 ### Native SDK Updates
 ### 🔧 Native SDK Updates
