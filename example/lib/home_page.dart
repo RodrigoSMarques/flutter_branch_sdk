@@ -385,6 +385,8 @@ class _HomePageState extends State<HomePage> {
 
   void showGeneratedLink(BuildContext context, String url) async {
     initDeepLinkData();
+    FlutterBranchSdk.setRequestMetadata('key1_1', 'value1');
+    FlutterBranchSdk.setRequestMetadata('key2_1', 'value2');
     showModalBottomSheet(
         isDismissible: true,
         isScrollControlled: true,
