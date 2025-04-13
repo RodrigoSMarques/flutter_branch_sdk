@@ -1,9 +1,13 @@
+## 8.5.0
+### 🔧 Native SDK Updates
+* Updated included iOS SDK to 3.10.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Updated included Branch Android SDK to 5.16.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
 ## 8.4.1
 ### 🐛 Bug Fixes
 * Fix issue #423: setRequestMetadata doesn't populate the key value pairs in the event request as expected
 
 ## 8.4.0
-### Native SDK Updates
 ### 🔧 Native SDK Updates
 * Updated included iOS SDK to 3.9.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
