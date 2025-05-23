@@ -10,8 +10,8 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.15.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.9.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Android - Branch SDK Version >= 5.18.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* iOS - Branch SDK Version >= 3.12.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 Implemented functions in plugin:
 
@@ -43,8 +43,31 @@ For details see:
 * [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#1-configure-branch-dashboard)
 
 ## Configure Platform Project
-### Android Integration
 
+### Change Flutter Deep link flag (Android / iOS)
+
+**Flutter version 3.27** has a [_breaking change_](https://docs.google.com/document/d/1TUhaEhNdi2BUgKWQFEbOzJgmUAlLJwIAhnFfZraKgQs/edit?tab=t.0) that alters the behavior of the Deep link default flag.
+
+You must manually set the value to **FALSE** in the project, according to the instructions below.
+
+#### iOS
+1. Navigate to **ios/Runner/Info.plist** file.
+2. Add the following in `<dict>` chapter:
+
+```xml
+<key>FlutterDeepLinkingEnabled</key>
+<false/>
+```
+
+#### Android
+1. Navigate to **android/app/src/main/AndroidManifest.xml** file.
+2. Add the following metadata tag and intent filter inside the tag with `.MainActivity`
+
+```xml
+<meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
+```
+
+### Android Integration
 Follow only the steps:
 
 * [Configure App](https://help.branch.io/developers-hub/docs/android-basic-integration#4-configure-app)
@@ -77,30 +100,6 @@ If you want to disable NativeLink™ Deferred Deep Linking, follow the instructi
 ```xml
 	<key>branch_disable_nativelink</key>
 	<true/>
-```
-
-### Change Flutter Deep link flag (Android / iOS)
-
-**Flutter version 3.27** has a [_breaking change_](https://docs.google.com/document/d/1TUhaEhNdi2BUgKWQFEbOzJgmUAlLJwIAhnFfZraKgQs/edit?tab=t.0) that alters the behavior of the Deep link default flag.
-
-You must manually set the value to **FALSE** in the project, according to the instructions below.
-
-#### iOS
-
-1. Navigate to **ios/Runner/Info.plist** file. 
-2. Add the following in `<dict>` chapter:
-
-```xml
-<key>FlutterDeepLinkingEnabled</key>
-<false/>
-```
-#### Android
-
-1. Navigate to **android/app/src/main/AndroidManifest.xml** file.
-2. Add the following metadata tag and intent filter inside the tag with `.MainActivity`
-
-```xml
-<meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
 ```
 
 ### Web Integration
