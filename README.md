@@ -43,8 +43,7 @@ For details see:
 * [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#1-configure-branch-dashboard)
 
 ## Configure Platform Project
-
-### Change Flutter Deep link flag (Android / iOS)
+### Disable default Flutter Deep Linking (Android / iOS)
 
 **Flutter version 3.27** has a [_breaking change_](https://docs.google.com/document/d/1TUhaEhNdi2BUgKWQFEbOzJgmUAlLJwIAhnFfZraKgQs/edit?tab=t.0) that alters the behavior of the Deep link default flag.
 
@@ -103,7 +102,6 @@ If you want to disable NativeLink™ Deferred Deep Linking, follow the instructi
 ```
 
 ### Web Integration
-
 You need add Branch Javascript in your `web\index.html` at the top of your `<body>` tag, to be able to use this package.
 
 ```javascript
