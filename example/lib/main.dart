@@ -30,9 +30,16 @@ void main() async {
   FlutterBranchSdk.setRequestMetadata('key1', 'value1');
   FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
-  //await FlutterBranchSdk.requestTrackingAuthorization();
 
   await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
+
+  /*
+  AppTrackingStatus status = await FlutterBranchSdk.requestTrackingAuthorization();
+  if (status == AppTrackingStatus.notSupported) {
+    debugPrint('not supported');
+  }
+  FlutterBranchSdk.disableTracking(true);
+   */
   runApp(const MyApp());
 }
