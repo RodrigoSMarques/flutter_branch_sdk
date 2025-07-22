@@ -229,7 +229,7 @@ Android | iOS
  ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_android.png) |  ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_ios.png) |
 
 
-Make sure to comment out or remove `validateSDKIntegration` in your production build.
+Make sure to comment out or remove `validateSDKIntegration` in your release build.
 
 ### Read deep link
 
