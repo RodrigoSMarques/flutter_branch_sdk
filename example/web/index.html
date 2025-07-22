@@ -31,14 +31,18 @@
 
   <title>Flutter Branch SDK Example</title>
   <link rel="manifest" href="manifest.json">
-
 </head>
 <body>
   <script>
     // load Branch
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener banner closeBanner closeJourney data deepview deepviewCta first init link logout removeListener setBranchViewData setIdentity track trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData setAPIResponseCallback qrCode setRequestMetaData setAPIUrl getAPIUrl setDMAParamsForEEA".split(" "), 0);
-    // init Branch
-    branch.init('key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH');
+    var options = { 'no_journeys': true, 'tracking_disabled' : false };
+    // init Branch - Replace key_live_YOUR_KEY_GOES_HERE with your Branch Key (live version)
+    branch.init('key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH', options, function(err, data) {
+      if (err != null) {
+        console.log('err: ' + err);
+      }
+    });
   </script>
 
   <script src="flutter_bootstrap.js" async></script>
