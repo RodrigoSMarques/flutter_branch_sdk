@@ -10,9 +10,13 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.19.+ [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.12.+ [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-* Web - Branch SDK Version - Lastest [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+
+| Platform | Version | History 
+| --- | --- | ---
+| Android | 5.19.+ | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| iOS | 3.12.+ | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+| Web | 2.86.4 | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+
 
 Implemented functions in plugin:
 
