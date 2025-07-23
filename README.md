@@ -749,7 +749,7 @@ Practices to avoid:
 * Deep links with [Long links](https://help.branch.io/using-branch/docs/creating-a-deep-link#long-links)
 
 # Data Privacy
-* [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) 
+* [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) 
 * [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 * [Answering the App Store Connect Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-app-store-connect-privacy-questions)
 * [Answering the Google Play Store Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-google-play-store-privacy-questions)
