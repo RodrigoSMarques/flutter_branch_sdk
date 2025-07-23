@@ -772,6 +772,7 @@ Read the iOS or Android documentation for all Branch object parameters:
 
 * Android - [https://help.branch.io/developers-hub/docs/android-advanced-features](https://help.branch.io/developers-hub/docs/android-advanced-features)
 * iOS - [https://help.branch.io/developers-hub/docs/ios-advanced-features](https://help.branch.io/developers-hub/docs/ios-advanced-features)
+* Web - [https://help.branch.io/developers-hub/docs/web-advanced-features](https://help.branch.io/developers-hub/docs/web-advanced-features)
 
 # Author
 This project was authored by Rodrigo S. Marques. You can contact me at [rodrigosmarques@gmail.com](mailto:rodrigosmarques@gmail.com)
