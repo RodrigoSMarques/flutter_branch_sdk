@@ -1,0 +1,83 @@
+---
+assignees: []
+body:
+  -
+    attributes:
+      description: "What is the problem? A clear and concise description of what the bug is."
+      label: "Describe the bug"
+      placeholder: "Tell us what you see!"
+    id: description
+    type: textarea
+    validations:
+      required: true
+  -
+    attributes:
+      description: "Please provide as much step-by-step detail as possible including logs, stack traces, and uncaught exceptions."
+      label: "Steps to reproduce"
+      value: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    id: steps
+    type: textarea
+    validations:
+      required: true
+  -
+    attributes:
+      description: "What did you expect to happen?"
+      label: "A clear and concise description of what you expected to happen."
+    id: expected
+    type: textarea
+    validations:
+      required: true
+  -
+    attributes:
+      description: "What version of plugin are you seeing this issue on?"
+      label: "Plugin Version"
+      placeholder: "8.6.0"
+    id: sdk-version
+    type: input
+    validations:
+      required: true
+  -
+    attributes:
+      description: "What version of Flutter are you seeing this issue on?"
+      label: "Flutter Version"
+      placeholder: "3.32.7 on channel stable"
+    id: flutter-sdk-version
+    type: input
+    validations:
+      required: true
+  -
+    attributes:
+      description: "What platform/version are you seeing this bug on?"
+      label: "Android/iOS/Web"
+      placeholder: "Android 15, iOS 18, Web"
+    id: platform
+    type: input
+    validations:
+      required: true
+  -
+    attributes:
+      description: "What devices or emulators are you seeing this bug on?"
+      label: Make and Model
+      placeholder: "Samsung S21, Iphone 16, Safari, Chrome"
+    id: device
+    type: input
+    validations:
+      required: true
+  -
+    attributes:
+      description: "Anything else that might be relevant for troubleshooting this bug. Any screenshots, videos or logs that show the issue are very helpful."
+      label: "Additional Information/Context"
+    id: context
+    type: textarea
+    validations:
+      required: false
+
+description: "Found a bug in the Flutter Branch SDK? File it here."
+labels:
+  - bug
+  - needs-triage
+name: "🐞 Bug report"
+title: "(short issue description)"
