@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: "Branch Support"
-    url: https://help.branch.io/using-branch/page/submit-a-ticket
-    about: If you are having general trouble with Branch SDK (not Flutter Plugin), please submit a ticket to Branch Support or open an issue in the platform repository
   - name: "IOS SDK Issues"    
     url: https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/issues
     about: Branch iOS SDK issues
   - name: "Android SDK Issues"    
     url: https://github.com/BranchMetrics/android-branch-deep-linking-attribution/issues
     about: Branch Android SDK issues  
+  - name: "Branch Support"
+    url: https://help.branch.io/using-branch/page/submit-a-ticket
+    about: If you are having general trouble with Branch SDK (not Flutter Plugin), please submit a ticket to Branch Support or open an issue in the platform repository
