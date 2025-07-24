@@ -23,8 +23,7 @@ body:
     id: contributions
     attributes:
       label: Can you submit a pull request?
-      description: Pull requests are welcome! If you would like to help us add this feature, please check our
-[contributions guidelines](../blob/main/CONTRIBUTING.md).
+      description: Pull requests are welcome! If you would like to help us add this feature, please check our contributions guidelines
       options:
       - Yes
       - No
