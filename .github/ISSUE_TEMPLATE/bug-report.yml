@@ -54,11 +54,7 @@ body:
       label: "Android/iOS/Web"
       placeholder: "Android 15, iOS 18, Web"
     id: platform
-    type: checkboxes
-    options:
-      - label: Android
-      - label: iOS
-      - label: Web
+    type: input
     validations:
       required: true
   -
