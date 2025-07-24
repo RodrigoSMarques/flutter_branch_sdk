@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,8 +55,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private final JSONObject requestMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
     private final JSONObject snapParameters = new JSONObject();
-    private final ArrayList<String> preInstallParameters = new ArrayList<String>();
-    private final ArrayList<String> campaingParameters = new ArrayList<String>();
+    private final ArrayList<String> preInstallParameters = new ArrayList<>();
+    private final ArrayList<String> campaingParameters = new ArrayList<>();
     private Activity activity;
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
@@ -412,9 +411,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
 
         if (requestMetadata.length() > 0) {
-            Iterator keys = requestMetadata.keys();
+            Iterator<String> keys = requestMetadata.keys();
             while (keys.hasNext()) {
-                String key = (String) keys.next();
+                String key = keys.next();
                 try {
                     Branch.getInstance().setRequestMetadata(key, requestMetadata.getString(key));
                 } catch (JSONException e) {
@@ -423,9 +422,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             }
         }
         if (facebookParameters.length() > 0) {
-            Iterator keys = facebookParameters.keys();
+            Iterator<String> keys = facebookParameters.keys();
             while (keys.hasNext()) {
-                String key = (String) keys.next();
+                String key = keys.next();
                 try {
                     Branch.getInstance().addFacebookPartnerParameterWithName(key, facebookParameters.getString(key));
                 } catch (JSONException e) {
@@ -434,9 +433,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             }
         }
         if (snapParameters.length() > 0) {
-            Iterator keys = snapParameters.keys();
+            Iterator<String> keys = snapParameters.keys();
             while (keys.hasNext()) {
-                String key = (String) keys.next();
+                String key = keys.next();
                 try {
                     Branch.getInstance().addSnapPartnerParameterWithName(key, snapParameters.getString(key));
                 } catch (JSONException e) {
@@ -599,33 +598,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void listOnSearch(MethodCall call, Result result) {
         LogUtils.debug(DEBUG_NAME, "triggered listOnSearch");
-        if (!(call.arguments instanceof Map)) {
-            throw new IllegalArgumentException("Map argument expected");
-        }
-        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-        if (argsMap.containsKey("lp")) {
-            LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-            //buo.listOnGoogleSearch(context, linkProperties);
-        } else {
-            //buo.listOnGoogleSearch(context);
-        }
         result.success(Boolean.TRUE);
     }
 
     private void removeFromSearch(MethodCall call, Result result) {
         LogUtils.debug(DEBUG_NAME, "triggered removeFromSearch");
-        if (!(call.arguments instanceof Map)) {
-            throw new IllegalArgumentException("Map argument expected");
-        }
-        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) argsMap.get("buo"));
-        if (argsMap.containsKey("lp")) {
-            LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) argsMap.get("lp"));
-            //buo.removeFromLocalIndexing(context, linkProperties);
-        } else {
-            //buo.removeFromLocalIndexing(context);
-        }
         result.success(Boolean.TRUE);
     }
 
@@ -825,7 +802,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                                     jo.put("latd", jsonObject);
                                     response.put("data", branchSdkHelper.paramsToMap(jo));
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    LogUtils.debug(DEBUG_NAME, e.getLocalizedMessage());
                                 }
                             } else {
                                 response.put("success", Boolean.FALSE);
@@ -848,7 +825,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                                     jo.put("latd", jsonObject);
                                     response.put("data", branchSdkHelper.paramsToMap(jo));
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    LogUtils.debug(DEBUG_NAME, e.getLocalizedMessage());
                                 }
                             } else {
                                 response.put("success", Boolean.FALSE);
@@ -922,6 +899,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             try {
                 facebookParameters.put(key, value);
             } catch (JSONException error) {
+                LogUtils.debug(DEBUG_NAME, error.getLocalizedMessage());
             }
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -987,6 +965,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             try {
                 snapParameters.put(key, value);
             } catch (JSONException error) {
+                LogUtils.debug(DEBUG_NAME, error.getLocalizedMessage());
             }
         }
 

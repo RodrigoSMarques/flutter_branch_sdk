@@ -70,7 +70,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         _initSessionStream.sink.add({});
       }
     });
-
     return _initSessionStream.stream;
   }
 
@@ -180,11 +179,18 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     try {
       BranchJS.link(
           _dartObjectToJsObject(linkData),
-          (String? err, String url) {
+          (JSAny? err, String url) {
             if (err == null) {
               responseCompleter.complete(BranchResponse.success(result: url));
             } else {
-              responseCompleter.completeError(BranchResponse.error(errorCode: '-1', errorMessage: err));
+              dynamic jsError = err;
+              String errorMessage;
+              if (jsError is String) {
+                errorMessage = jsError;
+              } else {
+                errorMessage = jsError.toString(); // Como fallback, converte para string
+              }
+              responseCompleter.complete(BranchResponse.error(errorCode: '-1', errorMessage: errorMessage));
             }
           }.toJS);
     } catch (e) {
@@ -247,15 +253,23 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Mark the content referred by this object as viewed. This increment the view count of the contents referred by this object.
   @override
   void registerView({required BranchUniversalObject buo}) {
-    BranchEvent branchEvent = BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
-    // This might not be exactly the same thing as BUO.registerView, but there's no clear implementation for web sdk
-    trackContent(buo: [buo], branchEvent: branchEvent);
+    try {
+      BranchEvent branchEvent = BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
+      // This might not be exactly the same thing as BUO.registerView, but there's no clear implementation for web sdk
+      trackContent(buo: [buo], branchEvent: branchEvent);
+    } catch (e) {
+      debugPrint('registerView() error: ${e.toString()}');
+    }
   }
 
   ///Add key value pairs to all requests
   @override
   void setRequestMetadata(String key, String value) {
-    BranchJS.setRequestMetadata(key, value);
+    try {
+      BranchJS.setRequestMetadata(key, value);
+    } catch (e) {
+      debugPrint('setRequestMetadata() error: ${e.toString()}');
+    }
   }
 
   ///For Android: Publish this BUO with Google app indexing so that the contents will be available with google search
@@ -406,7 +420,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             }
           }.toJS);
     } catch (e) {
-      responseCompleter.complete(BranchResponse.error(errorCode: '-1', errorMessage: 'qrCode generate error'));
+      responseCompleter
+          .complete(BranchResponse.error(errorCode: '-1', errorMessage: 'qrCode generate error ${e.toString()}'));
     }
     return responseCompleter.future;
   }
@@ -428,8 +443,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       } else {
         return BranchResponse.error(errorCode: response.errorCode, errorMessage: response.errorMessage);
       }
-    } catch (error) {
-      return BranchResponse.error(errorCode: "-1", errorMessage: error.toString());
+    } catch (e) {
+      return BranchResponse.error(errorCode: "-1", errorMessage: 'qrCode generate error ${e.toString()}');
     }
   }
 
@@ -439,13 +454,21 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    showShareSheet(buo: buo, linkProperties: linkProperties, messageText: title);
+    try {
+      showShareSheet(buo: buo, linkProperties: linkProperties, messageText: title);
+    } catch (error) {
+      debugPrint('shareWithLPLinkMetadata() error: ${error.toString()}');
+    }
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
   void handleDeepLink(String url) {
-    globalContext.callMethodVarArgs('open'.toJS, [url.toJS, '_self'.toJS]);
+    try {
+      globalContext.callMethodVarArgs('open'.toJS, [url.toJS, '_self'.toJS]);
+    } catch (e) {
+      debugPrint('handleDeepLink() error: ${e.toString()}');
+    }
   }
 
   /// Add a Partner Parameter for Facebook.
@@ -492,7 +515,11 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void setDMAParamsForEEA(
       {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
-    BranchJS.setDMAParamsForEEA(eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
+    try {
+      BranchJS.setDMAParamsForEEA(eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
+    } catch (e) {
+      debugPrint('handleDeepLink() error: ${e.toString()}');
+    }
   }
 
   /// Sets the consumer protection attribution level.
