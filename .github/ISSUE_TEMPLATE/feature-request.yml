@@ -25,7 +25,7 @@ body:
       label: Can you submit a pull request?
       description: Pull requests are welcome! If you would like to help us add this feature, please check our contributions guidelines
       options:
-      - Yes
-      - No
+      - 'Yes'
+      - 'No'
     validations:
       required: true      
