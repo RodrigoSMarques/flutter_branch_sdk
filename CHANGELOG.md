@@ -1,3 +1,10 @@
+## 8.7.0
+### 🎉 Features
+Code review to remove build warnings for Android
+
+### Removal of deprecated methods
+* `FlutterBranchSdk.disableTracking()`
+
 ## 8.6.0
 ### 🔧 Native SDK Updates
 * Updated included Branch Android SDK to 5.19.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)

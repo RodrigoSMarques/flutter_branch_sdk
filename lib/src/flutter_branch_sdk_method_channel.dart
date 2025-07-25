@@ -31,14 +31,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
   @override
-  Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use BranchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
     if (isInitialized) {
       return;
     }
@@ -49,11 +43,8 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     } else {
       branchAttributionLevelString = getBranchAttributionLevelString(branchAttributionLevel);
     }
-    await messageChannel.invokeMethod('init', {
-      'enableLogging': enableLogging,
-      'disableTracking': disableTracking,
-      'branchAttributionLevel': branchAttributionLevelString
-    });
+    await messageChannel
+        .invokeMethod('init', {'enableLogging': enableLogging, 'branchAttributionLevel': branchAttributionLevelString});
     isInitialized = true;
   }
 
@@ -89,15 +80,6 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
     assert(isInitialized, 'Call `getFirstReferringParams` after `FlutterBranchSdk.init()` method');
     return await messageChannel.invokeMethod('getFirstReferringParams');
-  }
-
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  @Deprecated('Use [setConsumerProtectionAttributionLevel]')
-  @override
-  void disableTracking(bool value) async {
-    assert(isInitialized, 'Call `disableTracking` after `FlutterBranchSdk.init()` method');
-    messageChannel.invokeMethod('setTrackingDisabled', {'disable': value});
   }
 
   ///Listen click em Branch DeepLinks
@@ -251,7 +233,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<String> getAdvertisingIdentifier() async {
     assert(isInitialized, 'Call `getAdvertisingIdentifier` after `FlutterBranchSdk.init()` method');
     if (!Platform.isIOS) {
-      return "";
+      return '';
     }
     final String uuid = (await messageChannel.invokeMethod<String>('getAdvertisingIdentifier'))!;
     return uuid;

@@ -44,15 +44,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
 
   @override
-  Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
     debugPrint('For web, start the SDK in index.html');
   }
 
@@ -153,17 +147,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     }
   }
 
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  @override
-  void disableTracking(bool value) {
-    try {
-      BranchJS.disableTracking(value);
-    } catch (e) {
-      debugPrint('disableTracking() error: ${e.toString()}');
-    }
-  }
-
   ///Creates a short url for the BUO
   @override
   Future<BranchResponse> getShortUrl(
@@ -211,7 +194,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     BranchResponse response = await getShortUrl(buo: buo, linkProperties: linkProperties);
     if (response.success) {
       try {
-        await navigatorShare(_dartObjectToJsObject({"title": messageText, "text": buo.title, "url": response.result}))
+        await navigatorShare(_dartObjectToJsObject({'title': messageText, "text": buo.title, "url": response.result}))
             .toDart;
       } catch (e) {
         browserPrompt(messageText, response.result);

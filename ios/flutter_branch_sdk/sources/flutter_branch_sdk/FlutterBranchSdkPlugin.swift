@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.6.0";
+let PLUGIN_VERSION = "8.7.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
@@ -253,13 +253,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
 #if DEBUG
         NSLog("setupBranch args: %@", args)
 #endif
-        
-        if args["disableTracking"] as! Bool == true {
-            Branch.setTrackingDisabled(true)
-        } else {
-            Branch.setTrackingDisabled(false)
-        }
-        
+                
         let branchAttributionLevel = args["branchAttributionLevel"] as! String
         if (!branchAttributionLevel.isEmpty) {
             Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
