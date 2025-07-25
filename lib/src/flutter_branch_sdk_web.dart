@@ -1,4 +1,4 @@
-// In order to *not* need this ignore, consider extracting the "web" version
+// In order to *not* need this ignore, consider extracting the 'web' version
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
@@ -194,7 +194,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     BranchResponse response = await getShortUrl(buo: buo, linkProperties: linkProperties);
     if (response.success) {
       try {
-        await navigatorShare(_dartObjectToJsObject({'title': messageText, "text": buo.title, "url": response.result}))
+        await navigatorShare(_dartObjectToJsObject({'title': messageText, 'text': buo.title, 'url': response.result}))
             .toDart;
       } catch (e) {
         browserPrompt(messageText, response.result);
@@ -427,7 +427,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         return BranchResponse.error(errorCode: response.errorCode, errorMessage: response.errorMessage);
       }
     } catch (e) {
-      return BranchResponse.error(errorCode: "-1", errorMessage: 'qrCode generate error ${e.toString()}');
+      return BranchResponse.error(errorCode: '-1', errorMessage: 'qrCode generate error ${e.toString()}');
     }
   }
 

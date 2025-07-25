@@ -86,51 +86,51 @@ class BranchEvent {
     Map<String, dynamic> data = <String, dynamic>{};
 
     if (!kIsWeb) {
-      data["eventName"] = _eventName;
-      data["isStandardEvent"] = _isStandardEvent;
+      data['eventName'] = _eventName;
+      data['isStandardEvent'] = _isStandardEvent;
       if (transactionID.isNotEmpty) {
-        data["transactionID"] = transactionID;
+        data['transactionID'] = transactionID;
       }
       if (currency != null) {
-        data["currency"] = getCurrencyTypeString(currency!);
+        data['currency'] = getCurrencyTypeString(currency!);
       }
-      if (revenue != -1) data["revenue"] = revenue;
-      if (shipping != -1) data["shipping"] = shipping;
-      if (tax != -1) data["tax"] = tax;
-      if (coupon.isNotEmpty) data["coupon"] = coupon;
-      if (affiliation.isNotEmpty) data["affiliation"] = affiliation;
+      if (revenue != -1) data['revenue'] = revenue;
+      if (shipping != -1) data['shipping'] = shipping;
+      if (tax != -1) data['tax'] = tax;
+      if (coupon.isNotEmpty) data['coupon'] = coupon;
+      if (affiliation.isNotEmpty) data['affiliation'] = affiliation;
       if (eventDescription.isNotEmpty) {
-        data["eventDescription"] = eventDescription;
+        data['eventDescription'] = eventDescription;
       }
       if (searchQuery.isNotEmpty) {
-        data["searchQuery"] = searchQuery;
+        data['searchQuery'] = searchQuery;
       }
       if (adType != null) {
-        data["adType"] = getBranchEventAdTypeString(adType!);
+        data['adType'] = getBranchEventAdTypeString(adType!);
       }
-      if (_customData.isNotEmpty) data["customData"] = _customData;
-      if (alias.isNotEmpty) data["alias"] = alias;
+      if (_customData.isNotEmpty) data['customData'] = _customData;
+      if (alias.isNotEmpty) data['alias'] = alias;
     } else {
       if (_isStandardEvent) {
         if (transactionID.isNotEmpty) {
-          data["transactionID"] = transactionID;
+          data['transactionID'] = transactionID;
         }
         if (currency != null) {
-          data["currency"] = getCurrencyTypeString(currency!);
+          data['currency'] = getCurrencyTypeString(currency!);
         }
-        if (revenue != -1) data["revenue"] = revenue;
-        if (shipping != -1) data["shipping"] = shipping;
-        if (tax != -1) data["tax"] = tax;
-        if (coupon.isNotEmpty) data["coupon"] = coupon;
-        if (affiliation.isNotEmpty) data["affiliation"] = affiliation;
+        if (revenue != -1) data['revenue'] = revenue;
+        if (shipping != -1) data['shipping'] = shipping;
+        if (tax != -1) data['tax'] = tax;
+        if (coupon.isNotEmpty) data['coupon'] = coupon;
+        if (affiliation.isNotEmpty) data['affiliation'] = affiliation;
         if (eventDescription.isNotEmpty) {
-          data["eventDescription"] = eventDescription;
+          data['eventDescription'] = eventDescription;
         }
         if (searchQuery.isNotEmpty) {
-          data["searchQuery"] = searchQuery;
+          data['searchQuery'] = searchQuery;
         }
         if (adType != null) {
-          data["adType"] = getBranchEventAdTypeString(adType!);
+          data['adType'] = getBranchEventAdTypeString(adType!);
         }
       }
       _customData.forEach((key, value) {

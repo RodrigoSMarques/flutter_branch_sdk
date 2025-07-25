@@ -291,47 +291,47 @@ class BranchContentMetaData {
     if (productCategory == null) return null;
     switch (productCategory) {
       case BranchProductCategory.ANIMALS_AND_PET_SUPPLIES:
-        return "Animals & Pet Supplies";
+        return 'Animals & Pet Supplies';
       case BranchProductCategory.APPAREL_AND_ACCESSORIES:
-        return "Apparel & Accessories";
+        return 'Apparel & Accessories';
       case BranchProductCategory.ARTS_AND_ENTERTAINMENT:
-        return "Arts & Entertainment";
+        return 'Arts & Entertainment';
       case BranchProductCategory.BABY_AND_TODDLER:
-        return "Baby & Toddler";
+        return 'Baby & Toddler';
       case BranchProductCategory.BUSINESS_AND_INDUSTRIAL:
-        return "Business & Industrial";
+        return 'Business & Industrial';
       case BranchProductCategory.CAMERAS_AND_OPTICS:
-        return "Cameras & Optics";
+        return 'Cameras & Optics';
       case BranchProductCategory.ELECTRONICS:
-        return "Electronics";
+        return 'Electronics';
       case BranchProductCategory.FOOD_BEVERAGES_AND_TOBACCO:
-        return "Food, Beverages & Tobacco";
+        return 'Food, Beverages & Tobacco';
       case BranchProductCategory.FURNITURE:
-        return "Furniture";
+        return 'Furniture';
       case BranchProductCategory.HARDWARE:
-        return "Hardware";
+        return 'Hardware';
       case BranchProductCategory.HEALTH_AND_BEAUTY:
-        return "Health & Beauty";
+        return 'Health & Beauty';
       case BranchProductCategory.HOME_AND_GARDEN:
-        return "Home & Garden";
+        return 'Home & Garden';
       case BranchProductCategory.LUGGAGE_AND_BAGS:
-        return "Luggage & Bags";
+        return 'Luggage & Bags';
       case BranchProductCategory.MATURE:
-        return "Mature";
+        return 'Mature';
       case BranchProductCategory.MEDIA:
-        return "Media";
+        return 'Media';
       case BranchProductCategory.OFFICE_SUPPLIES:
-        return "Office Supplies";
+        return 'Office Supplies';
       case BranchProductCategory.RELIGIOUS_AND_CEREMONIAL:
-        return "Religious & Ceremonial";
+        return 'Religious & Ceremonial';
       case BranchProductCategory.SOFTWARE:
-        return "Software";
+        return 'Software';
       case BranchProductCategory.SPORTING_GOODS:
-        return "Sporting Goods";
+        return 'Sporting Goods';
       case BranchProductCategory.TOYS_AND_GAMES:
-        return "Toys & Games";
+        return 'Toys & Games';
       case BranchProductCategory.VEHICLES_AND_PARTS:
-        return "Vehicles & Parts";
+        return 'Vehicles & Parts';
     }
   }
 
@@ -364,39 +364,39 @@ class BranchContentMetaData {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> ret = <String, dynamic>{};
     if (contentSchema != null) {
-      ret["content_schema"] = getContentSchemaString(contentSchema);
+      ret['content_schema'] = getContentSchemaString(contentSchema);
     }
-    if (quantity > 0) ret["quantity"] = quantity;
-    if (price > 0) ret["price"] = price;
+    if (quantity > 0) ret['quantity'] = quantity;
+    if (price > 0) ret['price'] = price;
     if (currencyType != null) {
-      ret["currency"] = getCurrencyTypeString(currencyType!);
+      ret['currency'] = getCurrencyTypeString(currencyType!);
     }
-    if (sku.isNotEmpty) ret["sku"] = sku;
-    if (productName.isNotEmpty) ret["product_name"] = productName;
-    if (productBrand.isNotEmpty) ret["product_brand"] = productBrand;
+    if (sku.isNotEmpty) ret['sku'] = sku;
+    if (productName.isNotEmpty) ret['product_name'] = productName;
+    if (productBrand.isNotEmpty) ret['product_brand'] = productBrand;
     if (productCategory != null) {
-      ret["product_category"] = _getProductCategoryString(productCategory);
+      ret['product_category'] = _getProductCategoryString(productCategory);
     }
-    if (productVariant.isNotEmpty) ret["product_variant"] = productVariant;
+    if (productVariant.isNotEmpty) ret['product_variant'] = productVariant;
     if (condition != null) {
-      ret["condition"] = _getProductConditionString(condition);
+      ret['condition'] = _getProductConditionString(condition);
     }
-    if (ratingAverage > 0) ret["rating_average"] = ratingAverage;
-    if (ratingCount > 0) ret["rating_count"] = ratingCount;
-    if (ratingMax > 0) ret["rating_max"] = ratingMax;
-    if (rating > 0) ret["rating"] = rating;
-    if (_addressStreet.isNotEmpty) ret["address_street"] = _addressStreet;
-    if (_addressCity.isNotEmpty) ret["address_city"] = _addressCity;
-    if (_addressRegion.isNotEmpty) ret["address_region"] = _addressRegion;
-    if (_addressCountry.isNotEmpty) ret["address_country"] = _addressCountry;
+    if (ratingAverage > 0) ret['rating_average'] = ratingAverage;
+    if (ratingCount > 0) ret['rating_count'] = ratingCount;
+    if (ratingMax > 0) ret['rating_max'] = ratingMax;
+    if (rating > 0) ret['rating'] = rating;
+    if (_addressStreet.isNotEmpty) ret['address_street'] = _addressStreet;
+    if (_addressCity.isNotEmpty) ret['address_city'] = _addressCity;
+    if (_addressRegion.isNotEmpty) ret['address_region'] = _addressRegion;
+    if (_addressCountry.isNotEmpty) ret['address_country'] = _addressCountry;
     if (_addressPostalCode.isNotEmpty) {
-      ret["address_postal_code"] = _addressPostalCode;
+      ret['address_postal_code'] = _addressPostalCode;
     }
-    if (_latitude != null) ret["latitude"] = _latitude;
-    if (_longitude != null) ret["longitude"] = _longitude;
-    if (_imageCaptions.isNotEmpty) ret["image_captions"] = _imageCaptions;
+    if (_latitude != null) ret['latitude'] = _latitude;
+    if (_longitude != null) ret['longitude'] = _longitude;
+    if (_imageCaptions.isNotEmpty) ret['image_captions'] = _imageCaptions;
     if (_customMetadata.isNotEmpty) {
-      ret["customMetadata"] = _customMetadata;
+      ret['customMetadata'] = _customMetadata;
     }
     return ret;
   }
@@ -404,38 +404,38 @@ class BranchContentMetaData {
   Map<String, dynamic> toMapWeb() {
     Map<String, dynamic> ret = <String, dynamic>{};
     if (contentSchema != null) {
-      ret["\$content_schema"] = getContentSchemaString(contentSchema);
+      ret['\$content_schema'] = getContentSchemaString(contentSchema);
     }
-    if (quantity > 0) ret["\$quantity"] = quantity;
-    if (price > 0) ret["\$price"] = price;
+    if (quantity > 0) ret['\$quantity'] = quantity;
+    if (price > 0) ret['\$price'] = price;
     if (currencyType != null) {
-      ret["\$currency"] = getCurrencyTypeString(currencyType!);
+      ret['\$currency'] = getCurrencyTypeString(currencyType!);
     }
-    if (sku.isNotEmpty) ret["\$sku"] = sku;
-    if (productName.isNotEmpty) ret["\$product_name"] = productName;
-    if (productBrand.isNotEmpty) ret["\$product_brand"] = productBrand;
+    if (sku.isNotEmpty) ret['\$sku'] = sku;
+    if (productName.isNotEmpty) ret['\$product_name'] = productName;
+    if (productBrand.isNotEmpty) ret['\$product_brand'] = productBrand;
     if (productCategory != null) {
-      ret["\$product_category"] = productCategory.toString().split('.').last;
+      ret['\$product_category'] = productCategory.toString().split('.').last;
     }
-    if (productVariant.isNotEmpty) ret["\$product_variant"] = productVariant;
+    if (productVariant.isNotEmpty) ret['\$product_variant'] = productVariant;
     if (condition != null) {
-      ret["\$condition"] = _getProductConditionString(condition);
+      ret['\$condition'] = _getProductConditionString(condition);
     }
-    if (ratingAverage > 0) ret["\$rating_average"] = ratingAverage;
-    if (ratingCount > 0) ret["\$rating_count"] = ratingCount;
-    if (ratingMax > 0) ret["\$rating_max"] = ratingMax;
-    if (rating > 0) ret["\$rating"] = rating;
-    if (_addressStreet.isNotEmpty) ret["\$address_street"] = _addressStreet;
-    if (_addressCity.isNotEmpty) ret["\$address_city"] = _addressCity;
-    if (_addressRegion.isNotEmpty) ret["\$address_region"] = _addressRegion;
-    if (_addressCountry.isNotEmpty) ret["\$address_country"] = _addressCountry;
+    if (ratingAverage > 0) ret['\$rating_average'] = ratingAverage;
+    if (ratingCount > 0) ret['\$rating_count'] = ratingCount;
+    if (ratingMax > 0) ret['\$rating_max'] = ratingMax;
+    if (rating > 0) ret['\$rating'] = rating;
+    if (_addressStreet.isNotEmpty) ret['\$address_street'] = _addressStreet;
+    if (_addressCity.isNotEmpty) ret['\$address_city'] = _addressCity;
+    if (_addressRegion.isNotEmpty) ret['\$address_region'] = _addressRegion;
+    if (_addressCountry.isNotEmpty) ret['\$address_country'] = _addressCountry;
     if (_addressPostalCode.isNotEmpty) {
-      ret["\$address_postal_code"] = _addressPostalCode;
+      ret['\$address_postal_code'] = _addressPostalCode;
     }
-    if (_latitude != null) ret["\$latitude"] = _latitude;
-    if (_longitude != null) ret["\$longitude"] = _longitude;
+    if (_latitude != null) ret['\$latitude'] = _latitude;
+    if (_longitude != null) ret['\$longitude'] = _longitude;
     if (_imageCaptions.isNotEmpty) {
-      ret["\$image_captions"] = _imageCaptions;
+      ret['\$image_captions'] = _imageCaptions;
     }
     _customMetadata.forEach((key, value) {
       ret[key] = value;
