@@ -49,13 +49,13 @@
             android:name="flutterEmbedding"
             android:value="2" />
        <!-- Branch init -->
-       <meta-data
+       <!-- <meta-data
            android:name="io.branch.sdk.BranchKey"
-           android:value="key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx" />
+           android:value="key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx" /> -->
        <!-- For your test app, if you have one; Again, use your actual test Branch key -->
-       <meta-data
+       <!-- <meta-data
            android:name="io.branch.sdk.BranchKey.test"
-           android:value="key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH" />
+           android:value="key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH" /> -->
        <meta-data
            android:name="io.branch.sdk.TestMode" android:value="true" />
     </application>

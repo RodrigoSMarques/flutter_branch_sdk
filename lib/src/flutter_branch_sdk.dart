@@ -17,12 +17,23 @@ class FlutterBranchSdk {
   /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
   /// Please use `branchAttributionLevel` to control tracking behavior.
   ///
-  static Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+
+  static const messageChannel = MethodChannel(AppConstants.MESSAGE_CHANNEL);
+
+  static Future<void> setBranchKey(String key) async {
+    await messageChannel.invokeMethod('setBranchKey', {'branchKey': key});
+  }
+
+  static Future<void> init({
+    bool enableLogging = false,
+    @Deprecated('use branchAttributionLevel') bool disableTracking = false,
+    BranchAttributionLevel? branchAttributionLevel,
+  }) async {
     await FlutterBranchSdkPlatform.instance.init(
-        enableLogging: enableLogging, disableTracking: disableTracking, branchAttributionLevel: branchAttributionLevel);
+      enableLogging: enableLogging,
+      disableTracking: disableTracking,
+      branchAttributionLevel: branchAttributionLevel,
+    );
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -68,24 +79,28 @@ class FlutterBranchSdk {
   }
 
   ///Creates a short url for the BUO
-  static Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
+  static Future<BranchResponse> getShortUrl({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+  }) async {
     return FlutterBranchSdkPlatform.instance.getShortUrl(buo: buo, linkProperties: linkProperties);
   }
 
   ///Showing a Share Sheet
-  static Future<BranchResponse> showShareSheet(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required String messageText,
-      String androidMessageTitle = '',
-      String androidSharingTitle = ''}) async {
+  static Future<BranchResponse> showShareSheet({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required String messageText,
+    String androidMessageTitle = '',
+    String androidSharingTitle = '',
+  }) async {
     return FlutterBranchSdkPlatform.instance.showShareSheet(
-        buo: buo,
-        linkProperties: linkProperties,
-        messageText: messageText,
-        androidMessageTitle: androidMessageTitle,
-        androidSharingTitle: androidSharingTitle);
+      buo: buo,
+      linkProperties: linkProperties,
+      messageText: messageText,
+      androidMessageTitle: androidMessageTitle,
+      androidSharingTitle: androidSharingTitle,
+    );
   }
 
   ///Logs this BranchEvent to Branch for tracking and analytics
@@ -176,36 +191,49 @@ class FlutterBranchSdk {
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
-  static Future<BranchResponse> getQRCodeAsData(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCode}) async {
-    return FlutterBranchSdkPlatform.instance
-        .getQRCodeAsData(buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
+  static Future<BranchResponse> getQRCodeAsData({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCode,
+  }) async {
+    return FlutterBranchSdkPlatform.instance.getQRCodeAsData(
+      buo: buo,
+      linkProperties: linkProperties,
+      qrCodeSettings: qrCode,
+    );
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as a Image.
-  static Future<BranchResponse> getQRCodeAsImage(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCode}) async {
-    return FlutterBranchSdkPlatform.instance
-        .getQRCodeAsImage(buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCode);
+  static Future<BranchResponse> getQRCodeAsImage({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCode,
+  }) async {
+    return FlutterBranchSdkPlatform.instance.getQRCodeAsImage(
+      buo: buo,
+      linkProperties: linkProperties,
+      qrCodeSettings: qrCode,
+    );
   }
 
   ///Share with LPLinkMetadata on iOS
-  static void shareWithLPLinkMetadata(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required Uint8List icon,
-      required String title}) {
+  static void shareWithLPLinkMetadata({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required Uint8List icon,
+    required String title,
+  }) {
     Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
     params['title'] = title;
 
-    FlutterBranchSdkPlatform.instance
-        .shareWithLPLinkMetadata(buo: buo, linkProperties: linkProperties, icon: icon, title: title);
+    FlutterBranchSdkPlatform.instance.shareWithLPLinkMetadata(
+      buo: buo,
+      linkProperties: linkProperties,
+      icon: icon,
+      title: title,
+    );
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
@@ -245,12 +273,16 @@ class FlutterBranchSdk {
   /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
-  static void setDMAParamsForEEA(
-      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
+  static void setDMAParamsForEEA({
+    required bool eeaRegion,
+    required bool adPersonalizationConsent,
+    required bool adUserDataUsageConsent,
+  }) {
     FlutterBranchSdkPlatform.instance.setDMAParamsForEEA(
-        eeaRegion: eeaRegion,
-        adPersonalizationConsent: adPersonalizationConsent,
-        adUserDataUsageConsent: adUserDataUsageConsent);
+      eeaRegion: eeaRegion,
+      adPersonalizationConsent: adPersonalizationConsent,
+      adUserDataUsageConsent: adUserDataUsageConsent,
+    );
   }
 
   /// Sets the consumer protection attribution level.
