@@ -31,6 +31,7 @@ void main() async {
   FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
 
+  await FlutterBranchSdk.e setBranchKey('r');
   await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
 
