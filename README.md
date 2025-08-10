@@ -10,8 +10,13 @@ Branch.io helps mobile apps grow with deep links that power referral systems, sh
 
 Supports Android, iOS and Web.
 
-* Android - Branch SDK Version >= 5.15.0 [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-* iOS - Branch SDK Version >= 3.9.0 [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+| Platform | Version | History 
+| --- | --- | ---
+| Android | 5.19.+ | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| iOS | 3.12.+ | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+| Web | 2.86.4 | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+
 
 Implemented functions in plugin:
 
@@ -43,8 +48,30 @@ For details see:
 * [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#1-configure-branch-dashboard)
 
 ## Configure Platform Project
-### Android Integration
+### Disable default Flutter Deep Linking (Android / iOS)
 
+**Flutter version 3.27** has a [_breaking change_](https://docs.google.com/document/d/1TUhaEhNdi2BUgKWQFEbOzJgmUAlLJwIAhnFfZraKgQs/edit?tab=t.0) that alters the behavior of the Deep link default flag.
+
+You must manually set the value to **FALSE** in the project, according to the instructions below.
+
+#### iOS
+1. Navigate to **ios/Runner/Info.plist** file.
+2. Add the following in `<dict>` chapter:
+
+```xml
+<key>FlutterDeepLinkingEnabled</key>
+<false/>
+```
+
+#### Android
+1. Navigate to **android/app/src/main/AndroidManifest.xml** file.
+2. Add the following metadata tag and intent filter inside the tag with `.MainActivity`
+
+```xml
+<meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
+```
+
+### Android Integration
 Follow only the steps:
 
 * [Configure App](https://help.branch.io/developers-hub/docs/android-basic-integration#4-configure-app)
@@ -79,41 +106,22 @@ If you want to disable NativeLink™ Deferred Deep Linking, follow the instructi
 	<true/>
 ```
 
-### Change Flutter Deep link flag (Android / iOS)
-
-**Flutter version 3.27** has a [_breaking change_](https://docs.google.com/document/d/1TUhaEhNdi2BUgKWQFEbOzJgmUAlLJwIAhnFfZraKgQs/edit?tab=t.0) that alters the behavior of the Deep link default flag.
-
-You must manually set the value to **FALSE** in the project, according to the instructions below.
-
-#### iOS
-
-1. Navigate to **ios/Runner/Info.plist** file. 
-2. Add the following in `<dict>` chapter:
-
-```xml
-<key>FlutterDeepLinkingEnabled</key>
-<false/>
-```
-#### Android
-
-1. Navigate to **android/app/src/main/AndroidManifest.xml** file.
-2. Add the following metadata tag and intent filter inside the tag with `.MainActivity`
-
-```xml
-<meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
-```
-
 ### Web Integration
-
 You need add Branch Javascript in your `web\index.html` at the top of your `<body>` tag, to be able to use this package.
 
-```javascript
+```javascript  
   <script>
     // load Branch
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener banner closeBanner closeJourney data deepview deepviewCta first init link logout removeListener setBranchViewData setIdentity track trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData setAPIResponseCallback qrCode setRequestMetaData setAPIUrl getAPIUrl setDMAParamsForEEA".split(" "), 0);
-    // init Branch
-    branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
+    var options = { 'no_journeys': true, 'tracking_disabled' : false };
+    // init Branch - Replace key_live_YOUR_KEY_GOES_HERE with your Branch Key (live version)
+    branch.init('key_live_or_test_YOUR_KEY_GOES_HERE', options, function(err, data) {
+      if (err != null) {
+        console.log('err: ' + err);
+      }
+    });
   </script>
+  
 ```
 Change `key_live_or_test_YOUR_KEY_GOES_HERE ` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
 
@@ -132,10 +140,13 @@ Full example `index.html`:
     The path provided below has to start and end with a slash "/" in order for
     it to work correctly.
 
-    Fore more details:
+    For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="/">
+  <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -144,35 +155,32 @@ Full example `index.html`:
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="flutter_branch_sdk_example">
+  <meta name="apple-mobile-web-app-title" content="Flutter Branch SDK Example">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>flutter_branch_sdk_example</title>
+  <title>Flutter Branch SDK Example</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
   <script>
     // load Branch
     (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener banner closeBanner closeJourney data deepview deepviewCta first init link logout removeListener setBranchViewData setIdentity track trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData setAPIResponseCallback qrCode setRequestMetaData setAPIUrl getAPIUrl setDMAParamsForEEA".split(" "), 0);
-    // init Branch
-    branch.init('key_live_or_test_YOUR_KEY_GOES_HERE');
+    var options = { 'no_journeys': true, 'tracking_disabled' : false };
+    // init Branch - Replace key_live_YOUR_KEY_GOES_HERE with your Branch Key (live version)
+    branch.init('key_live_or_test_YOUR_KEY_GOES_HERE', options, function(err, data) {
+      if (err != null) {
+        console.log('err: ' + err);
+      }
+    });
   </script>
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('flutter-first-frame', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
-    }
-  </script>
-  <script src="main.dart.js" type="application/javascript"></script>
+
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
+
 
 ```
 
@@ -220,44 +228,12 @@ Test your Branch Integration by calling:
 FlutterBranchSdk.validateSDKIntegration();
 ```
 
-Check logs to make sure all the SDK Integration tests pass.
+Android | iOS
+ --- | --- |
+ ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_android.png) |  ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_ios.png) |
 
-Example of log for Android:
 
-```java
-------------------- Initiating Branch integration verification --------------------------- ... 
-1. Verifying Branch instance creation ... 
-Passed
-2. Checking Branch keys ... 
-Passed
-3. Verifying application package name ... 
-Passed
-4. Checking Android Manifest for URI based deep link config ... 
-Passed
-5. Verifying URI based deep link config with Branch dash board. ... 
-Passed
-6. Verifying intent for receiving URI scheme. ... 
-Passed
-7. Checking AndroidManifest for AppLink config. ... 
-Passed
-8. Verifying any supported custom link domains. ... 
-Passed
-9. Verifying default link domains integrations. ... 
-Passed
-10. Verifying alternate link domains integrations. ... 
-Passed
-Passed
---------------------------------------------
-Successfully completed Branch integration validation. Everything looks good!
- 
-Great! Comment out the 'validateSDKIntegration' line in your app. Next check your deep link routing.
-Append '?bnc_validate=true' to any of your app's Branch links and click it on your mobile device (not the Simulator!) to start the test.
-For instance, to validate a link like:
-https://<yourapp>.app.link/NdJ6nFzRbK
-click on:
-https://<yourapp>.app.link/NdJ6nFzRbK?bnc_validate=true
-```
-Make sure to comment out or remove `validateSDKIntegration` in your production build.
+Make sure to comment out or remove `validateSDKIntegration` in your release build.
 
 ### Read deep link
 

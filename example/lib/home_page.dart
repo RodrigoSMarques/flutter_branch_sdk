@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -153,7 +152,7 @@ class _HomePageState extends State<HomePage> {
         // (i.e. the URL of this piece of content on the web) when building any BUO.
         // By doing so, we’ll attribute clicks on the links that you generate back to their original web page,
         // even if the user goes to the app instead of your website! This will help your SEO efforts.
-        //canonicalUrl: 'https://flutter.dev',
+        canonicalUrl: 'https://flutter.dev',
         title: 'Flutter Branch Plugin - $dateString',
         imageUrl: imageURL,
         contentDescription: 'Flutter Branch Description - $dateString',
@@ -172,7 +171,7 @@ class _HomePageState extends State<HomePage> {
         //Instead of our standard encoded short url, you can specify the vanity alias.
         // For example, instead of a random string of characters/integers, you can set the vanity alias as *.app.link/devonaustin.
         // Aliases are enforced to be unique** and immutable per domain, and per link - they cannot be reused unless deleted.
-        //alias: 'https://branch.io' //define link url,
+        //alias: 'https://branch.io', //define link url,
         //alias: 'p/$canonicalIdentifier', //define link url,
         stage: 'new share',
         campaign: 'campaign',
@@ -212,12 +211,17 @@ class _HomePageState extends State<HomePage> {
       ..addCustomData('Custom_Event_Property_Key2', 'Custom_Event_Property_val2');
   }
 
-  void showSnackBar({required String message, int duration = 2}) {
+  void showSnackBar({required String message, int duration = 2, bool error = false}) {
     scaffoldMessengerKey.currentState!.removeCurrentSnackBar();
     scaffoldMessengerKey.currentState!.showSnackBar(
       SnackBar(
         content: Text(message),
         duration: Duration(seconds: duration),
+        backgroundColor: !error ? Colors.green : Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
       ),
     );
   }
@@ -229,12 +233,13 @@ class _HomePageState extends State<HomePage> {
     }
 
     FlutterBranchSdk.validateSDKIntegration();
-    if (Platform.isAndroid) {
-      showSnackBar(message: 'Check messages in run log or logcat');
-    }
   }
 
   void setConsumerProtectionFull() {
+    if (kIsWeb) {
+      showSnackBar(message: 'setConsumerProtectionFull() not available in Flutter Web');
+      return;
+    }
     FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
     showSnackBar(message: 'Consumer Preference Levels: Full Attribution');
   }
@@ -300,7 +305,8 @@ class _HomePageState extends State<HomePage> {
       controllerData.sink.add(response.result.toString());
       showSnackBar(message: 'Last Attributed TouchData recovered');
     } else {
-      showSnackBar(message: 'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}', duration: 5);
+      showSnackBar(
+          message: 'getLastAttributed Error: ${response.errorCode} - ${response.errorMessage}', duration: 5, error: true);
     }
   }
 
@@ -333,21 +339,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   void generateLink(BuildContext context) async {
-    initDeepLinkData();
-    BranchResponse response = await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
-    if (response.success) {
-      if (context.mounted) {
-        showGeneratedLink(context, response.result);
+    try {
+      initDeepLinkData();
+      BranchResponse response = await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+      if (response.success) {
+        if (context.mounted) {
+          showGeneratedLink(context, response.result);
+        }
+      } else {
+        showSnackBar(message: 'Error : ${response.errorCode} - ${response.errorMessage}', error: true);
       }
-    } else {
-      showSnackBar(message: 'Error : ${response.errorCode} - ${response.errorMessage}');
+    } catch (error) {
+      showSnackBar(message: 'Error : ${error.toString()}', error: true);
     }
   }
 
   void generateQrCode(
     BuildContext context,
   ) async {
-    /*
+    try {
+      initDeepLinkData();
+      /*
     BranchResponse responseQrCodeData = await FlutterBranchSdk.getQRCodeAsData(
         buo: buo!,
         linkProperties: lp,
@@ -360,153 +372,172 @@ class _HomePageState extends State<HomePage> {
     if (responseQrCodeData.success) {
       print(responseQrCodeData.result);
     } else {
-      print(
-          'Error : ${responseQrCodeData.errorCode} - ${responseQrCodeData.errorMessage}');
+      showSnackBar(message: 'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeData.errorMessage}', error: true);
     }
      */
-    initDeepLinkData();
-    BranchResponse responseQrCodeImage = await FlutterBranchSdk.getQRCodeAsImage(
-        buo: buo,
-        linkProperties: lp,
-        qrCode: BranchQrCode(
-            primaryColor: Colors.black,
-            //primaryColor: const Color(0xff443a49), //Hex colors
-            centerLogoUrl: imageURL,
-            backgroundColor: Colors.white,
-            imageFormat: BranchImageFormat.PNG));
-    if (responseQrCodeImage.success) {
-      if (context.mounted) {
-        showQrCode(context, responseQrCodeImage.result);
+      BranchResponse responseQrCodeImage = await FlutterBranchSdk.getQRCodeAsImage(
+          buo: buo,
+          linkProperties: lp,
+          qrCode: BranchQrCode(
+              primaryColor: Colors.black,
+              //primaryColor: const Color(0xff443a49), //Hex colors
+              centerLogoUrl: imageURL,
+              backgroundColor: Colors.white,
+              imageFormat: BranchImageFormat.PNG));
+      if (responseQrCodeImage.success) {
+        if (context.mounted) {
+          showQrCode(context, responseQrCodeImage.result);
+        }
+      } else {
+        showSnackBar(
+            message: 'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}', error: true);
       }
-    } else {
-      showSnackBar(message: 'Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
+    } catch (error) {
+      showSnackBar(message: 'Error : ${error.toString()}', error: true);
     }
   }
 
   void showGeneratedLink(BuildContext context, String url) async {
-    initDeepLinkData();
-    FlutterBranchSdk.setRequestMetadata('key1_1', 'value1');
-    FlutterBranchSdk.setRequestMetadata('key2_1', 'value2');
-    showModalBottomSheet(
-        isDismissible: true,
-        isScrollControlled: true,
-        context: context,
-        builder: (_) {
-          return Container(
-            padding: const EdgeInsets.all(12),
-            height: 200,
-            child: Column(
-              children: <Widget>[
-                const Center(
-                    child: Text(
-                  'Link created',
-                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                )),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(url, maxLines: 1, style: const TextStyle(overflow: TextOverflow.ellipsis)),
-                const SizedBox(
-                  height: 10,
-                ),
-                IntrinsicWidth(
-                  stepWidth: 300,
-                  child: CustomButton(
-                      onPressed: () async {
-                        await Clipboard.setData(ClipboardData(text: url));
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: const Center(child: Text('Copy link'))),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                IntrinsicWidth(
-                  stepWidth: 300,
-                  child: CustomButton(
-                      onPressed: () {
-                        FlutterBranchSdk.handleDeepLink(url);
-                        Navigator.pop(this.context);
-                      },
-                      child: const Center(child: Text('Handle deep link'))),
-                ),
-              ],
-            ),
-          );
-        });
+    try {
+      initDeepLinkData();
+      //FlutterBranchSdk.setRequestMetadata('key1_1', 'value1');
+      //FlutterBranchSdk.setRequestMetadata('key2_1', 'value2');
+      showModalBottomSheet(
+          isDismissible: true,
+          isScrollControlled: true,
+          context: context,
+          builder: (_) {
+            return Container(
+              padding: const EdgeInsets.all(12),
+              height: 200,
+              child: Column(
+                children: <Widget>[
+                  const Center(
+                      child: Text(
+                    'Link created',
+                    style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(url, maxLines: 1, style: const TextStyle(overflow: TextOverflow.ellipsis)),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  IntrinsicWidth(
+                    stepWidth: 300,
+                    child: CustomButton(
+                        onPressed: () async {
+                          await Clipboard.setData(ClipboardData(text: url));
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Center(child: Text('Copy link'))),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  IntrinsicWidth(
+                    stepWidth: 300,
+                    child: CustomButton(
+                        onPressed: () {
+                          FlutterBranchSdk.handleDeepLink(url);
+                          Navigator.pop(this.context);
+                        },
+                        child: const Center(child: Text('Handle deep link'))),
+                  ),
+                ],
+              ),
+            );
+          });
+    } catch (error) {
+      showSnackBar(message: 'Error : ${error.toString()}', error: true);
+    }
   }
 
   void showQrCode(BuildContext context, Image image) async {
-    showModalBottomSheet(
-        isDismissible: true,
-        isScrollControlled: true,
-        context: context,
-        builder: (_) {
-          return Container(
-            padding: const EdgeInsets.all(12),
-            height: 370,
-            child: Column(
-              children: <Widget>[
-                const Center(
-                    child: Text(
-                  'Qr Code',
-                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                )),
-                const SizedBox(
-                  height: 10,
-                ),
-                Image(
-                  image: image.image,
-                  height: 250,
-                  width: 250,
-                ),
-                IntrinsicWidth(
-                  stepWidth: 300,
-                  child: CustomButton(
-                      onPressed: () => Navigator.pop(this.context), child: const Center(child: Text('Close'))),
-                ),
-              ],
-            ),
-          );
-        });
+    try {
+      showModalBottomSheet(
+          isDismissible: true,
+          isScrollControlled: true,
+          context: context,
+          builder: (_) {
+            return Container(
+              padding: const EdgeInsets.all(12),
+              height: 370,
+              child: Column(
+                children: <Widget>[
+                  const Center(
+                      child: Text(
+                    'Qr Code',
+                    style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Image(
+                    image: image.image,
+                    height: 250,
+                    width: 250,
+                  ),
+                  IntrinsicWidth(
+                    stepWidth: 300,
+                    child: CustomButton(
+                        onPressed: () => Navigator.pop(this.context), child: const Center(child: Text('Close'))),
+                  ),
+                ],
+              ),
+            );
+          });
+    } catch (error) {
+      showSnackBar(message: 'Error : ${error.toString()}', error: true);
+    }
   }
 
   void shareLink() async {
-    initDeepLinkData();
-    BranchResponse response = await FlutterBranchSdk.showShareSheet(
-        buo: buo,
-        linkProperties: lp,
-        messageText: 'My Share text',
-        androidMessageTitle: 'My Message Title',
-        androidSharingTitle: 'My Share with');
+    try {
+      initDeepLinkData();
+      BranchResponse response = await FlutterBranchSdk.showShareSheet(
+          buo: buo,
+          linkProperties: lp,
+          messageText: 'My Share text',
+          androidMessageTitle: 'My Message Title',
+          androidSharingTitle: 'My Share with');
 
-    if (response.success) {
-      showSnackBar(message: 'showShareSheet Success', duration: 5);
-    } else {
-      showSnackBar(message: 'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}', duration: 5);
+      if (response.success) {
+        showSnackBar(message: 'showShareSheet Success', duration: 5);
+      } else {
+        showSnackBar(
+            message: 'showShareSheet Error: ${response.errorCode} - ${response.errorMessage}', duration: 5, error: true);
+      }
+    } catch (error) {
+      showSnackBar(message: 'Error : ${error.toString()}', error: true);
     }
   }
 
   void shareWithLPLinkMetadata() async {
-    /// Create a BranchShareLink instance with a BranchUniversalObject and LinkProperties.
-    /// Set the BranchShareLink's LPLinkMetadata by using the addLPLinkMetadata() function.
-    ///Present the BranchShareLink's Share Sheet.
+    try {
+      /// Create a BranchShareLink instance with a BranchUniversalObject and LinkProperties.
+      /// Set the BranchShareLink's LPLinkMetadata by using the addLPLinkMetadata() function.
+      ///Present the BranchShareLink's Share Sheet.
 
-    ///Load icon from Assets
-    final iconData = (await rootBundle.load('assets/images/branch_logo.jpeg')).buffer.asUint8List();
+      ///Load icon from Assets
+      final iconData = (await rootBundle.load('assets/images/branch_logo.jpeg')).buffer.asUint8List();
 
-    /*
+      /*
     ///Load icon from Web
     final iconData =
         (await NetworkAssetBundle(Uri.parse(imageURL)).load(imageURL))
             .buffer
             .asUint8List();
     */
-    initDeepLinkData();
-    FlutterBranchSdk.shareWithLPLinkMetadata(
-        buo: buo, linkProperties: lp, title: 'Share With LPLinkMetadata', icon: iconData);
+      initDeepLinkData();
+      FlutterBranchSdk.shareWithLPLinkMetadata(
+          buo: buo, linkProperties: lp, title: 'Share With LPLinkMetadata', icon: iconData);
+    } catch (error) {
+      showSnackBar(message: 'Error : ${error.toString()}', error: true);
+    }
   }
 
   @override
