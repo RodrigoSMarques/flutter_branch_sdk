@@ -410,4 +410,27 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     messageChannel.invokeMethod('setConsumerProtectionAttributionLevel',
         {'branchAttributionLevel': getBranchAttributionLevelString(branchAttributionLevel)});
   }
+
+  /// Sets a custom Meta Anon ID for the current user.
+  /// [anonID] The custom Meta Anon ID to be used by Branch.
+  /// Only for iOS.
+  @override
+  void setAnonID(String anonId) {
+    if (!Platform.isIOS) {
+      return;
+    }
+    messageChannel.invokeMethod('setAnonID', {'anonId': anonId});
+  }
+
+  /// Set the SDK wait time for third party APIs (for fetching ODM info and Apple Attribution Token) to finish
+  /// This timeout should be > 0 and <= 10 seconds.
+  /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
+  /// Only for iOS.
+  @override
+  void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
+    if (!Platform.isIOS) {
+      return;
+    }
+    messageChannel.invokeMethod('setSDKWaitTimeForThirdPartyAPIs', {'waitTime': waitTime});
+  }
 }

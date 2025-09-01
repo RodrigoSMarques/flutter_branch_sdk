@@ -31,6 +31,9 @@ void main() async {
   FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
 
+  FlutterBranchSdk.setAnonID('1234556');
+  FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
+
   await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
 
