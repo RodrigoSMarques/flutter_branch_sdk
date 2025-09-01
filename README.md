@@ -12,10 +12,10 @@ Supports Android, iOS and Web.
 
 
 | Platform | Version | History 
-| --- | --- | ---
-| Android | 5.19.+ | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-| iOS | 3.12.+ | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-| Web | 2.86.4 | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+| --- |---------| ---
+| Android | 5.20.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| iOS | 3.13.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+| Web | 2.86.4  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
 
 Implemented functions in plugin:

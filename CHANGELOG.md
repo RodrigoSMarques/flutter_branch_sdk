@@ -1,3 +1,13 @@
+## 8.7.0
+### 🔧 Native SDK Updates
+* Updated included iOS SDK to 3.13.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Updated included Branch Android SDK to 5.20.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
+### 🎉 Features
+* New Methods:
+    - `setAnonID` - Sets a custom Meta Anon ID for the current user.
+    - `setSDKWaitTimeForThirdPartyAPIs` - Set the SDK wait time for third party APIs (for fetching ODM info and Apple Attribution Token) to finish
+
 ## 8.6.0
 ### 🔧 Native SDK Updates
 * Updated included Branch Android SDK to 5.19.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
