@@ -1,6 +1,6 @@
 ## 8.7.1
 ### 🐛 Bug Fixes
-* Fix issue #461 : iOS Build Failure using Cocoapods
+* Fix issue #461 : iOS Build Failure using CocoaPods
 
 ## 8.7.0
 ### 🔧 Native SDK Updates
