@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/BranchMetrics/react-native-branch-deep-linking-attribution/blob/master/docs/branch.json.md",
+  "branchKey": "branchKey",
+  "debugMode": true,
+  "liveKey": "key_live_xxxx",
+  "testKey": "key_test_yyyy",
+  "useTestInstance": true,
+  "enableFacebookLinkCheck": true
+}

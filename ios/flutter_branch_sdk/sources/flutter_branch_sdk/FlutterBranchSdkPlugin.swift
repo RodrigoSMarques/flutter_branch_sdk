@@ -259,13 +259,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
 #if DEBUG
         NSLog("setupBranch args: %@", args)
 #endif
-        
-        if args["disableTracking"] as! Bool == true {
-            Branch.setTrackingDisabled(true)
-        } else {
-            Branch.setTrackingDisabled(false)
-        }
-        
+                
         let branchAttributionLevel = args["branchAttributionLevel"] as! String
         if (!branchAttributionLevel.isEmpty) {
             Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))

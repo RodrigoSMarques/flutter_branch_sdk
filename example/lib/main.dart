@@ -17,7 +17,6 @@ void main() async {
 
   //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
   //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
-  //FlutterBranchSdk.clearPartnerParameters();
   /*
   FlutterBranchSdk.addFacebookPartnerParameter(
       key: 'em',
@@ -28,7 +27,7 @@ void main() async {
       value:
           '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   FlutterBranchSdk.setRequestMetadata('key1', 'value1');
-  FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
+  FlutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
 
   FlutterBranchSdk.setAnonID('1234556');

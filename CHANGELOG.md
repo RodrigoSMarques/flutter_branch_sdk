@@ -1,3 +1,11 @@
+## 8.8.0
+### 🎉 Features
+* Code review to remove build warnings for Android
+* Update Android Gradle Plugin (AGP) to 16KB Page Size Compatibility
+
+### Removal of deprecated methods
+* `FlutterBranchSdk.disableTracking()`
+
 ## 8.7.1
 ### 🐛 Bug Fixes
 * Fix issue #461 : iOS Build Failure using CocoaPods

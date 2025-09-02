@@ -230,7 +230,7 @@ FlutterBranchSdk.validateSDKIntegration();
 
 Android | iOS
  --- | --- |
- ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_android.png) |  ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_ios.png) |
+ ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_android.png?raw=true) |  ![](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/validate_sdk_ios.png?raw=true) |
 
 
 Make sure to comment out or remove `validateSDKIntegration` in your release build.
@@ -622,7 +622,7 @@ print(status);
 ```
 > Note: After the user's response, call the `handleATTAuthorizationStatus` Branch SDK method to monitor the performance of the ATT prompt.
 
-![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/app_tracking_dialog.png)
+![App tracking dialog](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/app_tracking_dialog.png?raw=true)
 
 
 #### Get tracking authorization status
@@ -714,16 +714,16 @@ Add or update the code below in `AndroidManifest.xml`:
 
 4) Select the `branch.json` file and make sure every target in your project that uses Branch is selected.
 
-![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_add.png)
+![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_add.png?raw=true)
 
-![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_project.png)
+![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_project.png?raw=true)
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 
 # Getting Started
 See the `example` directory for a complete sample app using Branch SDK.
 
-![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/example.png)
+![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/example.png?raw=true)
 
 See example in Flutter Web: [https://flutter-branch-sdk.netlify.app/](https://flutter-branch-sdk.netlify.app/#/)
 
@@ -749,7 +749,7 @@ Practices to avoid:
 * Deep links with [Long links](https://help.branch.io/using-branch/docs/creating-a-deep-link#long-links)
 
 # Data Privacy
-* [Introducing Consumer Protection Preference Levels] (https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) 
+* [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) 
 * [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 * [Answering the App Store Connect Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-app-store-connect-privacy-questions)
 * [Answering the Google Play Store Privacy Questions](https://help.branch.io/using-branch/docs/answering-the-google-play-store-privacy-questions)
@@ -772,6 +772,7 @@ Read the iOS or Android documentation for all Branch object parameters:
 
 * Android - [https://help.branch.io/developers-hub/docs/android-advanced-features](https://help.branch.io/developers-hub/docs/android-advanced-features)
 * iOS - [https://help.branch.io/developers-hub/docs/ios-advanced-features](https://help.branch.io/developers-hub/docs/ios-advanced-features)
+* Web - [https://help.branch.io/developers-hub/docs/web-advanced-features](https://help.branch.io/developers-hub/docs/web-advanced-features)
 
 # Author
 This project was authored by Rodrigo S. Marques. You can contact me at [rodrigosmarques@gmail.com](mailto:rodrigosmarques@gmail.com)
