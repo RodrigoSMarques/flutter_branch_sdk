@@ -510,4 +510,19 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void setConsumerProtectionAttributionLevel(BranchAttributionLevel branchAttributionLevel) {
     debugPrint('setConsumerProtectionAttributionLevel() Not supported by Branch JS SDK');
   }
+
+  /// Sets a custom Meta Anon ID for the current user.
+  /// [anonID] The custom Meta Anon ID to be used by Branch.
+  @override
+  void setAnonID(String anonId) {
+    debugPrint('setAnonID() Not supported by Branch JS SDK');
+  }
+
+  /// Set the SDK wait time for third party APIs (for fetching ODM info and Apple Attribution Token) to finish
+  /// This timeout should be > 0 and <= 10 seconds.
+  /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
+  @override
+  void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
+    debugPrint('setSDKWaitTimeForThirdPartyAPIs() Not supported by Branch JS SDK');
+  }
 }
