@@ -1,3 +1,7 @@
+## 8.7.1
+### 🐛 Bug Fixes
+* Fix issue #461 : iOS Build Failure using Cocoapods
+
 ## 8.7.0
 ### 🔧 Native SDK Updates
 * Updated included iOS SDK to 3.13.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
