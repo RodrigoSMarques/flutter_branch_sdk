@@ -4,7 +4,6 @@ version = '1.0'
 def getPackageVersion() {
     def props = new Properties()
     file('../pubspec.yaml').withInputStream { props.load(it) }
-    // println props.getProperty("version")
     props.getProperty("version")
 }
 
@@ -50,7 +49,7 @@ android {
     }
 
     dependencies {
-        implementation 'io.branch.sdk.android:library:5.19.+'
+        implementation 'io.branch.sdk.android:library:5.20.+'
         implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
         implementation 'androidx.lifecycle:lifecycle-runtime:2.9.2'
         implementation 'androidx.browser:browser:1.8.0'

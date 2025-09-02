@@ -234,6 +234,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         case "setConsumerProtectionAttributionLevel" :
             setConsumerProtectionAttributionLevel(call: call)
             break;
+        case "setAnonID":
+            setAnonID(call: call)
+            break;
+        case "setSDKWaitTimeForThirdPartyAPIs":
+            setSDKWaitTimeForThirdPartyAPIs(call: call)
+            break;
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -729,4 +735,31 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             }
         }
     }
+    
+    /*
+     Sets a custom Meta Anon ID for the current user.
+     @param anonID The custom Meta Anon ID to be used by Branch.
+     */
+    private func setAnonID (call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let anonId = args["anonId"] as! String
+        print("Branch setAnonID: \(String(describing:anonId))");
+        DispatchQueue.main.async {
+            Branch.setAnonID(anonId)
+        }
+    }
+    /*
+     Set the SDK wait time for third party APIs (for fetching ODM info and Apple Attribution Token) to finish
+     This timeout should be > 0 and <= 10 seconds.
+     @param waitTime Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
+     */
+    private func setSDKWaitTimeForThirdPartyAPIs (call: FlutterMethodCall) {
+        let args = call.arguments as! [String: Any?]
+        let waitTime = args["waitTime"] as? Double ?? 0
+        print("Branch setSDKWaitTimeForThirdPartyAPIs: \(String(describing:waitTime))");
+        DispatchQueue.main.async {
+            Branch.setSDKWaitTimeForThirdPartyAPIs(waitTime)
+        }
+    }
+
 }
