@@ -415,4 +415,11 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     }
     messageChannel.invokeMethod('setSDKWaitTimeForThirdPartyAPIs', {'waitTime': waitTime});
   }
+
+  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
+  ///[url] The URL base URL that the Branch API uses.
+  @override
+  void setAPIUrl(String url) {
+    messageChannel.invokeMethod('setAPIUrl', {'apiURL': url});
+  }
 }

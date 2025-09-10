@@ -259,4 +259,10 @@ class FlutterBranchSdk {
   static void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     FlutterBranchSdkPlatform.instance.setSDKWaitTimeForThirdPartyAPIs(waitTime);
   }
+
+  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
+  ///[url] The URL base URL that the Branch API uses.
+  static void setAPIUrl(String url) {
+    FlutterBranchSdkPlatform.instance.setAPIUrl(url);
+  }
 }

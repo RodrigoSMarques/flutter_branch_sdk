@@ -525,4 +525,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     debugPrint('setSDKWaitTimeForThirdPartyAPIs() Not supported by Branch JS SDK');
   }
+
+  @override
+  void setAPIUrl(String url) {
+    debugPrint('setAPIUrl() Not supported by Branch JS SDK');
+  }
 }

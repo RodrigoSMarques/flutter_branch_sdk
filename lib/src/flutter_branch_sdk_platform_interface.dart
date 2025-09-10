@@ -269,4 +269,10 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     throw UnimplementedError('setSDKWaitTimeForThirdPartyAPIs has not been implemented');
   }
+
+  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
+  ///[url] The URL base URL that the Branch API uses.
+  void setAPIUrl(String url) {
+    throw UnimplementedError('setAPIUrl has not been implemented');
+  }
 }

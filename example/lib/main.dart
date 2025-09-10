@@ -30,6 +30,7 @@ void main() async {
   FlutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
 
+  FlutterBranchSdk.setAPIUrl('https://api2.branch.io');
   FlutterBranchSdk.setAnonID('1234556');
   FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
 
