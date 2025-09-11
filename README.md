@@ -194,7 +194,9 @@ Full example `index.html`:
 
 ## (Optional) Configuration via `branch-config.json`
 
-One way to configure keys and other settings is through a JSON configuration file. This method allows you to easily manage your test and active keys without modifying native code.
+One way to configure keys and other settings is through a JSON configuration file. 
+
+This method allows you to easily manage your test and active keys without modifying native code.
 
 The plugin will automatically read this file on startup (only Android/iOs).
 
