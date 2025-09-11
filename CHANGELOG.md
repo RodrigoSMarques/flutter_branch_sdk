@@ -1,9 +1,9 @@
 ## 8.8.0
 ### 🎉 Features
-* Configuration via `branch-config.json` file. 
+* Configuration through `branch-config.json` file. 
 	- Some settings can be configured by adding an `assets/branch-config.json` file to your project. 
 	- This eliminates the need for manual modifications to native files (`AndroidManifest.xml` and `Info.plist`). 
-	- Easily toggle between your test and live keys within the `branch-config.json` file, streamlining the development and release process.
+	- Toggle between your test and live keys within the `branch-config.json` file, streamlining the development and release process.
 	- The `branch-config.json` file and its keys are optional. The plugin will gracefully handle its absence, allowing for programmatic setup or backward compatibility with the manual native setup. If the file is present but a key is missing, the plugin will use default values where applicable.
 	- Read the **README.md** for full instructions for JSON-based configuration.
 
