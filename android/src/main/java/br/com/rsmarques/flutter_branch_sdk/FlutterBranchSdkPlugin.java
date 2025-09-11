@@ -121,6 +121,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         LogUtils.debug(DEBUG_NAME, "triggered onAttachedToEngine");
         setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext());
+
+        branchJsonConfig = BranchJsonConfig.loadFromFile(context, binding);
     }
 
     @Override
@@ -426,7 +428,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     Branch.getInstance().setBranchKey(branchJsonConfig.testKey);
                     LogUtils.debug(DEBUG_NAME, "Set Test Key from branch-config.json: " + branchJsonConfig.testKey);
 
-                } else {
+                } else if (!branchJsonConfig.liveKey.isEmpty()) {
                     Branch.getInstance().setBranchKey(branchJsonConfig.liveKey);
                     LogUtils.debug(DEBUG_NAME, "Set Live Key from branch-config.json: " + branchJsonConfig.liveKey);
                 }

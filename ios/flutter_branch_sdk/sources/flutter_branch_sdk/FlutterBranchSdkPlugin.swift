@@ -71,7 +71,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 if (useTestInstance && !testKey.isEmpty) {
                     Branch.setBranchKey(testKey)
                     LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
-                } else {
+                } else if (!liveKey.isEmpty) {
                     Branch.setBranchKey(liveKey)
                     LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
                 }
