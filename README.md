@@ -79,7 +79,7 @@ Follow only the steps:
 
 **Note**:
 
-1. You can  configure your Branch keys (`liveKey`, `testKey`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](.
+1. You can  configure your Branch keys (`liveKey`, `testKey`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
 
 2. The native Branch Android SDK dependency is included automatically by this plugin. No need to add it manually in your project.
 
@@ -92,7 +92,7 @@ Follow only the steps:
 
 **Note**: 
 
-1. You can  configure your Branch keys (`live`, `test`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](.
+1. You can  configure your Branch keys (`live`, `test`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
 2. The native Branch iOS SDK dependency is included automatically by this plugin. No need to add it manually in your project.
 
 
@@ -763,6 +763,8 @@ When parameters are successfully set using `setDMAParamsForEEA`, they will be se
 
 
 Use the configuration through the `branch-config.json` file, setting the `useTestInstance` value to `true`.
+
+[Instructions here](#optional-configuration-via-branch-configjson).
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 
