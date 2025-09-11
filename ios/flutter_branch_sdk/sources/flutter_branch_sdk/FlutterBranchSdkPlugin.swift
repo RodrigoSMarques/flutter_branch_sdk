@@ -10,7 +10,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.7.1";
+let PLUGIN_VERSION = "8.8.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
@@ -24,6 +24,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     var requestMetadata : [String: String] = [:]
     var facebookParameters : [String: String] = [:]
     var snapParameters : [String: String] = [:]
+    static var branchJsonConfig: BranchJsonConfig? = nil
     
     //---------------------------------------------------------------------------------------------
     // Plugin registry
@@ -37,9 +38,45 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
+        
+        self.branchJsonConfig = BranchJsonConfig.loadFromFile(registrar: registrar)
+        
     }
         
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
+        
+        if let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig {
+            
+            if let apiUrl = branchJsonConfig.apiUrl as? String {
+                Branch.setAPIUrl(apiUrl)
+                LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrl)")
+              }
+            
+            if let enableLogging = branchJsonConfig.enableLogging as? Bool {
+                if (enableLogging) {
+                    Branch.enableLogging(at: BranchLogLevel.debug)
+                    LogUtils.debug(message: "Set enableLogging from branch-config.json")
+                }
+            }
+            
+            if let branchKey = branchJsonConfig.branchKey as? String {
+                Branch.setBranchKey(branchKey)
+                LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
+            } else {
+                let testKey = branchJsonConfig.testKey ?? ""
+                let liveKey = branchJsonConfig.liveKey  ?? ""
+                
+                let useTestInstance = branchJsonConfig.useTestInstance ?? false
+                
+                if (useTestInstance && !testKey.isEmpty) {
+                    Branch.setBranchKey(testKey)
+                    LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
+                } else {
+                    Branch.setBranchKey(liveKey)
+                    LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
+                }
+            }
+        }
         
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
         
@@ -50,7 +87,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             return value
         }()
 
-        print("Branch Disable NativeLink: \(String(describing:disable_nativelink))");
+        LogUtils.debug(message: "Disable NativeLink: \(String(describing:disable_nativelink))")
         
         if !disable_nativelink {
             if #available(iOS 15.0, *) {
@@ -60,7 +97,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
-                print("Branch InitSession params: \(String(describing: params as? [String: Any]))")
+                LogUtils.debug(message: "InitSession params: \(String(describing: params as? [String: Any]))")
                 guard let _ = self.eventSink else {
                     self.initialParams = params as? [String: Any]
                     return
@@ -68,7 +105,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 self.eventSink!(params as? [String: Any])
             } else {
                 let err = (error! as NSError)
-                print("Branch InitSession error: \(err.localizedDescription)")
+                LogUtils.debug(message: "Branch InitSession error: \(err.localizedDescription)")
                 guard let _ = self.eventSink else {
                     self.initialError = err
                     return
@@ -256,16 +293,8 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         }
         let args = call.arguments as! [String: Any?]
         
-#if DEBUG
-        NSLog("setupBranch args: %@", args)
-#endif
-        
-        if args["disableTracking"] as! Bool == true {
-            Branch.setTrackingDisabled(true)
-        } else {
-            Branch.setTrackingDisabled(false)
-        }
-        
+        LogUtils.debug(message: "setupBranch args: \(String(describing:args))")
+                
         let branchAttributionLevel = args["branchAttributionLevel"] as! String
         if (!branchAttributionLevel.isEmpty) {
             Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
@@ -402,10 +431,10 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             let lp : BranchLinkProperties! = convertToLp(dict: lpDict)
             buo!.listOnSpotlight(with: lp) { (url, error) in
                 if (error == nil) {
-                    print("Successfully indexed on spotlight")
+                    LogUtils.debug(message: "Successfully indexed on spotlight")
                     response = NSNumber(value: true)
                 } else {
-                    print("Failed indexed on spotlight")
+                    LogUtils.debug(message: "Failed indexed on spotlight")
                     response = NSNumber(value: false)
                 }
                 DispatchQueue.main.async {
@@ -415,10 +444,10 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         } else {
             buo!.listOnSpotlight() { (url, error) in
                 if (error == nil) {
-                    print("Successfully indexed on spotlight")
+                    LogUtils.debug(message: "Successfully indexed on spotlight")
                     response = NSNumber(value: true)
                 } else {
-                    print("Failed indexed on spotlight")
+                    LogUtils.debug(message: "Failed indexed on spotlight")
                     response = NSNumber(value: false)
                 }
                 DispatchQueue.main.async {
@@ -435,7 +464,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         var response = NSNumber(value: true)
         buo!.removeFromSpotlight { (error) in
             if (error == nil) {
-                print("BUO successfully removed from spotlight")
+                LogUtils.debug(message: "BUO successfully removed from spotlight")
                 response = NSNumber(value: true)
             } else {
                 response = NSNumber(value: false)
@@ -519,7 +548,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 response["success"] = NSNumber(value: true)
                 response["data"] = data
             } else {
-                print("Failed to lastAttributedTouchData: \(String(describing: error))")
+                LogUtils.debug(message: "Failed to lastAttributedTouchData: \(String(describing: error))")
                 response["success"] = NSNumber(value: false)
                 if let err = (error as NSError?) {
                     response["errorCode"] = String(err.code)
@@ -749,7 +778,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     private func setAnonID (call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let anonId = args["anonId"] as! String
-        print("Branch setAnonID: \(String(describing:anonId))");
+        LogUtils.debug(message: "setAnonID: \(anonId)")
         DispatchQueue.main.async {
             Branch.setAnonID(anonId)
         }
@@ -762,7 +791,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     private func setSDKWaitTimeForThirdPartyAPIs (call: FlutterMethodCall) {
         let args = call.arguments as! [String: Any?]
         let waitTime = args["waitTime"] as? Double ?? 0
-        print("Branch setSDKWaitTimeForThirdPartyAPIs: \(String(describing:waitTime))");
+        LogUtils.debug(message: "setSDKWaitTimeForThirdPartyAPIs: \(String(describing:waitTime))")
         DispatchQueue.main.async {
             Branch.setSDKWaitTimeForThirdPartyAPIs(waitTime)
         }

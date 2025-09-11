@@ -63,6 +63,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private EventSink eventSink = null;
     private Map<String, Object> sessionParams = null;
     private BranchError initialError = null;
+    public static BranchJsonConfig branchJsonConfig = null;
+
     /**
      * ---------------------------------------------------------------------------------------------
      * Branch SDK Call Methods
@@ -393,6 +395,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setupBranch(MethodCall call, final Result result) {
+        Boolean enableLogginFromJson = false;
+
         LogUtils.debug(DEBUG_NAME, "triggered setupBranch");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
@@ -402,12 +406,41 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             result.success(Boolean.TRUE);
         }
 
+        if (branchJsonConfig != null) {
+            if (!branchJsonConfig.apiUrl.isEmpty()) {
+                Branch.setAPIUrl(branchJsonConfig.apiUrl);
+                LogUtils.debug(DEBUG_NAME, "Set API URL from branch-config.json: " + branchJsonConfig.apiUrl);
+            }
+
+            if (branchJsonConfig.enableLogging) {
+                Branch.enableLogging();
+                LogUtils.debug(DEBUG_NAME, "Set EnableLogging from branch-config.json");
+                enableLogginFromJson = true;
+            }
+
+            if (!branchJsonConfig.branchKey.isEmpty()) {
+                Branch.getInstance().setBranchKey(branchJsonConfig.branchKey);
+                LogUtils.debug(DEBUG_NAME, "Set Branch Key from branch-config.json: " + branchJsonConfig.branchKey);
+            } else {
+                if (branchJsonConfig.useTestInstance && !branchJsonConfig.testKey.isEmpty()) {
+                    Branch.getInstance().setBranchKey(branchJsonConfig.testKey);
+                    LogUtils.debug(DEBUG_NAME, "Set Test Key from branch-config.json: " + branchJsonConfig.testKey);
+
+                } else {
+                    Branch.getInstance().setBranchKey(branchJsonConfig.liveKey);
+                    LogUtils.debug(DEBUG_NAME, "Set Live Key from branch-config.json: " + branchJsonConfig.liveKey);
+                }
+            }
+        }
+
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
-        if ((Boolean) argsMap.get("enableLogging")) {
-            Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
-        } else {
-            Branch.disableLogging();
+        if (!enableLogginFromJson) {
+            if ((Boolean) argsMap.get("enableLogging")) {
+                Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
+            } else {
+                Branch.disableLogging();
+            }
         }
 
         if (requestMetadata.length() > 0) {
