@@ -15,7 +15,7 @@ Supports Android, iOS and Web.
 | --- |---------| ---
 | Android | 5.20.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 | iOS | 3.13.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-| Web | 2.86.4  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+| Web | 2.86.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
 
 Implemented functions in plugin:
@@ -105,6 +105,8 @@ If you want to disable NativeLink™ Deferred Deep Linking, follow the instructi
 	<key>branch_disable_nativelink</key>
 	<true/>
 ```
+
+#### NativeLink™ Deferred Deep Linking
 
 ### Web Integration
 You need add Branch Javascript in your `web\index.html` at the top of your `<body>` tag, to be able to use this package.

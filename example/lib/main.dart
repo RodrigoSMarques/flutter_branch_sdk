@@ -33,7 +33,7 @@ void main() async {
   FlutterBranchSdk.setAnonID('1234556');
   FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
 
-  await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
+  await FlutterBranchSdk.init(enableLogging: false, branchAttributionLevel: BranchAttributionLevel.FULL);
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
 
   /*

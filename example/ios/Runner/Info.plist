@@ -60,7 +60,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>branch_key</key>
+	<key>branch_key1</key>
 	<dict>
 		<key>live</key>
 		<string>key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx</string>

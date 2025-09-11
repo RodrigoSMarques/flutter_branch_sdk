@@ -1,5 +1,6 @@
 ## 8.8.0
 ### 🎉 Features
+* Configuration via `branch-config.json` file. Some settings can be configured by adding an `assets/branch-config.json` file to your project. This eliminates the need for manual modifications to native files (`AndroidManifest.xml` and `Info.plist`). The plugin reads this file automatically at application startup. Read the **README.md** for full instructions for JSON-based configuration.
 * Code review to remove build warnings for Android
 * Update Android Gradle Plugin (AGP) to 16KB Page Size Compatibility
 
