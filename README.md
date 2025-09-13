@@ -763,10 +763,7 @@ When parameters are successfully set using `setDMAParamsForEEA`, they will be se
 
 # Configuring the project to use Branch Test Key
 
-
 Use the configuration through the `branch-config.json` file, setting the `useTestInstance` value to `true`.
-
-[Instructions here](#optional-configuration-via-branch-configjson).
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 

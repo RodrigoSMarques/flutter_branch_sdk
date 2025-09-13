@@ -29,46 +29,46 @@ class BranchQrCode {
       this.imageFormat = BranchImageFormat.PNG,
       this.centerLogoUrl = ''}) {
     if (centerLogoUrl.isNotEmpty) {
-      assert(Uri.parse(centerLogoUrl).isAbsolute == true, 'Invalid URL');
+      assert(Uri.parse(centerLogoUrl).isAbsolute, 'Invalid URL');
     }
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> ret = <String, dynamic>{};
+    final Map<String, dynamic> ret = <String, dynamic>{};
 
     if (!kIsWeb) {
       if (primaryColor != null) {
-        ret["codeColor"] = _colorToHex(primaryColor!);
+        ret['codeColor'] = _colorToHex(primaryColor!);
       }
       if (backgroundColor != null) {
-        ret["backgroundColor"] = _colorToHex(backgroundColor!);
+        ret['backgroundColor'] = _colorToHex(backgroundColor!);
       }
       if (margin != null) {
-        ret["margin"] = margin;
+        ret['margin'] = margin;
       }
       if (width != null) {
-        ret["width"] = width;
+        ret['width'] = width;
       }
-      ret["imageFormat"] = imageFormat.name.toUpperCase();
+      ret['imageFormat'] = imageFormat.name.toUpperCase();
       if (centerLogoUrl.isNotEmpty) {
-        ret["centerLogoUrl"] = centerLogoUrl;
+        ret['centerLogoUrl'] = centerLogoUrl;
       }
     } else {
       if (primaryColor != null) {
-        ret["code_color"] = _colorToHex(primaryColor!);
+        ret['code_color'] = _colorToHex(primaryColor!);
       }
       if (backgroundColor != null) {
-        ret["background_color"] = _colorToHex(backgroundColor!);
+        ret['background_color'] = _colorToHex(backgroundColor!);
       }
       if (margin != null) {
-        ret["margin"] = margin;
+        ret['margin'] = margin;
       }
       if (width != null) {
-        ret["width"] = width;
+        ret['width'] = width;
       }
-      ret["image_format"] = imageFormat.name.toLowerCase();
+      ret['image_format'] = imageFormat.name.toLowerCase();
       if (centerLogoUrl.isNotEmpty) {
-        ret["center_logo_url"] = centerLogoUrl;
+        ret['center_logo_url'] = centerLogoUrl;
       }
     }
     return ret;

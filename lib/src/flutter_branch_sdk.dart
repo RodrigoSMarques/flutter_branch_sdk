@@ -14,15 +14,10 @@ class FlutterBranchSdk {
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
-  static Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
-    await FlutterBranchSdkPlatform.instance.init(
-        enableLogging: enableLogging, disableTracking: disableTracking, branchAttributionLevel: branchAttributionLevel);
+
+  static Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
+    await FlutterBranchSdkPlatform.instance
+        .init(enableLogging: enableLogging, branchAttributionLevel: branchAttributionLevel);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -48,12 +43,6 @@ class FlutterBranchSdk {
   ///Returns the first parameters associated with the link that referred the user
   static Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
     return await FlutterBranchSdkPlatform.instance.getFirstReferringParams();
-  }
-
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  static void disableTracking(bool value) async {
-    return FlutterBranchSdkPlatform.instance.disableTracking(value);
   }
 
   ///Listen click em Branch Deeplinks
@@ -199,7 +188,7 @@ class FlutterBranchSdk {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
     params['title'] = title;
