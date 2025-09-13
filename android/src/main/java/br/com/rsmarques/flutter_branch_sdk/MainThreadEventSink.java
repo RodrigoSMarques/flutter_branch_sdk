@@ -8,6 +8,7 @@ import io.flutter.plugin.common.EventChannel;
 public class MainThreadEventSink implements EventChannel.EventSink {
     private final EventChannel.EventSink eventSink;
     private final Handler handler;
+    private final String DEBUG_NAME = "FlutterBranchSDK";
 
     MainThreadEventSink(EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
@@ -16,48 +17,39 @@ public class MainThreadEventSink implements EventChannel.EventSink {
 
     @Override
     public void success(final Object o) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (eventSink != null) {
-                        eventSink.success(o);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        handler.post(() -> {
+            try {
+                if (eventSink != null) {
+                    eventSink.success(o);
                 }
+            } catch (Exception e) {
+                LogUtils.debug(DEBUG_NAME, e.getLocalizedMessage());
             }
         });
     }
 
     @Override
     public void error(final String s, final String s1, final Object o) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (eventSink != null) {
-                        eventSink.error(s, s1, o);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        handler.post(() -> {
+            try {
+                if (eventSink != null) {
+                    eventSink.error(s, s1, o);
                 }
+            } catch (Exception e) {
+                LogUtils.debug(DEBUG_NAME, e.getLocalizedMessage());
             }
         });
     }
 
     @Override
     public void endOfStream() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (eventSink != null) {
-                        eventSink.endOfStream();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        handler.post(() -> {
+            try {
+                if (eventSink != null) {
+                    eventSink.endOfStream();
                 }
+            } catch (Exception e) {
+                LogUtils.debug(DEBUG_NAME, e.getLocalizedMessage());
             }
         });
     }

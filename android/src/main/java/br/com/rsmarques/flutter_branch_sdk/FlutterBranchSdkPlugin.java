@@ -1,11 +1,10 @@
 package br.com.rsmarques.flutter_branch_sdk;
 
-import static io.branch.referral.QRCode.BranchQRCode.*;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -392,8 +391,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void setupBranch(MethodCall call, final Result result) {
-        Boolean enableLogginFromJson = false;
+        boolean enableLoggingFromJson = false;
 
         LogUtils.debug(DEBUG_NAME, "triggered setupBranch");
         if (!(call.arguments instanceof Map)) {
@@ -413,7 +413,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             if (branchJsonConfig.enableLogging) {
                 Branch.enableLogging();
                 LogUtils.debug(DEBUG_NAME, "Set EnableLogging from branch-config.json");
-                enableLogginFromJson = true;
+                enableLoggingFromJson = true;
             }
 
             if (!branchJsonConfig.branchKey.isEmpty()) {
@@ -433,7 +433,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
-        if (!enableLogginFromJson) {
+        if (!enableLoggingFromJson) {
             if ((Boolean) Objects.requireNonNull(argsMap.get("enableLogging"))) {
                 Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
             } else {
@@ -485,8 +485,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             }
         }
 
-        //Branch.getInstance().disableTracking((Boolean) Objects.requireNonNull(argsMap.get("disableTracking")));
-
         final String branchAttributionLevelString = Objects.requireNonNull(call.argument("branchAttributionLevel"));
         if (!branchAttributionLevelString.isEmpty()) {
             Branch.getInstance().setConsumerProtectionAttributionLevel(Defines.BranchAttributionLevel.valueOf(branchAttributionLevelString));
@@ -502,6 +500,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         IntegrationValidator.validate(this.activity);
     }
 
+    @SuppressWarnings("unchecked")
     private void getShortUrl(MethodCall call, final Result result) {
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
@@ -525,6 +524,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void showShareSheet(MethodCall call, final Result result) {
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
@@ -533,34 +533,40 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         BranchUniversalObject buo = branchSdkHelper.convertToBUO((HashMap<String, Object>) Objects.requireNonNull(argsMap.get("buo")));
         LinkProperties linkProperties = branchSdkHelper.convertToLinkProperties((HashMap<String, Object>) Objects.requireNonNull(argsMap.get("lp")));
         String messageText = (String) Objects.requireNonNull(argsMap.get("messageText"));
-        String messageTitle = (String) Objects.requireNonNull(argsMap.get("messageTitle"));
+        String messageTitle = "";
+        if (argsMap.containsKey("messageTitle")) {
+            messageTitle = (String) Objects.requireNonNull(argsMap.get("messageTitle"));
+        }
         final Map<String, Object> response = new HashMap<>();
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             Branch.getInstance().share(activity, buo, linkProperties, new Branch.BranchNativeLinkShareListener() {
-                        @Override
-                        public void onLinkShareResponse(String sharedLink, BranchError error) {
-                            if (error == null) {
-                                LogUtils.debug(DEBUG_NAME, "Branch link share: " + sharedLink);
-                                response.put("success", Boolean.TRUE);
-                                response.put("url", sharedLink);
-                            } else {
-                                response.put("success", Boolean.FALSE);
-                                response.put("errorCode", String.valueOf(error.getErrorCode()));
-                                response.put("errorMessage", error.getMessage());
-                            }
-                            result.success(response);
-                        }
+                @Override
+                public void onLinkShareResponse(String sharedLink, BranchError error) {
+                    if (error == null) {
+                        LogUtils.debug(DEBUG_NAME, "Branch link share: " + sharedLink);
+                        response.put("success", Boolean.TRUE);
+                        response.put("url", sharedLink);
+                    } else {
+                        response.put("success", Boolean.FALSE);
+                        response.put("errorCode", String.valueOf(error.getErrorCode()));
+                        response.put("errorMessage", error.getMessage());
+                    }
+                    result.success(response);
+                }
 
-                        @Override
-                        public void onChannelSelected(String channelName) {
-                            LogUtils.debug(DEBUG_NAME, "Branch link share channel: " + channelName);
-                        }
-                    },
-                    messageTitle,
-                    messageText);
+                @Override
+                public void onChannelSelected(String channelName) {
+                    LogUtils.debug(DEBUG_NAME, "Branch link share channel: " + channelName);
+                }
+            },
+                messageTitle,
+                messageText
+            );
+        }
     }
 
+    @SuppressWarnings("unchecked")
     private void registerView(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered registerView");
         if (!(call.arguments instanceof Map)) {
@@ -581,6 +587,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         result.success(Boolean.TRUE);
     }
 
+    @SuppressWarnings("unchecked")
     private void trackContent(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered trackContent");
         if (!(call.arguments instanceof Map)) {
@@ -595,6 +602,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> event.addContentItems(buo).logEvent(context));
     }
 
+    @SuppressWarnings("unchecked")
     private void trackContentWithoutBuo(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered trackContentWithoutBuo");
         if (!(call.arguments instanceof Map)) {
@@ -605,6 +613,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> event.logEvent(context));
     }
 
+    @SuppressWarnings("unchecked")
     private void setIdentity(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setIdentity");
         if (!(call.arguments instanceof Map)) {
@@ -614,6 +623,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setIdentity(userId));
     }
 
+    @SuppressWarnings("unchecked")
     private void setRequestMetadata(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setRequestMetadata");
         if (!(call.arguments instanceof Map)) {
@@ -666,6 +676,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         result.success(Branch.getInstance().isUserIdentified());
     }
 
+    @SuppressWarnings("unchecked")
     private void setConnectTimeout(final MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setConnectTimeout");
         if (!(call.arguments instanceof Map)) {
@@ -675,6 +686,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setNetworkConnectTimeout(value));
     }
 
+    @SuppressWarnings("unchecked")
     private void setTimeout(final MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setConnectTimeout");
         if (!(call.arguments instanceof Map)) {
@@ -684,6 +696,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setNetworkTimeout(value));
     }
 
+    @SuppressWarnings("unchecked")
     private void setRetryCount(final MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setRetryCount");
         if (!(call.arguments instanceof Map)) {
@@ -693,6 +706,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setRetryCount(value));
     }
 
+    @SuppressWarnings("unchecked")
     private void setRetryInterval(final MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setRetryInterval");
         if (!(call.arguments instanceof Map)) {
@@ -702,6 +716,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setRetryInterval(value));
     }
 
+    @SuppressWarnings("unchecked")
     private void getLastAttributedTouchData(final MethodCall call, final Result result) {
         LogUtils.debug(DEBUG_NAME, "triggered getLastAttributedTouchData");
         final Map<String, Object> response = new HashMap<>();
@@ -748,6 +763,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void getQRCode(final MethodCall call, final Result result) {
         LogUtils.debug(DEBUG_NAME, "triggered getQRCodeAsData");
         if (!(call.arguments instanceof Map)) {
@@ -759,7 +775,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         final BranchQRCode branchQRCode = branchSdkHelper.convertToQRCode((HashMap<String, Object>) Objects.requireNonNull(argsMap.get("qrCodeSettings")));
         final Map<String, Object> response = new HashMap<>();
         try {
-            branchQRCode.getQRCodeAsData(context, buo, linkProperties, new BranchQRCodeDataHandler() {
+            branchQRCode.getQRCodeAsData(context, buo, linkProperties, new BranchQRCode.BranchQRCodeDataHandler<byte[]>() {
                 @Override
                 public void onSuccess(byte[] qrCodeData) {
 
@@ -784,6 +800,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void handleDeepLink(final MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered handleDeepLink");
         if (!(call.arguments instanceof Map)) {
@@ -796,6 +813,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         activity.startActivity(intent);
     }
 
+    @SuppressWarnings("unchecked")
     private void addFacebookPartnerParameter(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered addFacebookPartnerParameter");
         if (!(call.arguments instanceof Map)) {
@@ -820,6 +838,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).clearPartnerParameters());
     }
 
+    @SuppressWarnings("unchecked")
     private void setPreinstallCampaign(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setPreinstallCampaign");
         if (!(call.arguments instanceof Map)) {
@@ -831,6 +850,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).setPreinstallCampaign(value));
     }
 
+    @SuppressWarnings("unchecked")
     private void setPreinstallPartner(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setPreinstallPartner");
         if (!(call.arguments instanceof Map)) {
@@ -842,6 +862,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).setPreinstallPartner(value));
     }
 
+    @SuppressWarnings("unchecked")
     private void addSnapPartnerParameter(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered addSnapPartnerParameter");
         if (!(call.arguments instanceof Map)) {
@@ -862,6 +883,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value));
     }
 
+    @SuppressWarnings("unchecked")
     private void setDMAParamsForEEA(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setDMAParamsForEEA");
         if (!(call.arguments instanceof Map)) {
@@ -874,6 +896,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         Branch.getInstance().setDMAParamsForEEA(eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
     }
 
+    @SuppressWarnings("unchecked")
     private void setConsumerProtectionAttributionLevel(MethodCall call) {
         LogUtils.debug(DEBUG_NAME, "triggered setConsumerProtectionAttributionLevel");
         if (!(call.arguments instanceof Map)) {

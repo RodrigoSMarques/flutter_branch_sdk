@@ -272,7 +272,17 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     }
     final Map<dynamic, dynamic> response = await messageChannel.invokeMethod('getLastAttributedTouchData', params);
     if (response['success']) {
-      return BranchResponse.success(result: response['data']['latd']);
+      final Map<dynamic, dynamic>? data = response['data'] as Map<dynamic, dynamic>?;
+      final Map<dynamic, dynamic>? latd = data?['latd'] as Map<dynamic, dynamic>?;
+
+      if (latd != null) {
+        return BranchResponse.success(result: latd);
+      } else {
+        return BranchResponse.error(
+          errorCode: '-1',
+          errorMessage: 'Incomplete or null data',
+        );
+      }
     } else {
       return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
     }
