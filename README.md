@@ -15,7 +15,7 @@ Supports Android, iOS and Web.
 | --- |---------| ---
 | Android | 5.20.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 | iOS | 3.13.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-| Web | 2.86.4  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+| Web | 2.86.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
 
 Implemented functions in plugin:
@@ -77,7 +77,11 @@ Follow only the steps:
 * [Configure App](https://help.branch.io/developers-hub/docs/android-basic-integration#4-configure-app)
 * [Configure ProGuard](https://help.branch.io/developers-hub/docs/android-basic-integration#7-configure-proguard)
 
-**Note**: It is not necessary to perform the Branch Android SDK installation steps. The plugin performs these steps.
+**Note**:
+
+1. You can  configure your Branch keys (`liveKey`, `testKey`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
+
+2. The native Branch Android SDK dependency is included automatically by this plugin. No need to add it manually in your project.
 
 ### iOS Integration
 Follow only the steps:
@@ -86,7 +90,11 @@ Follow only the steps:
 * [Configure associated domains](https://help.branch.io/developers-hub/docs/ios-basic-integration#3-configure-associated-domains)
 * [Configure Info.plist](https://help.branch.io/developers-hub/docs/ios-basic-integration#4-configure-infoplist)
 
-**Note**: It is not necessary to perform the Branch iOS SDK installation steps. The plugin performs these steps.
+**Note**: 
+
+1. You can  configure your Branch keys (`live`, `test`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
+2. The native Branch iOS SDK dependency is included automatically by this plugin. No need to add it manually in your project.
+
 
 #### NativeLink™ Deferred Deep Linking
 Use iOS pasteboard to enable deferred deep linking via Branch NativeLink™, which enables 100% matching on iOS through Installs.
@@ -183,6 +191,75 @@ Full example `index.html`:
 
 
 ```
+
+## (Optional) Configuration via `branch-config.json`
+
+One way to configure keys and other settings is through a JSON configuration file. 
+
+This method allows you to easily manage your test and active keys without modifying native code.
+
+The plugin will automatically read this file on startup (only Android/iOs).
+
+If you have configured `branch-config.json`, you do not need to manually add your Branch keys to `AndroidManifest.xml` or `Info.plist`.
+
+
+### Step 1: Create the Configuration File
+
+1.  In the root of your Flutter project, create a folder named `assets` if it doesn't already exist.
+2.  Inside the `assets` folder, create a new file named `branch-config.json`.
+
+Your project structure should look like this:
+```
+my_flutter_app/
+├── assets/
+│   └── branch-config.json
+├── lib/
+├── pubspec.yaml
+...
+```
+
+### Step 2: Add Your Keys and Settings
+
+Copy and paste the following structure into your `assets/branch-config.json` file and replace the placeholder values with your actual Branch keys.
+
+```json
+{
+  "apiUrl": "https://api.myapi.com/"
+  "branchKey": "key_live_test_xxxx_yyyy",
+  "liveKey": "key_live_xxxx",
+  "testKey": "key_test_yyyy",
+  "enableLogging": true,
+  "useTestInstance": true,
+}
+```
+
+#### Key Descriptions:
+
+*   **`apiUrl`**: (Optional) Sets a custom base URL for all calls to the Branch API.
+Requires HTTPS.
+*   **`branchKey`**: (Optional) The Branch key that the SDK will use for initialization. It's recommended to set this to your `liveKey` or `testKey` depending on your current build environment.
+*   **`liveKey`**: (Optional) Your Branch live key from the Branch Dashboard.
+*   **`testKey`**: (Optional) Your Branch test key from the Branch Dashboard.
+*   **`useTestInstance`**: (Optional, default: `false`) Set to `true` to use the test key for debugging and testing. Set to `false` for production releases. This allows you to easily switch between environments.
+*   **`enableLogging`**: (Optional, default: `false`) Set to `true` to see detailed logs from the native Branch SDK in your device's log output (Logcat for Android, Console for iOS).
+
+**Note:**
+
+  - if `branchKey` **is present**, it will override the `useTestInstance`/`testKey`/`liveKey` config
+  - if `branchKey` **is missing**, `testKey`/`liveKey`, must be present.
+
+
+### Step 3: Declare the Asset in `pubspec.yaml`
+
+Finally, you need to inform your Flutter app about this new asset file. Open your `pubspec.yaml` and add the file path under the `flutter:` section:
+
+```yaml
+flutter:
+  assets:
+    - assets/branch-config.json
+```
+
+Done! plugin will now automatically configure itself using the values ​​in this file when your app starts, overriding the values ​​set in `AndroidManifest.xml` and `Info.plist`.
 
 ## Installation
 To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://pub.dev/packages/flutter_branch_sdk/install).
@@ -685,38 +762,8 @@ When parameters are successfully set using `setDMAParamsForEEA`, they will be se
 
 
 # Configuring the project to use Branch Test Key
-## Android
 
-Add or update the code below in `AndroidManifest.xml`:
-
-```xml
-<!-- Set to `true` to use `BranchKey.test` -->
-<meta-data 
-   android:name="io.branch.sdk.TestMode" android:value="true" />
-```
-
-***Note***: Remember to set the value to `false` before releasing to production.
-
-### iOS
-
-1) Create an empty file called `branch.json`.
-
-2) Paste the content below into the file or make download [here](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.json):
-
-```json
-{
-  "useTestInstance": true
-}
-
-```
-
-3) Add the file `branch.json` to your project using Xcode. Within your project, navigate to File → Add Files. 
-
-4) Select the `branch.json` file and make sure every target in your project that uses Branch is selected.
-
-![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_add.png?raw=true)
-
-![branch.json](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch_json_project.png?raw=true)
+Use the configuration through the `branch-config.json` file, setting the `useTestInstance` value to `true`.
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 

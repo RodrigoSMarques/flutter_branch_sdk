@@ -50,13 +50,13 @@
             android:value="2" />
        <!-- Branch init -->
        <meta-data
-           android:name="io.branch.sdk.BranchKey"
+           android:name="io.branch.sdk.BranchKey1"
            android:value="key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx" />
        <!-- For your test app, if you have one; Again, use your actual test Branch key -->
        <meta-data
-           android:name="io.branch.sdk.BranchKey.test"
+           android:name="io.branch.sdk.BranchKey.test1"
            android:value="key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH" />
        <meta-data
-           android:name="io.branch.sdk.TestMode" android:value="true" />
+           android:name="io.branch.sdk.TestMode1" android:value="true" />
     </application>
 </manifest>

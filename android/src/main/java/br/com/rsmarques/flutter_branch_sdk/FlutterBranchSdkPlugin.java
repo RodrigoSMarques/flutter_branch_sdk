@@ -63,7 +63,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private EventSink eventSink = null;
     private Map<String, Object> sessionParams = null;
     private BranchError initialError = null;
-    private String customAPiUrl = null;
+    public static BranchJsonConfig branchJsonConfig = null;
+
     /**
      * ---------------------------------------------------------------------------------------------
      * Branch SDK Call Methods
@@ -116,6 +117,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         LogUtils.debug(DEBUG_NAME, "triggered onAttachedToEngine");
         setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext());
+
+        branchJsonConfig = BranchJsonConfig.loadFromFile(context, binding);
     }
 
     @Override
@@ -402,6 +405,8 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     }
 
     private void setupBranch(MethodCall call, final Result result) {
+        Boolean enableLogginFromJson = false;
+
         LogUtils.debug(DEBUG_NAME, "triggered setupBranch");
         if (!(call.arguments instanceof Map)) {
             throw new IllegalArgumentException("Map argument expected");
@@ -411,16 +416,41 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             result.success(Boolean.TRUE);
         }
 
-        if (customAPiUrl != null) {
-            Branch.setAPIUrl(customAPiUrl);
+        if (branchJsonConfig != null) {
+            if (!branchJsonConfig.apiUrl.isEmpty()) {
+                Branch.setAPIUrl(branchJsonConfig.apiUrl);
+                LogUtils.debug(DEBUG_NAME, "Set API URL from branch-config.json: " + branchJsonConfig.apiUrl);
+            }
+
+            if (branchJsonConfig.enableLogging) {
+                Branch.enableLogging();
+                LogUtils.debug(DEBUG_NAME, "Set EnableLogging from branch-config.json");
+                enableLogginFromJson = true;
+            }
+
+            if (!branchJsonConfig.branchKey.isEmpty()) {
+                Branch.getInstance().setBranchKey(branchJsonConfig.branchKey);
+                LogUtils.debug(DEBUG_NAME, "Set Branch Key from branch-config.json: " + branchJsonConfig.branchKey);
+            } else {
+                if (branchJsonConfig.useTestInstance && !branchJsonConfig.testKey.isEmpty()) {
+                    Branch.getInstance().setBranchKey(branchJsonConfig.testKey);
+                    LogUtils.debug(DEBUG_NAME, "Set Test Key from branch-config.json: " + branchJsonConfig.testKey);
+
+                } else if (!branchJsonConfig.liveKey.isEmpty()) {
+                    Branch.getInstance().setBranchKey(branchJsonConfig.liveKey);
+                    LogUtils.debug(DEBUG_NAME, "Set Live Key from branch-config.json: " + branchJsonConfig.liveKey);
+                }
+            }
         }
 
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
 
-        if ((Boolean) Objects.requireNonNull(argsMap.get("enableLogging"))) {
-            Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
-        } else {
-            Branch.disableLogging();
+        if (!enableLogginFromJson) {
+            if ((Boolean) Objects.requireNonNull(argsMap.get("enableLogging"))) {
+                Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
+            } else {
+                Branch.disableLogging();
+            }
         }
 
         if (requestMetadata.length() > 0) {
