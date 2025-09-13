@@ -386,22 +386,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "setConsumerProtectionAttributionLevel":
                 setConsumerProtectionAttributionLevel(call);
                 break;
-            case "setAPIUrl" :
-                setApiUrl(call);
             default:
                 result.notImplemented();
                 break;
         }
-    }
-
-    private void setApiUrl(MethodCall call) {
-        LogUtils.debug(DEBUG_NAME, "triggered setApiUrl");
-        if (!(call.arguments instanceof Map)) {
-            throw new IllegalArgumentException("Map argument expected");
-        }
-
-        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        customAPiUrl = (String) Objects.requireNonNull(argsMap.get("apiURL"));
     }
 
     private void setupBranch(MethodCall call, final Result result) {

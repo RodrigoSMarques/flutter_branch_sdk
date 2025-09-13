@@ -202,16 +202,16 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Showing a Share Sheet with LPLinkMetadata in iOS
-  void shareWithLPLinkMetadata(
+  Future<void> shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
-      required String title}) {
+      required String title}) async {
     throw UnimplementedError('shareWithLPLinkMetadata has not been implemented');
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
-  void handleDeepLink(String url) async {
+  Future<void> handleDeepLink(String url) async {
     throw UnimplementedError('handleDeepLink has not been implemented');
   }
 
@@ -268,11 +268,5 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     throw UnimplementedError('setSDKWaitTimeForThirdPartyAPIs has not been implemented');
-  }
-
-  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
-  ///[url] The URL base URL that the Branch API uses.
-  void setAPIUrl(String url) {
-    throw UnimplementedError('setAPIUrl has not been implemented');
   }
 }

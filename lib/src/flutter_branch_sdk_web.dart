@@ -18,9 +18,9 @@ import 'objects/branch_universal_object.dart';
 import 'web/branch_js.dart';
 
 /// A workaround to deep-converting an object from JS to a Dart Object.
-dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
+dynamic _jsObjectToDartObject(JSAny data) => json.decode(jsonStringify(data));
 
-JSAny _dartObjectToJsObject(data) => jsonParse(json.encode(data));
+JSAny _dartObjectToJsObject(Map<String, dynamic> data) => jsonParse(json.encode(data));
 
 /// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
 class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
@@ -76,7 +76,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.data((JSAny? err, JSAny? data) {
         if (err == null) {
           if (data != null) {
-            var responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
+            final responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
             response.complete(responseData['data_parsed'] ?? {});
           } else {
             response.complete({});
@@ -101,7 +101,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.first((JSAny? err, JSAny? data) {
         if (err == null) {
           if (data != null) {
-            var responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
+            final responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
             response.complete(responseData['data_parsed'] ?? {});
           } else {
             response.complete({});
@@ -151,13 +151,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
-    Map<String, dynamic> data = buo.toMap();
+    final Map<String, dynamic> data = buo.toMap();
     linkProperties.getControlParams().forEach((key, value) {
       data[key] = value;
     });
 
-    Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
-    Completer<BranchResponse> responseCompleter = Completer();
+    final Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
+    final Completer<BranchResponse> responseCompleter = Completer();
 
     try {
       BranchJS.link(
@@ -166,7 +166,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             if (err == null) {
               responseCompleter.complete(BranchResponse.success(result: url));
             } else {
-              dynamic jsError = err;
+              final dynamic jsError = err;
               String errorMessage;
               if (jsError is String) {
                 errorMessage = jsError;
@@ -191,7 +191,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
-    BranchResponse response = await getShortUrl(buo: buo, linkProperties: linkProperties);
+    final BranchResponse response = await getShortUrl(buo: buo, linkProperties: linkProperties);
     if (response.success) {
       try {
         await navigatorShare(_dartObjectToJsObject({'title': messageText, 'text': buo.title, 'url': response.result}))
@@ -206,8 +206,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
   void trackContent({required List<BranchUniversalObject> buo, required BranchEvent branchEvent}) {
-    List<JSAny> contentItems = [];
-    for (var element in buo) {
+    final List<JSAny> contentItems = [];
+    for (final element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMap()));
     }
 
@@ -237,7 +237,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void registerView({required BranchUniversalObject buo}) {
     try {
-      BranchEvent branchEvent = BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
+      final BranchEvent branchEvent = BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
       // This might not be exactly the same thing as BUO.registerView, but there's no clear implementation for web sdk
       trackContent(buo: [buo], branchEvent: branchEvent);
     } catch (e) {
@@ -348,7 +348,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Gets the available last attributed touch data with a custom set attribution window.
   @override
   Future<BranchResponse> getLastAttributedTouchData({int? attributionWindow}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
+    final Completer<BranchResponse> responseCompleter = Completer();
 
     try {
       BranchJS.lastAttributedTouchData(
@@ -378,14 +378,14 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
+    final Completer<BranchResponse> responseCompleter = Completer();
 
-    Map<String, dynamic> data = buo.toMap();
+    final Map<String, dynamic> data = buo.toMap();
     linkProperties.getControlParams().forEach((key, value) {
       data[key] = value;
     });
 
-    Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
+    final Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
 
     try {
       BranchJS.qrCode(
@@ -416,7 +416,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
     try {
-      BranchResponse response =
+      final BranchResponse response =
           await getQRCodeAsData(buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCodeSettings);
       if (response.success) {
         return BranchResponse.success(
@@ -432,11 +432,11 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   }
 
   @override
-  void shareWithLPLinkMetadata(
+  Future<void> shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
-      required String title}) {
+      required String title}) async {
     try {
       showShareSheet(buo: buo, linkProperties: linkProperties, messageText: title);
     } catch (error) {
@@ -446,7 +446,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
-  void handleDeepLink(String url) {
+  Future<void> handleDeepLink(String url) async {
     try {
       globalContext.callMethodVarArgs('open'.toJS, [url.toJS, '_self'.toJS]);
     } catch (e) {
@@ -524,10 +524,5 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     debugPrint('setSDKWaitTimeForThirdPartyAPIs() Not supported by Branch JS SDK');
-  }
-
-  @override
-  void setAPIUrl(String url) {
-    debugPrint('setAPIUrl() Not supported by Branch JS SDK');
   }
 }

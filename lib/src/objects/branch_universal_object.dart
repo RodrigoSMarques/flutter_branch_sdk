@@ -79,7 +79,7 @@ class BranchUniversalObject {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> ret = <String, dynamic>{};
+    final Map<String, dynamic> ret = <String, dynamic>{};
     if (!kIsWeb) {
       if (canonicalIdentifier.isNotEmpty) {
         ret['canonicalIdentifier'] = canonicalIdentifier;
@@ -135,10 +135,10 @@ class BranchUniversalObject {
       ret['\$locally_indexable'] = locallyIndex;
       ret['\$publicly_indexable'] = publiclyIndex;
 
-      Map<String, dynamic> contentMetadata = {if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()};
+      final Map<String, dynamic> contentMetadata = {if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()};
 
       if (contentMetadata.containsKey('customMetadata')) {
-        var customMetadata = contentMetadata['customMetadata'];
+        final customMetadata = contentMetadata['customMetadata'];
         contentMetadata.remove('customMetadata');
         contentMetadata.addAll(customMetadata);
         ret.addAll(contentMetadata);

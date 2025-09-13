@@ -188,7 +188,7 @@ class FlutterBranchSdk {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
     params['title'] = title;
@@ -258,11 +258,5 @@ class FlutterBranchSdk {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   static void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     FlutterBranchSdkPlatform.instance.setSDKWaitTimeForThirdPartyAPIs(waitTime);
-  }
-
-  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
-  ///[url] The URL base URL that the Branch API uses.
-  static void setAPIUrl(String url) {
-    FlutterBranchSdkPlatform.instance.setAPIUrl(url);
   }
 }

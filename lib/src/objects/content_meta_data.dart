@@ -362,7 +362,7 @@ class BranchContentMetaData {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> ret = <String, dynamic>{};
+    final Map<String, dynamic> ret = <String, dynamic>{};
     if (contentSchema != null) {
       ret['content_schema'] = getContentSchemaString(contentSchema);
     }
@@ -402,7 +402,7 @@ class BranchContentMetaData {
   }
 
   Map<String, dynamic> toMapWeb() {
-    Map<String, dynamic> ret = <String, dynamic>{};
+    final Map<String, dynamic> ret = <String, dynamic>{};
     if (contentSchema != null) {
       ret['\$content_schema'] = getContentSchemaString(contentSchema);
     }

@@ -2,6 +2,7 @@
 ### 🎉 Features
 * Code review to remove build warnings for Android
 * Update Android Gradle Plugin (AGP) to 16KB Page Size Compatibility
+* Fix Linter warnings
 
 ### Removal of deprecated methods
 * `FlutterBranchSdk.disableTracking()`

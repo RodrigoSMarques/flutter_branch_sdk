@@ -16,7 +16,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   final eventChannel = const EventChannel(AppConstants.EVENT_CHANNEL);
 
   static Stream<Map<dynamic, dynamic>>? _initSessionStream;
-  static bool isInitialized = false;
+  static var isInitialized = false;
 
   /// Initializes the Branch SDK.
   ///
@@ -104,7 +104,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
     assert(isInitialized, 'Call `getShortUrl` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response =
+    final Map<dynamic, dynamic> response =
         await messageChannel.invokeMethod('getShortUrl', {'buo': buo.toMap(), 'lp': linkProperties.toMap()});
 
     if (response['success']) {
@@ -123,7 +123,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
     assert(isInitialized, 'Call `showShareSheet` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response = await messageChannel.invokeMethod('showShareSheet', {
+    final Map<dynamic, dynamic> response = await messageChannel.invokeMethod('showShareSheet', {
       'buo': buo.toMap(),
       'lp': linkProperties.toMap(),
       'messageText': messageText,
@@ -142,7 +142,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @override
   void trackContent({required List<BranchUniversalObject> buo, required BranchEvent branchEvent}) {
     assert(isInitialized, 'Call `trackContent` after `FlutterBranchSdk.init()` method');
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.map((b) => b.toMap()).toList();
     if (branchEvent.toMap().isNotEmpty) {
       params['event'] = branchEvent.toMap();
@@ -172,7 +172,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @override
   Future<bool> listOnSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
     assert(isInitialized, 'Call `listOnSearch` after `FlutterBranchSdk.init()` method');
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
       params['lp'] = linkProperties.toMap();
@@ -186,7 +186,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @override
   Future<bool> removeFromSearch({required BranchUniversalObject buo, BranchLinkProperties? linkProperties}) async {
     assert(isInitialized, 'Call `removeFromSearch` after `FlutterBranchSdk.init()` method');
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     if (linkProperties != null && linkProperties.toMap().isNotEmpty) {
       params['lp'] = linkProperties.toMap();
@@ -266,11 +266,11 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @override
   Future<BranchResponse> getLastAttributedTouchData({int? attributionWindow}) async {
     assert(isInitialized, 'Call `getLastAttributedTouchData` after `FlutterBranchSdk.init()` method');
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     if (attributionWindow != null) {
       params['attributionWindow'] = attributionWindow;
     }
-    Map<dynamic, dynamic> response = await messageChannel.invokeMethod('getLastAttributedTouchData', params);
+    final Map<dynamic, dynamic> response = await messageChannel.invokeMethod('getLastAttributedTouchData', params);
     if (response['success']) {
       return BranchResponse.success(result: response['data']['latd']);
     } else {
@@ -285,7 +285,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
     assert(isInitialized, 'Call `getQRCodeAsData` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
+    final Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
         'getQRCode', {'buo': buo.toMap(), 'lp': linkProperties.toMap(), 'qrCodeSettings': qrCodeSettings.toMap()});
 
     if (response['success']) {
@@ -302,7 +302,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
     assert(isInitialized, 'Call `getQRCodeAsImage` after `FlutterBranchSdk.init()` method');
-    Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
+    final Map<dynamic, dynamic> response = await messageChannel.invokeMethod(
         'getQRCode', {'buo': buo.toMap(), 'lp': linkProperties.toMap(), 'qrCodeSettings': qrCodeSettings.toMap()});
 
     if (response['success']) {
@@ -314,13 +314,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Share with LPLinkMetadata on iOS
   @override
-  void shareWithLPLinkMetadata(
+  Future<void> shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) async {
     assert(isInitialized, 'Call `shareWithLPLinkMetadata` after `FlutterBranchSdk.init()` method');
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
     params['messageText'] = title;
@@ -331,7 +331,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
-  void handleDeepLink(String url) {
+  Future<void> handleDeepLink(String url) async {
     assert(isInitialized, 'Call `handleDeepLink` after `FlutterBranchSdk.init()` method');
     if (url.isEmpty) {
       throw ArgumentError('url is required');
@@ -414,12 +414,5 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       return;
     }
     messageChannel.invokeMethod('setSDKWaitTimeForThirdPartyAPIs', {'waitTime': waitTime});
-  }
-
-  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
-  ///[url] The URL base URL that the Branch API uses.
-  @override
-  void setAPIUrl(String url) {
-    messageChannel.invokeMethod('setAPIUrl', {'apiURL': url});
   }
 }

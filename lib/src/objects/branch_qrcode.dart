@@ -29,12 +29,12 @@ class BranchQrCode {
       this.imageFormat = BranchImageFormat.PNG,
       this.centerLogoUrl = ''}) {
     if (centerLogoUrl.isNotEmpty) {
-      assert(Uri.parse(centerLogoUrl).isAbsolute == true, 'Invalid URL');
+      assert(Uri.parse(centerLogoUrl).isAbsolute, 'Invalid URL');
     }
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> ret = <String, dynamic>{};
+    final Map<String, dynamic> ret = <String, dynamic>{};
 
     if (!kIsWeb) {
       if (primaryColor != null) {

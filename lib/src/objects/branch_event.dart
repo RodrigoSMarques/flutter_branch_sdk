@@ -83,7 +83,7 @@ class BranchEvent {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = <String, dynamic>{};
 
     if (!kIsWeb) {
       data['eventName'] = _eventName;
