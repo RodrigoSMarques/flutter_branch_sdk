@@ -38,37 +38,37 @@ class BranchQrCode {
 
     if (!kIsWeb) {
       if (primaryColor != null) {
-        ret["codeColor"] = _colorToHex(primaryColor!);
+        ret['codeColor'] = _colorToHex(primaryColor!);
       }
       if (backgroundColor != null) {
-        ret["backgroundColor"] = _colorToHex(backgroundColor!);
+        ret['backgroundColor'] = _colorToHex(backgroundColor!);
       }
       if (margin != null) {
-        ret["margin"] = margin;
+        ret['margin'] = margin;
       }
       if (width != null) {
-        ret["width"] = width;
+        ret['width'] = width;
       }
-      ret["imageFormat"] = imageFormat.name.toUpperCase();
+      ret['imageFormat'] = imageFormat.name.toUpperCase();
       if (centerLogoUrl.isNotEmpty) {
-        ret["centerLogoUrl"] = centerLogoUrl;
+        ret['centerLogoUrl'] = centerLogoUrl;
       }
     } else {
       if (primaryColor != null) {
-        ret["code_color"] = _colorToHex(primaryColor!);
+        ret['code_color'] = _colorToHex(primaryColor!);
       }
       if (backgroundColor != null) {
-        ret["background_color"] = _colorToHex(backgroundColor!);
+        ret['background_color'] = _colorToHex(backgroundColor!);
       }
       if (margin != null) {
-        ret["margin"] = margin;
+        ret['margin'] = margin;
       }
       if (width != null) {
-        ret["width"] = width;
+        ret['width'] = width;
       }
-      ret["image_format"] = imageFormat.name.toLowerCase();
+      ret['image_format'] = imageFormat.name.toLowerCase();
       if (centerLogoUrl.isNotEmpty) {
-        ret["center_logo_url"] = centerLogoUrl;
+        ret['center_logo_url'] = centerLogoUrl;
       }
     }
     return ret;

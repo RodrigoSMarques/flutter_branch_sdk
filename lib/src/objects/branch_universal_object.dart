@@ -82,58 +82,58 @@ class BranchUniversalObject {
     Map<String, dynamic> ret = <String, dynamic>{};
     if (!kIsWeb) {
       if (canonicalIdentifier.isNotEmpty) {
-        ret["canonicalIdentifier"] = canonicalIdentifier;
+        ret['canonicalIdentifier'] = canonicalIdentifier;
       }
 
-      if (canonicalUrl.isNotEmpty) ret["canonicalUrl"] = canonicalUrl;
+      if (canonicalUrl.isNotEmpty) ret['canonicalUrl'] = canonicalUrl;
 
-      if (title.isNotEmpty) ret["title"] = title;
+      if (title.isNotEmpty) ret['title'] = title;
 
       if (contentDescription.isNotEmpty) {
-        ret["contentDescription"] = contentDescription;
+        ret['contentDescription'] = contentDescription;
       }
 
-      if (imageUrl.isNotEmpty) ret["imageUrl"] = imageUrl;
+      if (imageUrl.isNotEmpty) ret['imageUrl'] = imageUrl;
 
-      if (keywords.isNotEmpty) ret["keywords"] = keywords;
+      if (keywords.isNotEmpty) ret['keywords'] = keywords;
 
-      ret["creationDate"] = _creationDateTimeStamp;
+      ret['creationDate'] = _creationDateTimeStamp;
 
       if (expirationDateInMilliSec > 0) {
-        ret["expirationDate"] = expirationDateInMilliSec;
+        ret['expirationDate'] = expirationDateInMilliSec;
       }
 
-      ret["locallyIndex"] = locallyIndex;
-      ret["publiclyIndex"] = publiclyIndex;
+      ret['locallyIndex'] = locallyIndex;
+      ret['publiclyIndex'] = publiclyIndex;
 
       if (contentMetadata != null && contentMetadata!.toMap().isNotEmpty) {
-        ret["contentMetadata"] = contentMetadata!.toMap();
+        ret['contentMetadata'] = contentMetadata!.toMap();
       }
     } else {
       if (canonicalIdentifier.isNotEmpty) {
-        ret["\$canonical_identifier"] = canonicalIdentifier;
+        ret['\$canonical_identifier'] = canonicalIdentifier;
       }
 
-      if (canonicalUrl.isNotEmpty) ret["\$canonicalUrl"] = canonicalUrl;
+      if (canonicalUrl.isNotEmpty) ret['\$canonicalUrl'] = canonicalUrl;
 
-      if (title.isNotEmpty) ret["\$og_title"] = title;
+      if (title.isNotEmpty) ret['\$og_title'] = title;
 
       if (contentDescription.isNotEmpty) {
-        ret["\$og_description"] = contentDescription;
+        ret['\$og_description'] = contentDescription;
       }
 
-      if (imageUrl.isNotEmpty) ret["\$og_image_url"] = imageUrl;
+      if (imageUrl.isNotEmpty) ret['\$og_image_url'] = imageUrl;
 
-      if (keywords.isNotEmpty) ret["\$keywords"] = keywords;
+      if (keywords.isNotEmpty) ret['\$keywords'] = keywords;
 
-      ret["\$creation_timestamp"] = _creationDateTimeStamp;
+      ret['\$creation_timestamp'] = _creationDateTimeStamp;
 
       if (expirationDateInMilliSec > 0) {
-        ret["\$exp_date"] = expirationDateInMilliSec;
+        ret['\$exp_date'] = expirationDateInMilliSec;
       }
 
-      ret["\$locally_indexable"] = locallyIndex;
-      ret["\$publicly_indexable"] = publiclyIndex;
+      ret['\$locally_indexable'] = locallyIndex;
+      ret['\$publicly_indexable'] = publiclyIndex;
 
       Map<String, dynamic> contentMetadata = {if (this.contentMetadata != null) ...this.contentMetadata!.toMapWeb()};
 

@@ -1,5 +1,14 @@
+## 8.9.0
+### 🎉 Features
+* Code review to remove build warnings for Android
+* Update Android Gradle Plugin (AGP) to 16KB Page Size Compatibility
+
+### Removal of deprecated methods
+* `FlutterBranchSdk.disableTracking()`
+
 ## 8.8.0
 ### 🎉 Features
+
 * Configuration through `branch-config.json` file. 
 	- Some settings can be configured by adding an `assets/branch-config.json` file to your project. 
 	- This eliminates the need for manual modifications to native files (`AndroidManifest.xml` and `Info.plist`). 
@@ -7,9 +16,11 @@
 	- The `branch-config.json` file and its keys are optional. The plugin will gracefully handle its absence, allowing for programmatic setup or backward compatibility with the manual native setup. If the file is present but a key is missing, the plugin will use default values where applicable.
 	- Read the **README.md** for full instructions for JSON-based configuration.
 
+
+
 ## 8.7.1
 ### 🐛 Bug Fixes
-* Fix issue #461 : iOS Build Failure using Cocoapods
+* Fix issue #461 : iOS Build Failure using CocoaPods
 
 ## 8.7.0
 ### 🔧 Native SDK Updates

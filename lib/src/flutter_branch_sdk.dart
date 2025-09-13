@@ -14,15 +14,10 @@ class FlutterBranchSdk {
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
-  static Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
-    await FlutterBranchSdkPlatform.instance.init(
-        enableLogging: enableLogging, disableTracking: disableTracking, branchAttributionLevel: branchAttributionLevel);
+
+  static Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
+    await FlutterBranchSdkPlatform.instance
+        .init(enableLogging: enableLogging, branchAttributionLevel: branchAttributionLevel);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -48,12 +43,6 @@ class FlutterBranchSdk {
   ///Returns the first parameters associated with the link that referred the user
   static Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
     return await FlutterBranchSdkPlatform.instance.getFirstReferringParams();
-  }
-
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  static void disableTracking(bool value) async {
-    return FlutterBranchSdkPlatform.instance.disableTracking(value);
   }
 
   ///Listen click em Branch Deeplinks
@@ -269,5 +258,11 @@ class FlutterBranchSdk {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   static void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     FlutterBranchSdkPlatform.instance.setSDKWaitTimeForThirdPartyAPIs(waitTime);
+  }
+
+  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
+  ///[url] The URL base URL that the Branch API uses.
+  static void setAPIUrl(String url) {
+    FlutterBranchSdkPlatform.instance.setAPIUrl(url);
   }
 }

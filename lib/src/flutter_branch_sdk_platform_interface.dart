@@ -41,13 +41,8 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
-  Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+
+  Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
     throw UnimplementedError('init has not been implemented');
   }
 
@@ -74,13 +69,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///Returns the first parameters associated with the link that referred the user
   Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
     throw UnimplementedError('getFirstReferringParams has not been implemented');
-  }
-
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  @Deprecated('Use [setConsumerProtectionAttributionLevel]')
-  void disableTracking(bool value) async {
-    throw UnimplementedError('disableTracking has not been implemented');
   }
 
   ///Listen click em Branch Deeplinks
@@ -280,5 +268,11 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     throw UnimplementedError('setSDKWaitTimeForThirdPartyAPIs has not been implemented');
+  }
+
+  ///Sets a custom base URL for all calls to the Branch API.  Requires https.
+  ///[url] The URL base URL that the Branch API uses.
+  void setAPIUrl(String url) {
+    throw UnimplementedError('setAPIUrl has not been implemented');
   }
 }
