@@ -1,11 +1,11 @@
 ## 8.9.0
-### 🎉 Features
-* Code review to remove build warnings for Android
-* Update Android Gradle Plugin (AGP) to 16KB Page Size Compatibility
-* Fix Linter warnings
+### 🎉 Features & Fixes
+* **Android:** Resolved build warnings (`unchecked or unsafe operations`) for a cleaner build process.
+* **Android:** Updated project configuration to ensure compatibility with Android Gradle Plugin (AGP) 8.x.
+* Fixed various linter warnings to improve code quality and maintainability.
 
-### Removal of deprecated methods
-* `FlutterBranchSdk.disableTracking()`
+### 🗑️ Removals
+* The deprecated method `FlutterBranchSdk.disableTracking()` has been removed.
 
 ## 8.8.0
 ### 🎉 Features
@@ -16,8 +16,6 @@
 	- Toggle between your test and live keys within the `branch-config.json` file, streamlining the development and release process.
 	- The `branch-config.json` file and its keys are optional. The plugin will gracefully handle its absence, allowing for programmatic setup or backward compatibility with the manual native setup. If the file is present but a key is missing, the plugin will use default values where applicable.
 	- Read the **README.md** for full instructions for JSON-based configuration.
-
-
 
 ## 8.7.1
 ### 🐛 Bug Fixes
