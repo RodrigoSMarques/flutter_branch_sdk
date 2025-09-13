@@ -277,8 +277,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         case "setSDKWaitTimeForThirdPartyAPIs":
             setSDKWaitTimeForThirdPartyAPIs(call: call)
             break;
-        case "setAPIUrl":
-            setAPIUrl(call: call)
         default:
             result(FlutterMethodNotImplemented)
             break
@@ -288,14 +286,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     //---------------------------------------------------------------------------------------------
     // Branch SDK Call Methods
     // --------------------------------------------------------------------------------------------
-    private func setAPIUrl(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        
-        let url = args["apiURL"] as! String
-        
-        Branch.setAPIUrl(url)
-    }
-    
     private func setupBranch(call: FlutterMethodCall, result: @escaping FlutterResult) {
         
         if (isInitialized) {
