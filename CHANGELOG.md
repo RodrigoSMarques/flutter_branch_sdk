@@ -1,7 +1,10 @@
 ## 8.9.0
 ### 🎉 Features & Fixes
 * **Android:** Resolved build warnings (`unchecked or unsafe operations`) for a cleaner build process.
-* **Android:** Updated project configuration to ensure compatibility with Android Gradle Plugin (AGP) 8.x.
+* **Android:** Updated project configuration to ensure compatibility with Android Gradle Plugin (AGP) 8.x (16KB Page Size Compatibility)
+* **iOS:** Fixed critical crashes caused by unsafe data handling, significantly improving plugin stability.
+* **iOS:** Modernized native code to ensure compatibility with recent APIs and iOS 13+.
+* **iOS:** Resolved Swift compilation errors and refactored the codebase for improved quality and maintainability.
 * Fixed various linter warnings to improve code quality and maintainability.
 
 ### 🗑️ Removals
