@@ -563,6 +563,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 messageTitle,
                 messageText
             );
+        } else {
+            response.put("success", Boolean.FALSE);
+            response.put("errorCode", "UNSUPPORTED_VERSION");
+            response.put("errorMessage","Version not supported. Requires API 22");
         }
     }
 
