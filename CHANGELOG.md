@@ -1,11 +1,11 @@
 ## 8.9.0
 ### 🎉 Features & Fixes
-* **Android:** Resolved build warnings (`unchecked or unsafe operations`) for a cleaner build process.
-* **Android:** Updated project configuration to ensure compatibility with Android Gradle Plugin (AGP) 8.x (16KB Page Size Compatibility)
-* **iOS:** Fixed critical crashes caused by unsafe data handling, significantly improving plugin stability.
-* **iOS:** Modernized native code to ensure compatibility with recent APIs and iOS 13+.
-* **iOS:** Resolved Swift compilation errors and refactored the codebase for improved quality and maintainability.
-* Fixed various linter warnings to improve code quality and maintainability.
+* **Android:** Resolved build warnings (`unchecked or unsafe operations, deprecated api`) for a cleaner build process.
+* **Android:** Updated plugin configuration to ensure compatibility with Android Gradle Plugin (AGP) 8.6.x (16KB Page Size).
+* **Android:** ⚠️ Updated the `showShareSheet` function, which now requires a minimum of API level 22 (Android 5.1) to work correctly.
+* **iOS:** Improved plugin stability by adding consistency checks to safely handle all incoming data from Flutter and prevent crashes.
+* **iOS:** Modernized native code to ensure compatibility with recent APIs.
+* Fixed linter warnings to improve code quality and maintainability.
 
 ### 🗑️ Removals
 * The deprecated method `FlutterBranchSdk.disableTracking()` has been removed.
