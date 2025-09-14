@@ -75,6 +75,14 @@ class BranchQrCode {
   }
 
   String _colorToHex(Color color) {
-    return '#${color.value.toRadixString(16).substring(2, 8)}';
+    final rInt = (color.r * 255.0).round();
+    final gInt = (color.g * 255.0).round();
+    final bInt = (color.b * 255.0).round();
+
+    final r = rInt.toRadixString(16).padLeft(2, '0');
+    final g = gInt.toRadixString(16).padLeft(2, '0');
+    final b = bInt.toRadixString(16).padLeft(2, '0');
+
+    return '#$r$g$b';
   }
 }
