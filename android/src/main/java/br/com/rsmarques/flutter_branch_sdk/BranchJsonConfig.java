@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
 public class BranchJsonConfig {
-    private static final String TAG = "BranchJsonConfig";
     private static final String DEBUG_NAME = "FlutterBranchSDK";
 
     public final String apiUrl;

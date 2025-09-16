@@ -108,13 +108,13 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///
   /// callback: function, optional - returns an error if the API call is unsuccessful
   ///
-  /// Turns the current page into a "deepview" – a preview of app content. This gives the page two
+  /// Turns the current page into a 'deepview' – a preview of app content. This gives the page two
   /// special behaviors:
   ///
   /// When the page is viewed on a mobile browser, if the user has the app
   /// installed on their phone, we will try to open the app automaticaly and deeplink them to this content (this can be toggled off by turning open_app to false, but this is not recommended).
   /// Provides a callback to open the app directly, accessible as branch.deepviewCta();
-  /// you'll want to have a button on your web page that says something like "View in app", which calls this function.
+  /// you'll want to have a button on your web page that says something like 'View in app', which calls this function.
   /// See this tutorial for a full
   /// guide on how to use the deepview functionality of the Web SDK.
   ///
@@ -150,7 +150,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///     "Error message"
+  ///     'Error message'
   /// );
   @JS('deepview')
   external static void deepview(JSAny data, [JSAny options, JSFunction callback]);
@@ -265,7 +265,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// retries	optional - integer. Value specifying the number of times that a Branch API call can be re-attempted. Default 2.
   /// retry_delay	optional - integer . Amount of time in milliseconds to wait before re-attempting a timed-out request to the Branch API. Default 200 ms.
   /// timeout	optional - integer. Duration in milliseconds that the system should wait for a response before considering any Branch API call to have timed out. Default 5000 ms.
-  /// metadata	optional - object. Key-value pairs used to target Journeys users via the "is viewing a page with metadata key" filter.
+  /// metadata	optional - object. Key-value pairs used to target Journeys users via the 'is viewing a page with metadata key' filter.
   /// nonce	optional - string. A nonce value that will be added to branch-journey-cta injected script. Used to allow that script from a Content Security Policy.
   /// tracking_disabled	optional - boolean. true disables tracking
   /// Usage
@@ -278,7 +278,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///      "Error message",
+  ///      'Error message',
   ///      {
   ///           data_parsed:        { },                          // If the user was referred from a link, and the link has associated data, the data is passed in here.
   ///           referring_identity: '12345',                      // If the user was referred from a link, and the link was created by a user with an identity, that identity is here.
@@ -314,28 +314,28 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Facebook tool to debug your OG tags!
   ///
   /// Key	Value
-  /// "$og_title"	The title you'd like to appear for the link in social media
-  /// "$og_description"	The description you'd like to appear for the link in social media
-  /// "$og_image_url"	The URL for the image you'd like to appear for the link in social media
-  /// "$og_video"	The URL for the video
-  /// "$og_url"	The URL you'd like to appear
-  /// "$og_redirect"	If you want to bypass our OG tags and use your own, use this key with the URL that contains your site's metadata.
+  /// '$og_title'	The title you'd like to appear for the link in social media
+  /// '$og_description'	The description you'd like to appear for the link in social media
+  /// '$og_image_url'	The URL for the image you'd like to appear for the link in social media
+  /// '$og_video'	The URL for the video
+  /// '$og_url'	The URL you'd like to appear
+  /// '$og_redirect'	If you want to bypass our OG tags and use your own, use this key with the URL that contains your site's metadata.
   /// Also, you can set custom redirection by inserting the following optional keys in the dictionary:
   ///
   /// Key	Value
-  /// "$desktop_url"	Where to send the user on a desktop or laptop. By default it is the Branch-hosted text-me service
-  /// "$android_url"	The replacement URL for the Play Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
-  /// "$ios_url"	The replacement URL for the App Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
-  /// "$ipad_url"	Same as above but for iPad Store
-  /// "$fire_url"	Same as above but for Amazon Fire Store
-  /// "$blackberry_url"	Same as above but for Blackberry Store
-  /// "$windows_phone_url"	Same as above but for Windows Store
-  /// "$after_click_url"	When a user returns to the browser after going to the app, take them to this URL. iOS only; Android coming soon
+  /// '$desktop_url'	Where to send the user on a desktop or laptop. By default it is the Branch-hosted text-me service
+  /// '$android_url'	The replacement URL for the Play Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
+  /// '$ios_url'	The replacement URL for the App Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
+  /// '$ipad_url'	Same as above but for iPad Store
+  /// '$fire_url'	Same as above but for Amazon Fire Store
+  /// '$blackberry_url'	Same as above but for Blackberry Store
+  /// '$windows_phone_url'	Same as above but for Windows Store
+  /// '$after_click_url'	When a user returns to the browser after going to the app, take them to this URL. iOS only; Android coming soon
   /// You have the ability to control the direct deep linking of each link as well:
   ///
   /// Key	Value
-  /// "$deeplink_path"	The value of the deep link path that you'd like us to append to your URI. For example, you could specify "$deeplink_path": "radio/station/456" and we'll open the app with the URI "yourapp://radio/station/456?link_click_id=branch-identifier". This is primarily for supporting legacy deep linking infrastructure.
-  /// "$always_deeplink"	true or false. (default is not to deep link first) This key can be specified to have our linking service force try to open the app, even if we're not sure the user has the app installed. If the app is not installed, we fall back to the respective app store or $platform_url key. By default, we only open the app if we've seen a user initiate a session in your app from a Branch link (has been cookied and deep linked by Branch).
+  /// '$deeplink_path'	The value of the deep link path that you'd like us to append to your URI. For example, you could specify '$deeplink_path': 'radio/station/456' and we'll open the app with the URI 'yourapp://radio/station/456?link_click_id=branch-identifier'. This is primarily for supporting legacy deep linking infrastructure.
+  /// '$always_deeplink'	true or false. (default is not to deep link first) This key can be specified to have our linking service force try to open the app, even if we're not sure the user has the app installed. If the app is not installed, we fall back to the respective app store or $platform_url key. By default, we only open the app if we've seen a user initiate a session in your app from a Branch link (has been cookied and deep linked by Branch).
   /// Usage
   ///
   /// branch.link(
@@ -367,7 +367,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///     "Error message",
+  ///     'Error message',
   ///     'https://bnc.lt/l/3HZMytU-BW' // Branch deep linking URL
   /// );
   @JS('link')
@@ -388,7 +388,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///      "Error message"
+  ///      'Error message'
   /// );
   @JS('logout')
   external static void logout([JSFunction callback]);
@@ -478,7 +478,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// );
   /// Callback Format
   ///
-  /// callback("Error message");
+  /// callback('Error message');
   @JS('sendSMS')
   external static void sendSMS(String phone, JSAny linkData, [JSAny options, JSFunction callback]);
 
@@ -534,7 +534,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///      "Error message",
+  ///      'Error message',
   ///      {
   ///           identity_id:             '12345', // Server-generated ID of the user identity, stored in `sessionStorage`.
   ///           link:                    'url',   // New link to use (replaces old stored link), stored in `sessionStorage`.
@@ -567,7 +567,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// );
   /// Callback Format
   ///
-  /// callback("Error message");
+  /// callback('Error message');
   @JS('track')
   external static void track(String event, [JSAny metadata, JSFunction callback]);
 
@@ -600,20 +600,20 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Example
   ///
   /// var commerce_data = {
-  ///     "revenue": 50.0,
-  ///     "currency": "USD",
-  ///     "transaction_id": "foo-transaction-id",
-  ///     "shipping": 0.0,
-  ///     "tax": 5.0,
-  ///     "affiliation": "foo-affiliation",
-  ///     "products": [
-  ///          { "sku": "foo-sku-1", "name": "foo-item-1", "price": 45.00, "quantity": 1, "brand": "foo-brand",
-  ///            "category": "Electronics", "variant": "foo-variant-1"},
-  ///          { "sku": "foo-sku-2", "price": 2.50, "quantity": 2}
+  ///     'revenue': 50.0,
+  ///     'currency': 'USD',
+  ///     'transaction_id': 'foo-transaction-id',
+  ///     'shipping': 0.0,
+  ///     'tax': 5.0,
+  ///     'affiliation': 'foo-affiliation',
+  ///     'products': [
+  ///          { 'sku': 'foo-sku-1', 'name': 'foo-item-1', 'price': 45.00, 'quantity': 1, 'brand': 'foo-brand',
+  ///            'category': 'Electronics', 'variant': 'foo-variant-1'},
+  ///          { 'sku': 'foo-sku-2', 'price': 2.50, 'quantity': 2}
   ///      ],
   /// };
   ///
-  /// var metadata =  { "foo": "bar" };
+  /// var metadata =  { 'foo': 'bar' };
   ///
   /// branch.trackCommerceEvent('purchase', commerce_data, metadata, function(err) {
   ///     if(err) {
@@ -646,7 +646,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Logging Content Events
   /// Logging User Lifecycle
   /// Logging Custom Events
-  /// Usage for Commerce, Content & User Lifecycle "Standard Events"
+  /// Usage for Commerce, Content & User Lifecycle 'Standard Events'
   ///
   /// branch.logEvent(
   ///     event,
@@ -655,7 +655,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///     customer_event_alias,
   ///     callback (err)
   /// );
-  /// Usage for "Custom Events"
+  /// Usage for 'Custom Events'
   ///
   /// JavaScript
   /// JavaScript
@@ -672,71 +672,71 @@ extension type BranchJS._(JSObject _) implements JSObject {
   ///
   /// ### Example -- How to log a Commerce Event
   /// var event_and_custom_data = {
-  ///    "transaction_id": "tras_Id_1232343434",
-  ///    "currency": "USD",
-  ///    "revenue": 180.2,
-  ///    "shipping": 10.5,
-  ///    "tax": 13.5,
-  ///    "coupon": "promo-1234",
-  ///    "affiliation": "high_fi",
-  ///    "description": "Preferred purchase",
-  ///    "purchase_loc": "Palo Alto",
-  ///    "store_pickup": "unavailable"
+  ///    'transaction_id': 'tras_Id_1232343434',
+  ///    'currency': 'USD',
+  ///    'revenue': 180.2,
+  ///    'shipping': 10.5,
+  ///    'tax': 13.5,
+  ///    'coupon': 'promo-1234',
+  ///    'affiliation': 'high_fi',
+  ///    'description': 'Preferred purchase',
+  ///    'purchase_loc': 'Palo Alto',
+  ///    'store_pickup': 'unavailable'
   /// };
   /// var content_items = [
   /// {
-  ///    "$content_schema": "COMMERCE_PRODUCT",
-  ///    "$og_title": "Nike Shoe",
-  ///    "$og_description": "Start loving your steps",
-  ///    "$og_image_url": "http:///example.com/img1.jpg",
-  ///    "$canonical_identifier": "nike/1234",
-  ///    "$publicly_indexable": false,
-  ///    "$price": 101.2,
-  ///    "$locally_indexable": true,
-  ///    "$quantity": 1,
-  ///    "$sku": "1101123445",
-  ///    "$product_name": "Runner",
-  ///    "$product_brand": "Nike",
-  ///    "$product_category": "Sporting Goods",
-  ///    "$product_variant": "XL",
-  ///    "$rating_average": 4.2,
-  ///    "$rating_count": 5,
-  ///    "$rating_max": 2.2,
-  ///    "$creation_timestamp": 1499892854966,
-  ///    "$exp_date": 1499892854966,
-  ///    "$keywords": [ "sneakers", "shoes" ],
-  ///    "$address_street": "230 South LaSalle Street",
-  ///    "$address_city": "Chicago",
-  ///    "$address_region": "IL",
-  ///    "$address_country": "US",
-  ///    "$address_postal_code": "60604",
-  ///    "$latitude": 12.07,
-  ///    "$longitude": -97.5,
-  ///    "$image_captions": [ "my_img_caption1", "my_img_caption_2" ],
-  ///    "$condition": "NEW",
-  ///    "$custom_fields": {"foo1":"bar1","foo2":"bar2"}
+  ///    '$content_schema': 'COMMERCE_PRODUCT',
+  ///    '$og_title': 'Nike Shoe',
+  ///    '$og_description': 'Start loving your steps',
+  ///    '$og_image_url': 'http:///example.com/img1.jpg',
+  ///    '$canonical_identifier': 'nike/1234',
+  ///    '$publicly_indexable': false,
+  ///    '$price': 101.2,
+  ///    '$locally_indexable': true,
+  ///    '$quantity': 1,
+  ///    '$sku': '1101123445',
+  ///    '$product_name': 'Runner',
+  ///    '$product_brand': 'Nike',
+  ///    '$product_category': 'Sporting Goods',
+  ///    '$product_variant': 'XL',
+  ///    '$rating_average': 4.2,
+  ///    '$rating_count': 5,
+  ///    '$rating_max': 2.2,
+  ///    '$creation_timestamp': 1499892854966,
+  ///    '$exp_date': 1499892854966,
+  ///    '$keywords': [ 'sneakers', 'shoes' ],
+  ///    '$address_street': '230 South LaSalle Street',
+  ///    '$address_city': 'Chicago',
+  ///    '$address_region': 'IL',
+  ///    '$address_country': 'US',
+  ///    '$address_postal_code': '60604',
+  ///    '$latitude': 12.07,
+  ///    '$longitude': -97.5,
+  ///    '$image_captions': [ 'my_img_caption1', 'my_img_caption_2' ],
+  ///    '$condition': 'NEW',
+  ///    '$custom_fields': {'foo1':'bar1','foo2':'bar2'}
   /// },
   /// {
-  ///    "$og_title": "Nike Woolen Sox",
-  ///    "$canonical_identifier": "nike/5324",
-  ///    "$og_description": "Fine combed woolen sox for those who love your foot",
-  ///    "$publicly_indexable": false,
-  ///    "$price": 80.2,
-  ///    "$locally_indexable": true,
-  ///    "$quantity": 5,
-  ///    "$sku": "110112467",
-  ///    "$product_name": "Woolen Sox",
-  ///    "$product_brand": "Nike",
-  ///    "$product_category": "Apparel & Accessories",
-  ///    "$product_variant": "Xl",
-  ///    "$rating_average": 3.3,
-  ///    "$rating_count": 5,
-  ///    "$rating_max": 2.8,
-  ///    "$creation_timestamp": 1499892854966
+  ///    '$og_title': 'Nike Woolen Sox',
+  ///    '$canonical_identifier': 'nike/5324',
+  ///    '$og_description': 'Fine combed woolen sox for those who love your foot',
+  ///    '$publicly_indexable': false,
+  ///    '$price': 80.2,
+  ///    '$locally_indexable': true,
+  ///    '$quantity': 5,
+  ///    '$sku': '110112467',
+  ///    '$product_name': 'Woolen Sox',
+  ///    '$product_brand': 'Nike',
+  ///    '$product_category': 'Apparel & Accessories',
+  ///    '$product_variant': 'Xl',
+  ///    '$rating_average': 3.3,
+  ///    '$rating_count': 5,
+  ///    '$rating_max': 2.8,
+  ///    '$creation_timestamp': 1499892854966
   /// }];
-  /// var customer_event_alias = "event alias";
+  /// var customer_event_alias = 'event alias';
   /// branch.logEvent(
-  ///    "PURCHASE",
+  ///    'PURCHASE',
   ///    event_and_custom_data,
   ///    content_items,
   ///    customer_event_alias,
@@ -793,7 +793,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///     "Error message",
+  ///     'Error message',
   ///     '{}'
   /// );
   @JS('lastAttributedTouchData')
@@ -823,28 +823,28 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Facebook tool to debug your OG tags!
   ///
   /// Key	Value
-  /// "$og_title"	The title you'd like to appear for the link in social media
-  /// "$og_description"	The description you'd like to appear for the link in social media
-  /// "$og_image_url"	The URL for the image you'd like to appear for the link in social media
-  /// "$og_video"	The URL for the video
-  /// "$og_url"	The URL you'd like to appear
-  /// "$og_redirect"	If you want to bypass our OG tags and use your own, use this key with the URL that contains your site's metadata.
+  /// '$og_title'	The title you'd like to appear for the link in social media
+  /// '$og_description'	The description you'd like to appear for the link in social media
+  /// '$og_image_url'	The URL for the image you'd like to appear for the link in social media
+  /// '$og_video'	The URL for the video
+  /// '$og_url'	The URL you'd like to appear
+  /// '$og_redirect'	If you want to bypass our OG tags and use your own, use this key with the URL that contains your site's metadata.
   /// Also, you can set custom redirection by inserting the following optional keys in the dictionary:
   ///
   /// Key	Value
-  /// "$desktop_url"	Where to send the user on a desktop or laptop. By default it is the Branch-hosted text-me service
-  /// "$android_url"	The replacement URL for the Play Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
-  /// "$ios_url"	The replacement URL for the App Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
-  /// "$ipad_url"	Same as above but for iPad Store
-  /// "$fire_url"	Same as above but for Amazon Fire Store
-  /// "$blackberry_url"	Same as above but for Blackberry Store
-  /// "$windows_phone_url"	Same as above but for Windows Store
-  /// "$after_click_url"	When a user returns to the browser after going to the app, take them to this URL. iOS only; Android coming soon
+  /// '$desktop_url'	Where to send the user on a desktop or laptop. By default it is the Branch-hosted text-me service
+  /// '$android_url'	The replacement URL for the Play Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
+  /// '$ios_url'	The replacement URL for the App Store to send the user if they don't have the app. Only necessary if you want a mobile web splash
+  /// '$ipad_url'	Same as above but for iPad Store
+  /// '$fire_url'	Same as above but for Amazon Fire Store
+  /// '$blackberry_url'	Same as above but for Blackberry Store
+  /// '$windows_phone_url'	Same as above but for Windows Store
+  /// '$after_click_url'	When a user returns to the browser after going to the app, take them to this URL. iOS only; Android coming soon
   /// You have the ability to control the direct deep linking of each link as well:
   ///
   /// Key	Value
-  /// "$deeplink_path"	The value of the deep link path that you'd like us to append to your URI. For example, you could specify "$deeplink_path": "radio/station/456" and we'll open the app with the URI "yourapp://radio/station/456?link_click_id=branch-identifier". This is primarily for supporting legacy deep linking infrastructure.
-  /// "$always_deeplink"	true or false. (default is not to deep link first) This key can be specified to have our linking service force try to open the app, even if we're not sure the user has the app installed. If the app is not installed, we fall back to the respective app store or $platform_url key. By default, we only open the app if we've seen a user initiate a session in your app from a Branch link (has been cookied and deep linked by Branch).
+  /// '$deeplink_path'	The value of the deep link path that you'd like us to append to your URI. For example, you could specify '$deeplink_path': 'radio/station/456' and we'll open the app with the URI 'yourapp://radio/station/456?link_click_id=branch-identifier'. This is primarily for supporting legacy deep linking infrastructure.
+  /// '$always_deeplink'	true or false. (default is not to deep link first) This key can be specified to have our linking service force try to open the app, even if we're not sure the user has the app installed. If the app is not installed, we fall back to the respective app store or $platform_url key. By default, we only open the app if we've seen a user initiate a session in your app from a Branch link (has been cookied and deep linked by Branch).
   /// Usage
   ///
   /// branch.link(
@@ -876,7 +876,7 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// Callback Format
   ///
   /// callback(
-  ///     "Error message",
+  ///     'Error message',
   ///     'https://bnc.lt/l/3HZMytU-BW' // Branch deep linking URL
   /// );
 

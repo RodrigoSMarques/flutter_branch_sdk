@@ -4,13 +4,14 @@ import BranchSDK
 import AppTrackingTransparency
 import AdSupport
 
+// Plugin channel variables and constants
 var methodChannel: FlutterMethodChannel?
 var eventChannel: FlutterEventChannel?
 let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.8.0";
+let PLUGIN_VERSION = "8.9.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
@@ -80,13 +81,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
         
-        let disable_nativelink : Bool = {
-            guard let value = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool else {
-                return false
-            }
-            return value
-        }()
-
+        let disable_nativelink: Bool = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool ?? false
         LogUtils.debug(message: "Disable NativeLink: \(String(describing:disable_nativelink))")
         
         if !disable_nativelink {
@@ -110,27 +105,22 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                     self.initialError = err
                     return
                 }
-                self.eventSink!(FlutterError(code: String(err.code),
-                                             message: err.localizedDescription,
-                                             details: nil))
+                self.eventSink!(FlutterError(code: String(err.code), message: err.localizedDescription, details: nil))
             }
         }
         return true
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        let branchHandled = Branch.getInstance().application(app, open: url, options: options)
-        return branchHandled
+        return Branch.getInstance().application(app, open: url, options: options)
     }
     
     public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
-        let branchHandled = Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
-        return branchHandled
+        return Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        let handledByBranch = Branch.getInstance().continue(userActivity)
-        return handledByBranch
+        return Branch.getInstance().continue(userActivity)
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
@@ -140,20 +130,15 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     //---------------------------------------------------------------------------------------------
     // FlutterStreamHandler Interface Methods
     // --------------------------------------------------------------------------------------------
-    public func onListen(withArguments arguments: Any?,
-                         eventSink: @escaping FlutterEventSink) -> FlutterError? {
+    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
         if (initialParams != nil) {
             self.eventSink!(self.initialParams)
-            initialParams = nil
-            initialError = nil
         } else if (initialError != nil) {
-            self.eventSink!(FlutterError(code: String(self.initialError!.code),
-                                         message: self.initialError!.localizedDescription,
-                                         details: nil))
-            initialParams = nil
-            initialError = nil
+            self.eventSink!(FlutterError(code: String(self.initialError!.code),message: self.initialError!.localizedDescription, details: nil))
         }
+        initialParams = nil
+        initialError = nil
         return nil
     }
     
@@ -284,66 +269,93 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     //---------------------------------------------------------------------------------------------
+    // Helper Functions
+    // --------------------------------------------------------------------------------------------
+    
+    private func getRootViewController() -> UIViewController? {
+        if #available(iOS 13.0, *) {
+            let windowScene = UIApplication.shared.connectedScenes
+                .filter { $0.activationState == .foregroundActive }
+                .first as? UIWindowScene
+            return windowScene?.windows.first(where: { $0.isKeyWindow })?.rootViewController
+        } else {
+            return UIApplication.shared.keyWindow?.rootViewController
+        }
+    }
+    
+    private func flutterError(message: String, details: Any? = nil) -> FlutterError {
+        return FlutterError(code: ERROR_CODE, message: message, details: details)
+    }
+    
+    //---------------------------------------------------------------------------------------------
     // Branch SDK Call Methods
     // --------------------------------------------------------------------------------------------
     private func setupBranch(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        
-        if (isInitialized) {
-            result(true)
+        guard let args = call.arguments as? [String: Any],
+              let enableLogging = args["enableLogging"] as? Bool,
+              let branchAttributionLevel = args["branchAttributionLevel"] as? String
+        else {
+            result(flutterError(message: "Invalid arguments provided for setupBranch", details: call.arguments))
+            return
         }
-        let args = call.arguments as! [String: Any?]
         
-        LogUtils.debug(message: "setupBranch args: \(String(describing:args))")
-                
-        let branchAttributionLevel = args["branchAttributionLevel"] as! String
-        if (!branchAttributionLevel.isEmpty) {
+        LogUtils.debug(message: "setupBranch args: \(args)")
+        
+        if isInitialized {
+            result(true)
+            return
+        }
+
+        if !branchAttributionLevel.isEmpty {
             Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
         }
         
-        if args["enableLogging"] as! Bool == true {
+        if enableLogging {
             Branch.enableLogging(at: BranchLogLevel.debug)
         }
         
-        if (!requestMetadata.isEmpty) {
-            for param in requestMetadata {
-                Branch.getInstance().setRequestMetadataKey(param.key, value: param.value)
-            }
+        for (key, value) in requestMetadata {
+            Branch.getInstance().setRequestMetadataKey(key, value: value)
         }
-        if (!snapParameters.isEmpty) {
-            for param in snapParameters {
-                Branch.getInstance().addSnapPartnerParameter(withName: param.key, value: param.value)
-            }
+        for (key, value) in snapParameters {
+            Branch.getInstance().addSnapPartnerParameter(withName: key, value: value)
         }
-        if (!facebookParameters.isEmpty) {
-            for param in facebookParameters {
-                Branch.getInstance().addFacebookPartnerParameter(withName: param.key, value: param.value)
-            }
+        for (key, value) in facebookParameters {
+            Branch.getInstance().addFacebookPartnerParameter(withName: key, value: value)
         }
+        
         isInitialized = true
         result(true)
     }
     
     private func getShortUrl(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let lpDict = args["lp"] as! [String: Any?]
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?],
+              let lpDict = args["lp"] as? [String: Any?]
+        else {
+            result(flutterError(message: "Invalid arguments provided for getShortUrl", details: call.arguments))
+            return
+        }
         
-        let response : NSMutableDictionary! = [:]
-        buo?.getShortUrl(with: lp!) { (url, error) in
-            if ((error == nil && url != nil) || (error != nil && url != nil)) {
-                NSLog("getShortUrl: %@", url!)
-                response["success"] = NSNumber(value: true)
-                response["url"] = url!
+        guard let buo = convertToBUO(dict: buoDict), let lp = convertToLp(dict: lpDict) else {
+            result(flutterError(message: "Failed to create Branch Universal Object or Link Properties.", details: call.arguments))
+            return
+        }
+        
+        var response: [String: Any] = [:]
+        buo.getShortUrl(with: lp) { (url, error) in
+            if let urlString = url, error == nil {
+                NSLog("getShortUrl: %@", urlString)
+                response["success"] = true
+                response["url"] = urlString
             } else {
-                response["success"] = NSNumber(value: false)
-                if let err = (error as NSError?) {
+                response["success"] = false
+                if let err = error as NSError? {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 } else {
                     response["errorCode"] = ""
-                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
+                    response["errorMessage"] = "Error message not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
@@ -353,26 +365,37 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func showShareSheet(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let lpDict = args["lp"] as! [String: Any?]
-        let shareText = args["messageText"] as! String
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
-        let controller = UIApplication.shared.keyWindow!.rootViewController
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?],
+              let lpDict = args["lp"] as? [String: Any?],
+              let shareText = args["messageText"] as? String
+        else {
+            result(flutterError(message: "Invalid arguments provided for showShareSheet", details: call.arguments))
+            return
+        }
         
-        let response : NSMutableDictionary! = [:]
-        buo?.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
+        guard let controller = getRootViewController() else {
+            result(flutterError(message: "Could not find root view controller to present share sheet"))
+            return
+        }
+        
+        guard let buo = convertToBUO(dict: buoDict), let lp = convertToLp(dict: lpDict) else {
+            result(flutterError(message: "Failed to create Branch Universal Object or Link Properties.", details: call.arguments))
+            return
+        }
+        
+        var response: [String: Any] = [:]
+        buo.showShareSheet(with: lp, andShareText: shareText, from: controller) { (activityType, completed, error) in
             if completed {
-                response["success"] = NSNumber(value: true)
+                response["success"] = true
             } else {
-                response["success"] = NSNumber(value: false)
-                if let err = (error as NSError?) {
+                response["success"] = false
+                if let err = error as NSError? {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 } else {
                     response["errorCode"] = "-1"
-                    response["errorMessage"] = "Canceled by user"
+                    response["errorMessage"] = "Share sheet cancelled by user or unknown error"
                 }
             }
             DispatchQueue.main.async {
@@ -388,96 +411,127 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func trackContent(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [[String: Any?]]
-        let eventDict = args["event"] as! [String: Any?]
-        let buoList: [BranchUniversalObject] = buoDict.map { b in
-            convertToBUO(dict: b)!
+        guard let args = call.arguments as? [String: Any],
+              let buoDictArray = args["buo"] as? [[String: Any?]],
+              let eventDict = args["event"] as? [String: Any?]
+        else {
+            LogUtils.debug(message: "Invalid arguments provided for trackContent")
+            return
         }
-        let event: BranchEvent? = convertToEvent(dict : eventDict)
-        event!.contentItems =  buoList
+        
+        let buoList = buoDictArray.compactMap { convertToBUO(dict: $0) }
+        guard let event = convertToEvent(dict: eventDict) else {
+            LogUtils.debug(message: "Failed to create BranchEvent from event dictionary")
+            return
+        }
+        
+        event.contentItems = buoList
         
         DispatchQueue.main.async {
-            event!.logEvent()
+            event.logEvent()
         }
     }
     
     private func trackContentWithoutBuo(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let eventDict = args["event"] as! [String: Any?]
-        let event: BranchEvent? = convertToEvent(dict : eventDict)
+        guard let args = call.arguments as? [String: Any],
+              let eventDict = args["event"] as? [String: Any?]
+        else {
+            LogUtils.debug(message: "Invalid arguments provided for trackContentWithoutBuo")
+            return
+        }
+        
+        guard let event = convertToEvent(dict: eventDict) else {
+            LogUtils.debug(message: "Failed to create BranchEvent from event dictionary")
+            return
+        }
         
         DispatchQueue.main.async {
-            event!.logEvent()
+            event.logEvent()
         }
     }
     
     private func registerView(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?]
+        else {
+            LogUtils.debug(message: "Invalid arguments provided for registerView")
+            return
+        }
+        
+        guard let buo = convertToBUO(dict: buoDict) else {
+            LogUtils.debug(message: "ailed to create BranchUniversalObject from dictionary")
+            return
+        }
         
         DispatchQueue.main.async {
-            buo!.registerView()
+            buo.registerView()
         }
     }
     
     private func listOnSearch(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        var response = NSNumber(value: true)
-        if let lpDict = args["lp"] as? [String: Any?] {
-            let lp : BranchLinkProperties! = convertToLp(dict: lpDict)
-            buo!.listOnSpotlight(with: lp) { (url, error) in
-                if (error == nil) {
-                    LogUtils.debug(message: "Successfully indexed on spotlight")
-                    response = NSNumber(value: true)
-                } else {
-                    LogUtils.debug(message: "Failed indexed on spotlight")
-                    response = NSNumber(value: false)
-                }
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?]
+        else {
+            result(flutterError(message: "Invalid arguments provided for listOnSearch", details: call.arguments))
+            return
+        }
+        
+        guard let buo = convertToBUO(dict: buoDict) else {
+            result(flutterError(message: "Failed to create BranchUniversalObject from dictionary", details: buoDict))
+            return
+        }
+        
+        if let lpDict = args["lp"] as? [String: Any?], let lp = convertToLp(dict: lpDict) {
+            buo.listOnSpotlight(with: lp) { (url, error) in
                 DispatchQueue.main.async {
-                    result(response)
+                    if (error != nil) {
+                        LogUtils.debug(message: "Failed indexed on spotlight \(error)")
+                    }
+                    result(error == nil)
                 }
             }
         } else {
-            buo!.listOnSpotlight() { (url, error) in
-                if (error == nil) {
-                    LogUtils.debug(message: "Successfully indexed on spotlight")
-                    response = NSNumber(value: true)
-                } else {
-                    LogUtils.debug(message: "Failed indexed on spotlight")
-                    response = NSNumber(value: false)
-                }
+            buo.listOnSpotlight() { (url, error) in
                 DispatchQueue.main.async {
-                    result(response)
+                    if (error != nil) {
+                        LogUtils.debug(message: "Failed indexed on spotlight \(error)")
+                    }
+                    result(error == nil)
                 }
             }
         }
+
     }
     
     private func removeFromSearch(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        var response = NSNumber(value: true)
-        buo!.removeFromSpotlight { (error) in
-            if (error == nil) {
-                LogUtils.debug(message: "BUO successfully removed from spotlight")
-                response = NSNumber(value: true)
-            } else {
-                response = NSNumber(value: false)
-            }
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?]
+        else {
+            result(flutterError(message: "Invalid arguments provided for removeFromSearch", details: call.arguments))
+            return
+        }
+        
+        guard let buo = convertToBUO(dict: buoDict) else {
+            result(flutterError(message: "Failed to create BranchUniversalObject from dictionary", details: buoDict))
+            return
+        }
+        
+        buo.removeFromSpotlight { (error) in
             DispatchQueue.main.async {
-                result(response)
+                if (error != nil) {
+                    LogUtils.debug(message: "Failed remove on spotligh \(error)")
+                }
+                result(error == nil)
             }
         }
     }
     
     private func setIdentity(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let userId = args["userId"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let userId = args["userId"] as? String else {
+            LogUtils.debug(message: "Invalid arguments provided for setIdentity")
+            return
+        }
         
         DispatchQueue.main.async {
             Branch.getInstance().setIdentity(userId)
@@ -485,15 +539,17 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func setRequestMetadata(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let key = args["key"] as! String
-        let value = args["value"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let key = args["key"] as? String,
+              let value = args["value"] as? String else {
+            LogUtils.debug(message: "Invalid arguments provided for setRequestMetadata")
+            return
+        }
         
-        
-        if (requestMetadata.keys.contains(key) && value.isEmpty) {
+        if requestMetadata.keys.contains(key) && value.isEmpty {
             requestMetadata.removeValue(forKey: key)
         } else {
-            requestMetadata[key] = value;
+            requestMetadata[key] = value
         }
         
         DispatchQueue.main.async {
@@ -522,8 +578,11 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func setTrackingDisabled(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let value = args["disable"] as! Bool
+        guard let args = call.arguments as? [String: Any],
+              let value = args["disable"] as? Bool else {
+            LogUtils.debug(message: "Invalid arguments provided for setTrackingDisabled")
+            return
+        }
         
         DispatchQueue.main.async {
             Branch.setTrackingDisabled(value)
@@ -531,31 +590,34 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func getLastAttributedTouchData(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String: Any] else {
+            result(flutterError(message: "Invalid arguments provided for getLastAttributedTouchData", details: call.arguments))
+            return
+        }
         
-        let args = call.arguments as! [String: Any?]
-        let response : NSMutableDictionary! = [:]
-        let data : NSMutableDictionary! = [:]
+        var response: [String: Any] = [:]
         let attributionWindow = args["attributionWindow"] as? Int ?? 0
         
         Branch.getInstance().lastAttributedTouchData(withAttributionWindow: attributionWindow) { latd, error in
             if error == nil {
-                if latd != nil {
-                    data["latd"] = ["attibution_window": latd!.attributionWindow,
-                                    "last_atributed_touch_data" : latd!.lastAttributedTouchJSON]
+                var data: [String: Any] = [:]
+                if let attributedData = latd {
+                    data["latd"] = ["attibution_window": attributedData.attributionWindow,
+                                    "last_atributed_touch_data": attributedData.lastAttributedTouchJSON]
                 } else {
                     data["latd"] = [:]
                 }
-                response["success"] = NSNumber(value: true)
+                response["success"] = true
                 response["data"] = data
             } else {
-                LogUtils.debug(message: "Failed to lastAttributedTouchData: \(String(describing: error))")
-                response["success"] = NSNumber(value: false)
-                if let err = (error as NSError?) {
+                LogUtils.debug(message: "Failed to get lastAttributedTouchData: \(String(describing: error))")
+                response["success"] = false
+                if let err = error as NSError? {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 } else {
                     response["errorCode"] = ""
-                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
+                    response["errorMessage"] = "Error message not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
@@ -571,55 +633,71 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func setTimeout(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let _  = args["timeout"] as? Int ?? 0
+        // The Branch iOS SDK no longer directly exposes a method for `setTimeout`.
+        LogUtils.debug(message: "setTimeout called, but not applicable for iOS SDK version.")
     }
     
     private func setConnectTimeout(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let connectTimeout = args["connectTimeout"] as? Int ?? 0
+        guard let args = call.arguments as? [String: Any],
+              let connectTimeout = args["connectTimeout"] as? Int else {
+            LogUtils.debug(message: "Invalid arguments provided for setConnectTimeout")
+            return
+        }
         DispatchQueue.main.async {
             Branch.getInstance().setNetworkTimeout(TimeInterval(connectTimeout))
         }
     }
     
     private func setRetryCount(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let _ = args["retryCount"] as? Int ?? 0
+        // The Branch iOS SDK no longer directly exposes a method for `setRetryCount`.
+        LogUtils.debug(message: "setRetryCount called, but not applicable for iOS SDK version.")
     }
     
     private func setRetryInterval(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let retryInterval = args["retryInterval"] as? Int ?? 0
+        guard let args = call.arguments as? [String: Any],
+              let retryInterval = args["retryInterval"] as? Int else {
+            LogUtils.debug(message: "Invalid arguments provided for setRetryInterval")
+            return
+        }
         DispatchQueue.main.async {
             Branch.getInstance().setRetryInterval(TimeInterval(retryInterval))
         }
     }
     
     private func getQRCode(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let lpDict = args["lp"] as! [String: Any?]
-        let qrCodeDict = args["qrCodeSettings"] as! [String: Any?]
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?],
+              let lpDict = args["lp"] as? [String: Any?],
+              let qrCodeDict = args["qrCodeSettings"] as? [String: Any?]
+        else {
+            result(flutterError(message: "Invalid arguments provided for getQRCode", details: call.arguments))
+            return
+        }
         
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
-        let qrCode : BranchQRCode? = convertToQRCode(dict: qrCodeDict)
+        // First, safely unwrap the optionals.
+        guard let buo = convertToBUO(dict: buoDict),
+              let lp = convertToLp(dict: lpDict) else {
+            result(flutterError(message: "Failed to create Branch Universal Object or Link Properties.", details: call.arguments))
+            return
+        }
         
-        let response : NSMutableDictionary! = [:]
+
+        let qrCode = convertToQRCode(dict: qrCodeDict)
         
-        qrCode?.getAsData(buo, linkProperties: lp, completion: { data, error in
-            if (error == nil) {
-                response["success"] = NSNumber(value: true)
-                response["result"] = FlutterStandardTypedData(bytes: data!)
+        var response: [String: Any] = [:]
+        
+        qrCode.getAsData(buo, linkProperties: lp, completion: { data, error in
+            if let imageData = data, error == nil {
+                response["success"] = true
+                response["result"] = FlutterStandardTypedData(bytes: imageData)
             } else {
-                response["success"] = NSNumber(value: false)
-                if let err = (error as NSError?) {
+                response["success"] = false
+                if let err = error as NSError? {
                     response["errorCode"] = String(err.code)
                     response["errorMessage"] = err.localizedDescription
                 } else {
                     response["errorCode"] = ""
-                    response["errorMessage"] = "errorMessage not returned by Branch SDK. See log for details."
+                    response["errorMessage"] = "Error message not returned by Branch SDK. See log for details."
                 }
             }
             DispatchQueue.main.async {
@@ -630,90 +708,127 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     
     private func shareWithLPLinkMetadata(call: FlutterMethodCall, result: @escaping FlutterResult) {
         
-        let args = call.arguments as! [String: Any?]
-        let buoDict = args["buo"] as! [String: Any?]
-        let lpDict = args["lp"] as! [String: Any?]
-        let messageText = args["messageText"] as! String
-        let buo: BranchUniversalObject? = convertToBUO(dict: buoDict)
-        let lp : BranchLinkProperties? = convertToLp(dict: lpDict )
-        var iconImage : UIImage?
+        guard let args = call.arguments as? [String: Any],
+              let buoDict = args["buo"] as? [String: Any?],
+              let lpDict = args["lp"] as? [String: Any?],
+              let messageText = args["messageText"] as? String
+        else {
+            result(flutterError(message: "Invalid arguments provided for shareWithLPLinkMetadata", details: call.arguments))
+            return
+        }
         
+        guard let buo = convertToBUO(dict: buoDict),
+              let lp = convertToLp(dict: lpDict) else {
+            result(flutterError(message: "Failed to create BranchUniversalObject or BranchLinkProperties", details: call.arguments))
+            return
+        }
+        
+        var iconImage: UIImage?
         if let iconData = args["iconData"] as? FlutterStandardTypedData {
             iconImage = UIImage(data: iconData.data)
         } else {
             iconImage = Bundle.main.icon
         }
         
-        let bsl = BranchShareLink(universalObject: buo!, linkProperties: lp!)
+        let bsl = BranchShareLink(universalObject: buo, linkProperties: lp)
         if #available(iOS 13.0, *) {
             bsl.addLPLinkMetadata(messageText, icon: iconImage)
-            let controller = UIApplication.shared.keyWindow!.rootViewController
+            guard let controller = getRootViewController() else {
+                result(flutterError(message: "Could not find root view controller to present share sheet for LPLinkMetadata"))
+                return
+            }
             bsl.presentActivityViewController(from: controller, anchor: nil)
+            result(true)
         } else {
             showShareSheet(call: call, result: result)
         }
     }
     
     private func handleDeepLink(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let url = args["url"] as! String
-        Branch.getInstance().handleDeepLink(withNewSession: URL(string: url))
+        guard let args = call.arguments as? [String: Any],
+              let urlString = args["url"] as? String,
+              let url = URL(string: urlString) else {
+            LogUtils.debug(message: "Invalid arguments provided for handleDeepLink (URL missing or invalid)")
+            return
+        }
+        Branch.getInstance().handleDeepLink(withNewSession: url)
     }
     
     private func addFacebookPartnerParameter(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let key = args["key"] as! String
-        let value = args["value"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let key = args["key"] as? String,
+              let value = args["value"] as? String else {
+            LogUtils.debug(message: "Invalid arguments provided for addFacebookPartnerParameter")
+            return
+        }
         
-        if (facebookParameters.keys.contains(key) && value.isEmpty) {
+        if facebookParameters.keys.contains(key) && value.isEmpty {
             facebookParameters.removeValue(forKey: key)
         } else {
-            facebookParameters[key] = value;
+            facebookParameters[key] = value
         }
         
         DispatchQueue.main.async {
-            Branch.getInstance().addFacebookPartnerParameter(withName: key, value:value)
+            Branch.getInstance().addFacebookPartnerParameter(withName: key, value: value)
         }
     }
     
     private func addSnapPartnerParameter(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let key = args["key"] as! String
-        let value = args["value"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let key = args["key"] as? String,
+              let value = args["value"] as? String else {
+            LogUtils.debug(message: "Invalid arguments provided for addSnapPartnerParameter")
+            return
+        }
         
-        if (snapParameters.keys.contains(key) && value.isEmpty) {
+        if snapParameters.keys.contains(key) && value.isEmpty {
             snapParameters.removeValue(forKey: key)
         } else {
-            snapParameters[key] = value;
+            snapParameters[key] = value
         }
         
         DispatchQueue.main.async {
-            Branch.getInstance().addSnapPartnerParameter(withName: key, value:value)
+            Branch.getInstance().addSnapPartnerParameter(withName: key, value: value)
         }
     }
     
     private func setPreinstallCampaign(call: FlutterMethodCall) {
+        // This function is primarily relevant for Android.
+        LogUtils.debug(message: "setPreinstallCampaign called, but not directly applicable for iOS SDK version.")
     }
     
     private func setPreinstallPartner(call: FlutterMethodCall) {
+        // This function is primarily relevant for Android.
+        LogUtils.debug(message: "setPreinstallPartner called, but not directly applicable for iOS SDK version.")
     }
     
     private func setDMAParamsForEEA(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let eeaRegion = args["eeaRegion"] as! Bool
-        let adPersonalizationConsent = args["adPersonalizationConsent"]  as! Bool
-        let adUserDataUsageConsent = args["adUserDataUsageConsent"] as! Bool
+        guard let args = call.arguments as? [String: Any],
+              let eeaRegion = args["eeaRegion"] as? Bool,
+              let adPersonalizationConsent = args["adPersonalizationConsent"] as? Bool,
+              let adUserDataUsageConsent = args["adUserDataUsageConsent"] as? Bool
+        else {
+            LogUtils.debug(message: "Invalid arguments provided for setDMAParamsForEEA")
+            return
+        }
         
         DispatchQueue.main.async {
-            Branch.setDMAParamsForEEA(eeaRegion,adPersonalizationConsent: adPersonalizationConsent, adUserDataUsageConsent: adUserDataUsageConsent)
+            Branch.setDMAParamsForEEA(eeaRegion, adPersonalizationConsent: adPersonalizationConsent, adUserDataUsageConsent: adUserDataUsageConsent)
         }
     }
     
     private func setConsumerProtectionAttributionLevel(call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let branchAttributionLevel = args["branchAttributionLevel"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let branchAttributionLevelString = args["branchAttributionLevel"] as? String
+        else {
+            LogUtils.debug(message: "Invalid arguments provided for setConsumerProtectionAttributionLevel")
+            return
+        }
+        
+        let branchAttributionLevel = BranchAttributionLevel(rawValue: branchAttributionLevelString)
+        
         DispatchQueue.main.async {
-            Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
+            Branch.getInstance().setConsumerProtectionAttributionLevel(branchAttributionLevel)
         }
     }
     
@@ -739,7 +854,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             }
         } else {
             DispatchQueue.main.async {
-                result(Int(4)) // return notSupported
+                result(Int(4)) // Return custom 'notSupported' code for iOS < 14
             }
         }
     }
@@ -751,7 +866,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             }
         } else {
             DispatchQueue.main.async {
-                result(Int(4))  // return notSupported
+                result(Int(4))  // Return custom 'notSupported' code for iOS < 14
             }
         }
     }
@@ -776,8 +891,11 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
      @param anonID The custom Meta Anon ID to be used by Branch.
      */
     private func setAnonID (call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let anonId = args["anonId"] as! String
+        guard let args = call.arguments as? [String: Any],
+              let anonId = args["anonId"] as? String else {
+            LogUtils.debug(message: "Invalid arguments provided for setAnonID")
+            return
+        }
         LogUtils.debug(message: "setAnonID: \(anonId)")
         DispatchQueue.main.async {
             Branch.setAnonID(anonId)
@@ -789,9 +907,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
      @param waitTime Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
      */
     private func setSDKWaitTimeForThirdPartyAPIs (call: FlutterMethodCall) {
-        let args = call.arguments as! [String: Any?]
-        let waitTime = args["waitTime"] as? Double ?? 0
-        LogUtils.debug(message: "setSDKWaitTimeForThirdPartyAPIs: \(String(describing:waitTime))")
+        guard let args = call.arguments as? [String: Any],
+              let waitTime = args["waitTime"] as? Double else {
+            LogUtils.debug(message: "Invalid arguments provided for setSDKWaitTimeForThirdPartyAPIs")
+            return
+        }
+        LogUtils.debug(message: "setSDKWaitTimeForThirdPartyAPIs: \(String(describing: waitTime))")
         DispatchQueue.main.async {
             Branch.setSDKWaitTimeForThirdPartyAPIs(waitTime)
         }

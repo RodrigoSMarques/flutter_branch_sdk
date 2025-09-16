@@ -46,7 +46,7 @@ class BranchLinkProperties {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> ret = <String, dynamic>{};
+    final Map<String, dynamic> ret = <String, dynamic>{};
 
     if (tags.isNotEmpty) ret['tags'] = tags;
     if (feature.isNotEmpty) ret['feature'] = feature;
