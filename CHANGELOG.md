@@ -1,3 +1,7 @@
+## 8.9.0+1
+### 🎉 Fixes
+* Updated `README.MD` with correct configuration for `branch-config.json`. 
+
 ## 8.9.0
 ### 🎉 Features & Fixes
 * **Android:** Resolved build warnings (`unchecked or unsafe operations, deprecated api`) for a cleaner build process.
