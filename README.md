@@ -224,12 +224,12 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 
 ```json
 {
-  "apiUrl": "https://api.myapi.com/"
+  "apiUrl": "https://api.myapp.com",
   "branchKey": "key_live_test_xxxx_yyyy",
   "liveKey": "key_live_xxxx",
   "testKey": "key_test_yyyy",
   "enableLogging": true,
-  "useTestInstance": true,
+  "useTestInstance": true
 }
 ```
 
