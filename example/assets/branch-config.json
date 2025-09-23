@@ -1,5 +1,5 @@
 {
-  "apiUrl": "https://api3.branch.io/",
+  "apiUrl_test": "https://branch-api-proxy.onrender.com",
   "branchKey": "key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH",
   "liveKey": "key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx",
   "testKey": "key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH",
