@@ -406,9 +406,17 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         if (branchJsonConfig != null) {
             if (!branchJsonConfig.apiUrl.isEmpty()) {
-                Branch.setAPIUrl(branchJsonConfig.apiUrl);
-                LogUtils.debug(DEBUG_NAME, "Set API URL from branch-config.json: " + branchJsonConfig.apiUrl);
+                LogUtils.debug(DEBUG_NAME, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                LogUtils.debug(DEBUG_NAME, "The apiUrl parameter has been deprecated. Please use apiUrlAndroid instead. Check the documentation.");
+                LogUtils.debug(DEBUG_NAME, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                throw new IllegalArgumentException("The apiUrl parameter has been deprecated. Please use apiUrlAndroid instead. Check the documentation.");
             }
+
+            if (!branchJsonConfig.apiUrlAndroid.isEmpty()) {
+                Branch.setAPIUrl(branchJsonConfig.apiUrlAndroid);
+                LogUtils.debug(DEBUG_NAME, "Set API URL from branch-config.json: " + branchJsonConfig.apiUrlAndroid);
+            }
+
 
             if (branchJsonConfig.enableLogging) {
                 Branch.enableLogging();

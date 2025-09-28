@@ -11,7 +11,7 @@ let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.9.0";
+let PLUGIN_VERSION = "8.10.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
@@ -47,10 +47,17 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         
         if let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig {
-            
+
             if let apiUrl = branchJsonConfig.apiUrl as? String {
-                Branch.setAPIUrl(apiUrl)
-                LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrl)")
+                LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                LogUtils.debug(message: "The apiUrl parameter has been deprecated. Please use apiUrlIOS instead. Check the documentation.")
+                LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                return false
+              }
+
+            if let apiUrlIOS = branchJsonConfig.apiUrlIOS as? String {
+                Branch.setAPIUrl(apiUrlIOS)
+                LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
               }
             
             if let enableLogging = branchJsonConfig.enableLogging as? Bool {
