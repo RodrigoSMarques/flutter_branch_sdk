@@ -19,9 +19,13 @@ public class BranchJsonConfig {
     public final Boolean enableLogging;
     public final Boolean useTestInstance;
 
+    public final String apiUrlAndroid;
+    public final String apiUrlIOS;
 
     private BranchJsonConfig(JSONObject jsonObject) {
         this.apiUrl = jsonObject.optString("apiUrl", "");
+        this.apiUrlAndroid = jsonObject.optString("apiUrlAndroid", "");
+        this.apiUrlIOS = jsonObject.optString("apiUrlIOS", "");
         this.branchKey = jsonObject.optString("branchKey", "");
         this.liveKey = jsonObject.optString("liveKey", "");
         this.testKey = jsonObject.optString("testKey", "");
