@@ -1,0 +1,10 @@
+on: pull_request
+jobs:
+  pr-summary:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: PR summary
+        uses: ai-action/pull-request-summary@v1
