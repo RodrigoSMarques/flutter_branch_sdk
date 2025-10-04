@@ -224,12 +224,12 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 
 ```json
 {
-  "apiUrl": "https://api.myapi.com/"
+  "apiUrl": "https://api.myapp.com",
   "branchKey": "key_live_test_xxxx_yyyy",
   "liveKey": "key_live_xxxx",
   "testKey": "key_test_yyyy",
   "enableLogging": true,
-  "useTestInstance": true,
+  "useTestInstance": true
 }
 ```
 
@@ -763,10 +763,7 @@ When parameters are successfully set using `setDMAParamsForEEA`, they will be se
 
 # Configuring the project to use Branch Test Key
 
-
 Use the configuration through the `branch-config.json` file, setting the `useTestInstance` value to `true`.
-
-[Instructions here](#optional-configuration-via-branch-configjson).
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 
