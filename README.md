@@ -224,19 +224,20 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 
 ```json
 {
-  "apiUrl": "https://api.myapi.com/"
+  "apiUrlAndroid": "https://api.myapp.com",
+  "apiUrlIOS": "https://api.myapp.com",
   "branchKey": "key_live_test_xxxx_yyyy",
   "liveKey": "key_live_xxxx",
   "testKey": "key_test_yyyy",
   "enableLogging": true,
-  "useTestInstance": true,
+  "useTestInstance": true
 }
 ```
 
 #### Key Descriptions:
 
-*   **`apiUrl`**: (Optional) Sets a custom base URL for all calls to the Branch API.
-Requires HTTPS.
+*   **`apiUrlAndroid`**: (Optional) Sets a custom base URL for all calls to the Branch API for Android apps. Requires HTTPS.
+*   **`apiUrlIOS`**: (Optional) Sets a custom base URL for all calls to the Branch API for iOS apps. Requires HTTPS.
 *   **`branchKey`**: (Optional) The Branch key that the SDK will use for initialization. It's recommended to set this to your `liveKey` or `testKey` depending on your current build environment.
 *   **`liveKey`**: (Optional) Your Branch live key from the Branch Dashboard.
 *   **`testKey`**: (Optional) Your Branch test key from the Branch Dashboard.
@@ -763,10 +764,7 @@ When parameters are successfully set using `setDMAParamsForEEA`, they will be se
 
 # Configuring the project to use Branch Test Key
 
-
 Use the configuration through the `branch-config.json` file, setting the `useTestInstance` value to `true`.
-
-[Instructions here](#optional-configuration-via-branch-configjson).
 
 **Note*:* Remember to set the value to `false` before releasing to production.
 

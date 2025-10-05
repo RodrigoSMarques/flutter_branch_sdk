@@ -1,5 +1,31 @@
+## 8.10.0
+### 🎉 Features
+**Introduced platform-specific API URL configuration.** This allows developers to define different API endpoints for Android and iOS in `branch-config.json`.
+- Added key `apiUrlAndroid` in `branch-config.json` to configure the API URL for the Android platform.
+- Added key `apiUrlIOS` in `branch-config.json` to configure the API URL for the iOS platform.
+
+### 🗑️ Removals
+- ⚠️ The generic `apiUrl` key has been removed from `branch-config.json`. Please update your configuration to use the new platform-specific keys (`apiUrlAndroid` and `apiUrlIOS`).
+
+## 8.9.0+1
+### 🎉 Fixes
+* Updated `README.MD` with correct configuration for `branch-config.json`. 
+
+## 8.9.0
+### 🎉 Features & Fixes
+* **Android:** Resolved build warnings (`unchecked or unsafe operations, deprecated api`) for a cleaner build process.
+* **Android:** Updated plugin configuration to ensure compatibility with Android Gradle Plugin (AGP) 8.6.x (16KB Page Size).
+* **Android:** ⚠️ Updated the `showShareSheet` function, which now requires a minimum of API level 22 (Android 5.1) to work correctly.
+* **iOS:** Improved plugin stability by adding consistency checks to safely handle all incoming data from Flutter and prevent crashes.
+* **iOS:** Modernized native code to ensure compatibility with recent APIs.
+* Fixed Flutter linter warnings to improve code quality and maintainability.
+
+### 🗑️ Removals
+* The deprecated method `FlutterBranchSdk.disableTracking()` has been removed.
+
 ## 8.8.0
 ### 🎉 Features
+
 * Configuration through `branch-config.json` file. 
 	- Some settings can be configured by adding an `assets/branch-config.json` file to your project. 
 	- This eliminates the need for manual modifications to native files (`AndroidManifest.xml` and `Info.plist`). 
@@ -9,7 +35,7 @@
 
 ## 8.7.1
 ### 🐛 Bug Fixes
-* Fix issue #461 : iOS Build Failure using Cocoapods
+* Fix issue #461 : iOS Build Failure using CocoaPods
 
 ## 8.7.0
 ### 🔧 Native SDK Updates

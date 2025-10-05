@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
 public class BranchJsonConfig {
-    private static final String TAG = "BranchJsonConfig";
     private static final String DEBUG_NAME = "FlutterBranchSDK";
 
     public final String apiUrl;
@@ -20,9 +19,13 @@ public class BranchJsonConfig {
     public final Boolean enableLogging;
     public final Boolean useTestInstance;
 
+    public final String apiUrlAndroid;
+    public final String apiUrlIOS;
 
     private BranchJsonConfig(JSONObject jsonObject) {
         this.apiUrl = jsonObject.optString("apiUrl", "");
+        this.apiUrlAndroid = jsonObject.optString("apiUrlAndroid", "");
+        this.apiUrlIOS = jsonObject.optString("apiUrlIOS", "");
         this.branchKey = jsonObject.optString("branchKey", "");
         this.liveKey = jsonObject.optString("liveKey", "");
         this.testKey = jsonObject.optString("testKey", "");
