@@ -1,3 +1,16 @@
+## 8.10.0
+
+### 🎉 Features
+Improved the API URL configuration by moving to a platform-specific setup.
+- Added key `apiUrlAndroid` in `branch-config.json` to configure the API URL for the Android platform.
+- Added key `apiUrlIOS` in `branch-config.json` to configure the API URL for the iOS platform.
+
+This allows developers to define different API endpoints (or keep the SDK default) for Android and iOS within the `branch-config.json` file.
+
+### 🗑️ Removals
+- ⚠️ The `apiUrl` key has been removed from `branch-config.json`. Please update your configuration to use the new platform-specific keys.
+
+
 ## 8.9.0+1
 ### 🎉 Fixes
 * Updated `README.MD` with correct configuration for `branch-config.json`. 
