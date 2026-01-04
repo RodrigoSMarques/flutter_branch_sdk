@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
 
   void listenDynamicLinks() async {
     deepLinkDataSubscription = FlutterBranchSdk.listSession().listen((data) async {
-      debugPrint('❇️ BRANCH DeepLink Data: $data');
+      debugPrint('${DateTime.now()} - ❇️ BRANCH DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
 
       /*
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   void listPlatformLogs() {
     platformLogsSubscription = FlutterBranchSdk.platformLogs.listen((logMessage) {
-      debugPrint('📦 BRANCH LOG (Platform): $logMessage');
+      debugPrint('${DateTime.now()} - 📦 BRANCH LOG (Platform): $logMessage');
     }, onError: (error) {
       debugPrint('🚨 Error in the platform log stream.: $error');
     });

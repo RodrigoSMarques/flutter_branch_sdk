@@ -25,6 +25,40 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       throw StateError('Call `FlutterBranchSdk.init()` before $methodName');
     }
   }
+
+  void _validateUrl(String url) {
+    if (url.isEmpty) {
+      throw ArgumentError('url is required');
+    }
+
+    if (url.length > 2048) {
+      throw ArgumentError.value(url, 'url', 'URL is too long');
+    }
+
+    if (url.contains('\n') || url.contains('\r')) {
+      throw ArgumentError('Invalid characters in url');
+    }
+
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      throw ArgumentError('Invalid url format');
+    }
+
+    if (uri.scheme.isEmpty) {
+      throw ArgumentError('URL missing scheme');
+    }
+
+    // Allow only http and https schemes for safety. Adjust if you need custom schemes.
+    const allowedSchemes = {'http', 'https'};
+    if (!allowedSchemes.contains(uri.scheme.toLowerCase())) {
+      throw ArgumentError('Unsupported URL scheme: ${uri.scheme}');
+    }
+
+    // Ensure there is at least a host or a path component
+    if ((uri.host == null || uri.host.isEmpty) && (uri.path == null || uri.path.isEmpty)) {
+      throw ArgumentError('URL must contain a host or a path');
+    }
+  }
   /// Initializes the Branch SDK.
   ///
   /// This function initializes the Branch SDK with the specified configuration options.
@@ -354,9 +388,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   @override
   Future<void> handleDeepLink(String url) async {
     _ensureInitialized('handleDeepLink');
-    if (url.isEmpty) {
-      throw ArgumentError('url is required');
-    }
+    _validateUrl(url);
     _messageChannel.invokeMethod('handleDeepLink', {'url': url});
   }
 
