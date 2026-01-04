@@ -55,7 +55,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     }
 
     // Ensure there is at least a host or a path component
-    if ((uri.host == null || uri.host.isEmpty) && (uri.path == null || uri.path.isEmpty)) {
+    if (uri.host.isEmpty && uri.path.isEmpty) {
       throw ArgumentError('URL must contain a host or a path');
     }
   }
