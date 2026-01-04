@@ -7,15 +7,84 @@ import AdSupport
 // Plugin channel variables and constants
 var methodChannel: FlutterMethodChannel?
 var eventChannel: FlutterEventChannel?
+var logEventChannel : FlutterEventChannel?
+var logStreamHandler: LogStreamHandler?
 let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
+let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.10.0";
+let PLUGIN_VERSION = "8.11.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
+
+//---------------------------------------------------------------------------------------------
+// LogStreamHandler - Separate handler for log events
+// --------------------------------------------------------------------------------------------
+public class LogStreamHandler: NSObject, FlutterStreamHandler {
+    var logEventSink: FlutterEventSink?
+    private var logBuffer: [String] = []
+    private let bufferLock = NSLock()
+    
+    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
+        self.logEventSink = eventSink
+        
+        // Send buffered log messages
+        bufferLock.lock()
+        for bufferedMessage in logBuffer {
+            eventSink(bufferedMessage)
+        }
+        logBuffer.removeAll()
+        bufferLock.unlock()
+        
+        LogUtils.debug(message: "LOG_CHANNEL listener attached")
+        return nil
+    }
+    
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        logEventSink = nil
+        LogUtils.debug(message: "LOG_CHANNEL listener cancelled")
+        return nil
+    }
+    
+    private func logLevelName(_ level: BranchLogLevel) -> String {
+        switch level {
+        case .verbose:
+            return "VERBOSE"
+        case .debug:
+            return "DEBUG"
+        case .warning:
+            return "WARNING"
+        case .error:
+            return "ERROR"
+        @unknown default:
+            return "UNKNOWN"
+        }
+    }
+    
+    // Enable Branch logging with callback and buffering
+    public func enableBranchLogging(at level: BranchLogLevel) {
+        Branch.enableLogging(at: level) { (message: String, logLevel: BranchLogLevel, error: Error?) in
+            let levelName = self.logLevelName(logLevel)
+            let formattedMessage = "[Branch \(levelName)] \(message)"
+            
+            self.bufferLock.lock()
+            if let sink = self.logEventSink {
+                // Send on main thread to comply with Flutter platform channel requirements
+                DispatchQueue.main.async {
+                    sink(formattedMessage)
+                }
+            } else {
+                // Buffer the message if sink is not ready
+                self.logBuffer.append(formattedMessage)
+            }
+            self.bufferLock.unlock()
+        }
+    }
+}
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
+    var logEventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
     
@@ -32,10 +101,15 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = FlutterBranchSdkPlugin()
+        let handler = LogStreamHandler()
+        logStreamHandler = handler
         
         methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel!.setStreamHandler(instance)
+        
+        logEventChannel = FlutterEventChannel(name: LOG_CHANNEL, binaryMessenger: registrar.messenger())
+        logEventChannel!.setStreamHandler(handler)
         
         registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
@@ -60,13 +134,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
               }
             
-            if let enableLogging = branchJsonConfig.enableLogging as? Bool {
-                if (enableLogging) {
-                    Branch.enableLogging(at: BranchLogLevel.debug)
-                    LogUtils.debug(message: "Set enableLogging from branch-config.json")
-                }
-            }
-            
             if let branchKey = branchJsonConfig.branchKey as? String {
                 Branch.setBranchKey(branchKey)
                 LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
@@ -88,6 +155,21 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
         
+        // Enable Branch logging BEFORE initSession to capture all logs
+        if let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig {
+            if let enableLogging = branchJsonConfig.enableLogging as? Bool {
+                if (enableLogging) {
+                    let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
+                    let logLevel = mapLogLevel(logLevelStr)
+                    // Enable Branch logging with callback through LogStreamHandler
+                    if let handler = logStreamHandler {
+                        handler.enableBranchLogging(at: logLevel)
+                    }
+                    LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
+                }
+            }
+        }
+        
         let disable_nativelink: Bool = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool ?? false
         LogUtils.debug(message: "Disable NativeLink: \(String(describing:disable_nativelink))")
         
@@ -104,7 +186,10 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                     self.initialParams = params as? [String: Any]
                     return
                 }
-                self.eventSink!(params as? [String: Any])
+                // Send on main thread to comply with Flutter platform channel requirements
+                DispatchQueue.main.async {
+                    self.eventSink!(params as? [String: Any])
+                }
             } else {
                 let err = (error! as NSError)
                 LogUtils.debug(message: "Branch InitSession error: \(err.localizedDescription)")
@@ -112,7 +197,10 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                     self.initialError = err
                     return
                 }
-                self.eventSink!(FlutterError(code: String(err.code), message: err.localizedDescription, details: nil))
+                // Send on main thread to comply with Flutter platform channel requirements
+                DispatchQueue.main.async {
+                    self.eventSink!(FlutterError(code: String(err.code), message: err.localizedDescription, details: nil))
+                }
             }
         }
         return true
@@ -300,6 +388,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     private func setupBranch(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
               let enableLogging = args["enableLogging"] as? Bool,
+              let logLevel = args["logLevel"] as? String,
               let branchAttributionLevel = args["branchAttributionLevel"] as? String
         else {
             result(flutterError(message: "Invalid arguments provided for setupBranch", details: call.arguments))
@@ -318,7 +407,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         }
         
         if enableLogging {
-            Branch.enableLogging(at: BranchLogLevel.debug)
+            let branchLogLevel = mapLogLevel(logLevel)
+            // Enable Branch logging with callback through LogStreamHandler
+            if let handler = logStreamHandler {
+                handler.enableBranchLogging(at: branchLogLevel)
+            }
+            LogUtils.debug(message: "Enabled logging with level: \(logLevel)")
         }
         
         for (key, value) in requestMetadata {
@@ -922,6 +1016,27 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         LogUtils.debug(message: "setSDKWaitTimeForThirdPartyAPIs: \(String(describing: waitTime))")
         DispatchQueue.main.async {
             Branch.setSDKWaitTimeForThirdPartyAPIs(waitTime)
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    /**
+     Maps Flutter log level string to Branch iOS SDK log level
+     */
+    private func mapLogLevel(_ logLevel: String) -> BranchLogLevel {
+        switch logLevel {
+        case "VERBOSE":
+            return BranchLogLevel.verbose
+        case "DEBUG":
+            return BranchLogLevel.debug
+        case "WARNING":
+            return BranchLogLevel.warning
+        case "ERROR":
+            return BranchLogLevel.error
+        default:
+            LogUtils.debug(message: "Unknown log level: \(logLevel), defaulting to verbose")
+            return BranchLogLevel.verbose
         }
     }
 

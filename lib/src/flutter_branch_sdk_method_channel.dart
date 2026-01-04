@@ -7,6 +7,7 @@ import 'package:flutter_branch_sdk/src/constants.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
 import 'objects/branch_attribution_level.dart';
+import 'objects/branch_log_level.dart';
 import 'objects/branch_universal_object.dart';
 
 /// An implementation of [FlutterBranchSdkPlatform] that uses method channels.
@@ -14,6 +15,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// The method channel used to interact with the native platform.
   final messageChannel = const MethodChannel(AppConstants.MESSAGE_CHANNEL);
   final eventChannel = const EventChannel(AppConstants.EVENT_CHANNEL);
+  final logEventChannel = const EventChannel(AppConstants.LOG_CHANNEL);
 
   static Stream<Map<dynamic, dynamic>>? _initSessionStream;
   static var isInitialized = false;
@@ -25,6 +27,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// **Parameters:**
   ///
   /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [logLevel]: The log level for Branch SDK logs. Defaults to `BranchLogLevel.VERBOSE`.
   /// - [branchAttributionLevel]: The level of attribution data to collect.
   ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
   ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
@@ -32,7 +35,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
   @override
-  Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
     if (isInitialized) {
       return;
     }
@@ -44,7 +47,11 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       branchAttributionLevelString = getBranchAttributionLevelString(branchAttributionLevel);
     }
     await messageChannel
-        .invokeMethod('init', {'enableLogging': enableLogging, 'branchAttributionLevel': branchAttributionLevelString});
+        .invokeMethod('init', {
+          'enableLogging': enableLogging, 
+          'logLevel': logLevel.value,
+          'branchAttributionLevel': branchAttributionLevelString
+        });
     isInitialized = true;
   }
 
@@ -424,5 +431,13 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       return;
     }
     messageChannel.invokeMethod('setSDKWaitTimeForThirdPartyAPIs', {'waitTime': waitTime});
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  @override
+  Stream<String> get platformLogs {
+    return logEventChannel.receiveBroadcastStream().map((logData) => logData.toString());
   }
 }

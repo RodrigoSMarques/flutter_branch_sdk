@@ -230,6 +230,7 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
   "liveKey": "key_live_xxxx",
   "testKey": "key_test_yyyy",
   "enableLogging": true,
+  "logLevel": "DEBUG",
   "useTestInstance": true
 }
 ```
@@ -243,11 +244,53 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 *   **`testKey`**: (Optional) Your Branch test key from the Branch Dashboard.
 *   **`useTestInstance`**: (Optional, default: `false`) Set to `true` to use the test key for debugging and testing. Set to `false` for production releases. This allows you to easily switch between environments.
 *   **`enableLogging`**: (Optional, default: `false`) Set to `true` to see detailed logs from the native Branch SDK in your device's log output (Logcat for Android, Console for iOS).
+*   **`logLevel`**: (Optional, default: `"VERBOSE"`) Controls the verbosity of logs. Valid values: `"VERBOSE"`, `"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"NONE"`. Only applies when `enableLogging` is `true`. This setting takes priority over the `logLevel` parameter in `init()`.
 
 **Note:**
 
   - if `branchKey` **is present**, it will override the `useTestInstance`/`testKey`/`liveKey` config
   - if `branchKey` **is missing**, `testKey`/`liveKey`, must be present.
+
+**Configuration Examples by Environment:**
+
+**Development (verbose logs):**
+```json
+{
+  "testKey": "key_test_xxxx",
+  "useTestInstance": true,
+  "enableLogging": true,
+  "logLevel": "VERBOSE"
+}
+```
+
+**Staging (debug logs):**
+```json
+{
+  "testKey": "key_test_xxxx",
+  "useTestInstance": true,
+  "enableLogging": true,
+  "logLevel": "DEBUG"
+}
+```
+
+**Production (errors only):**
+```json
+{
+  "liveKey": "key_live_xxxx",
+  "useTestInstance": false,
+  "enableLogging": true,
+  "logLevel": "ERROR"
+}
+```
+
+**Production (no logs):**
+```json
+{
+  "liveKey": "key_live_xxxx",
+  "useTestInstance": false,
+  "enableLogging": false
+}
+```
 
 
 ### Step 3: Declare the Asset in `pubspec.yaml`
@@ -280,6 +323,13 @@ await FlutterBranchSdk.init(enableLogging: false, disableTracking: false);
 The optional parameters are:
 
 - *enableLogging* : Sets `true` turn on debug logging. Default value: false
+- *logLevel* : Controls the verbosity of logs. Default value: `BranchLogLevel.VERBOSE`
+	- `BranchLogLevel.VERBOSE`: All logs including verbose messages (most detailed)
+	- `BranchLogLevel.DEBUG`: Debug level logs for development
+	- `BranchLogLevel.INFO`: Informational messages
+	- `BranchLogLevel.WARNING`: Warning messages only
+	- `BranchLogLevel.ERROR`: Error messages only
+	- `BranchLogLevel.NONE`: No logging
 - *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false 
 - *branchAttributionLevel* : The level of attribution data to collect.
 	- `BranchAttributionLevel.FULL`: Full Attribution (Default)
@@ -288,6 +338,28 @@ The optional parameters are:
   	- `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
 
 		Read Branch documentation for details: [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) and [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
+
+**Examples:**
+
+```dart
+// Development: verbose logging
+await FlutterBranchSdk.init(
+  enableLogging: true, 
+  logLevel: BranchLogLevel.VERBOSE
+);
+
+// Production: error logging only
+await FlutterBranchSdk.init(
+  enableLogging: true, 
+  logLevel: BranchLogLevel.ERROR
+);
+
+// No logging
+await FlutterBranchSdk.init(
+  enableLogging: false, 
+  logLevel: BranchLogLevel.NONE
+);
+```
 
 *Note: The `disableTracking` parameter is deprecated and should no longer be used. Please use `branchAttributionLevel` to control tracking behavior.*
 
@@ -677,6 +749,44 @@ Add key value pairs to all requests
 ```dart
 FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
 ```
+
+### Listen to Platform Logs
+The `platformLogs` stream provides real-time log messages emitted by the native Branch SDK (iOS/Android) for debugging and monitoring purposes. This is especially useful during development to understand SDK behavior without accessing native console logs.
+
+**Note:** Web platform does not support this feature.
+
+**Important:** You must set `enableLogging: true` and optionally configure `logLevel` in the `init()` method to receive logs through this stream.
+
+```dart
+// First, enable logging during initialization
+await FlutterBranchSdk.init(
+  enableLogging: true,
+  logLevel: BranchLogLevel.DEBUG  // Choose your desired level
+);
+
+// Then listen to the logs
+FlutterBranchSdk.platformLogs.listen((logMessage) {
+  print('Branch Log: $logMessage');
+}, onError: (error) {
+  print('Error in platform log stream: $error');
+});
+```
+
+**Platform-specific behavior:**
+- **Android**: Captures all Branch SDK logs using `BranchLogger` callback and streams them to Flutter. Respects the `logLevel` setting.
+- **iOS**: Enables Branch SDK logging and streams messages to Flutter. Respects the `logLevel` setting.
+- **Web**: Not supported - shows debug message only
+
+**Log levels control:**
+You can control the verbosity of logs by setting the `logLevel` parameter during initialization:
+- `BranchLogLevel.VERBOSE`: All logs (most detailed)
+- `BranchLogLevel.DEBUG`: Debug logs for development
+- `BranchLogLevel.INFO`: Important information only
+- `BranchLogLevel.WARNING`: Warnings only
+- `BranchLogLevel.ERROR`: Errors only
+- `BranchLogLevel.NONE`: No logs
+
+The example app demonstrates this in [example/lib/home_page.dart](example/lib/home_page.dart#L732).
 
 ### iOS 14+ App Tracking Transparency
 Starting with iOS 14.5, iPadOS 14.5, and tvOS 14.5, you’ll need to receive the user’s permission through the AppTrackingTransparency framework to track them or access their device’s advertising identifier. Tracking refers to the act of linking user or device data collected from your app with user or device data collected from other companies’ apps, websites, or offline properties for targeted advertising or advertising measurement purposes. Tracking also refers to sharing user or device data with data brokers.

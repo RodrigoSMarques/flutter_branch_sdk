@@ -8,6 +8,13 @@ class FlutterBranchSdk {
   /// **Parameters:**
   ///
   /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [logLevel]: The log level for Branch SDK logs. Defaults to `BranchLogLevel.VERBOSE`.
+  ///   - `BranchLogLevel.VERBOSE`: All logs including verbose messages (most detailed)
+  ///   - `BranchLogLevel.DEBUG`: Debug level logs for development
+  ///   - `BranchLogLevel.INFO`: Informational messages
+  ///   - `BranchLogLevel.WARNING`: Warning messages only
+  ///   - `BranchLogLevel.ERROR`: Error messages only
+  ///   - `BranchLogLevel.NONE`: No logging
   /// - [branchAttributionLevel]: The level of attribution data to collect.
   ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
   ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
@@ -15,9 +22,9 @@ class FlutterBranchSdk {
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
 
-  static Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
+  static Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
     await FlutterBranchSdkPlatform.instance
-        .init(enableLogging: enableLogging, branchAttributionLevel: branchAttributionLevel);
+        .init(enableLogging: enableLogging, logLevel: logLevel, branchAttributionLevel: branchAttributionLevel);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -258,5 +265,12 @@ class FlutterBranchSdk {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   static void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     FlutterBranchSdkPlatform.instance.setSDKWaitTimeForThirdPartyAPIs(waitTime);
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  static Stream<String> get platformLogs {
+    return FlutterBranchSdkPlatform.instance.platformLogs;
   }
 }

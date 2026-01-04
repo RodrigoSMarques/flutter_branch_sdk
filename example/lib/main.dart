@@ -29,11 +29,18 @@ void main() async {
   FlutterBranchSdk.setRequestMetadata('key1', 'value1');
   FlutterBranchSdk.setRequestMetadata('key2', 'value2');
   */
+  FlutterBranchSdk.setRequestMetadata('key1', 'value1');
+  FlutterBranchSdk.setRequestMetadata('key2', 'value2');
 
   FlutterBranchSdk.setAnonID('1234556');
   FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
 
-  await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
+  // Initialize Branch SDK with log level control
+  await FlutterBranchSdk.init(
+    //enableLogging: true,
+    //logLevel: BranchLogLevel.VERBOSE, // Set desired log level
+    branchAttributionLevel: BranchAttributionLevel.FULL,
+  );
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
 
   /*
