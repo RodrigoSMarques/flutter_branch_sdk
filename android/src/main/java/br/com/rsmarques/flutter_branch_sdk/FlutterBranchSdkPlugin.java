@@ -53,6 +53,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
     private static final String LOG_CHANNEL = "flutter_branch_sdk/logStream";
     private static LogStreamHandler logStreamHandler = null;
+    private MethodChannel methodChannel = null;
+    private EventChannel eventChannel = null;
+    private EventChannel logEventChannel = null;
     private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
     private final JSONObject requestMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
@@ -135,16 +138,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "triggered setupChannels");
         this.context = context;
 
-        MethodChannel methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
-        EventChannel eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
-        EventChannel logEventChannel = new EventChannel(messenger, LOG_CHANNEL);
+        this.methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
+        this.eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
+        this.logEventChannel = new EventChannel(messenger, LOG_CHANNEL);
 
-        methodChannel.setMethodCallHandler(this);
-        eventChannel.setStreamHandler(this);
+        this.methodChannel.setMethodCallHandler(this);
+        this.eventChannel.setStreamHandler(this);
 
         // Create and store LogStreamHandler
         logStreamHandler = new LogStreamHandler();
-        logEventChannel.setStreamHandler(logStreamHandler);
+        this.logEventChannel.setStreamHandler(logStreamHandler);
 
         FlutterBranchSdkInit.init(context);
     }
@@ -162,9 +165,29 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void teardownChannels() {
         LogUtils.debug(DEBUG_NAME, "triggered teardownChannels");
+        // Unregister handlers to avoid leaked callbacks on re-attach
+        try {
+            if (this.methodChannel != null) {
+                this.methodChannel.setMethodCallHandler(null);
+            }
+            if (this.eventChannel != null) {
+                this.eventChannel.setStreamHandler(null);
+            }
+            if (this.logEventChannel != null) {
+                this.logEventChannel.setStreamHandler(null);
+            }
+        } catch (Exception e) {
+            LogUtils.debug(DEBUG_NAME, "Error while tearing down channels: " + e.getMessage());
+        }
+
         this.activityPluginBinding = null;
         this.activity = null;
         this.context = null;
+
+        // Clear channel references
+        this.methodChannel = null;
+        this.eventChannel = null;
+        this.logEventChannel = null;
     }
 
     /**

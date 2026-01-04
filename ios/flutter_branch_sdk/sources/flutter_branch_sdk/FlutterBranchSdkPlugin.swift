@@ -100,22 +100,48 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     // Plugin registry
     // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
+        // Clean up any existing channels/handlers to avoid duplicates on re-register
+        if let _ = methodChannel {
+            methodChannel = nil
+        }
+        if let ev = eventChannel {
+            ev.setStreamHandler(nil)
+            eventChannel = nil
+        }
+        if let lev = logEventChannel {
+            lev.setStreamHandler(nil)
+            logEventChannel = nil
+        }
+
         let instance = FlutterBranchSdkPlugin()
         let handler = LogStreamHandler()
         logStreamHandler = handler
-        
+
         methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: registrar.messenger())
         eventChannel!.setStreamHandler(instance)
-        
+
         logEventChannel = FlutterEventChannel(name: LOG_CHANNEL, binaryMessenger: registrar.messenger())
         logEventChannel!.setStreamHandler(handler)
-        
+
         registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
-        
+
         self.branchJsonConfig = BranchJsonConfig.loadFromFile(registrar: registrar)
-        
+    }
+
+    // Ensure stream handlers are removed when the plugin instance is deallocated
+    deinit {
+        if let ev = eventChannel {
+            ev.setStreamHandler(nil)
+        }
+        if let lev = logEventChannel {
+            lev.setStreamHandler(nil)
+        }
+        methodChannel = nil
+        logEventChannel = nil
+        eventChannel = nil
+        logStreamHandler = nil
     }
         
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
