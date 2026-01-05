@@ -14,75 +14,11 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.11.0";
+let PLUGIN_VERSION = "9.0.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
-//---------------------------------------------------------------------------------------------
-// LogStreamHandler - Separate handler for log events
-// --------------------------------------------------------------------------------------------
-public class LogStreamHandler: NSObject, FlutterStreamHandler {
-    var logEventSink: FlutterEventSink?
-    private var logBuffer: [String] = []
-    private let bufferLock = NSLock()
-    
-    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
-        self.logEventSink = eventSink
-        
-        // Send buffered log messages
-        bufferLock.lock()
-        for bufferedMessage in logBuffer {
-            eventSink(bufferedMessage)
-        }
-        logBuffer.removeAll()
-        bufferLock.unlock()
-        
-        LogUtils.debug(message: "LOG_CHANNEL listener attached")
-        return nil
-    }
-    
-    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        logEventSink = nil
-        LogUtils.debug(message: "LOG_CHANNEL listener cancelled")
-        return nil
-    }
-    
-    private func logLevelName(_ level: BranchLogLevel) -> String {
-        switch level {
-        case .verbose:
-            return "VERBOSE"
-        case .debug:
-            return "DEBUG"
-        case .warning:
-            return "WARNING"
-        case .error:
-            return "ERROR"
-        @unknown default:
-            return "UNKNOWN"
-        }
-    }
-    
-    // Enable Branch logging with callback and buffering
-    public func enableBranchLogging(at level: BranchLogLevel) {
-        Branch.enableLogging(at: level) { (message: String, logLevel: BranchLogLevel, error: Error?) in
-            let levelName = self.logLevelName(logLevel)
-            let formattedMessage = "[Branch \(levelName)] \(message)"
-            
-            self.bufferLock.lock()
-            if let sink = self.logEventSink {
-                // Send on main thread to comply with Flutter platform channel requirements
-                DispatchQueue.main.async {
-                    sink(formattedMessage)
-                }
-            } else {
-                // Buffer the message if sink is not ready
-                self.logBuffer.append(formattedMessage)
-            }
-            self.bufferLock.unlock()
-        }
-    }
-}
 
-public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
+public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterSceneLifeCycleDelegate  {
     var eventSink: FlutterEventSink?
     var logEventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
@@ -126,6 +62,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
 
         registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
+        registrar.addSceneDelegate(instance)
 
         self.branchJsonConfig = BranchJsonConfig.loadFromFile(registrar: registrar)
     }
@@ -205,7 +142,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             }
         }
         
-        Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
+        BranchScene.shared().initSession(launchOptions: launchOptions, registerDeepLinkHandler: { (params, error, scene) in
             if error == nil {
                 LogUtils.debug(message: "InitSession params: \(String(describing: params as? [String: Any]))")
                 guard let _ = self.eventSink else {
@@ -228,7 +165,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                     self.eventSink!(FlutterError(code: String(err.code), message: err.localizedDescription, details: nil))
                 }
             }
-        }
+        })
         return true
     }
     
@@ -247,6 +184,49 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
         Branch.getInstance().handlePushNotification(userInfo)
     }
+    
+    //---------------------------------------------------------------------------------------------
+    // UIScene
+    // --------------------------------------------------------------------------------------------
+  func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+      return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+  }
+    public func scene(scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions?) -> Bool {
+        guard let _ = (scene as? UIWindowScene) else { return }
+      
+        // Workaround for SceneDelegate `continueUserActivity` not getting called on cold start:
+        if let userActivity = connectionOptions.userActivities.first {
+          return BranchScene.shared().scene(scene, continue: userActivity)
+        } else if !connectionOptions.urlContexts.isEmpty {
+          return BranchScene.shared().scene(scene, openURLContexts: connectionOptions.urlContexts)
+        }
+    }
+
+    /*
+    public func sceneDidDisconnect(_ scene: UIScene) { }
+
+    public func sceneWillEnterForeground(_ scene: UIScene) { }
+
+    public func sceneDidBecomeActive(_ scene: UIScene) { }
+
+    public func sceneWillResignActive(_ scene: UIScene) { }
+
+    public func sceneDidEnterBackground(_ scene: UIScene) { }
+    */
+
+    func scene(_ scene: UIScene, willContinueUserActivityWithType userActivityType: String) {
+     scene.userActivity = NSUserActivity(activityType: userActivityType)
+     scene.delegate = self
+    }
+    public func scene(scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) -> Bool {
+        return BranchScene.shared().scene(scene, openURLContexts: URLContexts)
+    }
+
+    public func scene(_ scene: UIScene, continue userActivity: NSUserActivity)-> Bool {
+        return BranchScene.shared().scene(scene, continue: userActivity)
+    }
+
+    public func windowScene(windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) -> Bool { }
     
     //---------------------------------------------------------------------------------------------
     // FlutterStreamHandler Interface Methods
@@ -1065,5 +1045,69 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             return BranchLogLevel.verbose
         }
     }
+}
 
+//---------------------------------------------------------------------------------------------
+// LogStreamHandler - Separate handler for log events
+// --------------------------------------------------------------------------------------------
+public class LogStreamHandler: NSObject, FlutterStreamHandler {
+    var logEventSink: FlutterEventSink?
+    private var logBuffer: [String] = []
+    private let bufferLock = NSLock()
+    
+    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
+        self.logEventSink = eventSink
+        
+        // Send buffered log messages
+        bufferLock.lock()
+        for bufferedMessage in logBuffer {
+            eventSink(bufferedMessage)
+        }
+        logBuffer.removeAll()
+        bufferLock.unlock()
+        
+        LogUtils.debug(message: "LOG_CHANNEL listener attached")
+        return nil
+    }
+    
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        logEventSink = nil
+        LogUtils.debug(message: "LOG_CHANNEL listener cancelled")
+        return nil
+    }
+    
+    private func logLevelName(_ level: BranchLogLevel) -> String {
+        switch level {
+        case .verbose:
+            return "VERBOSE"
+        case .debug:
+            return "DEBUG"
+        case .warning:
+            return "WARNING"
+        case .error:
+            return "ERROR"
+        @unknown default:
+            return "UNKNOWN"
+        }
+    }
+    
+    // Enable Branch logging with callback and buffering
+    public func enableBranchLogging(at level: BranchLogLevel) {
+        Branch.enableLogging(at: level) { (message: String, logLevel: BranchLogLevel, error: Error?) in
+            let levelName = self.logLevelName(logLevel)
+            let formattedMessage = "[Branch \(levelName)] \(message)"
+            
+            self.bufferLock.lock()
+            if let sink = self.logEventSink {
+                // Send on main thread to comply with Flutter platform channel requirements
+                DispatchQueue.main.async {
+                    sink(formattedMessage)
+                }
+            } else {
+                // Buffer the message if sink is not ready
+                self.logBuffer.append(formattedMessage)
+            }
+            self.bufferLock.unlock()
+        }
+    }
 }
