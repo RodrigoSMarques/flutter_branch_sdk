@@ -532,7 +532,6 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   /// [String] format for unified visibility in the Flutter debug console.  @override
   @override
   Stream<String> get platformLogs {
-    debugPrint('platformLogs() Not supported by Branch JS SDK');
-    return Stream.value('');
+    return Stream.value('⚠️ Platform logs are not supported on Web. This feature is only available on iOS and Android platforms.');
   }
 }

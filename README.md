@@ -246,6 +246,8 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 *   **`enableLogging`**: (Optional, default: `false`) Set to `true` to see detailed logs from the native Branch SDK in your device's log output (Logcat for Android, Console for iOS).
 *   **`logLevel`**: (Optional, default: `"VERBOSE"`) Controls the verbosity of logs. Valid values: `"VERBOSE"`, `"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"NONE"`. Only applies when `enableLogging` is `true`. This setting takes priority over the `logLevel` parameter in `init()`.
 
+> **Note:** Branch SDK logs are only available through the `FlutterBranchSdk.platformLogs` stream. They will not appear in standard console output unless you explicitly listen to this stream. See [Listening to Platform Logs](#listening-to-platform-logs) for implementation details.
+
 **Note:**
 
   - if `branchKey` **is present**, it will override the `useTestInstance`/`testKey`/`liveKey` config

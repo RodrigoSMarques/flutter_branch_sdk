@@ -24,6 +24,7 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
     var logEventSink: FlutterEventSink?
     private var logBuffer: [String] = []
     private let bufferLock = NSLock()
+    private let maxBufferSize = 500
     
     public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.logEventSink = eventSink
@@ -75,7 +76,14 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
                 }
             } else {
                 // Buffer the message if sink is not ready
+                if self.logBuffer.count >= self.maxBufferSize {
+                    self.logBuffer.removeFirst() // Remove oldest message
+                    let droppedMessage = "⚠️ [Branch] Log buffer full (\(self.maxBufferSize) messages), dropping oldest messages"
+                    self.logBuffer.append(droppedMessage)
+                    LogUtils.debug(message: droppedMessage)
+                }
                 self.logBuffer.append(formattedMessage)
+                //LogUtils.debug(message: formattedMessage)
             }
             self.bufferLock.unlock()
         }
@@ -90,6 +98,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     
     var branch : Branch?
     var isInitialized = false
+    var enableLoggingFromJson = false
     
     var requestMetadata : [String: String] = [:]
     var facebookParameters : [String: String] = [:]
@@ -191,6 +200,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                     if let handler = logStreamHandler {
                         handler.enableBranchLogging(at: logLevel)
                     }
+                    self.enableLoggingFromJson = true
                     LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
                 }
             }
@@ -432,13 +442,16 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
         }
         
-        if enableLogging {
-            let branchLogLevel = mapLogLevel(logLevel)
-            // Enable Branch logging with callback through LogStreamHandler
-            if let handler = logStreamHandler {
-                handler.enableBranchLogging(at: branchLogLevel)
+        // JSON config has priority - only enable/disable logging if not set via JSON
+        if !enableLoggingFromJson {
+            if enableLogging {
+                let branchLogLevel = mapLogLevel(logLevel)
+                // Enable Branch logging with callback through LogStreamHandler
+                if let handler = logStreamHandler {
+                    handler.enableBranchLogging(at: branchLogLevel)
+                }
+                LogUtils.debug(message: "Enabled logging with level: \(logLevel)")
             }
-            LogUtils.debug(message: "Enabled logging with level: \(logLevel)")
         }
         
         for (key, value) in requestMetadata {

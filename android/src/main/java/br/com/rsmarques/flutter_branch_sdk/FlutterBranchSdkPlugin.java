@@ -1001,6 +1001,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
      * Buffers log messages until Flutter listener is ready
      */
     private static class LogStreamHandler implements StreamHandler {
+        private static final int MAX_BUFFER_SIZE = 500;
         private MainThreadEventSink logEventSink = null;
         private final List<String> logBuffer = new ArrayList<>();
         private final Object bufferLock = new Object();
@@ -1042,13 +1043,19 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                     @Override
                     public void onBranchLog(String logMessage, String severityConstantName) {
                         String formattedMessage = "[Branch " + severityConstantName + "] " + logMessage;
-
                         // If sink is ready, send immediately; otherwise buffer
                         if (logEventSink != null) {
                             logEventSink.success(formattedMessage);
                         } else {
                             synchronized (bufferLock) {
+                                if (logBuffer.size() >= MAX_BUFFER_SIZE) {
+                                    logBuffer.remove(0); // Remove oldest message
+                                    String droppedMessage = "⚠️ [Branch] Log buffer full (" + MAX_BUFFER_SIZE + " messages), dropping oldest messages";
+                                    logBuffer.add(droppedMessage);
+                                    LogUtils.debug(DEBUG_NAME, droppedMessage);
+                                }
                                 logBuffer.add(formattedMessage);
+                                //LogUtils.debug(DEBUG_NAME, formattedMessage);
                             }
                         }
                     }
