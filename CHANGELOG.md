@@ -1,3 +1,16 @@
+## 8.11.0
+### 🎉 Features
+**New Platform Logging Stream**
+- Added `FlutterBranchSdk.platformLogs` stream to receive Branch SDK log messages in real-time
+- Enable logging via `branch-config.json` (`enableLogging` and `logLevel` keys) or programmatically through `FlutterBranchSdk.init()`
+- Supports log levels: `VERBOSE`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `NONE`
+- Example usage:
+  ```dart
+  FlutterBranchSdk.platformLogs.listen((logMessage) {
+    debugPrint('Branch Log: $logMessage');
+  });
+  ```
+
 ## 8.10.0
 ### 🎉 Features
 **Introduced platform-specific API URL configuration.** This allows developers to define different API endpoints for Android and iOS in `branch-config.json`.

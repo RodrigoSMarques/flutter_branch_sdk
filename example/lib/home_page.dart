@@ -25,7 +25,9 @@ class _HomePageState extends State<HomePage> {
   late BranchEvent eventStandard;
   late BranchEvent eventCustom;
 
-  StreamSubscription<Map>? streamSubscription;
+  StreamSubscription<Map>? deepLinkDataSubscription;
+  StreamSubscription<String>? platformLogsSubscription;
+
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
 
@@ -35,6 +37,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    // Start listening to platform logs
+    listPlatformLogs();
 
     listenDynamicLinks();
 
@@ -68,8 +73,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void listenDynamicLinks() async {
-    streamSubscription = FlutterBranchSdk.listSession().listen((data) async {
-      print('listenDynamicLinks - DeepLink Data: $data');
+    deepLinkDataSubscription = FlutterBranchSdk.listSession().listen((data) async {
+      debugPrint('${DateTime.now()} - ❇️ BRANCH DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
 
       /*
@@ -101,6 +106,14 @@ class _HomePageState extends State<HomePage> {
       }
     }, onError: (error) {
       print('listSession error: ${error.toString()}');
+    });
+  }
+
+  void listPlatformLogs() {
+    platformLogsSubscription = FlutterBranchSdk.platformLogs.listen((logMessage) {
+      debugPrint('${DateTime.now()} - 📦 BRANCH LOG (Platform): $logMessage');
+    }, onError: (error) {
+      debugPrint('🚨 Error in the platform log stream.: $error');
     });
   }
 
@@ -734,6 +747,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     controllerData.close();
     controllerInitSession.close();
-    streamSubscription?.cancel();
+    deepLinkDataSubscription?.cancel();
+    platformLogsSubscription?.cancel();
   }
 }

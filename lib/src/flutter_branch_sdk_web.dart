@@ -14,6 +14,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
 import 'objects/branch_attribution_level.dart';
+import 'objects/branch_log_level.dart';
 import 'objects/branch_universal_object.dart';
 import 'web/branch_js.dart';
 
@@ -46,7 +47,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///
 
   @override
-  Future<void> init({bool enableLogging = false, BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
     debugPrint('For web, start the SDK in index.html');
   }
 
@@ -524,5 +525,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     debugPrint('setSDKWaitTimeForThirdPartyAPIs() Not supported by Branch JS SDK');
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  @override
+  Stream<String> get platformLogs {
+    return Stream.value('⚠️ Platform logs are not supported on Web. This feature is only available on iOS and Android platforms.');
   }
 }

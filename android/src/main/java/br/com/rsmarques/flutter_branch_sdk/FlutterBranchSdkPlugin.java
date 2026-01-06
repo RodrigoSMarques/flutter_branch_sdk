@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import io.branch.indexing.BranchUniversalObject;
+import io.branch.interfaces.IBranchLoggingCallbacks;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.branch.referral.BranchLogger;
@@ -50,6 +51,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private static final String DEBUG_NAME = "FlutterBranchSDK";
     private static final String MESSAGE_CHANNEL = "flutter_branch_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_branch_sdk/event";
+    private static final String LOG_CHANNEL = "flutter_branch_sdk/logStream";
+    private static LogStreamHandler logStreamHandler = null;
+    private MethodChannel methodChannel = null;
+    private EventChannel eventChannel = null;
+    private EventChannel logEventChannel = null;
     private final FlutterBranchSdkHelper branchSdkHelper = new FlutterBranchSdkHelper();
     private final JSONObject requestMetadata = new JSONObject();
     private final JSONObject facebookParameters = new JSONObject();
@@ -60,9 +66,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
     private EventSink eventSink = null;
+    private EventSink logEventSink = null;
     private Map<String, Object> sessionParams = null;
     private BranchError initialError = null;
     public static BranchJsonConfig branchJsonConfig = null;
+    private static BranchLogger.BranchLogLevel currentLogLevel = BranchLogger.BranchLogLevel.VERBOSE;
 
     /**
      * ---------------------------------------------------------------------------------------------
@@ -130,11 +138,16 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         LogUtils.debug(DEBUG_NAME, "triggered setupChannels");
         this.context = context;
 
-        MethodChannel methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
-        EventChannel eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
+        this.methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
+        this.eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
+        this.logEventChannel = new EventChannel(messenger, LOG_CHANNEL);
 
-        methodChannel.setMethodCallHandler(this);
-        eventChannel.setStreamHandler(this);
+        this.methodChannel.setMethodCallHandler(this);
+        this.eventChannel.setStreamHandler(this);
+
+        // Create and store LogStreamHandler
+        logStreamHandler = new LogStreamHandler();
+        this.logEventChannel.setStreamHandler(logStreamHandler);
 
         FlutterBranchSdkInit.init(context);
     }
@@ -152,9 +165,29 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void teardownChannels() {
         LogUtils.debug(DEBUG_NAME, "triggered teardownChannels");
+        // Unregister handlers to avoid leaked callbacks on re-attach
+        try {
+            if (this.methodChannel != null) {
+                this.methodChannel.setMethodCallHandler(null);
+            }
+            if (this.eventChannel != null) {
+                this.eventChannel.setStreamHandler(null);
+            }
+            if (this.logEventChannel != null) {
+                this.logEventChannel.setStreamHandler(null);
+            }
+        } catch (Exception e) {
+            LogUtils.debug(DEBUG_NAME, "Error while tearing down channels: " + e.getMessage());
+        }
+
         this.activityPluginBinding = null;
         this.activity = null;
         this.context = null;
+
+        // Clear channel references
+        this.methodChannel = null;
+        this.eventChannel = null;
+        this.logEventChannel = null;
     }
 
     /**
@@ -419,8 +452,13 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
 
             if (branchJsonConfig.enableLogging) {
-                Branch.enableLogging();
-                LogUtils.debug(DEBUG_NAME, "Set EnableLogging from branch-config.json");
+                BranchLogger.BranchLogLevel configLogLevel = mapLogLevel(branchJsonConfig.logLevel);
+                currentLogLevel = configLogLevel;
+                // Enable Branch logging with callback through LogStreamHandler
+                if (logStreamHandler != null) {
+                    logStreamHandler.enableBranchLogging(configLogLevel);
+                }
+                LogUtils.debug(DEBUG_NAME, "Set EnableLogging and LogLevel from branch-config.json: " + branchJsonConfig.logLevel);
                 enableLoggingFromJson = true;
             }
 
@@ -443,7 +481,14 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         if (!enableLoggingFromJson) {
             if ((Boolean) Objects.requireNonNull(argsMap.get("enableLogging"))) {
-                Branch.enableLogging(BranchLogger.BranchLogLevel.VERBOSE);
+                String logLevelStr = (String) argsMap.get("logLevel");
+                BranchLogger.BranchLogLevel logLevel = mapLogLevel(logLevelStr);
+                currentLogLevel = logLevel;
+                // Enable Branch logging with callback through LogStreamHandler
+                if (logStreamHandler != null) {
+                    logStreamHandler.enableBranchLogging(logLevel);
+                }
+                LogUtils.debug(DEBUG_NAME, "Enabled logging with level: " + logLevelStr);
             } else {
                 Branch.disableLogging();
             }
@@ -653,6 +698,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             } catch (JSONException error) {
                 return;
             }
+        }
+
+        if (!isInitialized) {
+            return;
         }
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setRequestMetadata(key, value));
     }
@@ -917,6 +966,105 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         final String branchAttributionLevelString = call.argument("branchAttributionLevel");
         Branch.getInstance().setConsumerProtectionAttributionLevel(Defines.BranchAttributionLevel.valueOf(branchAttributionLevelString));
+    }
+
+    /**
+     * Maps Flutter log level string to Branch Android SDK log level
+     */
+    private BranchLogger.BranchLogLevel mapLogLevel(String logLevel) {
+        if (logLevel == null) {
+            return BranchLogger.BranchLogLevel.VERBOSE;
+        }
+        // Branch Android SDK BranchLogLevel only has: VERBOSE, DEBUG, INFO, ERROR
+        // WARNING is not available, so we map it to INFO
+        switch (logLevel) {
+            case "VERBOSE":
+                return BranchLogger.BranchLogLevel.VERBOSE;
+            case "DEBUG":
+                return BranchLogger.BranchLogLevel.DEBUG;
+            case "INFO":
+            case "WARNING": // WARNING doesn't exist in Branch Android SDK, map to INFO
+                return BranchLogger.BranchLogLevel.INFO;
+            case "ERROR":
+                return BranchLogger.BranchLogLevel.ERROR;
+            case "NONE":
+                Branch.disableLogging();
+                return BranchLogger.BranchLogLevel.VERBOSE; // Return default but logging is disabled
+            default:
+                LogUtils.debug(DEBUG_NAME, "Unknown log level: " + logLevel + ", defaulting to VERBOSE");
+                return BranchLogger.BranchLogLevel.VERBOSE;
+        }
+    }
+
+    /**
+     * StreamHandler implementation for Branch SDK logging
+     * Buffers log messages until Flutter listener is ready
+     */
+    private static class LogStreamHandler implements StreamHandler {
+        private static final int MAX_BUFFER_SIZE = 500;
+        private MainThreadEventSink logEventSink = null;
+        private final List<String> logBuffer = new ArrayList<>();
+        private final Object bufferLock = new Object();
+        private IBranchLoggingCallbacks loggingCallbacks = null;
+
+        @Override
+        public void onListen(Object arguments, EventSink events) {
+            LogUtils.debug(DEBUG_NAME, "LogStreamHandler: triggered onListen for LOG_CHANNEL");
+            logEventSink = new MainThreadEventSink(events);
+
+            // Send any buffered messages
+            synchronized (bufferLock) {
+                if (!logBuffer.isEmpty()) {
+                    LogUtils.debug(DEBUG_NAME, "LogStreamHandler: sending " + logBuffer.size() + " buffered messages");
+                    for (String message : logBuffer) {
+                        logEventSink.success(message);
+                    }
+                    logBuffer.clear();
+                }
+            }
+        }
+
+        @Override
+        public void onCancel(Object arguments) {
+            LogUtils.debug(DEBUG_NAME, "LogStreamHandler: triggered onCancel for LOG_CHANNEL");
+            logEventSink = null;
+            Branch.disableLogging();
+        }
+
+        /**
+         * Enables Branch logging with callback at specified level
+         */
+        public void enableBranchLogging(BranchLogger.BranchLogLevel logLevel) {
+            LogUtils.debug(DEBUG_NAME, "LogStreamHandler: enableBranchLogging with level " + logLevel);
+
+            // Create logging callback if not already created
+            if (loggingCallbacks == null) {
+                loggingCallbacks = new IBranchLoggingCallbacks() {
+                    @Override
+                    public void onBranchLog(String logMessage, String severityConstantName) {
+                        String formattedMessage = "[Branch " + severityConstantName + "] " + logMessage;
+                        // If sink is ready, send immediately; otherwise buffer
+                        if (logEventSink != null) {
+                            logEventSink.success(formattedMessage);
+                        } else {
+                            synchronized (bufferLock) {
+                                if (logBuffer.size() >= MAX_BUFFER_SIZE) {
+                                    logBuffer.remove(0); // Remove oldest message
+                                    String droppedMessage = "⚠️ [Branch] Log buffer full (" + MAX_BUFFER_SIZE + " messages), dropping oldest messages";
+                                    logBuffer.add(droppedMessage);
+                                    LogUtils.debug(DEBUG_NAME, droppedMessage);
+                                }
+                                logBuffer.add(formattedMessage);
+                                //LogUtils.debug(DEBUG_NAME, formattedMessage);
+                            }
+                        }
+                    }
+                };
+            }
+
+            // Enable Branch logging with callback
+            Branch.enableLogging(loggingCallbacks, logLevel);
+        }
     }
 }
 

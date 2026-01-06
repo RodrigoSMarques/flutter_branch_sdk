@@ -9,6 +9,7 @@ struct BranchJsonConfig: Codable {
     let liveKey: String?
     let testKey: String?
     let enableLogging: Bool?
+    let logLevel: String?
     let useTestInstance: Bool?
 
     static func loadFromFile(registrar: FlutterPluginRegistrar) -> BranchJsonConfig? {

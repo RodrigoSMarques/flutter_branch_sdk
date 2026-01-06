@@ -17,6 +17,7 @@ public class BranchJsonConfig {
     public final String liveKey;
     public final String testKey;
     public final Boolean enableLogging;
+    public final String logLevel;
     public final Boolean useTestInstance;
 
     public final String apiUrlAndroid;
@@ -30,6 +31,7 @@ public class BranchJsonConfig {
         this.liveKey = jsonObject.optString("liveKey", "");
         this.testKey = jsonObject.optString("testKey", "");
         this.enableLogging = jsonObject.has("enableLogging") && jsonObject.optBoolean("enableLogging");
+        this.logLevel = jsonObject.optString("logLevel", "VERBOSE");
         this.useTestInstance = jsonObject.has("useTestInstance") && jsonObject.optBoolean("useTestInstance");
     }
 
