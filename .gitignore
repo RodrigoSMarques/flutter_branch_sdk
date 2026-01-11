@@ -74,3 +74,7 @@
 /ios/flutter_branch_sdk/.build
 /example/android/app/.cxx
 /ios/flutter_branch_sdk/.index-build
+.github/copilot-instructions.md
+ia_docs/
+test/
+UISCENE_MIGRATION.md

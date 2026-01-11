@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.11.0";
+let PLUGIN_VERSION = "8.12.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
     }
 }
 
-public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
+public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterSceneLifeCycleDelegate  {
     var eventSink: FlutterEventSink?
     var logEventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
@@ -134,6 +134,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         logEventChannel!.setStreamHandler(handler)
 
         registrar.addApplicationDelegate(instance)
+        registrar.addSceneDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
 
         self.branchJsonConfig = BranchJsonConfig.loadFromFile(registrar: registrar)
@@ -154,67 +155,198 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
         
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
+        LogUtils.debug(message: "Application didFinishLaunchingWithOptions - App Delegate lifecycle")
         
-        if let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig {
-
-            if let apiUrl = branchJsonConfig.apiUrl as? String {
-                LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                LogUtils.debug(message: "The apiUrl parameter has been deprecated. Please use apiUrlIOS instead. Check the documentation.")
-                LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                return false
-              }
-
-            if let apiUrlIOS = branchJsonConfig.apiUrlIOS as? String {
-                Branch.setAPIUrl(apiUrlIOS)
-                LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
-              }
+        // Perform Branch configuration (shared logic)
+        configureBranchSDK()
+        
+        // Initialize Branch session
+        initializeBranchSession(launchOptions: launchOptions)
+        
+        return true
+    }
+    
+    public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return Branch.getInstance().application(app, open: url, options: options)
+    }
+    
+    public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
+        return Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+    
+    public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
+        return Branch.getInstance().continue(userActivity)
+    }
+    
+    public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+        Branch.getInstance().handlePushNotification(userInfo)
+    }
+    
+    //---------------------------------------------------------------------------------------------
+    // UISceneDelegate Interface Methods (iOS 13+)
+    // --------------------------------------------------------------------------------------------
+    
+    /// Called when a scene is about to connect to the session.
+    /// This is the Scene lifecycle equivalent to application(_:didFinishLaunchingWithOptions:)
+    @available(iOS 13.0, *)
+    public func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) -> Bool {
+        LogUtils.debug(message: "Scene willConnectTo session - Scene lifecycle")
+        
+        // Perform Branch configuration (shared logic)
+        configureBranchSDK()
+        
+        // Extract launch options from connectionOptions
+        var launchOptions: [UIApplication.LaunchOptionsKey: Any] = [:]
+        
+        // Handle URL contexts from connectionOptions
+        if let urlContext = connectionOptions.urlContexts.first {
+            launchOptions[.url] = urlContext.url
+            LogUtils.debug(message: "Scene connectionOptions URL: \(urlContext.url)")
+        }
+        
+        // Handle user activities from connectionOptions
+        if let userActivity = connectionOptions.userActivities.first {
+            launchOptions[.userActivityType] = userActivity.activityType
+            LogUtils.debug(message: "Scene connectionOptions UserActivity: \(userActivity.activityType ?? "unknown")")
+        }
+        
+        // Initialize Branch session
+        initializeBranchSession(launchOptions: launchOptions)
+        
+        return true
+    }
+    
+    /// Tells the delegate to open one or more URLs.
+    /// This is the Scene lifecycle equivalent to application(_:open:options:)
+    @available(iOS 13.0, *)
+    public func scene(
+        _ scene: UIScene,
+        openURLContexts URLContexts: Set<UIOpenURLContext>
+    ) -> Bool {
+        LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
+        
+        var handled = false
+        for urlContext in URLContexts {
+            LogUtils.debug(message: "Scene opening URL: \(urlContext.url)")
+            // Branch handles URL opening
+            if Branch.getInstance().application(UIApplication.shared, open: urlContext.url, options: [:]) {
+                handled = true
+            }
+        }
+        return handled
+    }
+    
+    /// Tells the delegate to handle the specified Handoff-related activity.
+    /// This is the Scene lifecycle equivalent to application(_:continue:restorationHandler:)
+    @available(iOS 13.0, *)
+    public func scene(
+        _ scene: UIScene,
+        continue userActivity: NSUserActivity
+    ) -> Bool {
+        LogUtils.debug(message: "Scene continue userActivity - Scene lifecycle")
+        return Branch.getInstance().continue(userActivity)
+    }
+    
+    /// Called when the scene has moved from an inactive state to an active state.
+    @available(iOS 13.0, *)
+    public func sceneDidBecomeActive(_ scene: UIScene) {
+        LogUtils.debug(message: "Scene did become active - Scene lifecycle")
+    }
+    
+    /// Called when the scene will move from an active state to an inactive state.
+    @available(iOS 13.0, *)
+    public func sceneWillResignActive(_ scene: UIScene) {
+        LogUtils.debug(message: "Scene will resign active - Scene lifecycle")
+    }
+    
+    /// Called as the scene transitions from the background to the foreground.
+    @available(iOS 13.0, *)
+    public func sceneWillEnterForeground(_ scene: UIScene) {
+        LogUtils.debug(message: "Scene will enter foreground - Scene lifecycle")
+    }
+    
+    /// Called as the scene transitions from the foreground to the background.
+    @available(iOS 13.0, *)
+    public func sceneDidEnterBackground(_ scene: UIScene) {
+        LogUtils.debug(message: "Scene did enter background - Scene lifecycle")
+    }
+    
+    //---------------------------------------------------------------------------------------------
+    // Shared Branch SDK Configuration and Initialization Logic
+    // --------------------------------------------------------------------------------------------
+    
+    /// Configures Branch SDK with settings from branch-config.json
+    /// This logic is shared between App Delegate and Scene Delegate initialization
+    private func configureBranchSDK() {
+        guard let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig else {
+            LogUtils.debug(message: "No branch-config.json found, using default configuration")
+            return
+        }
+        
+        // Check for deprecated apiUrl parameter
+        if let apiUrl = branchJsonConfig.apiUrl as? String {
+            LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            LogUtils.debug(message: "The apiUrl parameter has been deprecated. Please use apiUrlIOS instead. Check the documentation.")
+            LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        }
+        
+        // Set API URL if provided
+        if let apiUrlIOS = branchJsonConfig.apiUrlIOS as? String {
+            Branch.setAPIUrl(apiUrlIOS)
+            LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
+        }
+        
+        // Set Branch Key
+        if let branchKey = branchJsonConfig.branchKey as? String {
+            Branch.setBranchKey(branchKey)
+            LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
+        } else {
+            let testKey = branchJsonConfig.testKey ?? ""
+            let liveKey = branchJsonConfig.liveKey  ?? ""
+            let useTestInstance = branchJsonConfig.useTestInstance ?? false
             
-            if let branchKey = branchJsonConfig.branchKey as? String {
-                Branch.setBranchKey(branchKey)
-                LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
-            } else {
-                let testKey = branchJsonConfig.testKey ?? ""
-                let liveKey = branchJsonConfig.liveKey  ?? ""
-                
-                let useTestInstance = branchJsonConfig.useTestInstance ?? false
-                
-                if (useTestInstance && !testKey.isEmpty) {
-                    Branch.setBranchKey(testKey)
-                    LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
-                } else if (!liveKey.isEmpty) {
-                    Branch.setBranchKey(liveKey)
-                    LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
-                }
+            if (useTestInstance && !testKey.isEmpty) {
+                Branch.setBranchKey(testKey)
+                LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
+            } else if (!liveKey.isEmpty) {
+                Branch.setBranchKey(liveKey)
+                LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
             }
         }
         
-        Branch.getInstance().registerPluginName(PLUGIN_NAME, version:  PLUGIN_VERSION)
+        // Register plugin name and version
+        Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION)
         
-        // Enable Branch logging BEFORE initSession to capture all logs
-        if let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig {
-            if let enableLogging = branchJsonConfig.enableLogging as? Bool {
-                if (enableLogging) {
-                    let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
-                    let logLevel = mapLogLevel(logLevelStr)
-                    // Enable Branch logging with callback through LogStreamHandler
-                    if let handler = logStreamHandler {
-                        handler.enableBranchLogging(at: logLevel)
-                    }
-                    self.enableLoggingFromJson = true
-                    LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
-                }
+        // Enable Branch logging if configured
+        if let enableLogging = branchJsonConfig.enableLogging as? Bool, enableLogging {
+            let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
+            let logLevel = mapLogLevel(logLevelStr)
+            
+            if let handler = logStreamHandler {
+                handler.enableBranchLogging(at: logLevel)
             }
+            self.enableLoggingFromJson = true
+            LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
         }
         
+        // Check pasteboard on install (iOS 15+)
         let disable_nativelink: Bool = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool ?? false
-        LogUtils.debug(message: "Disable NativeLink: \(String(describing:disable_nativelink))")
+        LogUtils.debug(message: "Disable NativeLink: \(String(describing: disable_nativelink))")
         
         if !disable_nativelink {
             if #available(iOS 15.0, *) {
                 Branch.getInstance().checkPasteboardOnInstall()
             }
         }
-        
+    }
+    
+    /// Initializes Branch session with the provided launch options
+    /// This logic is shared between App Delegate and Scene Delegate initialization
+    private func initializeBranchSession(launchOptions: [AnyHashable: Any]?) {
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 LogUtils.debug(message: "InitSession params: \(String(describing: params as? [String: Any]))")
@@ -239,23 +371,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 }
             }
         }
-        return true
-    }
-    
-    public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return Branch.getInstance().application(app, open: url, options: options)
-    }
-    
-    public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
-        return Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
-    }
-    
-    public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
-        return Branch.getInstance().continue(userActivity)
-    }
-    
-    public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        Branch.getInstance().handlePushNotification(userInfo)
     }
     
     //---------------------------------------------------------------------------------------------

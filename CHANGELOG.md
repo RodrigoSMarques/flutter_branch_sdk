@@ -1,3 +1,25 @@
+## 8.12.0
+### 🎉 Features
+**iOS UISceneDelegate Support (iOS 13+)**
+- Added full support for iOS 13+ UISceneDelegate lifecycle
+- Implemented scene-based lifecycle methods:
+  - `scene(_:willConnectTo:options:)` - Scene initialization with Branch SDK
+  - `scene(_:openURLContexts:)` - Deep link handling via Scene lifecycle
+  - `scene(_:continue:)` - Universal Links handling via Scene lifecycle
+  - Scene state transition methods (didBecomeActive, willResignActive, etc.)
+- Maintains full backward compatibility with UIApplicationDelegate for apps not using scenes
+- Shared configuration logic ensures consistent behavior across both lifecycles
+- Automatic detection and handling of appropriate lifecycle based on app configuration
+
+### 📚 Documentation
+- Added comprehensive `UISCENE_MIGRATION.md` guide
+- Updated README.md with UISceneDelegate information
+- Documented migration path for apps adopting Scene-based lifecycle
+
+### ⚙️ Requirements Update
+- Minimum Flutter version: 3.38.0
+- Minimum Dart SDK: 3.10.0
+
 ## 8.11.0
 ### 🎉 Features
 **New Platform Logging Stream**
