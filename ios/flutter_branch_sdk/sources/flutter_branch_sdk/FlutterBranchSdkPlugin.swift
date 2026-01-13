@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.12.0";
+let PLUGIN_VERSION = "9.0.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -134,7 +134,9 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         logEventChannel!.setStreamHandler(handler)
 
         registrar.addApplicationDelegate(instance)
-        registrar.addSceneDelegate(instance)
+        if #available(iOS 13.0, *) {
+            registrar.addSceneDelegate(instance)
+        }
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
 
         self.branchJsonConfig = BranchJsonConfig.loadFromFile(registrar: registrar)
@@ -192,7 +194,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     public func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions
+        options connectionOptions: UIScene.ConnectionOptions?
     ) -> Bool {
         LogUtils.debug(message: "Scene willConnectTo session - Scene lifecycle")
         
@@ -203,13 +205,13 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         var launchOptions: [UIApplication.LaunchOptionsKey: Any] = [:]
         
         // Handle URL contexts from connectionOptions
-        if let urlContext = connectionOptions.urlContexts.first {
+        if let urlContext = connectionOptions?.urlContexts.first {
             launchOptions[.url] = urlContext.url
             LogUtils.debug(message: "Scene connectionOptions URL: \(urlContext.url)")
         }
         
         // Handle user activities from connectionOptions
-        if let userActivity = connectionOptions.userActivities.first {
+        if let userActivity = connectionOptions?.userActivities.first {
             launchOptions[.userActivityType] = userActivity.activityType
             LogUtils.debug(message: "Scene connectionOptions UserActivity: \(userActivity.activityType ?? "unknown")")
         }
