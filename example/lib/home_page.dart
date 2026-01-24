@@ -25,7 +25,9 @@ class _HomePageState extends State<HomePage> {
   late BranchEvent eventStandard;
   late BranchEvent eventCustom;
 
-  StreamSubscription<Map>? streamSubscription;
+  StreamSubscription<Map>? deepLinkDataSubscription;
+  StreamSubscription<String>? platformLogsSubscription;
+
   StreamController<String> controllerData = StreamController<String>();
   StreamController<String> controllerInitSession = StreamController<String>();
 
@@ -35,6 +37,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    // Start listening to platform logs
+    listPlatformLogs();
 
     listenDynamicLinks();
 
@@ -68,8 +73,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void listenDynamicLinks() async {
-    streamSubscription = FlutterBranchSdk.listSession().listen((data) async {
-      print('listenDynamicLinks - DeepLink Data: $data');
+    deepLinkDataSubscription = FlutterBranchSdk.listSession().listen((data) async {
+      debugPrint('${DateTime.now()} - ❇️ BRANCH DeepLink Data: $data');
       controllerData.sink.add((data.toString()));
 
       /*
@@ -104,6 +109,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void listPlatformLogs() {
+    platformLogsSubscription = FlutterBranchSdk.platformLogs.listen((logMessage) {
+      debugPrint('${DateTime.now()} - 📦 BRANCH LOG (Platform): $logMessage');
+    }, onError: (error) {
+      debugPrint('🚨 Error in the platform log stream.: $error');
+    });
+  }
+
   void initDeepLinkData() {
     String dateString = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
@@ -118,9 +131,8 @@ class _HomePageState extends State<HomePage> {
       ..addCustomMetadata('custom_date_created', dateString)
       ..addCustomMetadata('\$og_image_width', 237)
       ..addCustomMetadata('\$og_image_height', 355)
-      ..addCustomMetadata('\$og_image_url', imageURL);
-    //--optional Custom Metadata
-    /*
+      ..addCustomMetadata('\$og_image_url', imageURL)
+      //--optional Custom Metadata
       ..contentSchema = BranchContentSchema.COMMERCE_PRODUCT
       ..price = 50.99
       ..currencyType = BranchCurrencyType.BRL
@@ -135,14 +147,8 @@ class _HomePageState extends State<HomePage> {
       ..ratingAverage = 50
       ..ratingMax = 100
       ..ratingCount = 2
-      ..setAddress(
-          street: 'street',
-          city: 'city',
-          region: 'ES',
-          country: 'Brazil',
-          postalCode: '99999-987')
+      ..setAddress(street: 'street', city: 'city', region: 'ES', country: 'Brazil', postalCode: '99999-987')
       ..setLocation(31.4521685, -114.7352207);
-      */
 
     final canonicalIdentifier = const Uuid().v4();
     buo = BranchUniversalObject(
@@ -178,16 +184,15 @@ class _HomePageState extends State<HomePage> {
         tags: ['one', 'two', 'three'])
       ..addControlParam('\$uri_redirect_mode', '1')
       ..addControlParam('\$ios_nativelink', true)
-      ..addControlParam('\$match_duration', 7200);
-    //..addControlParam('\$always_deeplink', true);
-    //..addControlParam('\$android_redirect_timeout', 750)
-    //..addControlParam('referring_user_id', 'user_id');
-    //..addControlParam('\$fallback_url', 'http')
-    //..addControlParam(
-    //    '\$fallback_url', 'https://flutter-branch-sdk.netlify.app/');
-    //..addControlParam('\$ios_url', 'http');
-    //..addControlParam(
-    //    '\$android_url', 'https://flutter-branch-sdk.netlify.app/');
+      ..addControlParam('\$match_duration', 7200)
+      //--optional Link Properties
+      ..addControlParam('\$always_deeplink', true)
+      ..addControlParam('\$android_redirect_timeout', 750)
+      ..addControlParam('referring_user_id', 'user_id')
+      ..addControlParam('\$fallback_url', 'http')
+      ..addControlParam('\$fallback_url', 'https://flutter-branch-sdk.netlify.app/')
+      ..addControlParam('\$ios_url', 'http')
+      ..addControlParam('\$android_url', 'https://flutter-branch-sdk.netlify.app/');
 
     eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART)
       //--optional Event data
@@ -380,9 +385,9 @@ class _HomePageState extends State<HomePage> {
           linkProperties: lp,
           qrCode: BranchQrCode(
               primaryColor: Colors.black,
-              //primaryColor: const Color(0xff443a49), //Hex colors
+              //primaryColor: const Color(0xff443a80), //Hex colors
               centerLogoUrl: imageURL,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.white54,
               imageFormat: BranchImageFormat.PNG));
       if (responseQrCodeImage.success) {
         if (context.mounted) {
@@ -742,6 +747,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     controllerData.close();
     controllerInitSession.close();
-    streamSubscription?.cancel();
+    deepLinkDataSubscription?.cancel();
+    platformLogsSubscription?.cancel();
   }
 }

@@ -1,4 +1,4 @@
-// In order to *not* need this ignore, consider extracting the "web" version
+// In order to *not* need this ignore, consider extracting the 'web' version
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
@@ -14,13 +14,14 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'flutter_branch_sdk_platform_interface.dart';
 import 'objects/app_tracking_transparency.dart';
 import 'objects/branch_attribution_level.dart';
+import 'objects/branch_log_level.dart';
 import 'objects/branch_universal_object.dart';
 import 'web/branch_js.dart';
 
 /// A workaround to deep-converting an object from JS to a Dart Object.
-dynamic _jsObjectToDartObject(data) => json.decode(jsonStringify(data));
+dynamic _jsObjectToDartObject(JSAny data) => json.decode(jsonStringify(data));
 
-JSAny _dartObjectToJsObject(data) => jsonParse(json.encode(data));
+JSAny _dartObjectToJsObject(Map<String, dynamic> data) => jsonParse(json.encode(data));
 
 /// A web implementation of the FlutterBranchSdkPlatform of the FlutterBranchSdk plugin.
 class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
@@ -44,15 +45,9 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
 
   @override
-  Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
     debugPrint('For web, start the SDK in index.html');
   }
 
@@ -82,7 +77,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.data((JSAny? err, JSAny? data) {
         if (err == null) {
           if (data != null) {
-            var responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
+            final responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
             response.complete(responseData['data_parsed'] ?? {});
           } else {
             response.complete({});
@@ -107,7 +102,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       BranchJS.first((JSAny? err, JSAny? data) {
         if (err == null) {
           if (data != null) {
-            var responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
+            final responseData = Map<dynamic, dynamic>.from(_jsObjectToDartObject(data));
             response.complete(responseData['data_parsed'] ?? {});
           } else {
             response.complete({});
@@ -153,28 +148,17 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     }
   }
 
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  @override
-  void disableTracking(bool value) {
-    try {
-      BranchJS.disableTracking(value);
-    } catch (e) {
-      debugPrint('disableTracking() error: ${e.toString()}');
-    }
-  }
-
   ///Creates a short url for the BUO
   @override
   Future<BranchResponse> getShortUrl(
       {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
-    Map<String, dynamic> data = buo.toMap();
+    final Map<String, dynamic> data = buo.toMap();
     linkProperties.getControlParams().forEach((key, value) {
       data[key] = value;
     });
 
-    Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
-    Completer<BranchResponse> responseCompleter = Completer();
+    final Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
+    final Completer<BranchResponse> responseCompleter = Completer();
 
     try {
       BranchJS.link(
@@ -183,7 +167,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             if (err == null) {
               responseCompleter.complete(BranchResponse.success(result: url));
             } else {
-              dynamic jsError = err;
+              final dynamic jsError = err;
               String errorMessage;
               if (jsError is String) {
                 errorMessage = jsError;
@@ -208,10 +192,10 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required String messageText,
       String androidMessageTitle = '',
       String androidSharingTitle = ''}) async {
-    BranchResponse response = await getShortUrl(buo: buo, linkProperties: linkProperties);
+    final BranchResponse response = await getShortUrl(buo: buo, linkProperties: linkProperties);
     if (response.success) {
       try {
-        await navigatorShare(_dartObjectToJsObject({"title": messageText, "text": buo.title, "url": response.result}))
+        await navigatorShare(_dartObjectToJsObject({'title': messageText, 'text': buo.title, 'url': response.result}))
             .toDart;
       } catch (e) {
         browserPrompt(messageText, response.result);
@@ -223,8 +207,8 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Logs this BranchEvent to Branch for tracking and analytics
   @override
   void trackContent({required List<BranchUniversalObject> buo, required BranchEvent branchEvent}) {
-    List<JSAny> contentItems = [];
-    for (var element in buo) {
+    final List<JSAny> contentItems = [];
+    for (final element in buo) {
       contentItems.add(_dartObjectToJsObject(element.toMap()));
     }
 
@@ -254,7 +238,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void registerView({required BranchUniversalObject buo}) {
     try {
-      BranchEvent branchEvent = BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
+      final BranchEvent branchEvent = BranchEvent.standardEvent(BranchStandardEvent.VIEW_ITEM);
       // This might not be exactly the same thing as BUO.registerView, but there's no clear implementation for web sdk
       trackContent(buo: [buo], branchEvent: branchEvent);
     } catch (e) {
@@ -365,7 +349,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   ///Gets the available last attributed touch data with a custom set attribution window.
   @override
   Future<BranchResponse> getLastAttributedTouchData({int? attributionWindow}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
+    final Completer<BranchResponse> responseCompleter = Completer();
 
     try {
       BranchJS.lastAttributedTouchData(
@@ -395,14 +379,14 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
-    Completer<BranchResponse> responseCompleter = Completer();
+    final Completer<BranchResponse> responseCompleter = Completer();
 
-    Map<String, dynamic> data = buo.toMap();
+    final Map<String, dynamic> data = buo.toMap();
     linkProperties.getControlParams().forEach((key, value) {
       data[key] = value;
     });
 
-    Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
+    final Map<String, dynamic> linkData = {...linkProperties.toMap(), 'data': data};
 
     try {
       BranchJS.qrCode(
@@ -433,7 +417,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
       required BranchLinkProperties linkProperties,
       required BranchQrCode qrCodeSettings}) async {
     try {
-      BranchResponse response =
+      final BranchResponse response =
           await getQRCodeAsData(buo: buo, linkProperties: linkProperties, qrCodeSettings: qrCodeSettings);
       if (response.success) {
         return BranchResponse.success(
@@ -444,16 +428,16 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
         return BranchResponse.error(errorCode: response.errorCode, errorMessage: response.errorMessage);
       }
     } catch (e) {
-      return BranchResponse.error(errorCode: "-1", errorMessage: 'qrCode generate error ${e.toString()}');
+      return BranchResponse.error(errorCode: '-1', errorMessage: 'qrCode generate error ${e.toString()}');
     }
   }
 
   @override
-  void shareWithLPLinkMetadata(
+  Future<void> shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
-      required String title}) {
+      required String title}) async {
     try {
       showShareSheet(buo: buo, linkProperties: linkProperties, messageText: title);
     } catch (error) {
@@ -463,7 +447,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
   @override
-  void handleDeepLink(String url) {
+  Future<void> handleDeepLink(String url) async {
     try {
       globalContext.callMethodVarArgs('open'.toJS, [url.toJS, '_self'.toJS]);
     } catch (e) {
@@ -541,5 +525,13 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
   @override
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     debugPrint('setSDKWaitTimeForThirdPartyAPIs() Not supported by Branch JS SDK');
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  @override
+  Stream<String> get platformLogs {
+    return Stream.value('⚠️ Platform logs are not supported on Web. This feature is only available on iOS and Android platforms.');
   }
 }

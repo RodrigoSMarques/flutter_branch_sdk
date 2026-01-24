@@ -8,21 +8,23 @@ class FlutterBranchSdk {
   /// **Parameters:**
   ///
   /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [logLevel]: The log level for Branch SDK logs. Defaults to `BranchLogLevel.VERBOSE`.
+  ///   - `BranchLogLevel.VERBOSE`: All logs including verbose messages (most detailed)
+  ///   - `BranchLogLevel.DEBUG`: Debug level logs for development
+  ///   - `BranchLogLevel.INFO`: Informational messages
+  ///   - `BranchLogLevel.WARNING`: Warning messages only
+  ///   - `BranchLogLevel.ERROR`: Error messages only
+  ///   - `BranchLogLevel.NONE`: No logging
   /// - [branchAttributionLevel]: The level of attribution data to collect.
   ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
   ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
-  static Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
-    await FlutterBranchSdkPlatform.instance.init(
-        enableLogging: enableLogging, disableTracking: disableTracking, branchAttributionLevel: branchAttributionLevel);
+
+  static Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
+    await FlutterBranchSdkPlatform.instance
+        .init(enableLogging: enableLogging, logLevel: logLevel, branchAttributionLevel: branchAttributionLevel);
   }
 
   ///Identifies the current user to the Branch API by supplying a unique identifier as a userId value
@@ -48,12 +50,6 @@ class FlutterBranchSdk {
   ///Returns the first parameters associated with the link that referred the user
   static Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
     return await FlutterBranchSdkPlatform.instance.getFirstReferringParams();
-  }
-
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  static void disableTracking(bool value) async {
-    return FlutterBranchSdkPlatform.instance.disableTracking(value);
   }
 
   ///Listen click em Branch Deeplinks
@@ -199,7 +195,7 @@ class FlutterBranchSdk {
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
       required String title}) {
-    Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
     params['lp'] = linkProperties.toMap();
     params['title'] = title;
@@ -269,5 +265,12 @@ class FlutterBranchSdk {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   static void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     FlutterBranchSdkPlatform.instance.setSDKWaitTimeForThirdPartyAPIs(waitTime);
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  static Stream<String> get platformLogs {
+    return FlutterBranchSdkPlatform.instance.platformLogs;
   }
 }

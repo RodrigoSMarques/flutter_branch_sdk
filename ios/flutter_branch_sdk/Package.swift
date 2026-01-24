@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "flutter_branch_sdk",
     platforms: [
-        .iOS("12.0")
+        .iOS("13.0")
     ],
     products: [
         .library(name: "flutter-branch-sdk", targets: ["flutter_branch_sdk"])

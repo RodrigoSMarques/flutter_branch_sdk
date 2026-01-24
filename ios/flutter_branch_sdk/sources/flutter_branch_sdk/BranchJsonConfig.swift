@@ -1,21 +1,15 @@
-//
-//  BranchJsonConfig.swift
-//  flutter_branch_sdk
-//
-//  Created by Rodrigo Marques on 10/09/25.
-//
-
-
 import Foundation
 import Flutter
 
-// A struct corresponde ao JSON, mas todas as propriedades são opcionais (?)
 struct BranchJsonConfig: Codable {
     let apiUrl: String?
+    let apiUrlAndroid: String?
+    let apiUrlIOS: String?
     let branchKey: String?
     let liveKey: String?
     let testKey: String?
     let enableLogging: Bool?
+    let logLevel: String?
     let useTestInstance: Bool?
 
     static func loadFromFile(registrar: FlutterPluginRegistrar) -> BranchJsonConfig? {
