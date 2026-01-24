@@ -2,6 +2,7 @@
 ### ⚠️ BREAKING CHANGES
 - **Minimum Flutter version**: 3.38.0 (was 3.19.0)
 - **Minimum Dart SDK**: 3.10.0 (was 3.3.0)
+- **Minimum iOS version : 13
 
 ### 🎉 Features
 **iOS UISceneDelegate Support (iOS 13+)** [Fluuter UISceneDelegate adoption](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate)
