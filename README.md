@@ -94,6 +94,7 @@ Follow only the steps:
 
 1. You can  configure your Branch keys (`live`, `test`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
 2. The native Branch iOS SDK dependency is included automatically by this plugin. No need to add it manually in your project.
+3. **iOS 13+ UISceneDelegate Support**: This plugin supports both traditional `UIApplicationDelegate` and modern `UISceneDelegate` lifecycle. The plugin will automatically use the appropriate lifecycle based on your app configuration. No additional setup is required - the plugin maintains full backward compatibility with apps using `UIApplicationDelegate` while supporting apps that have migrated to `UISceneDelegate`.
 
 
 #### NativeLink™ Deferred Deep Linking
