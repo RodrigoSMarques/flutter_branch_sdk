@@ -39,8 +39,17 @@ void main() async {
   await FlutterBranchSdk.init(
     //enableLogging: true,
     //logLevel: BranchLogLevel.VERBOSE, // Set desired log level
+    enableLogging: true,
+    logLevel: BranchLogLevel.DEBUG, // Set desired log level
     branchAttributionLevel: BranchAttributionLevel.FULL,
   );
+
+  FlutterBranchSdk.platformLogs.listen((logMessage) {
+    debugPrint('${DateTime.now()} - 📦 BRANCH LOG (Platform): $logMessage');
+  }, onError: (error) {
+    debugPrint('🚨 Error in the platform log stream.: $error');
+  });
+
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
 
   /*

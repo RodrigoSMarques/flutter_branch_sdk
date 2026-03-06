@@ -1,11 +1,21 @@
+## 9.1.0
+### 🔧 Native SDK Updates
+* Updated included iOS SDK to 3.14.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+### 🎉 Features
+* Improved log output from `platformLogs` with more detailed information.
+
+### 🐛 Bug Fixes
+* **iOS:** Fixed double execution of `configureBranchSDK()` on iOS 13+ with Scene Delegate support. The method was being called from both `application(_:didFinishLaunchingWithOptions:)` and `scene(_:willConnectTo:options:)`, causing duplicate logging callback registration and other redundant SDK initialization. Added idempotency guard with `isSdkConfigured` flag to prevent re-execution.
+
 ## 9.0.0
 ### ⚠️ BREAKING CHANGES
 - **Minimum Flutter version**: 3.38.0 (was 3.19.0)
 - **Minimum Dart SDK**: 3.10.0 (was 3.3.0)
-- **Minimum iOS version : 13
+- **Minimum iOS version** : 13
 
 ### 🎉 Features
-**iOS UISceneDelegate Support (iOS 13+)** [Fluuter UISceneDelegate adoption](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate)
+**iOS UISceneDelegate Support (iOS 13+)** [Flutter UISceneDelegate adoption](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate)
 - Added full support for iOS 13+ UISceneDelegate lifecycle
 - Maintains full backward compatibility with UIApplicationDelegate for apps not using scenes
 
