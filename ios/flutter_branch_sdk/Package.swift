@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "flutter-branch-sdk", targets: ["flutter_branch_sdk"])
     ],
     dependencies: [
-     .package(url: "https://github.com/BranchMetrics/ios-branch-sdk-spm", "3.13.0"..."3.14.0")
+     .package(url: "https://github.com/BranchMetrics/ios-branch-sdk-spm", "3.14.0"..."3.15.0")
     ],
     targets: [
         .target(

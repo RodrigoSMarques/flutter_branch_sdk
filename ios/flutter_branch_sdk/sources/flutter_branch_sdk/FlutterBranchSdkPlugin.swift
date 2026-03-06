@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.0.0";
+let PLUGIN_VERSION = "9.1.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
     var logEventSink: FlutterEventSink?
     private var logBuffer: [String] = []
     private let bufferLock = NSLock()
-    private let maxBufferSize = 500
+    private let maxBufferSize = 1000
     
     public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.logEventSink = eventSink
@@ -64,9 +64,13 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
     
     // Enable Branch logging with callback and buffering
     public func enableBranchLogging(at level: BranchLogLevel) {
-        Branch.enableLogging(at: level) { (message: String, logLevel: BranchLogLevel, error: Error?) in
+        Branch.getInstance().enableLogging(at: level) { (message: String, logLevel: BranchLogLevel, error: Error?) in
             let levelName = self.logLevelName(logLevel)
-            let formattedMessage = "[Branch \(levelName)] \(message)"
+            var formattedMessage = "[Branch \(levelName)] \(message)"
+            
+            if let error = error {
+                formattedMessage += " | Error: \(error)"
+            }
             
             self.bufferLock.lock()
             if let sink = self.logEventSink {
@@ -288,6 +292,19 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             LogUtils.debug(message: "No branch-config.json found, using default configuration")
             return
         }
+
+        // Enable Branch logging if configured
+        if let enableLogging = branchJsonConfig.enableLogging as? Bool, enableLogging {
+            let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
+            let logLevel = mapLogLevel(logLevelStr)
+            
+            if let handler = logStreamHandler {
+                handler.enableBranchLogging(at: logLevel)
+            }
+            self.enableLoggingFromJson = true
+            LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
+        }
+
         
         // Check for deprecated apiUrl parameter
         if let apiUrl = branchJsonConfig.apiUrl as? String {
@@ -322,19 +339,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         // Register plugin name and version
         Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION)
-        
-        // Enable Branch logging if configured
-        if let enableLogging = branchJsonConfig.enableLogging as? Bool, enableLogging {
-            let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
-            let logLevel = mapLogLevel(logLevelStr)
-            
-            if let handler = logStreamHandler {
-                handler.enableBranchLogging(at: logLevel)
-            }
-            self.enableLoggingFromJson = true
-            LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
-        }
-        
+                
         // Check pasteboard on install (iOS 15+)
         let disable_nativelink: Bool = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool ?? false
         LogUtils.debug(message: "Disable NativeLink: \(String(describing: disable_nativelink))")
