@@ -5,10 +5,6 @@
 ### 🎉 Features
 * Improved log output from `platformLogs` with more detailed information.
 
-### 🐛 Fixes
-**iOS**
-- Fixed duplicate Branch session initialization in scene-based apps (iOS 13+): added guard to prevent `initSession` from being called twice when both App Delegate and Scene Delegate lifecycles are active
-
 ## 9.0.0
 ### ⚠️ BREAKING CHANGES
 - **Minimum Flutter version**: 3.38.0 (was 3.19.0)
