@@ -3,7 +3,7 @@
 * Updated included iOS SDK to 3.14.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 
 ### 🎉 Features
-* Improved log output from enableBranchLogging with more detailed information.
+* Improved log output from `platformLogs` with more detailed information.
 
 ### 🐛 Fixes
 **iOS**
