@@ -6,5 +6,5 @@
   "testKey": "key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH",
   "useTestInstance": true,
   "enableLogging": true,
-  "logLevel": "VERBOSE"
+  "logLevel": "DEBUG"
 }
