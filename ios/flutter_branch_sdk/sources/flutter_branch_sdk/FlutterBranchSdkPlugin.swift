@@ -103,6 +103,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     var branch : Branch?
     var isInitialized = false
     var enableLoggingFromJson = false
+    var isSdkConfigured = false
     
     var requestMetadata : [String: String] = [:]
     var facebookParameters : [String: String] = [:]
@@ -288,6 +289,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     /// Configures Branch SDK with settings from branch-config.json
     /// This logic is shared between App Delegate and Scene Delegate initialization
     private func configureBranchSDK() {
+        // Guard against double execution on iOS 13+ with Scene Delegate support
+        guard !isSdkConfigured else {
+            LogUtils.debug(message: "configureBranchSDK() already executed, skipping")
+            return
+        }
+        
         guard let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig else {
             LogUtils.debug(message: "No branch-config.json found, using default configuration")
             return
@@ -349,6 +356,9 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 Branch.getInstance().checkPasteboardOnInstall()
             }
         }
+        
+        // Mark SDK as configured after successful initialization
+        self.isSdkConfigured = true
     }
     
     /// Initializes Branch session with the provided launch options

@@ -5,6 +5,9 @@
 ### 🎉 Features
 * Improved log output from `platformLogs` with more detailed information.
 
+### 🐛 Bug Fixes
+* **iOS:** Fixed double execution of `configureBranchSDK()` on iOS 13+ with Scene Delegate support. The method was being called from both `application(_:didFinishLaunchingWithOptions:)` and `scene(_:willConnectTo:options:)`, causing duplicate logging callback registration and other redundant SDK initialization. Added idempotency guard with `isSdkConfigured` flag to prevent re-execution.
+
 ## 9.0.0
 ### ⚠️ BREAKING CHANGES
 - **Minimum Flutter version**: 3.38.0 (was 3.19.0)
