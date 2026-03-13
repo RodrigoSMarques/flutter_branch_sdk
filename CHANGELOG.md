@@ -1,3 +1,7 @@
+## 9.1.1
+### 🐛 Bug Fixes
+* Fix issue #492 : enableLogging in branch-config.json breaks JSON key selection on iOS
+
 ## 9.1.0
 ### 🔧 Native SDK Updates
 * Updated included iOS SDK to 3.14.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
