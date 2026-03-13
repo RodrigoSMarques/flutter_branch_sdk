@@ -1,7 +1,7 @@
 {
   "apiUrlAndroid_temp": "https://branch-api-proxy.onrender.com",
   "apiUrlIOS_temp": "https://branch-api-proxy.onrender.com",
-  "branchKey": "key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH",
+  "branchKey_temp": "key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH",
   "liveKey": "key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx",
   "testKey": "key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH",
   "useTestInstance": true,
