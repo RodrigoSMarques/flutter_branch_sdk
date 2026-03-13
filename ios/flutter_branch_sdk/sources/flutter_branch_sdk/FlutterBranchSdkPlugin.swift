@@ -64,7 +64,7 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
     
     // Enable Branch logging with callback and buffering
     public func enableBranchLogging(at level: BranchLogLevel) {
-        Branch.getInstance().enableLogging(at: level) { (message: String, logLevel: BranchLogLevel, error: Error?) in
+        Branch.enableLogging(at: level, withCallback: { (message: String, logLevel: BranchLogLevel, error: Error?) in
             let levelName = self.logLevelName(logLevel)
             var formattedMessage = "[Branch \(levelName)] \(message)"
             
@@ -90,7 +90,7 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
                 //LogUtils.debug(message: formattedMessage)
             }
             self.bufferLock.unlock()
-        }
+        })
     }
 }
 
@@ -299,63 +299,23 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             LogUtils.debug(message: "No branch-config.json found, using default configuration")
             return
         }
-
-        // Enable Branch logging if configured
-        if let enableLogging = branchJsonConfig.enableLogging as? Bool, enableLogging {
-            let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
-            let logLevel = mapLogLevel(logLevelStr)
-            
-            if let handler = logStreamHandler {
-                handler.enableBranchLogging(at: logLevel)
-            }
-            self.enableLoggingFromJson = true
-            LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
-        }
-
-        
-        // Check for deprecated apiUrl parameter
-        if let apiUrl = branchJsonConfig.apiUrl as? String {
-            LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            LogUtils.debug(message: "The apiUrl parameter has been deprecated. Please use apiUrlIOS instead. Check the documentation.")
-            LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        }
-        
-        // Set API URL if provided
-        if let apiUrlIOS = branchJsonConfig.apiUrlIOS as? String {
-            Branch.setAPIUrl(apiUrlIOS)
-            LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
-        }
-        
-        // Set Branch Key
-        if let branchKey = branchJsonConfig.branchKey as? String {
-            Branch.setBranchKey(branchKey)
-            LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
-        } else {
-            let testKey = branchJsonConfig.testKey ?? ""
-            let liveKey = branchJsonConfig.liveKey  ?? ""
-            let useTestInstance = branchJsonConfig.useTestInstance ?? false
-            
-            if (useTestInstance && !testKey.isEmpty) {
-                Branch.setBranchKey(testKey)
-                LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
-            } else if (!liveKey.isEmpty) {
-                Branch.setBranchKey(liveKey)
-                LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
-            }
-        }
-        
-        // Register plugin name and version
-        Branch.getInstance().registerPluginName(PLUGIN_NAME, version: PLUGIN_VERSION)
-                
-        // Check pasteboard on install (iOS 15+)
         let disable_nativelink: Bool = Bundle.main.object(forInfoDictionaryKey: "branch_disable_nativelink") as? Bool ?? false
-        LogUtils.debug(message: "Disable NativeLink: \(String(describing: disable_nativelink))")
+
+        self.enableLoggingFromJson = BranchStartupConfigurator().apply(
+            config: branchJsonConfig,
+            disableNativeLink: disable_nativelink,
+            shouldCheckPasteboardOnInstall: {
+                if #available(iOS 15.0, *) {
+                    return true
+                }
+                return false
+            }(),
+            pluginName: PLUGIN_NAME,
+            pluginVersion: PLUGIN_VERSION
+        )
         
-        if !disable_nativelink {
-            if #available(iOS 15.0, *) {
-                Branch.getInstance().checkPasteboardOnInstall()
-            }
-        }
+        // Check pasteboard on install (iOS 15+)
+        LogUtils.debug(message: "Disable NativeLink: \(String(describing: disable_nativelink))")
         
         // Mark SDK as configured after successful initialization
         self.isSdkConfigured = true
@@ -577,7 +537,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         // JSON config has priority - only enable/disable logging if not set via JSON
         if !enableLoggingFromJson {
             if enableLogging {
-                let branchLogLevel = mapLogLevel(logLevel)
+                let branchLogLevel = branchMapLogLevel(logLevel)
                 // Enable Branch logging with callback through LogStreamHandler
                 if let handler = logStreamHandler {
                     handler.enableBranchLogging(at: branchLogLevel)
@@ -1192,23 +1152,4 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     
     // MARK: - Helper Methods
     
-    /**
-     Maps Flutter log level string to Branch iOS SDK log level
-     */
-    private func mapLogLevel(_ logLevel: String) -> BranchLogLevel {
-        switch logLevel {
-        case "VERBOSE":
-            return BranchLogLevel.verbose
-        case "DEBUG":
-            return BranchLogLevel.debug
-        case "WARNING":
-            return BranchLogLevel.warning
-        case "ERROR":
-            return BranchLogLevel.error
-        default:
-            LogUtils.debug(message: "Unknown log level: \(logLevel), defaulting to verbose")
-            return BranchLogLevel.verbose
-        }
-    }
-
 }
