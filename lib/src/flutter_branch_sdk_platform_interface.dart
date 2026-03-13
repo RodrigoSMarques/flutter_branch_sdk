@@ -5,6 +5,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'flutter_branch_sdk_method_channel.dart';
 import 'objects/app_tracking_transparency.dart';
 import 'objects/branch_attribution_level.dart';
+import 'objects/branch_log_level.dart';
 import 'objects/branch_universal_object.dart';
 
 abstract class FlutterBranchSdkPlatform extends PlatformInterface {
@@ -35,19 +36,21 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// **Parameters:**
   ///
   /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [logLevel]: The log level for Branch SDK logs. Defaults to `BranchLogLevel.VERBOSE`.
+  ///   - `BranchLogLevel.VERBOSE`: All logs including verbose messages (most detailed)
+  ///   - `BranchLogLevel.DEBUG`: Debug level logs for development
+  ///   - `BranchLogLevel.INFO`: Informational messages
+  ///   - `BranchLogLevel.WARNING`: Warning messages only
+  ///   - `BranchLogLevel.ERROR`: Error messages only
+  ///   - `BranchLogLevel.NONE`: No logging
   /// - [branchAttributionLevel]: The level of attribution data to collect.
   ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
   ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
-  Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+
+  Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
     throw UnimplementedError('init has not been implemented');
   }
 
@@ -74,13 +77,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///Returns the first parameters associated with the link that referred the user
   Future<Map<dynamic, dynamic>> getFirstReferringParams() async {
     throw UnimplementedError('getFirstReferringParams has not been implemented');
-  }
-
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  @Deprecated('Use [setConsumerProtectionAttributionLevel]')
-  void disableTracking(bool value) async {
-    throw UnimplementedError('disableTracking has not been implemented');
   }
 
   ///Listen click em Branch Deeplinks
@@ -214,16 +210,16 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Showing a Share Sheet with LPLinkMetadata in iOS
-  void shareWithLPLinkMetadata(
+  Future<void> shareWithLPLinkMetadata(
       {required BranchUniversalObject buo,
       required BranchLinkProperties linkProperties,
       required Uint8List icon,
-      required String title}) {
+      required String title}) async {
     throw UnimplementedError('shareWithLPLinkMetadata has not been implemented');
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
-  void handleDeepLink(String url) async {
+  Future<void> handleDeepLink(String url) async {
     throw UnimplementedError('handleDeepLink has not been implemented');
   }
 
@@ -280,5 +276,12 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     throw UnimplementedError('setSDKWaitTimeForThirdPartyAPIs has not been implemented');
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  Stream<String> get platformLogs {
+    throw UnimplementedError('platformLogs has not been implemented');
   }
 }
