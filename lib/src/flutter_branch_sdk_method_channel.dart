@@ -59,6 +59,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       throw ArgumentError('URL must contain a host or a path');
     }
   }
+
   /// Initializes the Branch SDK.
   ///
   /// This function initializes the Branch SDK with the specified configuration options.
@@ -74,7 +75,11 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
   @override
-  Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({
+    bool enableLogging = false,
+    BranchLogLevel logLevel = BranchLogLevel.VERBOSE,
+    BranchAttributionLevel? branchAttributionLevel,
+  }) async {
     if (isInitialized) {
       return;
     }
@@ -88,7 +93,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
     await _messageChannel.invokeMethod('init', {
       'enableLogging': enableLogging,
       'logLevel': logLevel.value,
-      'branchAttributionLevel': branchAttributionLevelString
+      'branchAttributionLevel': branchAttributionLevelString,
     });
     isInitialized = true;
   }
@@ -146,11 +151,15 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Creates a short url for the BUO
   @override
-  Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
+  Future<BranchResponse> getShortUrl({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+  }) async {
     _ensureInitialized('getShortUrl');
-    final Map<dynamic, dynamic> response =
-      await _messageChannel.invokeMethod('getShortUrl', {'buo': buo.toMap(), 'lp': linkProperties.toMap()});
+    final Map<dynamic, dynamic> response = await _messageChannel.invokeMethod('getShortUrl', {
+      'buo': buo.toMap(),
+      'lp': linkProperties.toMap(),
+    });
 
     if (response['success']) {
       return BranchResponse.success(result: response['url']);
@@ -161,19 +170,20 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Showing a Share Sheet
   @override
-  Future<BranchResponse> showShareSheet(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required String messageText,
-      String androidMessageTitle = '',
-      String androidSharingTitle = ''}) async {
+  Future<BranchResponse> showShareSheet({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required String messageText,
+    String androidMessageTitle = '',
+    String androidSharingTitle = '',
+  }) async {
     _ensureInitialized('showShareSheet');
     final Map<dynamic, dynamic> response = await _messageChannel.invokeMethod('showShareSheet', {
       'buo': buo.toMap(),
       'lp': linkProperties.toMap(),
       'messageText': messageText,
       'messageTitle': androidMessageTitle,
-      'sharingTitle': androidSharingTitle
+      'sharingTitle': androidSharingTitle,
     });
 
     if (response['success']) {
@@ -323,10 +333,7 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
       if (latd != null) {
         return BranchResponse.success(result: latd);
       } else {
-        return BranchResponse.error(
-          errorCode: '-1',
-          errorMessage: 'Incomplete or null data',
-        );
+        return BranchResponse.error(errorCode: '-1', errorMessage: 'Incomplete or null data');
       }
     } else {
       return BranchResponse.error(errorCode: response['errorCode'], errorMessage: response['errorMessage']);
@@ -335,13 +342,17 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
   @override
-  Future<BranchResponse> getQRCodeAsData(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) async {
+  Future<BranchResponse> getQRCodeAsData({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCodeSettings,
+  }) async {
     _ensureInitialized('getQRCodeAsData');
-    final Map<dynamic, dynamic> response = await _messageChannel.invokeMethod(
-      'getQRCode', {'buo': buo.toMap(), 'lp': linkProperties.toMap(), 'qrCodeSettings': qrCodeSettings.toMap()});
+    final Map<dynamic, dynamic> response = await _messageChannel.invokeMethod('getQRCode', {
+      'buo': buo.toMap(),
+      'lp': linkProperties.toMap(),
+      'qrCodeSettings': qrCodeSettings.toMap(),
+    });
 
     if (response['success']) {
       return BranchResponse.success(result: response['result']);
@@ -352,13 +363,17 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Creates a Branch QR Code image. Returns the QR code as a Image.
   @override
-  Future<BranchResponse> getQRCodeAsImage(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) async {
+  Future<BranchResponse> getQRCodeAsImage({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCodeSettings,
+  }) async {
     _ensureInitialized('getQRCodeAsImage');
-    final Map<dynamic, dynamic> response = await _messageChannel.invokeMethod(
-      'getQRCode', {'buo': buo.toMap(), 'lp': linkProperties.toMap(), 'qrCodeSettings': qrCodeSettings.toMap()});
+    final Map<dynamic, dynamic> response = await _messageChannel.invokeMethod('getQRCode', {
+      'buo': buo.toMap(),
+      'lp': linkProperties.toMap(),
+      'qrCodeSettings': qrCodeSettings.toMap(),
+    });
 
     if (response['success']) {
       return BranchResponse.success(result: Image.memory(response['result']));
@@ -369,11 +384,12 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
 
   ///Share with LPLinkMetadata on iOS
   @override
-  Future<void> shareWithLPLinkMetadata(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required Uint8List icon,
-      required String title}) async {
+  Future<void> shareWithLPLinkMetadata({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required Uint8List icon,
+    required String title,
+  }) async {
     _ensureInitialized('shareWithLPLinkMetadata');
     final Map<String, dynamic> params = {};
     params['buo'] = buo.toMap();
@@ -430,20 +446,24 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
   @override
-  void setDMAParamsForEEA(
-      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
+  void setDMAParamsForEEA({
+    required bool eeaRegion,
+    required bool adPersonalizationConsent,
+    required bool adUserDataUsageConsent,
+  }) {
     _messageChannel.invokeMethod('setDMAParamsForEEA', {
       'eeaRegion': eeaRegion,
       'adPersonalizationConsent': adPersonalizationConsent,
-      'adUserDataUsageConsent': adUserDataUsageConsent
+      'adUserDataUsageConsent': adUserDataUsageConsent,
     });
   }
 
   /// Sets the consumer protection attribution level.
   @override
   void setConsumerProtectionAttributionLevel(BranchAttributionLevel branchAttributionLevel) {
-    _messageChannel.invokeMethod('setConsumerProtectionAttributionLevel',
-      {'branchAttributionLevel': getBranchAttributionLevelString(branchAttributionLevel)});
+    _messageChannel.invokeMethod('setConsumerProtectionAttributionLevel', {
+      'branchAttributionLevel': getBranchAttributionLevelString(branchAttributionLevel),
+    });
   }
 
   /// Sets a custom Meta Anon ID for the current user.

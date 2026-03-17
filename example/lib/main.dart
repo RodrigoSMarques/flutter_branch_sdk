@@ -15,32 +15,33 @@ void main() async {
     return true;
   };
 
-  //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
-  //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
   /*
-  FlutterBranchSdk.addFacebookPartnerParameter(
-      key: 'em',
-      value:
-          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  FlutterBranchSdk.addSnapPartnerParameter(
-      key: 'hashed_email_address',
-      value:
-          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  FlutterBranchSdk.setRequestMetadata('key1', 'value1');
-  FlutterBranchSdk.setRequestMetadata('key2', 'value2');
+    FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
+    FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
+
+    FlutterBranchSdk.addFacebookPartnerParameter(
+        key: 'em',
+        value:
+            '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+    FlutterBranchSdk.addSnapPartnerParameter(
+        key: 'hashed_email_address',
+        value:
+            '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   */
+
   FlutterBranchSdk.setRequestMetadata('key1', 'value1');
   FlutterBranchSdk.setRequestMetadata('key2', 'value2');
 
   FlutterBranchSdk.setAnonID('1234556');
   FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
 
+  //Simulate delay to started the app
+  //await Future.delayed(const Duration(seconds: 10));
+
   // Initialize Branch SDK with log level control
   await FlutterBranchSdk.init(
-    //enableLogging: true,
-    //logLevel: BranchLogLevel.VERBOSE, // Set desired log level
+    logLevel: BranchLogLevel.VERBOSE, // Set desired log level
     enableLogging: true,
-    logLevel: BranchLogLevel.DEBUG, // Set desired log level
     branchAttributionLevel: BranchAttributionLevel.FULL,
   );
 

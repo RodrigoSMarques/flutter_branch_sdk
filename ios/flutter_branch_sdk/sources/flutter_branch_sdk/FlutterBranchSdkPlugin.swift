@@ -100,15 +100,18 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     var initialParams : [String: Any]? = nil
     var initialError : NSError? = nil
     
-    var branch : Branch?
-    var isInitialized = false
     var enableLoggingFromJson = false
     var isSdkConfigured = false
-    
+
+    var isBranchInitDeferred = false
+    var isBranchSessionStarted = false
+    var isPluginInitialized = false
+
     var requestMetadata : [String: String] = [:]
     var facebookParameters : [String: String] = [:]
     var snapParameters : [String: String] = [:]
-    static var branchJsonConfig: BranchJsonConfig? = nil
+
+    static var branchJsonConfigFlutter: BranchJsonConfigFlutter? = nil
     
     //---------------------------------------------------------------------------------------------
     // Plugin registry
@@ -144,7 +147,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         }
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
 
-        self.branchJsonConfig = BranchJsonConfig.loadFromFile(registrar: registrar)
+        Self.branchJsonConfigFlutter = BranchJsonConfigFlutter.loadFromFile(registrar: registrar)
     }
 
     // Ensure stream handlers are removed when the plugin instance is deallocated
@@ -169,7 +172,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         
         // Initialize Branch session
         initializeBranchSession(launchOptions: launchOptions)
-        
         return true
     }
     
@@ -202,27 +204,17 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         options connectionOptions: UIScene.ConnectionOptions?
     ) -> Bool {
         LogUtils.debug(message: "Scene willConnectTo session - Scene lifecycle")
-        
-        // Perform Branch configuration (shared logic)
+        guard let scene = (scene as? UIWindowScene) else { return false }
+
+        //Perform Branch configuration (shared logic)
         configureBranchSDK()
         
-        // Extract launch options from connectionOptions
-        var launchOptions: [UIApplication.LaunchOptionsKey: Any] = [:]
-        
-        // Handle URL contexts from connectionOptions
-        if let urlContext = connectionOptions?.urlContexts.first {
-            launchOptions[.url] = urlContext.url
-            LogUtils.debug(message: "Scene connectionOptions URL: \(urlContext.url)")
+
+        if let connOpts = connectionOptions, let userActivity = connOpts.userActivities.first {
+            BranchScene.shared().scene(scene, continue: userActivity)
+        } else if let connOpts = connectionOptions, !connOpts.urlContexts.isEmpty {
+            BranchScene.shared().scene(scene, openURLContexts: connOpts.urlContexts)
         }
-        
-        // Handle user activities from connectionOptions
-        if let userActivity = connectionOptions?.userActivities.first {
-            launchOptions[.userActivityType] = userActivity.activityType
-            LogUtils.debug(message: "Scene connectionOptions UserActivity: \(userActivity.activityType ?? "unknown")")
-        }
-        
-        // Initialize Branch session
-        initializeBranchSession(launchOptions: launchOptions)
         
         return true
     }
@@ -235,16 +227,8 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         openURLContexts URLContexts: Set<UIOpenURLContext>
     ) -> Bool {
         LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
-        
-        var handled = false
-        for urlContext in URLContexts {
-            LogUtils.debug(message: "Scene opening URL: \(urlContext.url)")
-            // Branch handles URL opening
-            if Branch.getInstance().application(UIApplication.shared, open: urlContext.url, options: [:]) {
-                handled = true
-            }
-        }
-        return handled
+        BranchScene.shared().scene(scene, openURLContexts: URLContexts)
+        return true
     }
     
     /// Tells the delegate to handle the specified Handoff-related activity.
@@ -254,10 +238,11 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         _ scene: UIScene,
         continue userActivity: NSUserActivity
     ) -> Bool {
-        LogUtils.debug(message: "Scene continue userActivity - Scene lifecycle")
-        return Branch.getInstance().continue(userActivity)
+        LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
+        BranchScene.shared().scene(scene, continue: userActivity)
+        return true
     }
-    
+        
     /// Called when the scene has moved from an inactive state to an active state.
     @available(iOS 13.0, *)
     public func sceneDidBecomeActive(_ scene: UIScene) {
@@ -285,7 +270,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     //---------------------------------------------------------------------------------------------
     // Shared Branch SDK Configuration and Initialization Logic
     // --------------------------------------------------------------------------------------------
-    
     /// Configures Branch SDK with settings from branch-config.json
     /// This logic is shared between App Delegate and Scene Delegate initialization
     private func configureBranchSDK() {
@@ -295,26 +279,27 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             return
         }
         
-        guard let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfig else {
+        // Check if Branch initialization should be deferred for plugin runtime based on branch.json.
+        isBranchInitDeferred = getDeferInitForPluginRuntimeFlag()
+
+        guard let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfigFlutter else {
             LogUtils.debug(message: "No branch-config.json found, using default configuration")
             return
         }
         
         // Check for deprecated apiUrl parameter
-        if let apiUrl = branchJsonConfig.apiUrl as? String {
-            LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            LogUtils.debug(message: "The apiUrl parameter has been deprecated. Please use apiUrlIOS instead. Check the documentation.")
-            LogUtils.debug(message: "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        if let apiUrl = branchJsonConfig.apiUrl {
+            print("⚠️ DEPRECATION: The apiUrl parameter has been deprecated. Please use apiUrlIOS instead.")
         }
         
         // Set API URL if provided
-        if let apiUrlIOS = branchJsonConfig.apiUrlIOS as? String {
+        if let apiUrlIOS = branchJsonConfig.apiUrlIOS {
             Branch.setAPIUrl(apiUrlIOS)
             LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
         }
         
         // Set Branch Key
-        if let branchKey = branchJsonConfig.branchKey as? String {
+        if let branchKey = branchJsonConfig.branchKey {
             Branch.setBranchKey(branchKey)
             LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
         } else {
@@ -332,7 +317,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         }
 
         // Enable Branch logging if configured
-        if let enableLogging = branchJsonConfig.enableLogging as? Bool, enableLogging {
+        if let enableLogging = branchJsonConfig.enableLogging, enableLogging {
             let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
             let logLevel = mapLogLevel(logLevelStr)
             
@@ -363,6 +348,16 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     /// Initializes Branch session with the provided launch options
     /// This logic is shared between App Delegate and Scene Delegate initialization
     private func initializeBranchSession(launchOptions: [AnyHashable: Any]?) {
+        if (isBranchSessionStarted) {
+            return;
+        }
+        
+        if (isBranchInitDeferred) {
+            LogUtils.debug(message: "Branch session will cache internally until notifyNativeToInit is called (deferInitForPluginRuntime: true)")
+        } else {
+            LogUtils.debug(message: "Branch session will be initialized immediately (deferInitForPluginRuntime: false)")
+        }
+
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 LogUtils.debug(message: "InitSession params: \(String(describing: params as? [String: Any]))")
@@ -387,6 +382,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 }
             }
         }
+        isBranchSessionStarted = true
     }
     
     //---------------------------------------------------------------------------------------------
@@ -558,13 +554,13 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
               let logLevel = args["logLevel"] as? String,
               let branchAttributionLevel = args["branchAttributionLevel"] as? String
         else {
-            result(flutterError(message: "Invalid arguments provided for setupBranch", details: call.arguments))
+            result(flutterError(message: "Invalid arguments provided for init", details: call.arguments))
             return
         }
         
-        LogUtils.debug(message: "setupBranch args: \(args)")
+        LogUtils.debug(message: "init args: \(args)")
         
-        if isInitialized {
+        if isPluginInitialized {
             result(true)
             return
         }
@@ -595,7 +591,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             Branch.getInstance().addFacebookPartnerParameter(withName: key, value: value)
         }
         
-        isInitialized = true
+        if (isBranchInitDeferred) {
+            LogUtils.debug(message: "notifyNativeToInit() called")
+            Branch.getInstance().notifyNativeToInit()
+        }
+        
+        isPluginInitialized = true
         result(true)
     }
     
@@ -1209,5 +1210,25 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             return BranchLogLevel.verbose
         }
     }
+    
+    internal func getDeferInitForPluginRuntimeFlag() -> Bool {
+      guard let path = Bundle.main.path(forResource: "branch", ofType: "json") else {
+        LogUtils.debug(message:"WARNING: branch.json file not found. Defaulting 'deferInitForPluginRuntime' to false.")
+        return false
+      }
+      
+      guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
+          LogUtils.debug(message:"WARNING: branch.json file is empty or could not be read. Defaulting 'deferInitForPluginRuntime' to false.")
+          return false
+      }
 
+      guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+            let jsonDict = jsonObject as? [String: Any] else {
+          LogUtils.debug(message:"WARNING: Error parsing branch.json. Defaulting 'deferInitForPluginRuntime' to false.")
+          return false
+      }
+
+      let deferValue = (jsonDict["deferInitForPluginRuntime"] as? Bool) ?? false
+      return deferValue
+    }
 }

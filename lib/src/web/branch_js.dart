@@ -890,6 +890,6 @@ extension type BranchJS._(JSObject _) implements JSObject {
   @JS('setDMAParamsForEEA')
   external static void setDMAParamsForEEA(bool eeaRegion, bool adPersonalizationConsent, bool adUserDataUsageConsent);
 
-  @JS('setRequestMetadata')
+  @JS('setRequestMetaData')
   external static void setRequestMetadata(String key, String value);
 }
