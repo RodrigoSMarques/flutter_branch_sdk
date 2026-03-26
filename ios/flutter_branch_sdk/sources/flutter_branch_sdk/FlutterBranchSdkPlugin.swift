@@ -238,7 +238,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         _ scene: UIScene,
         continue userActivity: NSUserActivity
     ) -> Bool {
-        LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
+        LogUtils.debug(message: "Scene continue userActivity - Scene lifecycle")
         BranchScene.shared().scene(scene, continue: userActivity)
         return true
     }
