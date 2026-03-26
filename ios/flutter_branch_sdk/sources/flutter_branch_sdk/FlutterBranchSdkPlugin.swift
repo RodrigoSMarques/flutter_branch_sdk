@@ -282,50 +282,51 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         // Check if Branch initialization should be deferred for plugin runtime based on branch.json.
         isBranchInitDeferred = getDeferInitForPluginRuntimeFlag()
 
-        guard let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfigFlutter else {
-            LogUtils.debug(message: "No branch-config.json found, using default configuration")
-            return
-        }
-        
-        // Check for deprecated apiUrl parameter
-        if branchJsonConfig.apiUrl != nil {
-            LogUtils.debug(message: "⚠️ DEPRECATION: The apiUrl parameter has been deprecated. Please use apiUrlIOS instead.")
-        }
-        
-        // Set API URL if provided
-        if let apiUrlIOS = branchJsonConfig.apiUrlIOS {
-            Branch.setAPIUrl(apiUrlIOS)
-            LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
-        }
-        
-        // Set Branch Key
-        if let branchKey = branchJsonConfig.branchKey {
-            Branch.setBranchKey(branchKey)
-            LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
-        } else {
-            let testKey = branchJsonConfig.testKey ?? ""
-            let liveKey = branchJsonConfig.liveKey  ?? ""
-            let useTestInstance = branchJsonConfig.useTestInstance ?? false
-            
-            if (useTestInstance && !testKey.isEmpty) {
-                Branch.setBranchKey(testKey)
-                LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
-            } else if (!liveKey.isEmpty) {
-                Branch.setBranchKey(liveKey)
-                LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
+        // Treat branch-config.json as optional: if present, apply JSON-driven settings,
+        // otherwise continue with default configuration but still perform plugin-level setup.
+        if let branchJsonConfig = FlutterBranchSdkPlugin.branchJsonConfigFlutter {
+            // Check for deprecated apiUrl parameter
+            if branchJsonConfig.apiUrl != nil {
+                LogUtils.debug(message: "⚠️ DEPRECATION: The apiUrl parameter has been deprecated. Please use apiUrlIOS instead.")
             }
-        }
 
-        // Enable Branch logging if configured
-        if let enableLogging = branchJsonConfig.enableLogging, enableLogging {
-            let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
-            let logLevel = mapLogLevel(logLevelStr)
-            
-            if let handler = logStreamHandler {
-                handler.enableBranchLogging(at: logLevel)
+            // Set API URL if provided
+            if let apiUrlIOS = branchJsonConfig.apiUrlIOS {
+                Branch.setAPIUrl(apiUrlIOS)
+                LogUtils.debug(message: "Set API URL from branch-config.json: \(apiUrlIOS)")
             }
-            self.enableLoggingFromJson = true
-            LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
+
+            // Set Branch Key
+            if let branchKey = branchJsonConfig.branchKey {
+                Branch.setBranchKey(branchKey)
+                LogUtils.debug(message: "Set BranchKey from branch-config.json: \(branchKey)")
+            } else {
+                let testKey = branchJsonConfig.testKey ?? ""
+                let liveKey = branchJsonConfig.liveKey  ?? ""
+                let useTestInstance = branchJsonConfig.useTestInstance ?? false
+
+                if (useTestInstance && !testKey.isEmpty) {
+                    Branch.setBranchKey(testKey)
+                    LogUtils.debug(message: "Set TestKey from branch-config.json: \(testKey)")
+                } else if (!liveKey.isEmpty) {
+                    Branch.setBranchKey(liveKey)
+                    LogUtils.debug(message: "Set LiveKey from branch-config.json: \(liveKey)")
+                }
+            }
+
+            // Enable Branch logging if configured
+            if let enableLogging = branchJsonConfig.enableLogging, enableLogging {
+                let logLevelStr = branchJsonConfig.logLevel ?? "VERBOSE"
+                let logLevel = mapLogLevel(logLevelStr)
+
+                if let handler = logStreamHandler {
+                    handler.enableBranchLogging(at: logLevel)
+                }
+                self.enableLoggingFromJson = true
+                LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
+            }
+        } else {
+            LogUtils.debug(message: "No branch-config.json found, using default configuration")
         }
 
         // Register plugin name and version
