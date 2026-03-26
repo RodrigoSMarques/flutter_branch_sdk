@@ -129,6 +129,14 @@ If you need to delay initialization — for example, to request tracking consent
 To enable this behavior:
 
 1. Create a file named `branch.json` in **ios/Runner/** of your Flutter project.
+
+  Important: creating `ios/Runner/branch.json` in your filesystem is not always enough. You must add the file to your Xcode project and include it in the Runner app bundle so the native SDK can read it at runtime. In Xcode, either enable the Runner target under the file's **Target Membership** or add the file to **Build Phases → Copy Bundle Resources** for the Runner target (the example project already includes `branch.json` in Runner resources).
+   
+  Steps (Xcode):
+
+  - In Xcode choose `File → Add Files to "Runner"…`, select `ios/Runner/branch.json`, and ensure the `Runner` target is checked in the dialog.
+  - Or select the `branch.json` file in the Project Navigator and enable `Target Membership → Runner` in the File Inspector.
+  - Verify the file appears under `Runner` target → `Build Phases` → `Copy Bundle Resources` so it will be bundled at runtime.
 2. Add the following content:
 
 ```json
