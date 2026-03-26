@@ -288,8 +288,8 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         }
         
         // Check for deprecated apiUrl parameter
-        if let apiUrl = branchJsonConfig.apiUrl {
-            print("⚠️ DEPRECATION: The apiUrl parameter has been deprecated. Please use apiUrlIOS instead.")
+        if branchJsonConfig.apiUrl != nil {
+            LogUtils.debug(message: "⚠️ DEPRECATION: The apiUrl parameter has been deprecated. Please use apiUrlIOS instead.")
         }
         
         // Set API URL if provided
