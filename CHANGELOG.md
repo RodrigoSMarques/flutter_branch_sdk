@@ -1,3 +1,11 @@
+## 9.2.0
+### 🎉 Features
+* Added optional deferred SDK initialization for iOS, allowing apps to initialize the native Branch SDK later (e.g., after obtaining user consent).
+
+### 🐛 Bug Fixes
+* Corrected grammar in `README.md` and updated installation instructions.
+* Fixed JS interop method name for setting request metadata.
+
 ## 9.1.1
 ### 🐛 Bug Fixes
 * Fix issue #492 : enableLogging in branch-config.json breaks JSON key selection on iOS
