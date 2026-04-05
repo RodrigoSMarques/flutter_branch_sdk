@@ -282,7 +282,7 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 *   **`useTestInstance`**: (Optional, default: `false`) Set to `true` to use the test key for debugging and testing. Set to `false` for production releases. This allows you to easily switch between environments.
 *   **`enableLogging`**: (Optional, default: `false`) Set to `true` to see detailed logs from the native Branch SDK in your device's log output (Logcat for Android, Console for iOS).
 *   **`logLevel`**: (Optional, default: `"VERBOSE"`) Controls the verbosity of logs. Valid values: `"VERBOSE"`, `"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"NONE"`. Only applies when `enableLogging` is `true`. This setting takes priority over the `logLevel` parameter in `init()`.
-*   **`installReferrerTimeout`**: (Optional, default: no timeout) Sets the timeout in milliseconds for retrieving the Install Referrer string from Google Play Services. Only applicable on Android - iOS ignores this setting. Must be an integer value >= 0.
+*   **`installReferrerTimeout`**: (Optional, default: `0` (no timeout)) Sets the timeout in milliseconds for retrieving the Install Referrer string from Google Play Services. Only applicable on Android - iOS and Web ignore this setting. Must be an integer value >= 0.
 
 > **Note:** Branch SDK logs are only available through the `FlutterBranchSdk.platformLogs` stream. They will not appear in standard console output unless you explicitly listen to this stream. See [Listening to Platform Logs](#listening-to-platform-logs) for implementation details.
 
