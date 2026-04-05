@@ -808,10 +808,10 @@ FlutterBranchSdk.setInstallReferrerTimeout(5000);
 }
 ```
 
-Both approaches work, but configuring via `branch-config.json` is recommended as it applies the setting during SDK initialization. If you set it via Dart code, it will override the JSON configuration applied previously.
+Both approaches work, but configuring via `branch-config.json` is recommended as it applies the setting during SDK initialization. If you set it via Dart code, it will override the JSON configuration applied previously. The default for `installReferrerTimeout` is `0`, and setting it to `0` explicitly is supported and disables the timeout (`no timeout`).
 
 **Parameters:**
-- `timeoutMs` (Integer): Timeout in milliseconds. Must be >= 0. Default is 0 (no timeout).
+- `timeoutMs` (Integer): Timeout in milliseconds. Must be >= 0. Default is `0`. A value of `0` is meaningful and disables the timeout (`no timeout`).
 
 **Platform Notes:**
 - **Android**: Sets the timeout for retrieving the Install Referrer string from Google Play Services.
