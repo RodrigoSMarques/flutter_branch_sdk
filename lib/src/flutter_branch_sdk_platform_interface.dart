@@ -50,7 +50,11 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
 
-  Future<void> init({bool enableLogging = false, BranchLogLevel logLevel = BranchLogLevel.VERBOSE, BranchAttributionLevel? branchAttributionLevel}) async {
+  Future<void> init({
+    bool enableLogging = false,
+    BranchLogLevel logLevel = BranchLogLevel.VERBOSE,
+    BranchAttributionLevel? branchAttributionLevel,
+  }) async {
     throw UnimplementedError('init has not been implemented');
   }
 
@@ -91,18 +95,21 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Creates a short url for the BUO
-  Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
+  Future<BranchResponse> getShortUrl({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+  }) async {
     throw UnimplementedError('getShortUrl has not been implemented');
   }
 
   ///Showing a Share Sheet
-  Future<BranchResponse> showShareSheet(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required String messageText,
-      String androidMessageTitle = '',
-      String androidSharingTitle = ''}) async {
+  Future<BranchResponse> showShareSheet({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required String messageText,
+    String androidMessageTitle = '',
+    String androidSharingTitle = '',
+  }) async {
     throw UnimplementedError('showShareSheet has not been implemented');
   }
 
@@ -194,27 +201,30 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
-  Future<BranchResponse> getQRCodeAsData(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) async {
+  Future<BranchResponse> getQRCodeAsData({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCodeSettings,
+  }) async {
     throw UnimplementedError('getQRCodeAsData has not been implemented');
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as a Image.
-  Future<BranchResponse> getQRCodeAsImage(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) async {
+  Future<BranchResponse> getQRCodeAsImage({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCodeSettings,
+  }) async {
     throw UnimplementedError('getQRCodeAsImage has not been implemented');
   }
 
   ///Showing a Share Sheet with LPLinkMetadata in iOS
-  Future<void> shareWithLPLinkMetadata(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required Uint8List icon,
-      required String title}) async {
+  Future<void> shareWithLPLinkMetadata({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required Uint8List icon,
+    required String title,
+  }) async {
     throw UnimplementedError('shareWithLPLinkMetadata has not been implemented');
   }
 
@@ -235,7 +245,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
 
   /// Provides a setting to cancel the external Install Referrer string fetch.
   /// Default is 0 milliseconds, no timeout.
-  /// For Android only - iOS ignores this call.
   /// [timeoutMs] The timeout in milliseconds. Must be >= 0.
   void setInstallReferrerTimeout(int timeoutMs) {
     throw UnimplementedError('setInstallReferrerTimeout has not been implemented');
@@ -263,8 +272,11 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
-  void setDMAParamsForEEA(
-      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
+  void setDMAParamsForEEA({
+    required bool eeaRegion,
+    required bool adPersonalizationConsent,
+    required bool adUserDataUsageConsent,
+  }) {
     throw UnimplementedError('setDMAParamsForEEA has not been implemented');
   }
 
