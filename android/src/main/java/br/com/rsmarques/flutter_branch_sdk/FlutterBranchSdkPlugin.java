@@ -466,7 +466,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 enableLoggingFromJson = true;
             }
 
-            if (branchJsonConfig.installReferrerTimeout != null && branchJsonConfig.installReferrerTimeout >= 0) {
+            if (branchJsonConfig.installReferrerTimeout != null) {
                 new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(branchJsonConfig.installReferrerTimeout));
                 LogUtils.debug(DEBUG_NAME, "Set installReferrerTimeout from branch-config.json: " + branchJsonConfig.installReferrerTimeout + " ms");
             }
@@ -806,7 +806,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         if (timeoutMs >= 0) {
             new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(timeoutMs));
         } else {
-            LogUtils.debug(DEBUG_NAME, "setInstallReferrerTimeout: timeoutMs must be 0 or greater");
+            LogUtils.debug(DEBUG_NAME, "setInstallReferrerTimeout: timeoutMs must be 0 or greater (negative values are not allowed)");
         }
     }
 

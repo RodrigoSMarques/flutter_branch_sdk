@@ -946,7 +946,13 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     private func setInstallReferrerTimeout(call: FlutterMethodCall) {
-        LogUtils.debug(message: "setInstallReferrerTimeout called, but not applicable for iOS SDK version.")
+        guard let args = call.arguments as? [String: Any],
+              let timeoutMs = args["timeoutMs"] as? Int else {
+            LogUtils.debug(message: "Invalid arguments provided for setInstallReferrerTimeout")
+            return
+        }
+        // Only log - not applicable for iOS SDK
+        LogUtils.debug(message: "setInstallReferrerTimeout called with value \(timeoutMs)ms, but not applicable for iOS SDK version.")
     }
     
     private func getQRCode(call: FlutterMethodCall, result: @escaping FlutterResult) {
