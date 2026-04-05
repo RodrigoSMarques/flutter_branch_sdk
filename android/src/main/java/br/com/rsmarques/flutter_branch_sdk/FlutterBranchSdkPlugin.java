@@ -547,7 +547,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             }
         }
 
-        if (installReferrerTimeout > 0) {
+        if (installReferrerTimeout != null) {
             new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(installReferrerTimeout));
         }
 
