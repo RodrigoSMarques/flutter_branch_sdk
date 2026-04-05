@@ -35,6 +35,9 @@ void main() async {
   FlutterBranchSdk.setAnonID('1234556');
   FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
 
+  // Set Install Referrer Timeout (Android only - iOS ignores this)
+  //FlutterBranchSdk.setInstallReferrerTimeout(10000); // 10 seconds timeout
+
   //Simulate delay to started the app
   //await Future.delayed(const Duration(seconds: 10));
 

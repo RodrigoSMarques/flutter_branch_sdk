@@ -313,6 +313,14 @@ class FlutterBranchSdkMethodChannel implements FlutterBranchSdkPlatform {
   }
 
   @override
+  void setInstallReferrerTimeout(int timeoutMs) {
+    if (timeoutMs < 0) {
+      throw ArgumentError('timeoutMs must be >= 0. Negative values are not allowed');
+    }
+    _messageChannel.invokeMethod('setInstallReferrerTimeout', {'timeoutMs': timeoutMs});
+  }
+
+  @override
   void setTimeout(int timeout) {
     _ensureInitialized('setTimeout');
     _messageChannel.invokeMethod('setTimeout', {'timeout': timeout});
