@@ -62,6 +62,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private final JSONObject snapParameters = new JSONObject();
     private final ArrayList<String> preInstallParameters = new ArrayList<>();
     private final ArrayList<String> campaingParameters = new ArrayList<>();
+    private Integer installReferrerTimeout = 0;
     private Activity activity;
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
@@ -388,6 +389,9 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             case "setRetryInterval":
                 setRetryInterval(call);
                 break;
+            case "setInstallReferrerTimeout":
+                setInstallReferrerTimeout(call);
+                break;
             case "getLastAttributedTouchData":
                 getLastAttributedTouchData(call, result);
                 break;
@@ -460,6 +464,11 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 }
                 LogUtils.debug(DEBUG_NAME, "Set EnableLogging and LogLevel from branch-config.json: " + branchJsonConfig.logLevel);
                 enableLoggingFromJson = true;
+            }
+
+            if (branchJsonConfig.installReferrerTimeout != null && branchJsonConfig.installReferrerTimeout >= 0) {
+                new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(branchJsonConfig.installReferrerTimeout));
+                LogUtils.debug(DEBUG_NAME, "Set installReferrerTimeout from branch-config.json: " + branchJsonConfig.installReferrerTimeout + " ms");
             }
 
             if (!branchJsonConfig.branchKey.isEmpty()) {
@@ -536,6 +545,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             for (int i = 0; i < campaingParameters.size(); i++) {
                 Branch.getAutoInstance(context).setPreinstallCampaign(campaingParameters.get(i));
             }
+        }
+
+        if (installReferrerTimeout > 0) {
+            new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(installReferrerTimeout));
         }
 
         final String branchAttributionLevelString = Objects.requireNonNull(call.argument("branchAttributionLevel"));
@@ -778,6 +791,25 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setRetryInterval(value));
     }
 
+    private void setInstallReferrerTimeout(final MethodCall call) {
+        LogUtils.debug(DEBUG_NAME, "triggered setInstallReferrerTimeout");
+        if (!(call.arguments instanceof Map)) {
+            throw new IllegalArgumentException("Map argument expected");
+        }
+
+        final int timeoutMs = Objects.requireNonNull(call.argument("timeoutMs"));
+
+        if (!isInitialized) {
+            installReferrerTimeout = timeoutMs;
+            return;
+        }
+        if (timeoutMs >= 0) {
+            new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(timeoutMs));
+        } else {
+            LogUtils.debug(DEBUG_NAME, "setInstallReferrerTimeout: timeoutMs must be 0 or greater");
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private void getLastAttributedTouchData(final MethodCall call, final Result result) {
         LogUtils.debug(DEBUG_NAME, "triggered getLastAttributedTouchData");
@@ -892,6 +924,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 LogUtils.debug(DEBUG_NAME, error.getLocalizedMessage());
             }
         }
+        if (!isInitialized) {
+            return;
+        }
+
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).addFacebookPartnerParameterWithName(key, value));
     }
 
@@ -909,6 +945,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         final String value = Objects.requireNonNull(call.argument("value"));
         campaingParameters.add(value);
 
+        if (!isInitialized) {
+            return;
+        }
+
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).setPreinstallCampaign(value));
     }
 
@@ -920,6 +960,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
         }
         final String value = Objects.requireNonNull(call.argument("value"));
         preInstallParameters.add(value);
+
+        if (!isInitialized) {
+            return;
+        }
 
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).setPreinstallPartner(value));
     }
@@ -940,6 +984,10 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             } catch (JSONException error) {
                 LogUtils.debug(DEBUG_NAME, error.getLocalizedMessage());
             }
+        }
+
+        if (!isInitialized) {
+            return;
         }
 
         new Handler(Looper.getMainLooper()).post(() -> Branch.getAutoInstance(context).addSnapPartnerParameterWithName(key, value));

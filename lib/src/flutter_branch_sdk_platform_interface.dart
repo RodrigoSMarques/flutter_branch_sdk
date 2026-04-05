@@ -233,6 +233,14 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError('setPreinstallPartner has not been implemented');
   }
 
+  /// Provides a setting to cancel the external Install Referrer string fetch.
+  /// Default is 0 milliseconds, no timeout.
+  /// For Android only - iOS ignores this call.
+  /// [timeoutMs] The timeout in milliseconds. Must be >= 0.
+  void setInstallReferrerTimeout(int timeoutMs) {
+    throw UnimplementedError('setInstallReferrerTimeout has not been implemented');
+  }
+
   /// Add a Partner Parameter for Facebook.
   /// Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   /// See Facebook's documentation for details on valid parameters

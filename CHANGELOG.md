@@ -1,3 +1,18 @@
+## 9.3.0
+### 🔧 Native SDK Updates
+* Updated included Branch Android SDK to 5.21.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
+### 🎉 Features
+* New Method: `setInstallReferrerTimeout` - Provides a setting to cancel the external Install Referrer string fetch. This is useful to optimize performance on Android by limiting the time the SDK waits for the Install Referrer. Only applicable on Android - iOS ignores this setting.
+* Added support for `installReferrerTimeout` configuration key in `branch-config.json`. This allows you to set the Install Referrer timeout during app initialization without code changes.
+  - Configuration example: `"installReferrerTimeout": 5000` (in milliseconds)
+  - See `README.md` for full documentation
+
+### 📖 Documentation
+* Updated `README.md` with comprehensive documentation for `setInstallReferrerTimeout` method
+* Added new section: "Set Install Referrer Timeout" with usage examples
+* Updated example configurations in `branch-config.json` section
+
 ## 9.2.0
 ### 🎉 Features
 * Added optional deferred SDK initialization for iOS, allowing apps to initialize the native Branch SDK later (e.g., after obtaining user consent).

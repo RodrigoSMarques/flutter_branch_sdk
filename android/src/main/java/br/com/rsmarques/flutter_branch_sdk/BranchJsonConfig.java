@@ -19,6 +19,7 @@ public class BranchJsonConfig {
     public final Boolean enableLogging;
     public final String logLevel;
     public final Boolean useTestInstance;
+    public final Integer installReferrerTimeout;
 
     public final String apiUrlAndroid;
     public final String apiUrlIOS;
@@ -33,6 +34,8 @@ public class BranchJsonConfig {
         this.enableLogging = jsonObject.has("enableLogging") && jsonObject.optBoolean("enableLogging");
         this.logLevel = jsonObject.optString("logLevel", "VERBOSE");
         this.useTestInstance = jsonObject.has("useTestInstance") && jsonObject.optBoolean("useTestInstance");
+        int timeout = jsonObject.optInt("installReferrerTimeout", -1);
+        this.installReferrerTimeout = timeout >= 0 ? timeout : null;
     }
 
     public static BranchJsonConfig loadFromFile(Context context, FlutterPlugin.FlutterPluginBinding binding) {

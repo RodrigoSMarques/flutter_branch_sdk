@@ -11,6 +11,7 @@ struct BranchJsonConfigFlutter: Codable {
     let enableLogging: Bool?
     let logLevel: String?
     let useTestInstance: Bool?
+    let installReferrerTimeout: Int?
 
     static func loadFromFile(registrar: FlutterPluginRegistrar) -> BranchJsonConfigFlutter? {
         let assetKey = registrar.lookupKey(forAsset: "assets/branch-config.json")

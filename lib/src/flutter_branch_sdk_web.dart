@@ -481,6 +481,14 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
     debugPrint('setPreinstallPartner() Not supported by Branch JS SDK');
   }
 
+  /// Provides a setting to cancel the external Install Referrer string fetch.
+  /// Default is 0 milliseconds, no timeout.
+  /// For Android only - iOS ignores this call.
+  @override
+  void setInstallReferrerTimeout(int timeoutMs) {
+    debugPrint('setInstallReferrerTimeout() Not supported by Branch JS SDK');
+  }
+
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   @override

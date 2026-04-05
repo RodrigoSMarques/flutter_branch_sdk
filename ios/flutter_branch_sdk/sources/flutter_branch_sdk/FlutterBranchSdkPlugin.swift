@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.2.0";
+let PLUGIN_VERSION = "9.3.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -325,6 +325,11 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
                 self.enableLoggingFromJson = true
                 LogUtils.debug(message: "Set enableLogging and logLevel from branch-config.json: \(logLevelStr)")
             }
+
+            // Set installReferrerTimeout if configured
+            if let installReferrerTimeout = branchJsonConfig.installReferrerTimeout, installReferrerTimeout >= 0 {
+                LogUtils.debug(message: "setInstallReferrerTimeout called with value \(installReferrerTimeout)ms, but not directly applicable for iOS SDK version.")
+            }
         } else {
             LogUtils.debug(message: "No branch-config.json found, using default configuration")
         }
@@ -478,6 +483,9 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             break
         case "setRetryInterval":
             setRetryInterval(call: call)
+            break
+        case "setInstallReferrerTimeout":
+            setInstallReferrerTimeout(call: call)
             break
         case "setTimeout":
             setTimeout(call: call)
@@ -935,6 +943,10 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         DispatchQueue.main.async {
             Branch.getInstance().setRetryInterval(TimeInterval(retryInterval))
         }
+    }
+    
+    private func setInstallReferrerTimeout(call: FlutterMethodCall) {
+        LogUtils.debug(message: "setInstallReferrerTimeout called, but not applicable for iOS SDK version.")
     }
     
     private func getQRCode(call: FlutterMethodCall, result: @escaping FlutterResult) {

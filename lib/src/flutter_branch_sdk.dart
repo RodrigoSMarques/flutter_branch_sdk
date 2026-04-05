@@ -231,6 +231,13 @@ class FlutterBranchSdk {
     FlutterBranchSdkPlatform.instance.setPreinstallPartner(value);
   }
 
+  /// Provides a setting to cancel the external Install Referrer string fetch.
+  /// Default is 0 milliseconds, no timeout.
+  /// For Android only - iOS ignores this call.
+  static void setInstallReferrerTimeout(int timeoutMs) {
+    FlutterBranchSdkPlatform.instance.setInstallReferrerTimeout(timeoutMs);
+  }
+
   ///Add a Partner Parameter for Snap.
   ///Once set, this parameter is attached to installs, opens and events until cleared or the app restarts.
   static void addSnapPartnerParameter({required String key, required String value}) {

@@ -13,7 +13,7 @@ Supports Android, iOS and Web.
 
 | Platform | Version | History 
 | --- |---------| ---
-| Android | 5.20.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| Android | 5.21.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 | iOS | 3.14.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 | Web | 2.86.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
@@ -282,6 +282,7 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 *   **`useTestInstance`**: (Optional, default: `false`) Set to `true` to use the test key for debugging and testing. Set to `false` for production releases. This allows you to easily switch between environments.
 *   **`enableLogging`**: (Optional, default: `false`) Set to `true` to see detailed logs from the native Branch SDK in your device's log output (Logcat for Android, Console for iOS).
 *   **`logLevel`**: (Optional, default: `"VERBOSE"`) Controls the verbosity of logs. Valid values: `"VERBOSE"`, `"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"NONE"`. Only applies when `enableLogging` is `true`. This setting takes priority over the `logLevel` parameter in `init()`.
+*   **`installReferrerTimeout`**: (Optional, default: no timeout) Sets the timeout in milliseconds for retrieving the Install Referrer string from Google Play Services. Only applicable on Android - iOS ignores this setting. Must be an integer value >= 0.
 
 > **Note:** Branch SDK logs are only available through the `FlutterBranchSdk.platformLogs` stream. They will not appear in standard console output unless you explicitly listen to this stream. See [Listening to Platform Logs](#listening-to-platform-logs) for implementation details.
 
@@ -298,7 +299,8 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
   "testKey": "key_test_xxxx",
   "useTestInstance": true,
   "enableLogging": true,
-  "logLevel": "VERBOSE"
+  "logLevel": "VERBOSE",
+  "installReferrerTimeout": 5000
 }
 ```
 
@@ -308,7 +310,8 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
   "testKey": "key_test_xxxx",
   "useTestInstance": true,
   "enableLogging": true,
-  "logLevel": "DEBUG"
+  "logLevel": "DEBUG",
+  "installReferrerTimeout": 5000
 }
 ```
 
@@ -318,7 +321,8 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
   "liveKey": "key_live_xxxx",
   "useTestInstance": false,
   "enableLogging": true,
-  "logLevel": "ERROR"
+  "logLevel": "ERROR",
+  "installReferrerTimeout": 3000
 }
 ```
 
@@ -327,7 +331,8 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 {
   "liveKey": "key_live_xxxx",
   "useTestInstance": false,
-  "enableLogging": false
+  "enableLogging": false,
+  "installReferrerTimeout": 3000
 }
 ```
 
@@ -786,6 +791,32 @@ Add key value pairs to all requests
 ```dart
 FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
 ```
+
+### Set Install Referrer Timeout
+Provides a setting to cancel the external Install Referrer string fetch. This is useful to optimize performance on Android by limiting the time the SDK waits for the Install Referrer. Only applicable on Android - iOS ignores this setting.
+
+**Via Dart:**
+```dart
+// Set timeout to 5 seconds (5000 milliseconds)
+FlutterBranchSdk.setInstallReferrerTimeout(5000);
+```
+
+**Via branch-config.json (recommended - applied on app startup):**
+```json
+{
+  "installReferrerTimeout": 5000
+}
+```
+
+Both approaches work, but configuring via `branch-config.json` is recommended as it applies the setting during SDK initialization. If you set it via Dart code, it will override the JSON configuration applied previously.
+
+**Parameters:**
+- `timeoutMs` (Integer): Timeout in milliseconds. Must be >= 0. Default is 0 (no timeout).
+
+**Platform Notes:**
+- **Android**: Sets the timeout for retrieving the Install Referrer string from Google Play Services.
+- **iOS**: Not supported.
+- **Web**: Not supported.
 
 ### Listen to Platform Logs
 The `platformLogs` stream provides real-time log messages emitted by the native Branch SDK (iOS/Android) for debugging and monitoring purposes. This is especially useful during development to understand SDK behavior without accessing native console logs.
