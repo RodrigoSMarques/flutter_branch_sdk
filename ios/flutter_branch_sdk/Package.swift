@@ -6,13 +6,13 @@ import PackageDescription
 let package = Package(
     name: "flutter_branch_sdk",
     platforms: [
-        .iOS("12.0")
+        .iOS("13.0")
     ],
     products: [
         .library(name: "flutter-branch-sdk", targets: ["flutter_branch_sdk"])
     ],
     dependencies: [
-     .package(url: "https://github.com/BranchMetrics/ios-branch-sdk-spm", "3.13.0"..."3.14.0")
+      .package(url: "https://github.com/BranchMetrics/ios-branch-sdk-spm", .upToNextMinor(from: "3.14.0"))
     ],
     targets: [
         .target(

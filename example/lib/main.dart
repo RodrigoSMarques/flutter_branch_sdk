@@ -15,26 +15,45 @@ void main() async {
     return true;
   };
 
-  //FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
-  //FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
-  //FlutterBranchSdk.clearPartnerParameters();
   /*
-  FlutterBranchSdk.addFacebookPartnerParameter(
-      key: 'em',
-      value:
-          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  FlutterBranchSdk.addSnapPartnerParameter(
-      key: 'hashed_email_address',
-      value:
-          '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
-  FlutterBranchSdk.setRequestMetadata('key1', 'value1');
-  FlqutterBranchSdk.setRequestMetadata('key2', 'value2');
+    FlutterBranchSdk.setPreinstallCampaign('My Campaign Name');
+    FlutterBranchSdk.setPreinstallPartner('Branch \$3p Parameter Value');
+
+    FlutterBranchSdk.addFacebookPartnerParameter(
+        key: 'em',
+        value:
+            '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
+    FlutterBranchSdk.addSnapPartnerParameter(
+        key: 'hashed_email_address',
+        value:
+            '11234e56af071e9c79927651156bd7a10bca8ac34672aba121056e2698ee7088');
   */
+
+  FlutterBranchSdk.setRequestMetadata('key1', 'value1');
+  FlutterBranchSdk.setRequestMetadata('key2', 'value2');
 
   FlutterBranchSdk.setAnonID('1234556');
   FlutterBranchSdk.setSDKWaitTimeForThirdPartyAPIs(2.5);
 
-  await FlutterBranchSdk.init(enableLogging: true, branchAttributionLevel: BranchAttributionLevel.FULL);
+  // Set Install Referrer Timeout (Android only - iOS ignores this)
+  //FlutterBranchSdk.setInstallReferrerTimeout(10000); // 10 seconds timeout
+
+  //Simulate delay to started the app
+  //await Future.delayed(const Duration(seconds: 10));
+
+  // Initialize Branch SDK with log level control
+  await FlutterBranchSdk.init(
+    logLevel: BranchLogLevel.VERBOSE, // Set desired log level
+    enableLogging: true,
+    branchAttributionLevel: BranchAttributionLevel.FULL,
+  );
+
+  FlutterBranchSdk.platformLogs.listen((logMessage) {
+    debugPrint('${DateTime.now()} - 📦 BRANCH LOG (Platform): $logMessage');
+  }, onError: (error) {
+    debugPrint('🚨 Error in the platform log stream.: $error');
+  });
+
   FlutterBranchSdk.setConsumerProtectionAttributionLevel(BranchAttributionLevel.FULL);
 
   /*

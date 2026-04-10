@@ -1,22 +1,15 @@
-//
-//  FlutterBranchIoSdkFunctions.swift
-//  
-//
-//  Created by Rodrigo Marques on 04/11/19.
-//
-
 import Foundation
 import BranchSDK
+import UIKit
 
 //---------------------------------------------------------------------------------------------
 // Object Conversion Functions
 // --------------------------------------------------------------------------------------------
 func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
-    guard let canonicalIdentifier = dict["canonicalIdentifier"] as? String? else {
+    guard let canonicalIdentifier = dict["canonicalIdentifier"] as? String else {
         return nil
     }
-    let buo = BranchUniversalObject.init()
-    buo.canonicalIdentifier  = canonicalIdentifier
+    let buo = BranchUniversalObject(canonicalIdentifier: canonicalIdentifier)
     
     if let canonicalUrl = dict["canonicalUrl"] as? String {
         buo.canonicalUrl = canonicalUrl
@@ -44,7 +37,7 @@ func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
     }
     if let contentMetadata = dict["contentMetadata"] as? [String: Any] {
         if let content_schema = contentMetadata["content_schema"] as? String {
-            buo.contentMetadata.contentSchema = BranchContentSchema.init(rawValue: content_schema)
+            buo.contentMetadata.contentSchema = BranchContentSchema(rawValue: content_schema)
         }
         if let quantity = contentMetadata["quantity"] as? Double {
             buo.contentMetadata.quantity = quantity
@@ -53,7 +46,7 @@ func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
             buo.contentMetadata.price = NSDecimalNumber(floatLiteral: price)
         }
         if let currency = contentMetadata["currency"] as? String {
-            buo.contentMetadata.currency = BNCCurrency.init(rawValue: currency)
+            buo.contentMetadata.currency = BNCCurrency(rawValue: currency)
         }
         if let sku = contentMetadata["sku"] as? String {
             buo.contentMetadata.sku = sku
@@ -65,13 +58,13 @@ func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
             buo.contentMetadata.productBrand = product_brand
         }
         if let product_category = contentMetadata["product_category"] as? String {
-            buo.contentMetadata.productCategory = BNCProductCategory.init(rawValue: product_category)
+            buo.contentMetadata.productCategory = BNCProductCategory(rawValue: product_category)
         }
         if let product_variant = contentMetadata["product_variant"] as? String {
             buo.contentMetadata.productVariant = product_variant
         }
         if let condition = contentMetadata["condition"] as? String {
-            buo.contentMetadata.condition = BranchCondition.init(rawValue: condition)
+            buo.contentMetadata.condition = BranchCondition(rawValue: condition)
         }
         if let rating_average = contentMetadata["rating_average"] as? Double {
             buo.contentMetadata.ratingAverage = rating_average
@@ -106,12 +99,12 @@ func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
         if let longitude = contentMetadata["longitude"] as? Double {
             buo.contentMetadata.longitude = longitude
         }
-        if let image_captions = contentMetadata["image_captions"] as? NSMutableArray {
-            buo.contentMetadata.imageCaptions = image_captions
+        if let image_captions = contentMetadata["image_captions"] as? [String] {
+            buo.contentMetadata.imageCaptions.addObjects(from: image_captions)
         }
         if let customMetadata = contentMetadata["customMetadata"] as? [String: Any] {
-            for metaData in customMetadata {
-                buo.contentMetadata.customMetadata[metaData.key] = metaData.value
+            for (key, value) in customMetadata {
+                buo.contentMetadata.customMetadata[key] = value
             }
         }
     }
@@ -119,7 +112,7 @@ func convertToBUO(dict: [String: Any?]) -> BranchUniversalObject? {
 }
 
 func convertToLp(dict: [String: Any?]) -> BranchLinkProperties? {
-    let lp: BranchLinkProperties = BranchLinkProperties()
+    let lp = BranchLinkProperties()
     if let lpChannel = dict["channel"] as? String {
         lp.channel = lpChannel
     }
@@ -142,28 +135,28 @@ func convertToLp(dict: [String: Any?]) -> BranchLinkProperties? {
         lp.tags = lptags
     }
     if let lpControlParams = dict["controlParams"] as? [String: Any] {
-        for param in lpControlParams {
-            lp.addControlParam(param.key, withValue: param.value as? String)
+        for (key, value) in lpControlParams {
+            lp.addControlParam(key, withValue: value as? String)
         }
     }
     return lp
 }
 
 func convertToEvent(dict: [String: Any?]) -> BranchEvent? {
-    var event : BranchEvent
-    
-    let eventName = dict["eventName"] as! String
-    let isStandardEvent = dict["isStandardEvent"] as! Bool
-    if (isStandardEvent) {
-        event = BranchEvent.init(name: eventName)
-    } else {
-        event = BranchEvent.customEvent(withName: eventName)
+    guard let eventName = dict["eventName"] as? String,
+          let isStandardEvent = dict["isStandardEvent"] as? Bool else {
+        return nil
     }
+    
+    let event: BranchEvent = isStandardEvent ?
+        BranchEvent.standardEvent(BranchStandardEvent(rawValue: eventName)) :
+        BranchEvent.customEvent(withName: eventName)
+    
     if let transactionID = dict["transactionID"] as? String {
         event.transactionID = transactionID
     }
     if let currency = dict["currency"] as? String {
-        event.currency = BNCCurrency.init(rawValue: currency)
+        event.currency = BNCCurrency(rawValue: currency)
     }
     if let revenue = dict["revenue"] as? Double {
         event.revenue = NSDecimalNumber(floatLiteral: revenue)
@@ -190,8 +183,10 @@ func convertToEvent(dict: [String: Any?]) -> BranchEvent? {
         event.adType = convertToAdType(adType: adType)
     }
     if let dictCustomData = dict["customData"] as? [String: Any] {
-        for customData in dictCustomData {
-            event.customData[customData.key] = (customData.value  as! String)
+        for (key, value) in dictCustomData {
+            if let stringValue = value as? String {
+                event.customData[key] = stringValue
+            }
         }
     }
     if let alias = dict["alias"] as? String {
@@ -202,40 +197,31 @@ func convertToEvent(dict: [String: Any?]) -> BranchEvent? {
 
 func convertToAdType(adType: String) -> BranchEventAdType {
     switch adType {
-    case "BANNER":
-        return BranchEventAdType.banner
-    case "INTERSTITIAL":
-        return BranchEventAdType.interstitial
-    case "REWARDED_VIDEO":
-        return BranchEventAdType.rewardedVideo
-    case "NATIVE":
-        return BranchEventAdType.native
-    default:
-        return BranchEventAdType.none
+    case "BANNER": return .banner
+    case "INTERSTITIAL": return .interstitial
+    case "REWARDED_VIDEO": return .rewardedVideo
+    case "NATIVE": return .native
+    default: return .none
     }
 }
 
 func convertToQRCode(dict: [String: Any?]) -> BranchQRCode {
-    let qrCode : BranchQRCode = BranchQRCode()
+    let qrCode = BranchQRCode()
     
     if let width = dict["width"] as? Int {
-        qrCode.width = NSNumber(value: width)
+        qrCode.width = width as NSNumber
     }
     if let margin = dict["margin"] as? Int {
-        qrCode.margin = NSNumber(value: margin)
+        qrCode.margin = margin as NSNumber
     }
     if let codeColor = dict["codeColor"] as? String {
-        qrCode.codeColor = UIColor.init(hexString: codeColor)
+        qrCode.codeColor = UIColor(hexString: codeColor)
     }
     if let backgroundColor = dict["backgroundColor"] as? String {
-        qrCode.backgroundColor = UIColor.init(hexString: backgroundColor)
+        qrCode.backgroundColor = UIColor(hexString: backgroundColor)
     }
     if let imageFormat = dict["imageFormat"] as? String {
-        if (imageFormat == "JPEG") {
-            qrCode.imageFormat = BranchQRCodeImageFormat.JPEG
-        } else {
-            qrCode.imageFormat = BranchQRCodeImageFormat.PNG
-        }
+        qrCode.imageFormat = (imageFormat == "JPEG") ? .JPEG : .PNG
     }
     if let centerLogoUrl = dict["centerLogoUrl"] as? String {
         qrCode.centerLogo = centerLogoUrl
@@ -244,7 +230,7 @@ func convertToQRCode(dict: [String: Any?]) -> BranchQRCode {
 }
 
 //---------------------------------------------------------------------------------------------
-// Extension
+// Extensions
 // --------------------------------------------------------------------------------------------
 
 extension Date {
@@ -264,6 +250,7 @@ extension Bundle {
         }
         return value
     }
+    
     public var icon: UIImage? {
         if let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
            let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
@@ -277,13 +264,13 @@ extension Bundle {
 
 extension UIColor {
     convenience init(hexString: String, alpha: CGFloat = 1.0) {
-        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let hexString: String = hexString.trimmingCharacters(in: .whitespacesAndNewlines)
         let scanner = Scanner(string: hexString)
-        if (hexString.hasPrefix("#")) {
+        if hexString.hasPrefix("#") {
             scanner.scanLocation = 1
         }
-        var color: UInt32 = 0
-        scanner.scanHexInt32(&color)
+        var color: UInt64 = 0
+        scanner.scanHexInt64(&color)
         let mask = 0x000000FF
         let r = Int(color >> 16) & mask
         let g = Int(color >> 8) & mask
@@ -293,11 +280,12 @@ extension UIColor {
         let blue  = CGFloat(b) / 255.0
         self.init(red:red, green:green, blue:blue, alpha:alpha)
     }
+    
     func toHexString() -> String {
-        var r:CGFloat = 0
-        var g:CGFloat = 0
-        var b:CGFloat = 0
-        var a:CGFloat = 0
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
         getRed(&r, green: &g, blue: &b, alpha: &a)
         let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
         return String(format:"#%06x", rgb)
@@ -306,17 +294,15 @@ extension UIColor {
 
 extension UIImage {
     public static func loadFrom(url: URL, completion: @escaping (_ image: UIImage?) -> ()) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url) {
-                DispatchQueue.main.async {
-                    completion(UIImage(data: data))
-                }
-            } else {
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            DispatchQueue.main.async {
+                completion(UIImage(data: data))
             }
         }
+        task.resume()
     }
-    
 }

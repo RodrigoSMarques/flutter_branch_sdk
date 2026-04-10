@@ -5,6 +5,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'flutter_branch_sdk_method_channel.dart';
 import 'objects/app_tracking_transparency.dart';
 import 'objects/branch_attribution_level.dart';
+import 'objects/branch_log_level.dart';
 import 'objects/branch_universal_object.dart';
 
 abstract class FlutterBranchSdkPlatform extends PlatformInterface {
@@ -35,19 +36,25 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// **Parameters:**
   ///
   /// - [enableLogging]: Whether to enable detailed logging. Defaults to `false`.
+  /// - [logLevel]: The log level for Branch SDK logs. Defaults to `BranchLogLevel.VERBOSE`.
+  ///   - `BranchLogLevel.VERBOSE`: All logs including verbose messages (most detailed)
+  ///   - `BranchLogLevel.DEBUG`: Debug level logs for development
+  ///   - `BranchLogLevel.INFO`: Informational messages
+  ///   - `BranchLogLevel.WARNING`: Warning messages only
+  ///   - `BranchLogLevel.ERROR`: Error messages only
+  ///   - `BranchLogLevel.NONE`: No logging
   /// - [branchAttributionLevel]: The level of attribution data to collect.
   ///   - `BranchAttributionLevel.FULL`: Full Attribution (Default)
   ///   - `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
   ///   - `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   ///   - `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
   ///
-  /// **Note:** The `disableTracking` parameter is deprecated and should no longer be used.
-  /// Please use `branchAttributionLevel` to control tracking behavior.
-  ///
-  Future<void> init(
-      {bool enableLogging = false,
-      @Deprecated('use branchAttributionLevel') bool disableTracking = false,
-      BranchAttributionLevel? branchAttributionLevel}) async {
+
+  Future<void> init({
+    bool enableLogging = false,
+    BranchLogLevel logLevel = BranchLogLevel.VERBOSE,
+    BranchAttributionLevel? branchAttributionLevel,
+  }) async {
     throw UnimplementedError('init has not been implemented');
   }
 
@@ -76,13 +83,6 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
     throw UnimplementedError('getFirstReferringParams has not been implemented');
   }
 
-  ///Method to change the Tracking state. If disabled SDK will not track any user data or state.
-  ///SDK will not send any network calls except for deep linking when tracking is disabled
-  @Deprecated('Use [setConsumerProtectionAttributionLevel]')
-  void disableTracking(bool value) async {
-    throw UnimplementedError('disableTracking has not been implemented');
-  }
-
   ///Listen click em Branch Deeplinks
   Stream<Map<dynamic, dynamic>> listSession() {
     throw UnimplementedError('initSession has not been implemented');
@@ -95,18 +95,21 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Creates a short url for the BUO
-  Future<BranchResponse> getShortUrl(
-      {required BranchUniversalObject buo, required BranchLinkProperties linkProperties}) async {
+  Future<BranchResponse> getShortUrl({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+  }) async {
     throw UnimplementedError('getShortUrl has not been implemented');
   }
 
   ///Showing a Share Sheet
-  Future<BranchResponse> showShareSheet(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required String messageText,
-      String androidMessageTitle = '',
-      String androidSharingTitle = ''}) async {
+  Future<BranchResponse> showShareSheet({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required String messageText,
+    String androidMessageTitle = '',
+    String androidSharingTitle = '',
+  }) async {
     throw UnimplementedError('showShareSheet has not been implemented');
   }
 
@@ -198,32 +201,35 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as Uint8List.
-  Future<BranchResponse> getQRCodeAsData(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) async {
+  Future<BranchResponse> getQRCodeAsData({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCodeSettings,
+  }) async {
     throw UnimplementedError('getQRCodeAsData has not been implemented');
   }
 
   ///Creates a Branch QR Code image. Returns the QR code as a Image.
-  Future<BranchResponse> getQRCodeAsImage(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required BranchQrCode qrCodeSettings}) async {
+  Future<BranchResponse> getQRCodeAsImage({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required BranchQrCode qrCodeSettings,
+  }) async {
     throw UnimplementedError('getQRCodeAsImage has not been implemented');
   }
 
   ///Showing a Share Sheet with LPLinkMetadata in iOS
-  void shareWithLPLinkMetadata(
-      {required BranchUniversalObject buo,
-      required BranchLinkProperties linkProperties,
-      required Uint8List icon,
-      required String title}) {
+  Future<void> shareWithLPLinkMetadata({
+    required BranchUniversalObject buo,
+    required BranchLinkProperties linkProperties,
+    required Uint8List icon,
+    required String title,
+  }) async {
     throw UnimplementedError('shareWithLPLinkMetadata has not been implemented');
   }
 
   ///Have Branch end the current deep link session and start a new session with the provided URL.
-  void handleDeepLink(String url) async {
+  Future<void> handleDeepLink(String url) async {
     throw UnimplementedError('handleDeepLink has not been implemented');
   }
 
@@ -235,6 +241,13 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// Add the pre-install campaign analytics
   void setPreinstallPartner(String value) {
     throw UnimplementedError('setPreinstallPartner has not been implemented');
+  }
+
+  /// Provides a setting to cancel the external Install Referrer string fetch.
+  /// Default is 0 milliseconds, no timeout.
+  /// [timeoutMs] The timeout in milliseconds. Must be >= 0.
+  void setInstallReferrerTimeout(int timeoutMs) {
+    throw UnimplementedError('setInstallReferrerTimeout has not been implemented');
   }
 
   /// Add a Partner Parameter for Facebook.
@@ -259,8 +272,11 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [eeaRegion] `true` If European regulations, including the DMA, apply to this user and conversion.
   /// [adPersonalizationConsent] `true` If End user has granted/denied ads personalization consent.
   /// [adUserDataUsageConsent] `true If User has granted/denied consent for 3P transmission of user level data for ads.
-  void setDMAParamsForEEA(
-      {required bool eeaRegion, required bool adPersonalizationConsent, required bool adUserDataUsageConsent}) {
+  void setDMAParamsForEEA({
+    required bool eeaRegion,
+    required bool adPersonalizationConsent,
+    required bool adUserDataUsageConsent,
+  }) {
     throw UnimplementedError('setDMAParamsForEEA has not been implemented');
   }
 
@@ -280,5 +296,12 @@ abstract class FlutterBranchSdkPlatform extends PlatformInterface {
   /// [waitTime] Number of seconds before third party API calls are considered timed out. Default is 0.5 seconds (500ms).
   void setSDKWaitTimeForThirdPartyAPIs(double waitTime) {
     throw UnimplementedError('setSDKWaitTimeForThirdPartyAPIs has not been implemented');
+  }
+
+  /// A broadcast [Stream] that provides log messages emitted by the host platform (iOS/Android).
+  /// It subscribes to the [EventChannel] and transforms raw platform data into
+  /// [String] format for unified visibility in the Flutter debug console.  @override
+  Stream<String> get platformLogs {
+    throw UnimplementedError('platformLogs has not been implemented');
   }
 }

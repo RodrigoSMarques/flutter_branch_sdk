@@ -29,7 +29,7 @@ enum BranchContentSchema {
 
 BranchContentSchema getValueContentSchema(String name) {
   BranchContentSchema? schema;
-  for (BranchContentSchema contentSchema in BranchContentSchema.values) {
+  for (final BranchContentSchema contentSchema in BranchContentSchema.values) {
     if (contentSchema.toString() == name) {
       schema = contentSchema;
       break;

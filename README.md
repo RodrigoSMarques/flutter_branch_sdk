@@ -4,7 +4,7 @@
 
 [![Plugin code analysis](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml)
 
-This is a Flutter plugin that implemented [Branch SDK](https://branch.io).
+This is a Flutter plugin that implements [Branch SDK](https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
 
@@ -13,8 +13,8 @@ Supports Android, iOS and Web.
 
 | Platform | Version | History 
 | --- |---------| ---
-| Android | 5.20.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-| iOS | 3.13.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+| Android | 5.21.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| iOS | 3.14.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 | Web | 2.86.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
 
@@ -46,6 +46,9 @@ For details see:
 
 * [iOS: only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/ios-basic-integration#1-configure-branch-dashboard)
 * [Android - only section: **Configure Branch Dashboard**](https://help.branch.io/developers-hub/docs/android-basic-integration#1-configure-branch-dashboard)
+
+## Installation
+To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://pub.dev/packages/flutter_branch_sdk/install).
 
 ## Configure Platform Project
 ### Disable default Flutter Deep Linking (Android / iOS)
@@ -90,16 +93,19 @@ Follow only the steps:
 * [Configure associated domains](https://help.branch.io/developers-hub/docs/ios-basic-integration#3-configure-associated-domains)
 * [Configure Info.plist](https://help.branch.io/developers-hub/docs/ios-basic-integration#4-configure-infoplist)
 
-**Note**: 
+**Note**:
 
-1. You can  configure your Branch keys (`live`, `test`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
+1. You can configure your Branch keys (`live`, `test`) and test mode (`useTestInstance`) centrally in the `assets/branch-config.json` file. Please see the [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
+
 2. The native Branch iOS SDK dependency is included automatically by this plugin. No need to add it manually in your project.
+
+3. **iOS 13+ UISceneDelegate Support**: This plugin supports both traditional `UIApplicationDelegate` and modern `UISceneDelegate` lifecycle. The plugin will automatically use the appropriate lifecycle based on your app configuration. No additional setup is required — the plugin maintains full backward compatibility with apps using `UIApplicationDelegate` while supporting apps that have migrated to `UISceneDelegate`.
 
 
 #### NativeLink™ Deferred Deep Linking
 Use iOS pasteboard to enable deferred deep linking via Branch NativeLink™, which enables 100% matching on iOS through Installs.
 
-Follow the steps on the [page](https://help.branch.io/developers-hub/docs/ios-advanced-features#nativelink-deferred-deep-linking), session _**NativeLink™ Deferred Deep Linking**_,
+Follow the steps on the [page](https://help.branch.io/developers-hub/docs/ios-advanced-features#nativelink-deferred-deep-linking), section _**NativeLink™ Deferred Deep Linking**_,
 
 **Note**: Code implementation in Swift is not necessary. The plugin already implements the code, requiring only configuration on the Dashboard.
 
@@ -114,8 +120,39 @@ If you want to disable NativeLink™ Deferred Deep Linking, follow the instructi
 	<true/>
 ```
 
+#### (Optional) Defer SDK Initialization on iOS
+
+By default, the Branch iOS SDK is initialized automatically by the plugin before `FlutterBranchSdk.init()` is called.
+
+If you need to delay initialization — for example, to request tracking consent (ATT/GDPR) or perform other pre-initialization setup — you can configure the plugin to wait until `FlutterBranchSdk.init()` is explicitly called.
+
+To enable this behavior:
+
+1. Create a file named `branch.json` in **ios/Runner/** of your Flutter project.
+
+  Important: creating `ios/Runner/branch.json` in your filesystem is not always enough. You must add the file to your Xcode project and include it in the Runner app bundle so the native SDK can read it at runtime. In Xcode, either enable the Runner target under the file's **Target Membership** or add the file to **Build Phases → Copy Bundle Resources** for the Runner target (the example project already includes `branch.json` in Runner resources).
+   
+  Steps (Xcode):
+
+  - In Xcode choose `File → Add Files to "Runner"…`, select `ios/Runner/branch.json`, and ensure the `Runner` target is checked in the dialog.
+  - Or select the `branch.json` file in the Project Navigator and enable `Target Membership → Runner` in the File Inspector.
+  - Verify the file appears under `Runner` target → `Build Phases` → `Copy Bundle Resources` so it will be bundled at runtime.
+2. Add the following content:
+
+```json
+{
+    "deferInitForPluginRuntime": true
+}
+```
+
+With `deferInitForPluginRuntime` set to `true`, the Branch iOS SDK will **not** be initialized until `await FlutterBranchSdk.init()` is called in your Dart code.
+
+> **Note:** This is an optional configuration. If the file does not exist or the key is absent, the default behavior (automatic initialization on app start) is preserved.
+
+> **Note:** `ios/Runner/branch.json` is an iOS-only file that controls SDK initialization timing. It is **different** from `assets/branch-config.json`, which is used to configure Branch keys and settings for Android and iOS. See [**(Optional) Configuration via `branch-config.json` file**](#optional-configuration-via-branch-configjson).
+
 ### Web Integration
-You need add Branch Javascript in your `web\index.html` at the top of your `<body>` tag, to be able to use this package.
+You need add Branch Javascript in your `web/index.html` at the top of your `<body>` tag, to be able to use this package.
 
 ```javascript  
   <script>
@@ -131,7 +168,7 @@ You need add Branch Javascript in your `web\index.html` at the top of your `<bod
   </script>
   
 ```
-Change `key_live_or_test_YOUR_KEY_GOES_HERE ` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
+Change `key_live_or_test_YOUR_KEY_GOES_HERE` to match your [Branch Dashboard](https://dashboard.branch.io/account-settings/app)
 
 If `branch.init()` fails, all subsequent Branch methods will fail.
 
@@ -198,7 +235,7 @@ One way to configure keys and other settings is through a JSON configuration fil
 
 This method allows you to easily manage your test and active keys without modifying native code.
 
-The plugin will automatically read this file on startup (only Android/iOs).
+The plugin will automatically read this file on startup (only Android/iOS).
 
 If you have configured `branch-config.json`, you do not need to manually add your Branch keys to `AndroidManifest.xml` or `Info.plist`.
 
@@ -224,29 +261,80 @@ Copy and paste the following structure into your `assets/branch-config.json` fil
 
 ```json
 {
-  "apiUrl": "https://api.myapi.com/"
+  "apiUrlAndroid": "https://api.myapp.com",
+  "apiUrlIOS": "https://api.myapp.com",
   "branchKey": "key_live_test_xxxx_yyyy",
   "liveKey": "key_live_xxxx",
   "testKey": "key_test_yyyy",
   "enableLogging": true,
-  "useTestInstance": true,
+  "logLevel": "DEBUG",
+  "useTestInstance": true
 }
 ```
 
 #### Key Descriptions:
 
-*   **`apiUrl`**: (Optional) Sets a custom base URL for all calls to the Branch API.
-Requires HTTPS.
+*   **`apiUrlAndroid`**: (Optional) Sets a custom base URL for all calls to the Branch API for Android apps. Requires HTTPS.
+*   **`apiUrlIOS`**: (Optional) Sets a custom base URL for all calls to the Branch API for iOS apps. Requires HTTPS.
 *   **`branchKey`**: (Optional) The Branch key that the SDK will use for initialization. It's recommended to set this to your `liveKey` or `testKey` depending on your current build environment.
 *   **`liveKey`**: (Optional) Your Branch live key from the Branch Dashboard.
 *   **`testKey`**: (Optional) Your Branch test key from the Branch Dashboard.
 *   **`useTestInstance`**: (Optional, default: `false`) Set to `true` to use the test key for debugging and testing. Set to `false` for production releases. This allows you to easily switch between environments.
 *   **`enableLogging`**: (Optional, default: `false`) Set to `true` to see detailed logs from the native Branch SDK in your device's log output (Logcat for Android, Console for iOS).
+*   **`logLevel`**: (Optional, default: `"VERBOSE"`) Controls the verbosity of logs. Valid values: `"VERBOSE"`, `"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"NONE"`. Only applies when `enableLogging` is `true`. This setting takes priority over the `logLevel` parameter in `init()`.
+*   **`installReferrerTimeout`**: (Optional, default: `0` (no timeout)) Sets the timeout in milliseconds for retrieving the Install Referrer string from Google Play Services. Only applicable on Android - iOS and Web ignore this setting. Must be an integer value >= 0.
+
+> **Note:** Branch SDK logs are only available through the `FlutterBranchSdk.platformLogs` stream. They will not appear in standard console output unless you explicitly listen to this stream. See [Listening to Platform Logs](#listening-to-platform-logs) for implementation details.
 
 **Note:**
 
   - if `branchKey` **is present**, it will override the `useTestInstance`/`testKey`/`liveKey` config
   - if `branchKey` **is missing**, `testKey`/`liveKey`, must be present.
+
+**Configuration Examples by Environment:**
+
+**Development (verbose logs):**
+```json
+{
+  "testKey": "key_test_xxxx",
+  "useTestInstance": true,
+  "enableLogging": true,
+  "logLevel": "VERBOSE",
+  "installReferrerTimeout": 5000
+}
+```
+
+**Staging (debug logs):**
+```json
+{
+  "testKey": "key_test_xxxx",
+  "useTestInstance": true,
+  "enableLogging": true,
+  "logLevel": "DEBUG",
+  "installReferrerTimeout": 5000
+}
+```
+
+**Production (errors only):**
+```json
+{
+  "liveKey": "key_live_xxxx",
+  "useTestInstance": false,
+  "enableLogging": true,
+  "logLevel": "ERROR",
+  "installReferrerTimeout": 3000
+}
+```
+
+**Production (no logs):**
+```json
+{
+  "liveKey": "key_live_xxxx",
+  "useTestInstance": false,
+  "enableLogging": false,
+  "installReferrerTimeout": 3000
+}
+```
 
 
 ### Step 3: Declare the Asset in `pubspec.yaml`
@@ -261,9 +349,6 @@ flutter:
 
 Done! plugin will now automatically configure itself using the values ​​in this file when your app starts, overriding the values ​​set in `AndroidManifest.xml` and `Info.plist`.
 
-## Installation
-To use the plugin, add `flutter_branch_sdk` as a [dependency in your pubspec.yaml file](https://pub.dev/packages/flutter_branch_sdk/install).
-
 ## How to use
 
 ### Initializing
@@ -273,24 +358,53 @@ To initialize Branch:
 ```dart
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-await FlutterBranchSdk.init(enableLogging: false, disableTracking: false);
+await FlutterBranchSdk.init(enableLogging: false);
 ```
 
 The optional parameters are:
 
 - *enableLogging* : Sets `true` turn on debug logging. Default value: false
+- *logLevel* : Controls the verbosity of logs. Default value: `BranchLogLevel.VERBOSE`
+	- `BranchLogLevel.VERBOSE`: All logs including verbose messages (most detailed)
+	- `BranchLogLevel.DEBUG`: Debug level logs for development
+	- `BranchLogLevel.INFO`: Informational messages
+	- `BranchLogLevel.WARNING`: Warning messages only
+	- `BranchLogLevel.ERROR`: Error messages only
+	- `BranchLogLevel.NONE`: No logging
 - *disableTracking*: Sets `true` to disable tracking in Branch SDK for GDPR compliant on start. Default value: false 
 - *branchAttributionLevel* : The level of attribution data to collect.
 	- `BranchAttributionLevel.FULL`: Full Attribution (Default)
-  	- `BranchAttributionLevel.REDUCE`: Reduced Attribution (Non-Ads + Privacy Frameworks)
+  	- `BranchAttributionLevel.REDUCED`: Reduced Attribution (Non-Ads + Privacy Frameworks)
   	- `BranchAttributionLevel.MINIMAL`: Minimal Attribution - Analytics Only
   	- `BranchAttributionLevel.NONE`: No Attribution - No Analytics (GDPR, CCPA)
 
 		Read Branch documentation for details: [Introducing Consumer Protection Preference Levels](https://help.branch.io/using-branch/changelog/introducing-consumer-protection-preference-levels) and [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 
+**Examples:**
+
+```dart
+// Development: verbose logging
+await FlutterBranchSdk.init(
+  enableLogging: true, 
+  logLevel: BranchLogLevel.VERBOSE
+);
+
+// Production: error logging only
+await FlutterBranchSdk.init(
+  enableLogging: true, 
+  logLevel: BranchLogLevel.ERROR
+);
+
+// No logging
+await FlutterBranchSdk.init(
+  enableLogging: false, 
+  logLevel: BranchLogLevel.NONE
+);
+```
+
 *Note: The `disableTracking` parameter is deprecated and should no longer be used. Please use `branchAttributionLevel` to control tracking behavior.*
 
-Initialization must be called from `main` or at any time, for example after getting consent for GPDR.
+Initialization must be called from `main` or at any time, for example after getting consent for GDPR.
 
 To guarantee the success of this function, ensure you've called the below in the app's main function
 
@@ -439,7 +553,7 @@ Will generate a Branch deep link and tag it with the channel the user selects.
         androidSharingTitle: 'My Share with');
 
     if (response.success) {
-      print('showShareSheet Sucess');
+      print('showShareSheet Success');
     } else {
       print('Error : ${response.errorCode} - ${response.errorMessage}');
     }
@@ -457,7 +571,7 @@ Will show Share Sheet with customization.
 
 3. Title (String) - Title for Share Sheet
 
-3. Icon (Uint8List) - Image for Share Sheet. Load image before from Web or assets.
+4. Icon (Uint8List) - Image for Share Sheet. Load image before from Web or assets.
 
 
 ```dart
@@ -506,7 +620,7 @@ centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. 
                 backgroundColor: Colors.white,
                 imageFormat: BranchImageFormat.PNG));
 
-    if (response.success) {
+    if (responseQrCodeImage.success) {
       print('QrCode Success');
       showQrCode(this.context, responseQrCodeImage.result);
  		/*
@@ -517,7 +631,8 @@ centerLogoUrl|String (HTTP URL)|URL to the image you want as a center logo e.g. 
         ),
       */
     } else {
-      print('Error : ${response.errorCode} - ${response.errorMessage}');
+      print('Error : ${responseQrCodeImage.errorCode} - ${responseQrCodeImage.errorMessage}');
+    }
 
 ```
 
@@ -538,7 +653,7 @@ Replace *"https://flutterbranchsdk.test-app.link/sxz79EtAPub"* with your own lin
 > Handling a new deep link in your app will clear the current session data and a new referred "open" will be attributed.
 
 ### List content on Search
-* For iOs list BUO links in Spotlight
+* For iOS list BUO links in Spotlight
 * For Android no action will be taken
 * For WEB not supported
 
@@ -553,7 +668,7 @@ Privately indexed Branch Universal Object can be removed.
 
 ```dart
     bool success = await FlutterBranchSdk.removeFromSearch(buo: buo);
-    print('Remove sucess: $success');
+    print('Remove success: $success');
 ```
 
 ### Register Event VIEW_ITEM
@@ -570,7 +685,7 @@ Analytics about your app's BranchEvents can be found on the Branch dashboard, an
 
 ```dart
 BranchEvent eventStandard = BranchEvent.standardEvent(BranchStandardEvent.ADD_TO_CART);
-FlutterBranchSdk.trackContent(buo: [buo], branchEvent: eventStandard);
+FlutterBranchSdk.trackContentWithoutBuo(branchEvent: eventStandard);
 ```
 You can use your own custom event names too:
 
@@ -670,12 +785,76 @@ Read Branch documentation for details:
 - [Consumer Protection Preferences](https://help.branch.io/developers-hub/docs/consumer-protection-preferences)
 
 
-### Set Request Meta data
+### Set Request Metadata
 Add key value pairs to all requests
 
 ```dart
 FlutterBranchSdk.setRequestMetadata(requestMetadataKey, requestMetadataValue);
 ```
+
+### Set Install Referrer Timeout
+Provides a setting to cancel the external Install Referrer string fetch. This is useful to optimize performance on Android by limiting the time the SDK waits for the Install Referrer. Only applicable on Android - iOS ignores this setting.
+
+**Via Dart:**
+```dart
+// Set timeout to 5 seconds (5000 milliseconds)
+FlutterBranchSdk.setInstallReferrerTimeout(5000);
+```
+
+**Via branch-config.json (recommended - applied on app startup):**
+```json
+{
+  "installReferrerTimeout": 5000
+}
+```
+
+Both approaches work, but configuring via `branch-config.json` is recommended as it applies the setting during SDK initialization. If you set it via Dart code, it will override the JSON configuration applied previously. The default for `installReferrerTimeout` is `0`, and setting it to `0` explicitly is supported and disables the timeout (`no timeout`).
+
+**Parameters:**
+- `timeoutMs` (Integer): Timeout in milliseconds. Must be >= 0. Default is `0`. A value of `0` is meaningful and disables the timeout (`no timeout`).
+
+**Platform Notes:**
+- **Android**: Sets the timeout for retrieving the Install Referrer string from Google Play Services.
+- **iOS**: Not supported.
+- **Web**: Not supported.
+
+### Listen to Platform Logs
+The `platformLogs` stream provides real-time log messages emitted by the native Branch SDK (iOS/Android) for debugging and monitoring purposes. This is especially useful during development to understand SDK behavior without accessing native console logs.
+
+**Note:** Web platform does not support this feature.
+
+**Important:** You must set `enableLogging: true` and optionally configure `logLevel` in the `init()` method to receive logs through this stream.
+
+```dart
+// First, enable logging during initialization
+await FlutterBranchSdk.init(
+  enableLogging: true,
+  logLevel: BranchLogLevel.DEBUG  // Choose your desired level
+);
+
+// Then listen to the logs
+FlutterBranchSdk.platformLogs.listen((logMessage) {
+  print('Branch Log: $logMessage');
+}, onError: (error) {
+  print('Error in platform log stream: $error');
+});
+```
+
+**Platform-specific behavior:**
+- **Android**: Captures all Branch SDK logs using `BranchLogger` callback and streams them to Flutter. Respects the `logLevel` setting.
+- **iOS**: Enables Branch SDK logging and streams messages to Flutter. Respects the `logLevel` setting.
+- **Web**: Not supported - shows debug message only
+
+**Log levels control:**
+You can control the verbosity of logs by setting the `logLevel` parameter during initialization:
+- `BranchLogLevel.VERBOSE`: All logs (most detailed)
+- `BranchLogLevel.DEBUG`: Debug logs for development
+- `BranchLogLevel.INFO`: Important information only
+- `BranchLogLevel.WARNING`: Warnings only
+- `BranchLogLevel.ERROR`: Errors only
+- `BranchLogLevel.NONE`: No logs
+
+The example app demonstrates this in [example/lib/home_page.dart](example/lib/home_page.dart#L732).
 
 ### iOS 14+ App Tracking Transparency
 Starting with iOS 14.5, iPadOS 14.5, and tvOS 14.5, you’ll need to receive the user’s permission through the AppTrackingTransparency framework to track them or access their device’s advertising identifier. Tracking refers to the act of linking user or device data collected from your app with user or device data collected from other companies’ apps, websites, or offline properties for targeted advertising or advertising measurement purposes. Tracking also refers to sharing user or device data with data brokers.
@@ -686,7 +865,7 @@ New methods have been made available to deal with App Tracking Transparency.
 
 First, update `Info.plist` file located in ios/Runner directory and add the `NSUserTrackingUsageDescription` key with a custom message describing your usage.
 
-```swift
+```xml
     <key>NSUserTrackingUsageDescription</key>
     <string>App would like to access IDFA for tracking purpose</string>
 ```
@@ -734,8 +913,8 @@ enum AppTrackingStatus {
 #### Get Device Advertising Identifier
 
 ```dart
-AppTrackingStatus status = await FlutterBranchSdk.getTrackingAuthorizationStatus();
-print(status);
+String identifier = await FlutterBranchSdk.getAdvertisingIdentifier();
+print(identifier);
 ```
 
 See: [https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier)
@@ -761,16 +940,7 @@ adUserDataUsageConsent | Boolean | Whether end user has granted or denied consen
 When parameters are successfully set using `setDMAParamsForEEA`, they will be sent along with every future request to the following Branch endpoint.
 
 
-# Configuring the project to use Branch Test Key
-
-
-Use the configuration through the `branch-config.json` file, setting the `useTestInstance` value to `true`.
-
-[Instructions here](#optional-configuration-via-branch-configjson).
-
-**Note*:* Remember to set the value to `false` before releasing to production.
-
-# Getting Started
+# Example App
 See the `example` directory for a complete sample app using Branch SDK.
 
 ![Example app](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/example.png?raw=true)
