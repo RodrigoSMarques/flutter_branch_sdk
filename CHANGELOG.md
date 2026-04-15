@@ -1,50 +1,25 @@
-## 9.3.0
-### 🔧 Native SDK Updates
-* Updated included Branch Android SDK to 5.21.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-
+## 8.12.0
 ### 🎉 Features
 * New Method: `setInstallReferrerTimeout` - Provides a setting to cancel the external Install Referrer string fetch. This is useful to optimize performance on Android by limiting the time the SDK waits for the Install Referrer. Only applicable on Android - iOS ignores this setting.
 * Added support for `installReferrerTimeout` configuration key in `branch-config.json`. This allows you to set the Install Referrer timeout during app initialization without code changes.
   - Configuration example: `"installReferrerTimeout": 5000` (in milliseconds)
   - See `README.md` for full documentation
+* Added optional deferred SDK initialization for iOS, allowing apps to initialize the native Branch SDK later (e.g., after obtaining user consent).
+* Improved log output from platformLogs with more detailed information.
+
+🐛 Bug Fixes
+- Corrected grammar in README.md and updated installation instructions.
+- Fixed JS interop method name for setting request metadata.
+- Fix issue #492 : enableLogging in branch-config.json breaks JSON key selection on iOS
+
+### 🔧 Native SDK Updates
+* Updated included iOS SDK to 3.14.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+* Updated included Branch Android SDK to 5.21.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 
 ### 📖 Documentation
 * Updated `README.md` with comprehensive documentation for `setInstallReferrerTimeout` method
 * Added new section: "Set Install Referrer Timeout" with usage examples
 * Updated example configurations in `branch-config.json` section
-
-## 9.2.0
-### 🎉 Features
-* Added optional deferred SDK initialization for iOS, allowing apps to initialize the native Branch SDK later (e.g., after obtaining user consent).
-
-### 🐛 Bug Fixes
-* Corrected grammar in `README.md` and updated installation instructions.
-* Fixed JS interop method name for setting request metadata.
-
-## 9.1.1
-### 🐛 Bug Fixes
-* Fix issue #492 : enableLogging in branch-config.json breaks JSON key selection on iOS
-
-## 9.1.0
-### 🔧 Native SDK Updates
-* Updated included iOS SDK to 3.14.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-
-### 🎉 Features
-* Improved log output from `platformLogs` with more detailed information.
-
-### 🐛 Bug Fixes
-* **iOS:** Fixed double execution of `configureBranchSDK()` on iOS 13+ with Scene Delegate support. The method was being called from both `application(_:didFinishLaunchingWithOptions:)` and `scene(_:willConnectTo:options:)`, causing duplicate logging callback registration and other redundant SDK initialization. Added idempotency guard with `isSdkConfigured` flag to prevent re-execution.
-
-## 9.0.0
-### ⚠️ BREAKING CHANGES
-- **Minimum Flutter version**: 3.38.0 (was 3.19.0)
-- **Minimum Dart SDK**: 3.10.0 (was 3.3.0)
-- **Minimum iOS version** : 13
-
-### 🎉 Features
-**iOS UISceneDelegate Support (iOS 13+)** [Flutter UISceneDelegate adoption](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate)
-- Added full support for iOS 13+ UISceneDelegate lifecycle
-- Maintains full backward compatibility with UIApplicationDelegate for apps not using scenes
 
 ## 8.11.0
 ### 🎉 Features
@@ -58,6 +33,7 @@
     debugPrint('Branch Log: $logMessage');
   });
   ```
+
 
 ## 8.10.0
 ### 🎉 Features

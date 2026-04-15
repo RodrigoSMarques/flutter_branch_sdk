@@ -99,8 +99,6 @@ Follow only the steps:
 
 2. The native Branch iOS SDK dependency is included automatically by this plugin. No need to add it manually in your project.
 
-3. **iOS 13+ UISceneDelegate Support**: This plugin supports both traditional `UIApplicationDelegate` and modern `UISceneDelegate` lifecycle. The plugin will automatically use the appropriate lifecycle based on your app configuration. No additional setup is required — the plugin maintains full backward compatibility with apps using `UIApplicationDelegate` while supporting apps that have migrated to `UISceneDelegate`.
-
 
 #### NativeLink™ Deferred Deep Linking
 Use iOS pasteboard to enable deferred deep linking via Branch NativeLink™, which enables 100% matching on iOS through Installs.
