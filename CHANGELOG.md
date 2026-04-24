@@ -1,6 +1,6 @@
 ## 9.3.1
 ### 🐛 Bug Fixes
-* Fix issue $498 - Ensure that deep-link/session initialization functions correctly when applications use the UIScene lifecycle.
+* Fix issue #498 - Ensure that deep-link/session initialization functions correctly when applications use the UIScene lifecycle.
 
 ## 9.3.0
 ### 🔧 Native SDK Updates
