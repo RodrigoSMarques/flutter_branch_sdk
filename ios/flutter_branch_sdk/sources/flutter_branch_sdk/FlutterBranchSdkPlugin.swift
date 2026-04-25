@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.3.0";
+let PLUGIN_VERSION = "9.3.1";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -209,7 +209,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         //Perform Branch configuration (shared logic)
         configureBranchSDK()
         
-
+       // In Flutter 3.29+ with UIApplicationSceneManifest, FlutterAppDelegate no longer
+        // forwards application:didFinishLaunchingWithOptions: to plugin delegates, so
+        // initializeBranchSession is never called via that path. Call it here from the
+        // scene lifecycle instead. isBranchSessionStarted guards against double-init.
+        initializeBranchSession(launchOptions: nil)
+        
         if let connOpts = connectionOptions, let userActivity = connOpts.userActivities.first {
             BranchScene.shared().scene(scene, continue: userActivity)
         } else if let connOpts = connectionOptions, !connOpts.urlContexts.isEmpty {

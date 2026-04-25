@@ -1,3 +1,7 @@
+## 9.3.1
+### 🐛 Bug Fixes
+* Fix issue #498 - Ensure that deep-link/session initialization functions correctly when applications use the UIScene lifecycle.
+
 ## 9.3.0
 ### 🔧 Native SDK Updates
 * Updated included Branch Android SDK to 5.21.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
