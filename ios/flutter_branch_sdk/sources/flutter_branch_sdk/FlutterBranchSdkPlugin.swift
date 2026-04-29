@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "8.12.0";
+let PLUGIN_VERSION = "8.12.1";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
     }
 }
 
-public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterSceneLifeCycleDelegate  {
+public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
     var eventSink: FlutterEventSink?
     var logEventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
@@ -142,9 +142,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         logEventChannel!.setStreamHandler(handler)
 
         registrar.addApplicationDelegate(instance)
-        if #available(iOS 13.0, *) {
-            registrar.addSceneDelegate(instance)
-        }
         registrar.addMethodCallDelegate(instance, channel: methodChannel!)
 
         Self.branchJsonConfigFlutter = BranchJsonConfigFlutter.loadFromFile(registrar: registrar)
@@ -190,88 +187,11 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
         Branch.getInstance().handlePushNotification(userInfo)
     }
-    
-    //---------------------------------------------------------------------------------------------
-    // UISceneDelegate Interface Methods (iOS 13+)
-    // --------------------------------------------------------------------------------------------
-    
-    /// Called when a scene is about to connect to the session.
-    /// This is the Scene lifecycle equivalent to application(_:didFinishLaunchingWithOptions:)
-    @available(iOS 13.0, *)
-    public func scene(
-        _ scene: UIScene,
-        willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions?
-    ) -> Bool {
-        LogUtils.debug(message: "Scene willConnectTo session - Scene lifecycle")
-        guard let scene = (scene as? UIWindowScene) else { return false }
-
-        //Perform Branch configuration (shared logic)
-        configureBranchSDK()
         
-
-        if let connOpts = connectionOptions, let userActivity = connOpts.userActivities.first {
-            BranchScene.shared().scene(scene, continue: userActivity)
-        } else if let connOpts = connectionOptions, !connOpts.urlContexts.isEmpty {
-            BranchScene.shared().scene(scene, openURLContexts: connOpts.urlContexts)
-        }
-        
-        return true
-    }
-    
-    /// Tells the delegate to open one or more URLs.
-    /// This is the Scene lifecycle equivalent to application(_:open:options:)
-    @available(iOS 13.0, *)
-    public func scene(
-        _ scene: UIScene,
-        openURLContexts URLContexts: Set<UIOpenURLContext>
-    ) -> Bool {
-        LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
-        BranchScene.shared().scene(scene, openURLContexts: URLContexts)
-        return true
-    }
-    
-    /// Tells the delegate to handle the specified Handoff-related activity.
-    /// This is the Scene lifecycle equivalent to application(_:continue:restorationHandler:)
-    @available(iOS 13.0, *)
-    public func scene(
-        _ scene: UIScene,
-        continue userActivity: NSUserActivity
-    ) -> Bool {
-        LogUtils.debug(message: "Scene continue userActivity - Scene lifecycle")
-        BranchScene.shared().scene(scene, continue: userActivity)
-        return true
-    }
-        
-    /// Called when the scene has moved from an inactive state to an active state.
-    @available(iOS 13.0, *)
-    public func sceneDidBecomeActive(_ scene: UIScene) {
-        LogUtils.debug(message: "Scene did become active - Scene lifecycle")
-    }
-    
-    /// Called when the scene will move from an active state to an inactive state.
-    @available(iOS 13.0, *)
-    public func sceneWillResignActive(_ scene: UIScene) {
-        LogUtils.debug(message: "Scene will resign active - Scene lifecycle")
-    }
-    
-    /// Called as the scene transitions from the background to the foreground.
-    @available(iOS 13.0, *)
-    public func sceneWillEnterForeground(_ scene: UIScene) {
-        LogUtils.debug(message: "Scene will enter foreground - Scene lifecycle")
-    }
-    
-    /// Called as the scene transitions from the foreground to the background.
-    @available(iOS 13.0, *)
-    public func sceneDidEnterBackground(_ scene: UIScene) {
-        LogUtils.debug(message: "Scene did enter background - Scene lifecycle")
-    }
-    
     //---------------------------------------------------------------------------------------------
     // Shared Branch SDK Configuration and Initialization Logic
     // --------------------------------------------------------------------------------------------
     /// Configures Branch SDK with settings from branch-config.json
-    /// This logic is shared between App Delegate and Scene Delegate initialization
     private func configureBranchSDK() {
         // Guard against double execution on iOS 13+ with Scene Delegate support
         guard !isSdkConfigured else {
@@ -352,7 +272,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     /// Initializes Branch session with the provided launch options
-    /// This logic is shared between App Delegate and Scene Delegate initialization
     private func initializeBranchSession(launchOptions: [AnyHashable: Any]?) {
         if (isBranchSessionStarted) {
             return;
