@@ -1,3 +1,9 @@
+## 8.12.1
+🐛 Bug Fixes
+ - Updated project configuration and dependencies for compatibility with iOS 12 and Flutter 3.32.7.
+ - Updated the iOS deployment target to 12.0.
+ - Removed unnecessary scene delegate methods from FlutterBranchSdkPlugin.
+
 ## 8.12.0
 ### 🎉 Features
 * New Method: `setInstallReferrerTimeout` - Provides a setting to cancel the external Install Referrer string fetch. This is useful to optimize performance on Android by limiting the time the SDK waits for the Install Referrer. Only applicable on Android - iOS ignores this setting.
