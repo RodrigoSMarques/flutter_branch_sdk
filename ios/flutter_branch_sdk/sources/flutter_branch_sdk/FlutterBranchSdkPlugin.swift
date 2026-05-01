@@ -193,7 +193,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     // --------------------------------------------------------------------------------------------
     /// Configures Branch SDK with settings from branch-config.json
     private func configureBranchSDK() {
-        // Guard against double execution on iOS 13+ with Scene Delegate support
         guard !isSdkConfigured else {
             LogUtils.debug(message: "configureBranchSDK() already executed, skipping")
             return
