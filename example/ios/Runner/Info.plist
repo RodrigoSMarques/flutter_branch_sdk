@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Flutter Branch Sdk</string>
+	<string>Flutter Branch Sdk Example</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -43,27 +43,6 @@
 	<true/>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>App would like to access IDFA for tracking purpose</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneClassName</key>
-					<string>UIWindowScene</string>
-					<key>UISceneConfigurationName</key>
-					<string>flutter</string>
-					<key>UISceneDelegateClassName</key>
-					<string>FlutterSceneDelegate</string>
-					<key>UISceneStoryboardFile</key>
-					<string>Main</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -85,6 +64,13 @@
 	</array>
 	<key>branch_disable_nativelink</key>
 	<false/>
+	<key>branch_key</key>
+	<dict>
+		<key>live</key>
+		<string>key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx</string>
+		<key>test</key>
+		<string>key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH</string>
+	</dict>
 	<key>branch_universal_link_domains</key>
 	<array>
 		<string>flutterbranchsdk.app.link</string>
@@ -92,12 +78,5 @@
 		<string>flutterbranchsdk-alternate.test-app.link</string>
 		<string>flutterbranchsdk.test-app.link</string>
 	</array>
-	<key>branch_key</key>
-    <dict>
-        <key>live</key>
-        <string>key_live_bkJRqpb15wLqUAgsDVNUIobjyviWi6Wx</string>
-        <key>test</key>
-        <string>key_test_ipQTteg11ENANDeCzSXgqdgfuycWoXYH</string>
-    </dict>
 </dict>
 </plist>

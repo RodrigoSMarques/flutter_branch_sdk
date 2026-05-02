@@ -1,4 +1,5 @@
 {
+  "originHash" : "5f074e659890e16545c7065d414145845d03f5bceb60b4ffbaa75ee6559edd60",
   "pins" : [
     {
       "identity" : "ios-branch-sdk-spm",
@@ -10,5 +11,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
