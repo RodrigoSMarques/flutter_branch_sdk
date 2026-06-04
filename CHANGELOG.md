@@ -1,3 +1,7 @@
+## 9.3.2
+### 🐛 Bug Fixes
+* Fix issue #502 - iOS scene lifecycle handlers returning `true` unconditionally, breaking URL handling for other plugins.
+
 ## 9.3.1
 ### 🐛 Bug Fixes
 * Fix issue #498 - Ensure that deep-link/session initialization functions correctly when applications use the UIScene lifecycle.
