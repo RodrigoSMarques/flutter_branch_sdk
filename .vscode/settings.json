@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "**/.index-build": true
+  },
+  "files.watcherExclude": {
+    "**/.index-build/**": true
+  },
+  "search.exclude": {
+    "**/.index-build": true
+  }
+}
