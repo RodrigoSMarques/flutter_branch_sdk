@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.3.0";
+let PLUGIN_VERSION = "9.3.3";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -204,21 +204,29 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         options connectionOptions: UIScene.ConnectionOptions?
     ) -> Bool {
         LogUtils.debug(message: "Scene willConnectTo session - Scene lifecycle")
-        guard let scene = (scene as? UIWindowScene) else { return false }
+        guard (scene as? UIWindowScene) != nil else { return false }
 
         //Perform Branch configuration (shared logic)
         configureBranchSDK()
-        
 
+       // In Flutter 3.29+ with UIApplicationSceneManifest, FlutterAppDelegate no longer
+        // forwards application:didFinishLaunchingWithOptions: to plugin delegates, so
+        // initializeBranchSession is never called via that path. Call it here from the
+        // scene lifecycle instead. isBranchSessionStarted guards against double-init.
+        initializeBranchSession(launchOptions: nil)
+
+        // Pass URLs/activities from connection options to Branch using the scene-aware API.
+        // Return false so other plugins still receive the full connection options — the
+        // Bool is a Flutter dispatch signal only and does not affect Branch's own processing.
         if let connOpts = connectionOptions, let userActivity = connOpts.userActivities.first {
             BranchScene.shared().scene(scene, continue: userActivity)
         } else if let connOpts = connectionOptions, !connOpts.urlContexts.isEmpty {
             BranchScene.shared().scene(scene, openURLContexts: connOpts.urlContexts)
         }
-        
-        return true
+
+        return false
     }
-    
+
     /// Tells the delegate to open one or more URLs.
     /// This is the Scene lifecycle equivalent to application(_:open:options:)
     @available(iOS 13.0, *)
@@ -228,9 +236,9 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     ) -> Bool {
         LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
         BranchScene.shared().scene(scene, openURLContexts: URLContexts)
-        return true
+        return false
     }
-    
+
     /// Tells the delegate to handle the specified Handoff-related activity.
     /// This is the Scene lifecycle equivalent to application(_:continue:restorationHandler:)
     @available(iOS 13.0, *)
@@ -240,7 +248,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     ) -> Bool {
         LogUtils.debug(message: "Scene continue userActivity - Scene lifecycle")
         BranchScene.shared().scene(scene, continue: userActivity)
-        return true
+        return false
     }
         
     /// Called when the scene has moved from an inactive state to an active state.
