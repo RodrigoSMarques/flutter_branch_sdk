@@ -14,7 +14,7 @@ let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.3.2";
+let PLUGIN_VERSION = "9.3.3";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------

@@ -1,3 +1,7 @@
+## 9.3.3
+### 🔧 Native SDK Updates
+* Updated included Branch iOS SDK (ios-branch-sdk-spm / BranchSDK CocoaPods spec) to 3.14.2 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-sdk-spm/releases)
+
 ## 9.3.2
 ### 🐛 Bug Fixes
 * Fix issue #502 - iOS scene lifecycle handlers returning `true` unconditionally, breaking URL handling for other plugins.
