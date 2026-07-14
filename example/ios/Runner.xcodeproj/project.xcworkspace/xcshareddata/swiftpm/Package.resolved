@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/BranchMetrics/ios-branch-sdk-spm",
       "state" : {
-        "revision" : "100a61ca220d3dbc2e568e6fb053139f678d0c93",
-        "version" : "3.14.0"
+        "revision" : "ec34dd77d08cb8ae017def1e66b4bf59a62a5bce",
+        "version" : "3.14.2"
       }
     }
   ],
