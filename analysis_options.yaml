@@ -27,5 +27,10 @@ linter:
     use_named_constants : true
     prefer_void_to_null : true
     avoid_void_async : true
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
 
 

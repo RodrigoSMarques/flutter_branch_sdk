@@ -1,3 +1,8 @@
+## 9.3.4
+### 🔧 Native SDK Updates
+* Pinned included Branch Android SDK to exact version 5.21.2 to avoid unexpected native SDK updates on build.
+* Pinned included Branch iOS SDK (CocoaPods `BranchSDK` and Swift Package Manager `ios-branch-sdk-spm`) to exact version 3.14.2 
+
 ## 9.3.3
 ### 🔧 Native SDK Updates
 * Updated included Branch iOS SDK (ios-branch-sdk-spm / BranchSDK CocoaPods spec) to 3.14.2 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-sdk-spm/releases)
