@@ -2,8 +2,6 @@
 
 [![Branch](https://github.com/RodrigoSMarques/flutter_branch_sdk/blob/master/assets/branch.png?raw=true)](https://branch.io)
 
-[![Plugin code analysis](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/RodrigoSMarques/flutter_branch_sdk/actions/workflows/ci.yaml)
-
 This is a Flutter plugin that implements [Branch SDK](https://branch.io).
 
 Branch.io helps mobile apps grow with deep links that power referral systems, sharing links and invites with full attribution and analytics.
@@ -13,9 +11,9 @@ Supports Android, iOS and Web.
 
 | Platform | Version | History 
 | --- |---------| ---
-| Android | 5.21.+  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
-| iOS | 3.14.+  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
-| Web | 2.86.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+| Android | 5.21.2  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| iOS | 3.14.2  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+| Web | 2.89.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
 
 Implemented functions in plugin:
