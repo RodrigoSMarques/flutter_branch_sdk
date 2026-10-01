@@ -1,3 +1,13 @@
+## 9.3.5
+### 🔧 Native SDK Updates
+* Updated included Branch Android SDK to exact version 5.21.3 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
+### 🛠 Maintenance
+* Example app: updated Gradle to 9.1.0, Android Gradle Plugin to 9.0.1 and Kotlin to 2.3.20 (Flutter 3.47 minimums), and migrated to built-in Kotlin.
+
+### 📖 Documentation
+* Updated `README.md` native SDK version table with the Android SDK 5.21.3.
+
 ## 9.3.4
 ### 🔧 Native SDK Updates
 * Pinned included Branch Android SDK to exact version 5.21.2 to avoid unexpected native SDK updates on build.

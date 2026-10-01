@@ -11,7 +11,7 @@ Supports Android, iOS and Web.
 
 | Platform | Version | History 
 | --- |---------| ---
-| Android | 5.21.2  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+| Android | 5.21.3  | [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
 | iOS | 3.14.2  | [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
 | Web | 2.89.+  | [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
 
