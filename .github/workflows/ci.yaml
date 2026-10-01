@@ -46,3 +46,12 @@ jobs:
         run: flutter pub get
       - name: Analyze code
         run: flutter analyze --no-fatal-infos
+  check-plugin-version:
+    name: Plugin version sync (iOS)
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Check PLUGIN_VERSION matches pubspec.yaml
+        run: ./tool/sync-version.sh --check
