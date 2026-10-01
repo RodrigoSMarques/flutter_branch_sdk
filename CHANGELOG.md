@@ -1,7 +1,21 @@
+## 9.3.5
+### 🔧 Native SDK Updates
+* Updated included Branch Android SDK to exact version 5.21.3 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+
+### 🛠 Maintenance
+* Example app: updated Gradle to 9.1.0, Android Gradle Plugin to 9.0.1 and Kotlin to 2.3.20 (Flutter 3.47 minimums), and migrated to built-in Kotlin.
+
+### 📖 Documentation
+* Updated `README.md` native SDK version table with the Android SDK 5.21.3.
+
 ## 9.3.4
 ### 🔧 Native SDK Updates
 * Pinned included Branch Android SDK to exact version 5.21.2 to avoid unexpected native SDK updates on build.
-* Pinned included Branch iOS SDK (CocoaPods `BranchSDK` and Swift Package Manager `ios-branch-sdk-spm`) to exact version 3.14.2 
+* Pinned included Branch iOS SDK (CocoaPods `BranchSDK` and Swift Package Manager `ios-branch-sdk-spm`) to exact version 3.14.2
+* Updated included Branch Web SDK reference to 2.89.+ - [Web Version History](https://github.com/BranchMetrics/web-branch-deep-linking-attribution/releases)
+
+### 📖 Documentation
+* Updated `README.md` native SDK version table with the pinned Android/iOS versions and the updated Web SDK version.
 
 ## 9.3.3
 ### 🔧 Native SDK Updates
