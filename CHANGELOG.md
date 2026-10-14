@@ -1,3 +1,7 @@
+## 9.3.6
+### 🐛 Bug Fixes
+* Fix issue #512 - Android: the Install Referrer timeout is now applied before the first fetch, and a value from `branch-config.json` is no longer overwritten with `0`.
+
 ## 9.3.5
 ### 🔧 Native SDK Updates
 * Updated included Branch Android SDK to exact version 5.21.3 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
