@@ -185,7 +185,7 @@ class FlutterBranchSdkWeb extends FlutterBranchSdkPlatform {
             if (jsError is String) {
               errorMessage = jsError;
             } else {
-                errorMessage = jsError.toString();
+              errorMessage = jsError.toString();
             }
             responseCompleter.complete(BranchResponse.error(errorCode: '-1', errorMessage: errorMessage));
           }

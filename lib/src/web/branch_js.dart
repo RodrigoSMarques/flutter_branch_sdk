@@ -744,8 +744,13 @@ extension type BranchJS._(JSObject _) implements JSObject {
   /// );
 
   @JS('logEvent')
-  external static void logEvent(String event,
-      [JSAny eventDataAndCustomData, JSArray contentItems, String customerEventAlias, JSFunction callback]);
+  external static void logEvent(
+    String event, [
+    JSAny eventDataAndCustomData,
+    JSArray contentItems,
+    String customerEventAlias,
+    JSFunction callback,
+  ]);
 
   /// disableTracking(disableTracking)
   /// Parameters

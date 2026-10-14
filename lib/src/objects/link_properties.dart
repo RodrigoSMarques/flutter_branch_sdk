@@ -1,4 +1,5 @@
 part of 'branch_universal_object.dart';
+
 /*
 * Class for representing any additional information that is specific to the link.
 * Use this class to specify the properties of a deep link such as channel, feature etc and any control params associated with the link.
@@ -15,14 +16,15 @@ class BranchLinkProperties {
   final String channel;
   final String campaign;
 
-  BranchLinkProperties(
-      {this.channel = '',
-      this.feature = '',
-      this.alias = '',
-      this.matchDuration = 0,
-      this.stage = '',
-      this.tags = const [],
-      this.campaign = ''});
+  BranchLinkProperties({
+    this.channel = '',
+    this.feature = '',
+    this.alias = '',
+    this.matchDuration = 0,
+    this.stage = '',
+    this.tags = const [],
+    this.campaign = '',
+  });
 
   void addTags(String tag) {
     tags.add(tag);
