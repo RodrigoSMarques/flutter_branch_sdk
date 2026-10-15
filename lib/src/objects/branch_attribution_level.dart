@@ -30,7 +30,7 @@ enum BranchAttributionLevel {
   /// No Attribution - No Analytics (GDPR, CCPA)
   /// - Only Deterministic Deep Linking
   /// - Disables all other Branch requests
-  NONE
+  NONE,
 }
 
 String getBranchAttributionLevelString(BranchAttributionLevel branchAttributionLevel) {
