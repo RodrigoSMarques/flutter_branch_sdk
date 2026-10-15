@@ -180,7 +180,7 @@ enum BranchCurrencyType {
   XXX,
   YER,
   ZAR,
-  ZMW
+  ZMW,
 }
 
 String getCurrencyTypeString(BranchCurrencyType currencyType) {
