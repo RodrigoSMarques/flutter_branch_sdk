@@ -1,3 +1,10 @@
+## 9.3.7
+### 🐛 Bug Fixes
+* Fix issue #514 - Android: `android/build.gradle` now uses the Groovy assignment syntax (`propName = value`) instead of the space-assignment syntax, which is deprecated in Gradle 9 and removed in Gradle 10.
+
+### 🛠 Maintenance
+* Example app: `app/build.gradle` migrated to the Groovy assignment syntax. Validated with AGP 8.11.1 / Gradle 8.14 (Flutter minimum) and AGP 9.0.1 / Gradle 9.1.0.
+
 ## 9.3.6
 ### 🐛 Bug Fixes
 * Fix issue #512 - Android: the Install Referrer timeout is now applied before the first fetch, and a value from `branch-config.json` is no longer overwritten with `0`.
