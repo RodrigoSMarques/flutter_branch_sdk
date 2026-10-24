@@ -46,17 +46,18 @@ class BranchUniversalObject {
   final int _creationDateTimeStamp = DateTime.now().millisecondsSinceEpoch;
 
   ///Create a BranchUniversalObject with the given content.
-  BranchUniversalObject(
-      {required this.canonicalIdentifier,
-      this.canonicalUrl = '',
-      this.title = '',
-      this.contentDescription = '',
-      this.imageUrl = '',
-      this.contentMetadata,
-      this.keywords = const [],
-      this.publiclyIndex = true,
-      this.locallyIndex = true,
-      this.expirationDateInMilliSec = 0});
+  BranchUniversalObject({
+    required this.canonicalIdentifier,
+    this.canonicalUrl = '',
+    this.title = '',
+    this.contentDescription = '',
+    this.imageUrl = '',
+    this.contentMetadata,
+    this.keywords = const [],
+    this.publiclyIndex = true,
+    this.locallyIndex = true,
+    this.expirationDateInMilliSec = 0,
+  });
 
   ///Adds any keywords associated with the content referred
   void addKeyWords(List<String> keywords) {

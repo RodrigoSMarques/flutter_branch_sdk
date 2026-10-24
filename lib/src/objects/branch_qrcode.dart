@@ -3,7 +3,7 @@ part of 'branch_universal_object.dart';
 enum BranchImageFormat {
   JPEG,
   /* QR code is returned as a JPEG */
-  PNG
+  PNG,
   /*QR code is returned as a PNG */
 }
 
@@ -21,13 +21,14 @@ class BranchQrCode {
   /* Image Format of the returned QR code. Can be a JPEG or PNG. */
   BranchImageFormat imageFormat;
 
-  BranchQrCode(
-      {this.primaryColor,
-      this.backgroundColor,
-      this.margin,
-      this.width,
-      this.imageFormat = BranchImageFormat.PNG,
-      this.centerLogoUrl = ''}) {
+  BranchQrCode({
+    this.primaryColor,
+    this.backgroundColor,
+    this.margin,
+    this.width,
+    this.imageFormat = BranchImageFormat.PNG,
+    this.centerLogoUrl = '',
+  }) {
     if (centerLogoUrl.isNotEmpty) {
       assert(Uri.parse(centerLogoUrl).isAbsolute, 'Invalid URL');
     }

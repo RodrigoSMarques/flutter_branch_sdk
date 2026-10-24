@@ -18,7 +18,7 @@ enum BranchLogLevel {
   ERROR,
 
   /// No logging
-  NONE
+  NONE,
 }
 
 /// Extension to convert BranchLogLevel to string representation

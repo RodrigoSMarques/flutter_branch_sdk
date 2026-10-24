@@ -62,7 +62,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
     private final JSONObject snapParameters = new JSONObject();
     private final ArrayList<String> preInstallParameters = new ArrayList<>();
     private final ArrayList<String> campaingParameters = new ArrayList<>();
-    private Integer installReferrerTimeout = 0;
+    private Integer installReferrerTimeout = null;
     private Activity activity;
     private Context context;
     private ActivityPluginBinding activityPluginBinding;
@@ -439,6 +439,7 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         if (isInitialized) {
             result.success(Boolean.TRUE);
+            return;
         }
 
         if (branchJsonConfig != null) {
@@ -464,11 +465,6 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
                 }
                 LogUtils.debug(DEBUG_NAME, "Set EnableLogging and LogLevel from branch-config.json: " + branchJsonConfig.logLevel);
                 enableLoggingFromJson = true;
-            }
-
-            if (branchJsonConfig.installReferrerTimeout != null) {
-                new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(branchJsonConfig.installReferrerTimeout));
-                LogUtils.debug(DEBUG_NAME, "Set installReferrerTimeout from branch-config.json: " + branchJsonConfig.installReferrerTimeout + " ms");
             }
 
             if (!branchJsonConfig.branchKey.isEmpty()) {
@@ -547,8 +543,18 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
             }
         }
 
-        if (installReferrerTimeout != null) {
-            new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(installReferrerTimeout));
+        // Must be applied synchronously, before notifyNativeToInit(): the deferred init reads the
+        // timeout when it starts the first Install Referrer fetch. A value set from Dart takes
+        // precedence over branch-config.json.
+        Integer referrerTimeout = installReferrerTimeout;
+        if (referrerTimeout != null) {
+            LogUtils.debug(DEBUG_NAME, "Set installReferrerTimeout from Dart: " + referrerTimeout + " ms");
+        } else if (branchJsonConfig != null && branchJsonConfig.installReferrerTimeout != null) {
+            referrerTimeout = branchJsonConfig.installReferrerTimeout;
+            LogUtils.debug(DEBUG_NAME, "Set installReferrerTimeout from branch-config.json: " + referrerTimeout + " ms");
+        }
+        if (referrerTimeout != null) {
+            Branch.getInstance().setInstallReferrerTimeout(referrerTimeout);
         }
 
         final String branchAttributionLevelString = Objects.requireNonNull(call.argument("branchAttributionLevel"));
@@ -799,15 +805,15 @@ public class FlutterBranchSdkPlugin implements FlutterPlugin, MethodCallHandler,
 
         final int timeoutMs = Objects.requireNonNull(call.argument("timeoutMs"));
 
+        if (timeoutMs < 0) {
+            LogUtils.debug(DEBUG_NAME, "setInstallReferrerTimeout: timeoutMs must be 0 or greater (negative values are not allowed)");
+            return;
+        }
         if (!isInitialized) {
             installReferrerTimeout = timeoutMs;
             return;
         }
-        if (timeoutMs >= 0) {
-            new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(timeoutMs));
-        } else {
-            LogUtils.debug(DEBUG_NAME, "setInstallReferrerTimeout: timeoutMs must be 0 or greater (negative values are not allowed)");
-        }
+        new Handler(Looper.getMainLooper()).post(() -> Branch.getInstance().setInstallReferrerTimeout(timeoutMs));
     }
 
     @SuppressWarnings("unchecked")

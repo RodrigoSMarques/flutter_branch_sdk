@@ -1,4 +1,5 @@
 part of 'branch_universal_object.dart';
+
 /*
 * Enum for creating Branch events for tracking and analytical purpose.
 * Enum class represent a standard or custom BranchEvents. Standard Branch events are defined with BRANCH_STANDARD_EVENT}.
@@ -33,7 +34,7 @@ enum BranchStandardEvent {
   INVITE,
   LOGIN,
   START_TRIAL,
-  SUBSCRIBE
+  SUBSCRIBE,
 }
 
 String getBranchStandardEventString(BranchStandardEvent branchStandardEvent) {

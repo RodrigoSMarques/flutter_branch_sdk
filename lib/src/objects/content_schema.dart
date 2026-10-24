@@ -24,7 +24,7 @@ enum BranchContentSchema {
   TEXT_REVIEW,
   TEXT_SEARCH_RESULTS,
   TEXT_STORY,
-  TEXT_TECHNICAL_DOC
+  TEXT_TECHNICAL_DOC,
 }
 
 BranchContentSchema getValueContentSchema(String name) {
