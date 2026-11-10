@@ -582,8 +582,8 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
             return
         }
 
-        if !branchAttributionLevel.isEmpty {
-            Branch.getInstance().setConsumerProtectionAttributionLevel(BranchAttributionLevel(rawValue: branchAttributionLevel))
+        if !branchAttributionLevel.isEmpty, let level = attributionLevel(from: branchAttributionLevel) {
+            Branch.getInstance().setConsumerProtectionAttributionLevel(level)
         }
         
         // JSON config has priority - only enable/disable logging if not set via JSON
@@ -1118,13 +1118,12 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     
     private func setConsumerProtectionAttributionLevel(call: FlutterMethodCall) {
         guard let args = call.arguments as? [String: Any],
-              let branchAttributionLevelString = args["branchAttributionLevel"] as? String
+              let branchAttributionLevelString = args["branchAttributionLevel"] as? String,
+              let branchAttributionLevel = attributionLevel(from: branchAttributionLevelString)
         else {
             LogUtils.debug(message: "Invalid arguments provided for setConsumerProtectionAttributionLevel")
             return
         }
-        
-        let branchAttributionLevel = BranchAttributionLevel(rawValue: branchAttributionLevelString)
         
         DispatchQueue.main.async {
             Branch.getInstance().setConsumerProtectionAttributionLevel(branchAttributionLevel)
@@ -1235,6 +1234,32 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         default:
             LogUtils.debug(message: "Unknown log level: \(logLevel), defaulting to verbose")
             return BranchLogLevel.verbose
+        }
+    }
+    
+    /// Maps the attribution level name sent from Dart ("FULL", "REDUCED", "MINIMAL", "NONE")
+    /// to the `BranchAttributionLevel` constant imported from the Branch SDK.
+    ///
+    /// `BranchAttributionLevel` is an `NS_STRING_ENUM`, and the Branch SDK decides whether
+    /// to disable tracking by comparing the level with `BranchAttributionLevelNone` by
+    /// identity, not by string value. A value built with `BranchAttributionLevel(rawValue:)`
+    /// is a different `NSString` instance, so it never matches: `NONE` would not disable
+    /// tracking, and any level would re-enable tracking if it had been disabled. Only the
+    /// imported constants (`.full`, `.reduced`, `.minimal`, `.none`) are identical to the
+    /// SDK's own, so the raw string must be mapped to them.
+    private func attributionLevel(from raw: String) -> BranchAttributionLevel? {
+        switch raw.uppercased() {
+        case "FULL":
+            return BranchAttributionLevel.full
+        case "REDUCED":
+            return BranchAttributionLevel.reduced
+        case "MINIMAL":
+            return BranchAttributionLevel.minimal
+        case "NONE":
+            return BranchAttributionLevel.none
+        default:
+            LogUtils.debug(message: "Unknown attribution level: \(raw), ignoring")
+            return nil
         }
     }
     
