@@ -1,6 +1,6 @@
 ## 9.3.8
 ### 🐛 Bug Fixes
-* Fix issue #517 (PR #516) - iOS: `BranchAttributionLevel.NONE` now disables tracking. The level sent from Dart was built with `BranchAttributionLevel(rawValue:)`, which never matches the Branch iOS SDK constant (the SDK compares it by identity), so `NONE` did not disable tracking and any level re-enabled it if it had been disabled. The plugin now maps `FULL`, `REDUCED`, `MINIMAL` and `NONE` to the SDK constants in `init` and `setConsumerProtectionAttributionLevel`. Android was not affected.
+* Fix issue #517 - iOS: `BranchAttributionLevel.NONE` now correctly disables tracking, and the other levels re-enable it. Android was not affected.
 
 ## 9.3.7
 ### 🐛 Bug Fixes
