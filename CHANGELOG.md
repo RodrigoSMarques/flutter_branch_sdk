@@ -1,3 +1,7 @@
+## 9.3.8
+### 🐛 Bug Fixes
+* Fix issue #517 - iOS: `BranchAttributionLevel.NONE` now correctly disables tracking, and the other levels re-enable it. Android was not affected.
+
 ## 9.3.7
 ### 🐛 Bug Fixes
 * Fix issue #514 - Android: `android/build.gradle` now uses the Groovy assignment syntax (`propName = value`) instead of the space-assignment syntax, which is deprecated in Gradle 9 and removed in Gradle 10.
