@@ -1,3 +1,7 @@
+## 9.3.9
+### 🐛 Bug Fixes
+* Fix issue #521 - iOS: registering the plugin on a second `FlutterEngine` (e.g. a headless engine from `flutter_background_service`) no longer removes the first engine's stream handlers, which caused `MissingPluginException` on `listSession()` or silently stopped deep link events. Android was not affected.
+
 ## 9.3.8
 ### 🐛 Bug Fixes
 * Fix issue #517 - iOS: `BranchAttributionLevel.NONE` now correctly disables tracking, and the other levels re-enable it. Android was not affected.

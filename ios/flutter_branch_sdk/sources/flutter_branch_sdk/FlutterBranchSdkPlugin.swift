@@ -4,17 +4,14 @@ import BranchSDK
 import AppTrackingTransparency
 import AdSupport
 
-// Plugin channel variables and constants
-var methodChannel: FlutterMethodChannel?
-var eventChannel: FlutterEventChannel?
-var logEventChannel : FlutterEventChannel?
-var logStreamHandler: LogStreamHandler?
+// Plugin channel constants
+// Channels are kept per plugin instance (one per FlutterEngine/registrar), never at file scope.
 let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.3.8";
+let PLUGIN_VERSION = "9.3.9";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -95,6 +92,12 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
 }
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterSceneLifeCycleDelegate  {
+    // Channels belong to this instance (one instance per FlutterEngine registration).
+    var methodChannel: FlutterMethodChannel?
+    var eventChannel: FlutterEventChannel?
+    var logEventChannel: FlutterEventChannel?
+    var logStreamHandler: LogStreamHandler?
+
     var eventSink: FlutterEventSink?
     var logEventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
@@ -117,53 +120,45 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     // Plugin registry
     // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
-        // Clean up any existing channels/handlers to avoid duplicates on re-register
-        if let _ = methodChannel {
-            methodChannel = nil
-        }
-        if let ev = eventChannel {
-            ev.setStreamHandler(nil)
-            eventChannel = nil
-        }
-        if let lev = logEventChannel {
-            lev.setStreamHandler(nil)
-            logEventChannel = nil
-        }
-
+        // Each FlutterEngine registers its own instance with its own channels.
+        // Never touch channels created by another engine's registration.
         let instance = FlutterBranchSdkPlugin()
         let handler = LogStreamHandler()
-        logStreamHandler = handler
+        instance.logStreamHandler = handler
 
-        methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: registrar.messenger())
-        eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: registrar.messenger())
-        eventChannel!.setStreamHandler(instance)
+        let messenger = registrar.messenger()
+        let methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: messenger)
+        let eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: messenger)
+        let logEventChannel = FlutterEventChannel(name: LOG_CHANNEL, binaryMessenger: messenger)
 
-        logEventChannel = FlutterEventChannel(name: LOG_CHANNEL, binaryMessenger: registrar.messenger())
-        logEventChannel!.setStreamHandler(handler)
+        eventChannel.setStreamHandler(instance)
+        logEventChannel.setStreamHandler(handler)
+
+        instance.methodChannel = methodChannel
+        instance.eventChannel = eventChannel
+        instance.logEventChannel = logEventChannel
 
         registrar.addApplicationDelegate(instance)
         if #available(iOS 13.0, *) {
             registrar.addSceneDelegate(instance)
         }
-        registrar.addMethodCallDelegate(instance, channel: methodChannel!)
+        registrar.addMethodCallDelegate(instance, channel: methodChannel)
 
         Self.branchJsonConfigFlutter = BranchJsonConfigFlutter.loadFromFile(registrar: registrar)
     }
 
-    // Ensure stream handlers are removed when the plugin instance is deallocated
-    deinit {
-        if let ev = eventChannel {
-            ev.setStreamHandler(nil)
-        }
-        if let lev = logEventChannel {
-            lev.setStreamHandler(nil)
-        }
-        methodChannel = nil
-        logEventChannel = nil
-        eventChannel = nil
-        logStreamHandler = nil
+    // Called when this instance's engine goes away: clear only this instance's own handlers.
+    public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
+        eventChannel?.setStreamHandler(nil)
+        logEventChannel?.setStreamHandler(nil)
     }
-        
+
+    // Safety net if the instance is deallocated without detach. Touches only own channels.
+    deinit {
+        eventChannel?.setStreamHandler(nil)
+        logEventChannel?.setStreamHandler(nil)
+    }
+
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         LogUtils.debug(message: "Application didFinishLaunchingWithOptions - App Delegate lifecycle")
         
