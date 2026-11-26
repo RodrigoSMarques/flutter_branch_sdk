@@ -1,4 +1,14 @@
-## 9.3.9
+## 9.4.0
+### 🔧 Native SDK Updates
+* Updated included Branch Android SDK to exact version 5.22.0 - [Android Version History](https://github.com/BranchMetrics/android-branch-deep-linking-attribution/releases)
+* Updated included Branch iOS SDK (CocoaPods `BranchSDK` and Swift Package Manager `ios-branch-sdk-spm`) to exact version 3.15.0 - [iOS Version History](https://github.com/BranchMetrics/ios-branch-deep-linking-attribution/releases)
+
+### 🛠 Maintenance
+* Example app: updated Gradle to 9.5.0 and Android Gradle Plugin to 9.3.1 (Flutter 3.50), and raised the iOS deployment target to 15.0.
+
+### 📖 Documentation
+* Updated `README.md` native SDK version table with the Android SDK 5.22.0 and iOS SDK 3.15.0.
+
 ### 🐛 Bug Fixes
 * Fix issue #521 - iOS: registering the plugin on a second `FlutterEngine` (e.g. a headless engine from `flutter_background_service`) no longer removes the first engine's stream handlers, which caused `MissingPluginException` on `listSession()` or silently stopped deep link events. Android was not affected.
 
