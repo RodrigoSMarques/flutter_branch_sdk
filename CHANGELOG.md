@@ -10,7 +10,7 @@
 * Updated `README.md` native SDK version table with the Android SDK 5.22.0 and iOS SDK 3.15.0.
 
 ### 🐛 Bug Fixes
-* Fix issue #521 - iOS: registering the plugin on a second `FlutterEngine` (e.g. a headless engine from `flutter_background_service`) no longer removes the first engine's stream handlers, which caused `MissingPluginException` on `listSession()` or silently stopped deep link events. Android was not affected.
+* Fix issue #521 - iOS: registering the plugin on a second `FlutterEngine` (e.g. a headless engine from `flutter_background_service`) no longer removes the first engine's stream handlers, which caused `MissingPluginException` on `listSession()` or silently stopped deep link events. The Branch session is now started once and delivered to the engine that listens to `listSession()`, regardless of registration order. Android was not affected.
 
 ## 9.3.8
 ### 🐛 Bug Fixes
