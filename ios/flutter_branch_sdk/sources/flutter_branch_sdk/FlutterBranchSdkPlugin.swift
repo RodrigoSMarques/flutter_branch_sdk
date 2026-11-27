@@ -4,17 +4,14 @@ import BranchSDK
 import AppTrackingTransparency
 import AdSupport
 
-// Plugin channel variables and constants
-var methodChannel: FlutterMethodChannel?
-var eventChannel: FlutterEventChannel?
-var logEventChannel : FlutterEventChannel?
-var logStreamHandler: LogStreamHandler?
+// Plugin channel constants
+// Channels are kept per plugin instance (one per FlutterEngine/registrar), never at file scope.
 let MESSAGE_CHANNEL = "flutter_branch_sdk/message";
 let EVENT_CHANNEL = "flutter_branch_sdk/event";
 let LOG_CHANNEL = "flutter_branch_sdk/logStream";
 let ERROR_CODE = "FLUTTER_BRANCH_SDK_ERROR";
 let PLUGIN_NAME = "Flutter";
-let PLUGIN_VERSION = "9.3.8";
+let PLUGIN_VERSION = "9.4.0";
 let COCOA_POD_NAME = "org.cocoapods.flutter-branch-sdk";
 
 //---------------------------------------------------------------------------------------------
@@ -95,6 +92,12 @@ public class LogStreamHandler: NSObject, FlutterStreamHandler {
 }
 
 public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterSceneLifeCycleDelegate  {
+    // Channels belong to this instance (one instance per FlutterEngine registration).
+    var methodChannel: FlutterMethodChannel?
+    var eventChannel: FlutterEventChannel?
+    var logEventChannel: FlutterEventChannel?
+    var logStreamHandler: LogStreamHandler?
+
     var eventSink: FlutterEventSink?
     var logEventSink: FlutterEventSink?
     var initialParams : [String: Any]? = nil
@@ -104,7 +107,6 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     var isSdkConfigured = false
 
     var isBranchInitDeferred = false
-    var isBranchSessionStarted = false
     var isPluginInitialized = false
 
     var requestMetadata : [String: String] = [:]
@@ -112,58 +114,70 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     var snapParameters : [String: String] = [:]
 
     static var branchJsonConfigFlutter: BranchJsonConfigFlutter? = nil
+
+    // Process-wide session state. Branch is a singleton, but each FlutterEngine that registers
+    // the plugin creates its own instance. The Branch session must be started once and its
+    // result delivered to every live instance, so the engine that listens to the stream
+    // receives it regardless of registration order.
+    private static let stateLock = NSLock()
+    private static let liveInstances = NSHashTable<FlutterBranchSdkPlugin>.weakObjects()
+    private static var isBranchSessionStarted = false
+    private static var lastSessionResult: (params: [String: Any]?, error: NSError?)? = nil
+    private static weak var lifecycleOwner: FlutterBranchSdkPlugin?
     
     //---------------------------------------------------------------------------------------------
     // Plugin registry
     // --------------------------------------------------------------------------------------------
     public static func register(with registrar: FlutterPluginRegistrar) {
-        // Clean up any existing channels/handlers to avoid duplicates on re-register
-        if let _ = methodChannel {
-            methodChannel = nil
-        }
-        if let ev = eventChannel {
-            ev.setStreamHandler(nil)
-            eventChannel = nil
-        }
-        if let lev = logEventChannel {
-            lev.setStreamHandler(nil)
-            logEventChannel = nil
-        }
-
+        // Each FlutterEngine registers its own instance with its own channels.
+        // Never touch channels created by another engine's registration.
         let instance = FlutterBranchSdkPlugin()
         let handler = LogStreamHandler()
-        logStreamHandler = handler
+        instance.logStreamHandler = handler
 
-        methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: registrar.messenger())
-        eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: registrar.messenger())
-        eventChannel!.setStreamHandler(instance)
+        let messenger = registrar.messenger()
+        let methodChannel = FlutterMethodChannel(name: MESSAGE_CHANNEL, binaryMessenger: messenger)
+        let eventChannel = FlutterEventChannel(name: EVENT_CHANNEL, binaryMessenger: messenger)
+        let logEventChannel = FlutterEventChannel(name: LOG_CHANNEL, binaryMessenger: messenger)
 
-        logEventChannel = FlutterEventChannel(name: LOG_CHANNEL, binaryMessenger: registrar.messenger())
-        logEventChannel!.setStreamHandler(handler)
+        eventChannel.setStreamHandler(instance)
+        logEventChannel.setStreamHandler(handler)
+
+        instance.methodChannel = methodChannel
+        instance.eventChannel = eventChannel
+        instance.logEventChannel = logEventChannel
+
+        // Track the instance and replay the session result if it was already delivered
+        // before this engine registered the plugin.
+        stateLock.lock()
+        liveInstances.add(instance)
+        if let last = lastSessionResult {
+            instance.initialParams = last.params
+            instance.initialError = last.error
+        }
+        stateLock.unlock()
 
         registrar.addApplicationDelegate(instance)
         if #available(iOS 13.0, *) {
             registrar.addSceneDelegate(instance)
         }
-        registrar.addMethodCallDelegate(instance, channel: methodChannel!)
+        registrar.addMethodCallDelegate(instance, channel: methodChannel)
 
         Self.branchJsonConfigFlutter = BranchJsonConfigFlutter.loadFromFile(registrar: registrar)
     }
 
-    // Ensure stream handlers are removed when the plugin instance is deallocated
-    deinit {
-        if let ev = eventChannel {
-            ev.setStreamHandler(nil)
-        }
-        if let lev = logEventChannel {
-            lev.setStreamHandler(nil)
-        }
-        methodChannel = nil
-        logEventChannel = nil
-        eventChannel = nil
-        logStreamHandler = nil
+    // Called when this instance's engine goes away: clear only this instance's own handlers.
+    public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
+        eventChannel?.setStreamHandler(nil)
+        logEventChannel?.setStreamHandler(nil)
     }
-        
+
+    // Safety net if the instance is deallocated without detach. Touches only own channels.
+    deinit {
+        eventChannel?.setStreamHandler(nil)
+        logEventChannel?.setStreamHandler(nil)
+    }
+
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable : Any] = [:]) -> Bool {
         LogUtils.debug(message: "Application didFinishLaunchingWithOptions - App Delegate lifecycle")
         
@@ -176,18 +190,22 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
     }
     
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        guard claimLifecycle() else { return false }
         return Branch.getInstance().application(app, open: url, options: options)
     }
     
     public func application(_ app: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
+        guard claimLifecycle() else { return false }
         return Branch.getInstance().application(app, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
+        guard claimLifecycle() else { return false }
         return Branch.getInstance().continue(userActivity)
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+        guard claimLifecycle() else { return }
         Branch.getInstance().handlePushNotification(userInfo)
     }
     
@@ -212,16 +230,18 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
        // In Flutter 3.29+ with UIApplicationSceneManifest, FlutterAppDelegate no longer
         // forwards application:didFinishLaunchingWithOptions: to plugin delegates, so
         // initializeBranchSession is never called via that path. Call it here from the
-        // scene lifecycle instead. isBranchSessionStarted guards against double-init.
+        // scene lifecycle instead. The process-wide isBranchSessionStarted guards against double-init.
         initializeBranchSession(launchOptions: nil)
 
         // Pass URLs/activities from connection options to Branch using the scene-aware API.
         // Return false so other plugins still receive the full connection options — the
         // Bool is a Flutter dispatch signal only and does not affect Branch's own processing.
-        if let connOpts = connectionOptions, let userActivity = connOpts.userActivities.first {
-            BranchScene.shared().scene(scene, continue: userActivity)
-        } else if let connOpts = connectionOptions, !connOpts.urlContexts.isEmpty {
-            BranchScene.shared().scene(scene, openURLContexts: connOpts.urlContexts)
+        if claimLifecycle() {
+            if let connOpts = connectionOptions, let userActivity = connOpts.userActivities.first {
+                BranchScene.shared().scene(scene, continue: userActivity)
+            } else if let connOpts = connectionOptions, !connOpts.urlContexts.isEmpty {
+                BranchScene.shared().scene(scene, openURLContexts: connOpts.urlContexts)
+            }
         }
 
         return false
@@ -235,6 +255,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         openURLContexts URLContexts: Set<UIOpenURLContext>
     ) -> Bool {
         LogUtils.debug(message: "Scene openURLContexts - Scene lifecycle")
+        guard claimLifecycle() else { return false }
         BranchScene.shared().scene(scene, openURLContexts: URLContexts)
         return false
     }
@@ -247,6 +268,7 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         continue userActivity: NSUserActivity
     ) -> Bool {
         LogUtils.debug(message: "Scene continue userActivity - Scene lifecycle")
+        guard claimLifecycle() else { return false }
         BranchScene.shared().scene(scene, continue: userActivity)
         return false
     }
@@ -359,44 +381,79 @@ public class FlutterBranchSdkPlugin: NSObject, FlutterPlugin, FlutterStreamHandl
         self.isSdkConfigured = true
     }
     
+    /// Only one plugin instance forwards lifecycle events (URLs, user activities, push) to Branch.
+    /// Every registered instance receives them from Flutter, but Branch is a process-wide singleton
+    /// and must see each event once. If the owner is deallocated, the next instance takes over.
+    private func claimLifecycle() -> Bool {
+        Self.stateLock.lock()
+        defer { Self.stateLock.unlock() }
+        if let owner = Self.lifecycleOwner, owner !== self {
+            return false
+        }
+        Self.lifecycleOwner = self
+        return true
+    }
+
     /// Initializes Branch session with the provided launch options
     /// This logic is shared between App Delegate and Scene Delegate initialization
+    /// The session is started once per process, by the first instance that gets here.
     private func initializeBranchSession(launchOptions: [AnyHashable: Any]?) {
-        if (isBranchSessionStarted) {
-            return;
+        Self.stateLock.lock()
+        if Self.isBranchSessionStarted {
+            Self.stateLock.unlock()
+            return
         }
-        
+        Self.isBranchSessionStarted = true
+        Self.stateLock.unlock()
+
         if (isBranchInitDeferred) {
             LogUtils.debug(message: "Branch session will cache internally until notifyNativeToInit is called (deferInitForPluginRuntime: true)")
         } else {
             LogUtils.debug(message: "Branch session will be initialized immediately (deferInitForPluginRuntime: false)")
         }
 
+        // The callback must not capture `self`: Branch delivers to a single callback, and this
+        // instance may belong to an engine that never listens (e.g. a headless engine).
         Branch.getInstance().initSession(launchOptions: launchOptions) { (params, error) in
             if error == nil {
                 LogUtils.debug(message: "InitSession params: \(String(describing: params as? [String: Any]))")
-                guard let _ = self.eventSink else {
-                    self.initialParams = params as? [String: Any]
-                    return
-                }
-                // Send on main thread to comply with Flutter platform channel requirements
-                DispatchQueue.main.async {
-                    self.eventSink!(params as? [String: Any])
-                }
+                FlutterBranchSdkPlugin.deliverSession(params: params as? [String: Any], error: nil)
             } else {
                 let err = (error! as NSError)
                 LogUtils.debug(message: "Branch InitSession error: \(err.localizedDescription)")
-                guard let _ = self.eventSink else {
-                    self.initialError = err
-                    return
-                }
-                // Send on main thread to comply with Flutter platform channel requirements
-                DispatchQueue.main.async {
-                    self.eventSink!(FlutterError(code: String(err.code), message: err.localizedDescription, details: nil))
-                }
+                FlutterBranchSdkPlugin.deliverSession(params: nil, error: err)
             }
         }
-        isBranchSessionStarted = true
+    }
+
+    /// Delivers a session result to every live plugin instance.
+    private static func deliverSession(params: [String: Any]?, error: NSError?) {
+        stateLock.lock()
+        lastSessionResult = (params, error)
+        let instances = liveInstances.allObjects
+        stateLock.unlock()
+
+        for instance in instances {
+            instance.receiveSession(params: params, error: error)
+        }
+    }
+
+    /// Emits the session result to this instance's stream, or buffers it until Dart listens.
+    private func receiveSession(params: [String: Any]?, error: NSError?) {
+        guard let _ = self.eventSink else {
+            self.initialParams = params
+            self.initialError = error
+            return
+        }
+        // Send on main thread to comply with Flutter platform channel requirements
+        DispatchQueue.main.async {
+            guard let sink = self.eventSink else { return }
+            if let err = error {
+                sink(FlutterError(code: String(err.code), message: err.localizedDescription, details: nil))
+            } else {
+                sink(params)
+            }
+        }
     }
     
     //---------------------------------------------------------------------------------------------
